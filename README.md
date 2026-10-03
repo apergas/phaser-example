@@ -29,7 +29,6 @@ Every push to `main` is built and published to GitHub Pages by `.github/workflow
 
 - `asset-packs/lpc/` — Liberated Pixel Cup sources and `build_assets.py`, which generates the textures in
   `rpg/public/assets/lpc/` (requires Pillow).
-- `asset-packs/ninja-adventure/` — Ninja Adventure pack (CC0), kept for reference; not used by the game.
 
 LPC art is licensed CC-BY-SA 3.0 / GPL 3.0 / OGA-BY 3.0 and requires attribution:
 see [`rpg/public/assets/lpc/CREDITS.md`](rpg/public/assets/lpc/CREDITS.md).

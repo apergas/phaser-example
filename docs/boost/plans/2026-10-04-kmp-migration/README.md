@@ -233,3 +233,19 @@ Alcance acordado: **al subir a `main`, la web se publica en GitHub Pages; Androi
 - `./gradlew :shared:allTests` — tests compartidos en JVM (Android), JS y simulador iOS.
 - `cd rpg && npm run typecheck && npm test && npm run build` — la web, mientras conserve su código TypeScript (hasta la fase 6) y después solo sus vistas.
 - Fase 6 en adelante: recorrido e2e en navegador (Playwright) que recoge el hacha, tala hasta ≥15 de madera, construye la casa y termina con 3/3 misiones y sin errores de consola.
+
+---
+
+## 8. Desviaciones durante la ejecución
+
+Lo que cambió respecto a lo escrito al ejecutar cada fase. Las fases siguientes deben leer esto antes de copiar sus fragmentos.
+
+### Fase 1 (2026-10-04)
+
+- **Versiones fijadas** en `gradle/libs.versions.toml`: Kotlin 2.4.20, AGP 9.4.1, Gradle 9.8.0, kotlinx.coroutines 1.11.0, kotlinx.serialization 1.11.0, JetBrains lifecycle-viewmodel 2.11.0, SKIE 0.10.15 (la primera con soporte de Kotlin 2.4.20), KSP 2.3.12, Hilt 2.60.1, Compose BOM 2026.09.00, activity-compose 1.13.0.
+- **AGP 9 no admite `com.android.library` junto al plugin KMP.** `shared` usa `com.android.kotlin.multiplatform.library` (alias `androidKotlinMultiplatformLibrary`) y se configura dentro de `kotlin { android { namespace; compileSdk; minSdk; withHostTestBuilder {} } }`; ya no hay bloque `android {}` de nivel superior. La tarea de tests JVM es `:shared:testAndroidHostTest` (no `testDebugUnitTest`).
+- **AGP 9 trae Kotlin integrado**: el alias `kotlinAndroid` se elimina del catálogo y `androidApp` (fase 7) no aplica `org.jetbrains.kotlin.android`. El alias `androidLibrary` tampoco existe.
+- Kotlin/JS: `moduleName` está obsoleto; se usa `outputModuleName.set("rpg-shared")`.
+- `lifecycle-viewmodel` resuelve para JS: `ForestViewModel` puede extender `ViewModel` tal como dice la fase 5 (no hace falta la alternativa).
+- `kotlin-js-store/yarn.lock` se versiona ya en la fase 1 (lo genera la primera compilación JS).
+- La Task 3 (push + `gh run watch`) no aplica en una rama `feature/*`: el despliegue solo corre en `main`. Se sustituye por `npm run typecheck && npm test && npm run build` en `rpg/` (64 tests verdes, sin cambios en `rpg/`).

@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'shared/**'
-      - 'rpg/**'
+      - 'webApp/**'
       - 'asset-packs/**'
       - 'kotlin-js-store/**'
       - 'gradle/**'
@@ -43,20 +43,20 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: rpg/package-lock.json
+          cache-dependency-path: webApp/package-lock.json
       - run: npm ci
-        working-directory: rpg
+        working-directory: webApp
       - run: npm run typecheck
-        working-directory: rpg
+        working-directory: webApp
       - run: npm test
-        working-directory: rpg
+        working-directory: webApp
       - run: npm run build
-        working-directory: rpg
+        working-directory: webApp
 
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: rpg/dist
+          path: webApp/dist
 
   deploy:
     needs: build

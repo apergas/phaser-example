@@ -8,6 +8,7 @@ import com.apergas.rpg.data.repositories.session.GameSessionRepositoryImpl
 import com.apergas.rpg.domain.repositories.session.GameSessionRepository
 import com.apergas.rpg.domain.usecases.game.GameUseCase
 import com.apergas.rpg.domain.usecases.game.GameUseCaseImpl
+import com.apergas.rpg.presentation.forest.ForestViewModel
 
 /**
  * Builds the dependency graph from the bottom up (DataSource -> Repository -> UseCase), like the
@@ -24,4 +25,6 @@ object GameContainer {
         levelRepository = LevelRepositoryImpl(LevelLocalDataSourceImpl(), errorHandler),
         sessionRepository = sessionRepository,
     )
+
+    fun makeForestViewModel(): ForestViewModel = ForestViewModel(makeGameUseCase())
 }

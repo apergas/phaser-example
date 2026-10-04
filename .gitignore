@@ -3,3 +3,6 @@ dist
 .DS_Store
 __MACOSX
 __pycache__
+
+# Overrides the global gitignore: this repo shares its Claude Code guidance
+!CLAUDE.md

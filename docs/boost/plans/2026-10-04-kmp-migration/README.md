@@ -233,3 +233,89 @@ Alcance acordado: **al subir a `main`, la web se publica en GitHub Pages; Androi
 - `./gradlew :shared:allTests` — tests compartidos en JVM (Android), JS y simulador iOS.
 - `cd rpg && npm run typecheck && npm test && npm run build` — la web, mientras conserve su código TypeScript (hasta la fase 6) y después solo sus vistas.
 - Fase 6 en adelante: recorrido e2e en navegador (Playwright) que recoge el hacha, tala hasta ≥15 de madera, construye la casa y termina con 3/3 misiones y sin errores de consola.
+
+---
+
+## 8. Desviaciones durante la ejecución
+
+Lo que cambió respecto a lo escrito al ejecutar cada fase. Las fases siguientes deben leer esto antes de copiar sus fragmentos.
+
+### Fase 1 (2026-10-04)
+
+- **Versiones fijadas** en `gradle/libs.versions.toml`: Kotlin 2.4.20, AGP 9.4.1, Gradle 9.8.0, kotlinx.coroutines 1.11.0, kotlinx.serialization 1.11.0, JetBrains lifecycle-viewmodel 2.11.0, SKIE 0.10.15 (la primera con soporte de Kotlin 2.4.20), KSP 2.3.12, Hilt 2.60.1, Compose BOM 2026.09.00, activity-compose 1.13.0.
+- **AGP 9 no admite `com.android.library` junto al plugin KMP.** `shared` usa `com.android.kotlin.multiplatform.library` (alias `androidKotlinMultiplatformLibrary`) y se configura dentro de `kotlin { android { namespace; compileSdk; minSdk; withHostTestBuilder {} } }`; ya no hay bloque `android {}` de nivel superior. La tarea de tests JVM es `:shared:testAndroidHostTest` (no `testDebugUnitTest`).
+- **AGP 9 trae Kotlin integrado**: el alias `kotlinAndroid` se elimina del catálogo y `androidApp` (fase 7) no aplica `org.jetbrains.kotlin.android`. El alias `androidLibrary` tampoco existe.
+- Kotlin/JS: `moduleName` está obsoleto; se usa `outputModuleName.set("rpg-shared")`.
+- `lifecycle-viewmodel` resuelve para JS: `ForestViewModel` puede extender `ViewModel` tal como dice la fase 5 (no hace falta la alternativa).
+- `kotlin-js-store/yarn.lock` se versiona ya en la fase 1 (lo genera la primera compilación JS).
+- La Task 3 (push + `gh run watch`) no aplica en una rama `feature/*`: el despliegue solo corre en `main`. Se sustituye por `npm run typecheck && npm test && npm run build` en `rpg/` (64 tests verdes, sin cambios en `rpg/`).
+
+### Fase 2 (2026-10-04)
+
+- Sin desviaciones: el código del plan compila y pasa tal cual (39 tests en JVM, JS e iOS).
+
+### Fase 3 (2026-10-04)
+
+- `LevelLocalDataSourceImplTests`: el recuento por tipo se compara con `mapOf<String?, Int>(...)`, porque `TreeDto.kind` es `String?` y Kotlin 2.4 no infiere el tipo con `mapOf("broad" to 3, ...)`. Los valores esperados no cambian.
+- `LevelLocalDataSourceImpl.scatterDecorations`: los `!!` repetidos sobre la misma propiedad generaban avisos de "aserción innecesaria"; se leen una vez en variables locales (`spawnX`, `spawnY`, `treeX`, `treeY`). Mismo comportamiento.
+- Valores dorados del bosque (posiciones, madera, tipos de árbol y recuentos) idénticos al TypeScript en los tres targets.
+
+### Fase 4 (2026-10-04)
+
+- Sin desviaciones: el código del plan compila sin avisos y pasa tal cual (64 tests en JVM, JS e iOS).
+
+### Fase 5 (2026-10-04)
+
+- El bloque de `ForestContract.kt` no tenía cabecera de fichero en el plan; el fichero se llama `ForestContract.kt` como pide la convención.
+- `ForestViewModel` extiende el `ViewModel` de JetBrains en los tres targets (no hizo falta la alternativa sin superclase).
+- La etiqueta `close` (\"Cerrar\") de `labels.ts` no se porta: la web no la usa.
+- 74 tests en JVM, JS e iOS, sin avisos del compilador.
+
+### Fase 6 (2026-10-04)
+
+- El paquete generado declara las clases exportadas en el nivel superior (`rpg-shared.d.mts`) y ya trae `"types"` en su `package.json`: `import { ForestWebController } from 'rpg-shared'` funciona sin ajustes.
+- Kotlin/JS tipa los nulos como `Nullable<T>` (`T | null | undefined`): `ForestScene.renderGhost` recibe `WebPlacement | null | undefined` en vez del tipo literal del plan.
+- `deploy.yml`: la tarea de tests JVM es `:shared:testAndroidHostTest` (fase 1); `actions/setup-java@v6` y `gradle/actions/setup-gradle@v6` (últimas versiones); el filtro de rutas incluye también `gradlew`.
+- Bundle de producción: 1.407,68 kB (368,70 kB gzip) antes → 1.642,09 kB (428,24 kB gzip) después: +60 kB gzip por el núcleo Kotlin/JS.
+- Partida e2e idéntica a la de referencia: mismos árboles talados (tree-54, 26, 63, 49, 19), madera 5 → 10 → 16, mismo sitio de la casa, 3/3 misiones, sin errores de consola. Capturas: mismos árboles con el mismo dibujo; solo cambia la decoración del suelo.
+
+### Preparación de las fases 7 y 8 (2026-10-04)
+
+- `build_assets.py` copia el arte a `androidApp/src/main/assets/lpc/` e `iosApp/iosApp/Resources/lpc/` en un solo commit previo, para que las dos fases (en paralelo) no tocaran el mismo fichero.
+- El proyecto Xcode se escribió a mano (formato de Xcode 27 con carpetas sincronizadas: los `.swift` nuevos entran solos en su target), con el run script de Gradle, `-framework Shared`, iOS 17, `com.apergas.rpg`, solo horizontal, y `Resources/lpc` como referencia de carpeta. El `.gitignore` global excluye `*.xcscheme`: el repo lo reincluye para el esquema compartido `iosApp`.
+
+### Fase 7 (2026-10-04)
+
+- **Versiones bajadas para mantener `compileSdk` 36** (las últimas de AndroidX exigen `minCompileSdk` 37; decisión del usuario): `lifecycle` (JetBrains, `shared`) 2.11.0 → 2.10.0, `androidxLifecycle` 2.11.0 → 2.10.0, Compose BOM 2026.09.00 → 2026.06.01, navigation-compose 2.10.2 → 2.9.8, core-ktx 1.19.1 → 1.18.0. `shared` sigue verde en los tres targets.
+- `androidApp/build.gradle.kts` sin `kotlinAndroid` (Kotlin integrado en AGP 9); `kotlin { jvmToolchain(17) }` funciona igual. Tests con `kotlin("test-junit")`: sin el plugin de Kotlin nadie elige la variante JUnit. Se añaden `lifecycle-viewmodel-compose` y `androidx-test-runner`.
+- `LpcAssets` guarda `context.assets` en una propiedad (el plan usaba el parámetro del constructor dentro de un método).
+- `ForestScreenTests`: el bucle de juego nunca deja Compose ocioso; el test controla el reloj (`mainClock.autoAdvance = false`, `advanceTimeByFrame()`) y usa `junit4.v2.createComposeRule`.
+- Corregido al jugar en el emulador: `showSnackbar` bloqueaba el colector de efectos (cada mensaje va en su corrutina y sustituye al anterior); costuras entre baldosas (cámara redondeada a píxeles enteros); la barra táctil pasa a ser `PlacementBar` en el `bottomBar` del `ForestScaffold` para que el snackbar no la tape; botones del HUD con fondo `surface`; "Hecha" sin partirse en dos líneas; astillas a `base.y + 1` (como la web) para pintarse delante del jugador.
+- Verificado: tests unitarios 4/4, instrumentado 1/1, partida completa en el emulador (5 → 11 → 16 de madera, casa, 3/3).
+
+### Fase 8 (2026-10-04)
+
+- SKIE aplana las clases de una interfaz sellada en Swift: `ForestIntentTick(deltaMs:)`, `ForestIntentMapClicked(...)`, `ForestIntentPlacementCancelled.shared`… en vez de `ForestIntent.Tick`. `onEnum(of:)`, los Flows como `AsyncSequence` y los `.shared` funcionan como dice el plan.
+- En los tests, `ForestViewModel` es ambiguo con `import Shared` + `@testable import iosApp`: se usa `iosApp.ForestViewModel`. `ForestView.swift` necesita `import Shared` para `ForestLabels`.
+- El fantasma de colocación necesita `ghost.size = ghost.texture?.size() ?? .zero` (un `SKSpriteNode()` vacío tiene tamaño cero). Los emisores no usan `targetNode = self` (con él, las partículas se pintaban detrás de todo); astillas a `base.y + 1` como en la web.
+- Simulador iPhone 17 (no hay iPhone 16 en esta máquina). Verificado: 8 tests; partida completa dirigida por el ViewModel dentro de la app con capturas (16 de madera, casa, 3/3). Pendiente: jugarla con toques reales en el simulador.
+
+### Diferencias con la web que el plan no cubre (Android e iOS)
+
+- Barra de progreso de la obra, sombra del hacha en el suelo, iconos del HUD; en iOS además retirar la decoración que queda bajo la casa y el contraste del botón "Cancelar".
+
+### Fase 9 (2026-10-04)
+
+- Con el plugin Android-KMP de AGP 9 el source set de tests JVM es `androidHostTest`: `ArchitectureTests.kt` vive en `shared/src/androidHostTest/` (no en `androidUnitTest`). Comprobado que detecta una importación prohibida (`domain/rules/Rules.kt -> com.apergas.rpg.data.errors.DataErrorHandlerImpl`).
+- La Task 2 no espera al despliegue (`gh run watch`): se comprueba en GitHub Pages cuando la rama llegue a `main`.
+- Cierre: `:shared:allTests` 78 JVM (74 + 4 de arquitectura) / 76 JS / 74 iOS; `androidApp` 4 unitarios + 1 instrumentado; `iosApp` 8; `webApp` typecheck, 2 tests, build y partida e2e idéntica a la de referencia. Ninguna regla de juego fuera de `shared`.
+
+### Ajustes posteriores en iOS (2026-10-04)
+
+- Los assets pasan de `iosApp/iosApp/Resources/lpc` a `iosApp/Resources/lpc`, fuera de la carpeta sincronizada: dentro de ella Xcode los copiaba también sueltos en la raíz del bundle (duplicados), y la excepción de carpeta no lo evitaba.
+- `INFOPLIST_KEY_UIRequiresFullScreen = YES`: la app solo admite horizontal, y sin pantalla completa Xcode avisa de que hay que soportar todas las orientaciones.
+- El framework `Shared` declara `binaryOption("bundleId", "com.apergas.rpg.shared")`, que quita el aviso de Kotlin/Native sobre el bundle ID.
+
+### Arte en una sola copia (2026-10-04)
+
+- D8 copiaba el arte generado en las tres apps (tres copias idénticas en git). Ahora `build_assets.py` escribe solo en `shared/assets/lpc/` y las apps leen de ahí: Android añade `../shared/assets` como carpeta de assets de `main`, la referencia de carpeta de Xcode apunta a `../shared/assets/lpc`, y la web usa un plugin en `vite.config.ts` que lo sirve en `assets/lpc` en desarrollo y lo copia al build (Vite solo admite una carpeta `public`). Las rutas en tiempo de ejecución (`assets/lpc`, `lpc/` en el bundle) no cambian.

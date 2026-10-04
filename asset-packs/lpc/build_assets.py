@@ -3,7 +3,7 @@ Builds the game's LPC textures from the raw sources in ./sources.
 
   python3 build_assets.py
 
-Outputs (into rpg/public/assets/lpc/):
+Outputs (into shared/assets/lpc/, the one copy the web, Android and iOS apps all read):
   hero-{walk,idle}[-axe].png       64x64 character sheets composed from layers, clothes recoloured,
                                    with and without the axe in hand
   hero-{chop,hammer}.png           128x128 work animations: body slash frames between the tool's
@@ -22,7 +22,7 @@ from PIL import Image
 
 ROOT = Path(__file__).parent
 SOURCES = ROOT / "sources"
-OUT = ROOT.parent.parent / "rpg" / "public" / "assets" / "lpc"
+OUT = ROOT.parent.parent / "shared" / "assets" / "lpc"
 
 # --- Character -------------------------------------------------------------------------------
 

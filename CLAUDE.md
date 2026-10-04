@@ -4,60 +4,59 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Layout
 
-- `rpg/` — the game (TypeScript + Phaser 4 + Vite + Vitest). All npm commands run from here.
-- `asset-packs/lpc/` — raw LPC art sources and `build_assets.py`, which generates everything in `rpg/public/assets/lpc/`.
-- `.github/workflows/deploy.yml` — every push to `main` runs `npm ci`, `npm test`, `npm run build` in `rpg/` and publishes `rpg/dist` to GitHub Pages (https://apergas.github.io/phaser-example/).
+- `shared/` — Kotlin Multiplatform module (targets: Android, iOS arm64/simulator, JS) with **all** game logic: domain, data, the shared view model and the dependency container. Package root `com.apergas.rpg`.
+- `androidApp/` — Jetpack Compose + Hilt app. Only views.
+- `iosApp/` — SwiftUI + SpriteKit app (`iosApp.xcodeproj`, hand-written, Xcode file-system synchronized folders: new `.swift` files under `iosApp/iosApp` or `iosApp/iosAppTests` join their target automatically). Only views.
+- `webApp/` — Vite + Phaser 4 + TypeScript. Only views; consumes `shared` as the npm package `rpg-shared` (`file:../shared/build/dist/js/productionLibrary`).
+- `asset-packs/lpc/` — raw LPC art and `build_assets.py`, which generates `shared/assets/lpc/`, the only copy of the art: Android adds `shared/assets` as an assets folder (`androidApp/build.gradle.kts`), iOS has `../shared/assets/lpc` as a folder reference, and the web serves/copies it at `assets/lpc` with a small plugin in `webApp/vite.config.ts`.
+- `.github/workflows/deploy.yml` — on pushes to `main` that touch the web or `shared`: shared JVM + JS tests, the `rpg-shared` package, then `npm ci`, typecheck, test, build in `webApp/` and publish `webApp/dist` to GitHub Pages (https://apergas.github.io/phaser-example/). Android and iOS are tested locally only.
+- `docs/boost/plans/2026-10-04-kmp-migration/` — the migration plan; its README section 8 records every deviation found while executing it.
 
-## Commands (from `rpg/`)
+## Commands
 
 ```sh
-npm run dev                               # dev server
-npm test                                  # vitest run (all tests)
-npx vitest run tests/domain/World.test.ts # single file
-npx vitest run -t "clamps the destination" # single test by name
-npm run typecheck                         # type-check src and tests (tsconfig.test.json)
-npm run build                             # tsc + vite build into dist/
+./gradlew :shared:allTests                                   # shared tests on JVM, JS (Chrome headless) and iOS simulator
+./gradlew :shared:testAndroidHostTest --tests "com.apergas.rpg.domain.world.*"   # JVM only, filtered
+./gradlew :shared:jsBrowserProductionLibraryDistribution     # npm package the web app depends on (run before npm install/ci)
+./gradlew :androidApp:testDebugUnitTest                      # Android unit tests
+./gradlew :androidApp:connectedDebugAndroidTest              # Android instrumented tests (running emulator)
+./gradlew :androidApp:installDebug                           # install on the emulator (AVD Medium_Phone_API_36.0)
+xcodebuild test -project iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 17'
+cd webApp && npm run dev | npm test | npm run typecheck | npm run build
 ```
 
-There is no linter. Regenerate art after editing the asset script: `cd asset-packs/lpc && python3 build_assets.py` (needs Pillow).
+`local.properties` (gitignored) must point `sdk.dir` at the Android SDK. The iOS build runs `./gradlew :shared:embedAndSignAppleFrameworkForXcode` from an Xcode run-script phase. Regenerate art after editing the asset script: `cd asset-packs/lpc && python3 build_assets.py` (needs Pillow). There is no linter.
 
 ## Architecture
 
-Clean Architecture laid out like the team's iOS/Android apps (`domain` / `data` / `presentation`). The dependency rule is enforced by `tests/architecture.test.ts`: the domain imports nothing outside itself, its core (entities, world, quests) does not know use cases or repositories, `data` never touches presentation, presentation reaches the domain only through `domain/usecases/` (and its models) and never imports `data`, and view models never import Phaser, views or CSS.
+Rules live once in `shared`, written with the team's Android conventions; the apps only draw. `Presentation ──▶ Domain ◀── Data`, enforced by `shared/src/androidHostTest/kotlin/com/apergas/rpg/ArchitectureTests.kt` (domain imports nothing from data/presentation/di or platform APIs, data never imports presentation, presentation never imports data, entities have no `var`) and, for the web, by `webApp/tests/architecture.test.ts` (no `domain/`, `data/` or `*ViewModel.ts`; presentation imports only `phaser`, `rpg-shared` and itself).
 
-- `src/domain/` — pure TypeScript, no Phaser.
-  - `world/World.ts` is the aggregate root and the only entry point that changes the world. It holds a `WorldState` and delegates each rule to a system: `Navigation` (walking, collisions, reach, where to stand), `Woodcutting`, `Construction`, `pickUpItems`. Commands return results instead of throwing; `advance(deltaMs)` returns `WorldEvent[]`.
-  - Work mechanics are pluggable: the player's activity is generic (`idle` / `walking` with optional `Intent` / `working` on an `Intent`). A mechanic is an `Intent` variant plus a `Work` (target, preferred spots, interval, impact) registered in `World`'s `WorkRegistry` — movement, reach and timing are shared. `GetGameStateUseCase.WORK_ACTIVITY` maps it to the activity name adapters see.
-  - `quests/QuestLog.ts` — quests are checks against the `World` (`progress >= target`), completion is sticky. Tuning values live in `rules.ts` and `Blueprints`.
-  - `repositories/` — protocols: `GameSessionRepository` (current `{ world, quests }`) and `LevelRepository` (returns a ready `World`).
-  - `usecases/` — one class per use case. `StartGameUseCase` builds a session from the level; every other use case fetches the session from the repository on each call.
-  - `usecases/models/` + `models/mappers.ts`: what use cases return to adapters are read-only models (`PlayerState`, `WorldSnapshot`, `QuestProgress`, `BuildOption`, `GameNotice` for events, `*Key` ids) — never domain entities, which are mutable and would let adapters bypass the use cases. They are deliberately not called DTOs. The identity mappers for keys only compile while domain and model unions match.
-- `src/data/` — same shape as the mobile apps: `datasources/` (`LevelDataSource` port + `ProceduralForestLevelDataSource`; a Tiled loader or a save-game store would be other data sources) return `dtos/` (`LevelDto`: raw, untrusted external shape — "DTO" is reserved for these), `mappers/` (`LevelMapper.toWorld` validates and builds entities), `repositories/` (`LevelRepositoryImpl`, `GameSessionRepositoryImpl`) implement the domain protocols.
-- `src/presentation/` — MVVM, organised by screen like an iOS `Features/` folder: each screen folder holds its view + view model pair at the root and its child components (each with its own pair when they have presentation logic) in subfolders.
-  - `screens/forest/` — `ForestScene` + `ForestViewModel`, the gameplay screen. `ForestViewModel` owns presentation logic: what a map click means (chop / walk / place), placement mode and its validity, which message each event shows, and turning `GameNotice`s into one-shot `Effect`s (tree-hit, building-placed...). It composes the child view models:
-    - `hud/` — `Hud` (HTML overlay) + `HudViewModel` (display-ready `HudState`: formatted texts, quest status, build items, message with a `serial`).
-    - `player/` — `PlayerView` + `PlayerViewModel` (`PlayerRenderState`: facing + pose — idle/walk with or without axe, or work with tool and swing progress).
-    - `world/` — `TreeView`, `ItemView`, `BuildingView`, `GroundView`: drawn straight from use-case models (`TreeInfo`, `BuildingInfo`...), no view model per object (like rows of a list).
-  - `screens/preload/` — `PreloadScene`: loads textures and registers animations; no view model.
-  - `common/` — `assets.ts` (texture registry), `depth.ts` (draw order), `labels.ts` (all player-facing text).
-  - Views are passive: no binding framework — the game loop is the binding. Each frame the scene calls `vm.tick(delta)`, plays the returned effects and renders `vm.*.state`. Views only decide engine/art matters (pixel hit-testing, sprite keys, LPC frame sequences, tweens, camera). View models are plain TypeScript tested in `tests/presentation/` (mirrors `src/`); any `*ViewModel.ts` importing Phaser, a view or CSS fails the architecture test.
-- `src/main.ts` — composition root. In dev builds it exposes `window.__rpg = { game, gameState, viewModel }` for browser automation (stripped from production).
+- `shared/src/commonMain/kotlin/com/apergas/rpg/`
+  - `domain/entities/` — immutable `data class`es (operations return copies): geometry, player (`Inventory`, `Intent`, `Activity`), tree (`TreeKind`), decoration, item, building (`Blueprints`), game (`GameEvent`, results, read entities such as `PlayerStatus`, `WorldSnapshot`, `QuestProgress`, `BuildOption`, `GameSession`).
+  - `domain/world/` — `World`, the mutable aggregate and only entry point that changes the game. It owns a `WorldState` and delegates to `internal` systems: `Navigation`, `Woodcutting`, `Construction`, `pickUpItems`. Work mechanics are an `Intent` variant + a `Work` + one branch in `workFor()` (exhaustive `when`). `advance(deltaMs)` returns `GameEvent`s.
+  - `domain/quests/` (`QuestLog`, sticky completion), `domain/rules/Rules.kt` (tuning), `domain/errors/` (`AppError`, `ErrorHandler`), `domain/repositories/` (interfaces).
+  - `domain/usecases/game/` — a single `GameUseCase` / `GameUseCaseImpl` with every operation, synchronous (the simulation advances per frame, no I/O). It fetches the session from `GameSessionRepository` on each call.
+  - `data/` — `datasources/local/level` (`LevelLocalDataSourceImpl`: seeded procedural forest that also decides each tree's kind and the ground decoration; all-nullable `@Serializable` DTOs), `repositories/level` (`LevelRepositoryImpl` + `internal` `LevelMappers.kt`, errors through `ErrorHandler`), `repositories/session` (in-memory session).
+  - `presentation/forest/` — `ForestContract.kt` (`ForestState` / `ForestIntent` / `ForestEffect`), `ForestViewModel` (JetBrains multiplatform `ViewModel`; intents handled **synchronously** so `Tick` runs in frame order; effects via `tryEmit` on a buffered `SharedFlow`), `ForestLabels` (every player-facing Spanish text, including touch-bar and accessibility strings), `SpriteNames` (level kind → atlas frame name, used by all three apps).
+  - `di/GameContainer.kt` — iOS-style container: builds DataSource → Repository → UseCase; one session for the whole app; `makeForestViewModel()`.
+  - `util/SeededRandom.kt` — LCG identical to the old TypeScript one (golden-value tests keep the forest identical).
+- `shared/src/jsMain/.../web/` — `ForestWebController` (`@JsExport`), the only API the web sees, with plain exported `Web*` types; effects are pulled per frame with `takeEffects()`. Kotlin/JS types nullables as `T | null | undefined`.
+- `androidApp/` — `app/` (`@HiltAndroidApp`, `MainActivity`, `di/GameModule` providing `GameUseCase` from `GameContainer`), `presentation/navigation` (typed routes), `presentation/forest/ForestScreen.kt` (game loop with `withFrameNanos`, `ForestScaffold` with the snackbar and the placement bar as `bottomBar`), `components/HudOverlay.kt` (HUD and `PlacementBar`), `world/` (`WorldCanvas` Y-sorted drawing, `WorldSceneState` fed by effects, `AtlasParser` for `forest.json`, `LpcAssets`, `Particles` with closed-form trajectories). `ForestViewModel` is created with `viewModel(factory = ...)` (no `@HiltViewModel`: it lives in `commonMain`).
+- `iosApp/iosApp/Presentation/` — `ForestView` (SwiftUI, hosts the SpriteKit scene) + Swift `ForestViewModel` (`@Observable`, wraps the shared one) + `ForestBuilder`; `World/ForestScene.swift` (SKScene: nodes, camera, game loop, effects, touches), `ScenePoint` (the only Y-up conversion), `LpcAtlas`, `ParticleEmitters` (`SKEmitterNode`). SKIE exposes Flows as `AsyncSequence` and `onEnum(of:)`; sealed-interface members appear flattened in Swift (`ForestIntentTick(deltaMs:)`).
+- `webApp/src/` — `main.ts` (creates the controller, `Hud`, scenes; dev builds expose `window.__rpg = { game, controller }` for browser automation), `presentation/screens/forest/ForestScene.ts` (each frame: `tick`, play `takeEffects()`, render `state()`), `hud/Hud.ts`, `player/PlayerView.ts`, `world/*View.ts` (`GroundView` draws the level's decoration), `screens/preload/PreloadScene.ts`, `common/assets.ts` (texture registry), `common/depth.ts`.
 
 Key cross-cutting conventions:
 
-- **Positions are feet / trunk bases**, in world units = native art pixels. The same point drives collision, sprite anchoring and draw order.
-- **Depth (3/4 view):** `views/depth.ts` — ground, then shadows, then everything sorted by base `y`.
-- **Scaling:** art is drawn at native size and the camera zooms by `CAMERA_ZOOM` (2). `ForestScene.fitCameraBounds` divides the viewport by the zoom and grows bounds symmetrically so a world smaller than the window stays centred. The canvas uses `Scale.RESIZE` to fill the browser.
-- **Facing/animation state is derived in `PlayerView`** from the position delta (or the work target), not stored in the domain. Work animations (`hero-chop`, `hero-hammer`, 128px frames) are not timed by Phaser: the frame is picked from the domain's `swingProgress`, so the impact frame coincides with the hit event.
-- **Assets:** `presentation/common/assets.ts` is the single registry of texture keys, frame names and sheet layouts. `PreloadScene` loads them and registers animations before starting `ForestScene`. Tree frames in `forest.json` carry a `pivot` at the trunk base (computed by `build_assets.py`), so tree images need no `setOrigin`.
-- **LPC character sheets:** 64×64 frames, rows ordered `up, left, down, right`; walk has 9 columns (0 = standing, 1–8 = cycle), idle has 2. Variants with the axe in hand are pre-composed (`hero-*-axe`). Clothes and hair are recoloured in `build_assets.py` (`RECOLOURS`).
-- **Tree clicks are pixel-accurate** (`TreeView.containsPoint` checks texture alpha), so shadows and gaps between leaves fall through to movement.
-- Randomness (tree variants, decor) goes through `shared/seededRandom.ts` so layouts are reproducible.
+- **Positions are feet / trunk bases**, in world units = native art pixels; the domain is Y-down. The same point drives collision, sprite anchoring and draw order (sort by base `y`) on every platform; only `iosApp`'s `ScenePoint` flips Y.
+- **The map is level data:** tree positions, wood, kinds and ground decoration come from `shared`; apps never pick art or place decor themselves.
+- **Rendering constants are the same in the three apps:** camera zoom 2; LPC 64 px character frames, rows `up, left, down, right`, walk columns 1–8 at 10 fps, idle 2 columns at 2 fps; work sheets 128 px with sequences chop `[0,0,5,5,4,4,3,1]` and hammer `[0,0,5,5,4,4,1]`, frame chosen from `swingProgress` so the impact frame matches the hit; house drawn 24 px below its footprint centre.
+- Tree taps/clicks are pixel-accurate (texture alpha), so shadows and gaps between leaves fall through to movement.
 
 ## Constraints
 
-- `tsconfig` has `erasableSyntaxOnly`: no constructor parameter properties (`constructor(private x)`) or enums; declare fields explicitly.
-- Domain and use-case code is covered by Vitest in `rpg/tests/` (mirrors `src/`); presentation is verified by running the game.
-- Vite `base: './'` keeps asset URLs relative so the build works under the Pages sub-path; asset URLs in code are relative (`assets/lpc/...`).
-- LPC art is CC-BY-SA 3.0 / GPL 3.0 / OGA-BY 3.0: any new LPC asset must be credited in `rpg/public/assets/lpc/CREDITS.md`.
-- A git hook enforces commit messages as `[PROJECT-123]: Imperative description` (or `[PROJECT-X]: ...` without a ticket), branches as `(feature|bugfix|hotfix)/PROJECT-123-description`, and rejects any AI attribution (no `Co-Authored-By` for an AI, no Claude/Anthropic mentions).
+- Versions only in `gradle/libs.versions.toml`. `compileSdk`/`targetSdk` 36 is a team rule; AndroidX libraries that need `minCompileSdk` 37 cannot be used (that is why lifecycle is 2.10.0). AGP 9: `shared` uses `com.android.kotlin.multiplatform.library`, the app has built-in Kotlin (no `org.jetbrains.kotlin.android`).
+- Tests (Kotlin and Swift): `// given`, `// when`, `// then`; names `testWhen<Action>Then<Result>`; mock data as `val <Entity>.Companion.mock` / `static let mock`; hand-written mocks with an `error` property and `<method>Called` flags.
+- Code, identifiers and comments in English; player-facing text in Spanish only in `ForestLabels` (the app name is the only per-platform text: `app_name`, `Info.plist`, `<title>`).
+- `webApp` tsconfig has `erasableSyntaxOnly`: no constructor parameter properties or enums. Vite `base: './'` keeps asset URLs relative for the Pages sub-path.
+- LPC art is CC-BY-SA 3.0 / GPL 3.0 / OGA-BY 3.0: any new LPC asset must be credited in `shared/assets/lpc/CREDITS.md`.
+- Git flow: `main` (published) / `develop` (default) / `feature/PROJECT-X-<description>` branches. A git hook enforces commit messages as `[PROJECT-123]: Imperative description` (or `[PROJECT-X]: ...` without a ticket), branches as `(feature|bugfix|hotfix)/PROJECT-123-description`, and rejects any AI attribution (no `Co-Authored-By` for an AI, no Claude/Anthropic mentions).

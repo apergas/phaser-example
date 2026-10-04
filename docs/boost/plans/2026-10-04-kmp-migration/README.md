@@ -259,3 +259,7 @@ Lo que cambió respecto a lo escrito al ejecutar cada fase. Las fases siguientes
 - `LevelLocalDataSourceImplTests`: el recuento por tipo se compara con `mapOf<String?, Int>(...)`, porque `TreeDto.kind` es `String?` y Kotlin 2.4 no infiere el tipo con `mapOf("broad" to 3, ...)`. Los valores esperados no cambian.
 - `LevelLocalDataSourceImpl.scatterDecorations`: los `!!` repetidos sobre la misma propiedad generaban avisos de "aserción innecesaria"; se leen una vez en variables locales (`spawnX`, `spawnY`, `treeX`, `treeY`). Mismo comportamiento.
 - Valores dorados del bosque (posiciones, madera, tipos de árbol y recuentos) idénticos al TypeScript en los tres targets.
+
+### Fase 4 (2026-10-04)
+
+- Sin desviaciones: el código del plan compila sin avisos y pasa tal cual (64 tests en JVM, JS e iOS).

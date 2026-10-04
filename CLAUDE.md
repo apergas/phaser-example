@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `androidApp/` — Jetpack Compose + Hilt app. Only views.
 - `iosApp/` — SwiftUI + SpriteKit app (`iosApp.xcodeproj`, hand-written, Xcode file-system synchronized folders: new `.swift` files under `iosApp/iosApp` or `iosApp/iosAppTests` join their target automatically). Only views.
 - `webApp/` — Vite + Phaser 4 + TypeScript. Only views; consumes `shared` as the npm package `rpg-shared` (`file:../shared/build/dist/js/productionLibrary`).
-- `asset-packs/lpc/` — raw LPC art and `build_assets.py`, which generates `webApp/public/assets/lpc/` and copies it to `androidApp/src/main/assets/lpc/` and `iosApp/iosApp/Resources/lpc/`.
+- `asset-packs/lpc/` — raw LPC art and `build_assets.py`, which generates `webApp/public/assets/lpc/` and copies it to `androidApp/src/main/assets/lpc/` and `iosApp/Resources/lpc/`.
 - `.github/workflows/deploy.yml` — on pushes to `main` that touch the web or `shared`: shared JVM + JS tests, the `rpg-shared` package, then `npm ci`, typecheck, test, build in `webApp/` and publish `webApp/dist` to GitHub Pages (https://apergas.github.io/phaser-example/). Android and iOS are tested locally only.
 - `docs/boost/plans/2026-10-04-kmp-migration/` — the migration plan; its README section 8 records every deviation found while executing it.
 

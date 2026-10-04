@@ -309,3 +309,9 @@ Lo que cambió respecto a lo escrito al ejecutar cada fase. Las fases siguientes
 - Con el plugin Android-KMP de AGP 9 el source set de tests JVM es `androidHostTest`: `ArchitectureTests.kt` vive en `shared/src/androidHostTest/` (no en `androidUnitTest`). Comprobado que detecta una importación prohibida (`domain/rules/Rules.kt -> com.apergas.rpg.data.errors.DataErrorHandlerImpl`).
 - La Task 2 no espera al despliegue (`gh run watch`): se comprueba en GitHub Pages cuando la rama llegue a `main`.
 - Cierre: `:shared:allTests` 78 JVM (74 + 4 de arquitectura) / 76 JS / 74 iOS; `androidApp` 4 unitarios + 1 instrumentado; `iosApp` 8; `webApp` typecheck, 2 tests, build y partida e2e idéntica a la de referencia. Ninguna regla de juego fuera de `shared`.
+
+### Ajustes posteriores en iOS (2026-10-04)
+
+- Los assets pasan de `iosApp/iosApp/Resources/lpc` a `iosApp/Resources/lpc`, fuera de la carpeta sincronizada: dentro de ella Xcode los copiaba también sueltos en la raíz del bundle (duplicados), y la excepción de carpeta no lo evitaba.
+- `INFOPLIST_KEY_UIRequiresFullScreen = YES`: la app solo admite horizontal, y sin pantalla completa Xcode avisa de que hay que soportar todas las orientaciones.
+- El framework `Shared` declara `binaryOption("bundleId", "com.apergas.rpg.shared")`, que quita el aviso de Kotlin/Native sobre el bundle ID.

@@ -133,6 +133,12 @@ Sin ayuda, Swift ve `StateFlow` como un objeto opaco y las `sealed interface` co
 
 El dominio usa el sistema de la web (origen arriba-izquierda, Y hacia abajo, unidades = píxeles nativos LPC). Android `Canvas` usa el mismo sistema. SpriteKit tiene la Y hacia arriba: la conversión vive **solo** en `iosApp` (`ScenePoint.swift`).
 
+### D10. Todo el diseño del mapa es dato del nivel
+
+Lo que un diseñador decide del mapa vive **una sola vez** en `shared/data` (hoy el generador procedimental, mañana un fichero de Tiled): tamaño, inicio, cada árbol con su posición, su madera y su **tipo** (`TreeKind`: roble, pino…), los objetos (hacha) y la **decoración del suelo** (`Decoration`: hierba alta, hojas, setas, rocas; sin colisión). El dominio lo modela (`Tree.kind`, `World.decorations`) y el caso de uso lo entrega en `WorldSnapshot`. Las apps solo traducen tipo → sprite con un único helper compartido (`SpriteNames`, en `shared/presentation`): ninguna app elige al azar qué árbol pintar ni dónde poner decoración. Cambiar el bosque = cambiar el datasource; las tres apps lo reciben igual.
+
+En la web actual, el tipo de árbol se elige en la vista con `seededRandom(7)` y la decoración al azar en `GroundView`. Al moverlo al nivel, el generador reproduce exactamente los mismos tipos de árbol (test con valores dorados); la **decoración sí cambia de sitio una vez**, porque se deja de calcular con el tamaño de los sprites y pasa a calcularse con reglas del nivel.
+
 ---
 
 ## 3. Fases
@@ -163,7 +169,8 @@ Las fases 7 y 8 son independientes entre sí y pueden ir en paralelo tras la 6.
 | `domain/entities/Obstacle.ts` | `domain/entities/geometry/Obstacle.kt` | 2 |
 | `domain/entities/Inventory.ts` | `domain/entities/player/Inventory.kt` + `ToolKind.kt` | 2 |
 | `domain/entities/Player.ts` | `domain/entities/player/Player.kt`, `Activity.kt`, `Intent.kt` | 2 |
-| `domain/entities/Tree.ts` | `domain/entities/tree/Tree.kt` | 2 |
+| `domain/entities/Tree.ts` | `domain/entities/tree/Tree.kt` + `TreeKind.kt` (nuevo: tipo de árbol) | 2 |
+| — (decoración elegida al azar en `GroundView.ts`) | `domain/entities/decoration/Decoration.kt` + `DecorationKind.kt` | 2 |
 | `domain/entities/GroundItem.ts` | `domain/entities/item/GroundItem.kt` | 2 |
 | `domain/entities/Blueprint.ts`, `Building.ts` | `domain/entities/building/Blueprint.kt`, `BlueprintId.kt`, `Building.kt` | 2 |
 | `domain/events.ts` | `domain/entities/game/GameEvent.kt` | 2 |
@@ -180,6 +187,7 @@ Las fases 7 y 8 son independientes entre sí y pueden ir en paralelo tras la 6.
 | `shared/seededRandom.ts` | `util/SeededRandom.kt` | 3 |
 | `presentation/screens/forest/*ViewModel.ts` (3) | `presentation/forest/ForestContract.kt`, `ForestViewModel.kt` | 5 |
 | `presentation/common/labels.ts` | `presentation/forest/ForestLabels.kt` | 5 |
+| listas `ForestAtlas.TREES` / `DECOR` de `assets.ts` | `presentation/forest/SpriteNames.kt` (tipo → nombre de sprite, para las tres apps) | 5 |
 | `main.ts` (montaje) | `di/GameContainer.kt` + `jsMain/.../web/ForestWebController.kt` | 4, 6 |
 
 Lo que **se queda en TypeScript** (web): `presentation/screens/forest/ForestScene.ts`, `hud/Hud.ts` + `hud.css`, `player/PlayerView.ts`, `world/*View.ts`, `screens/preload/PreloadScene.ts`, `common/assets.ts`, `common/depth.ts`, `main.ts`.
@@ -190,7 +198,7 @@ Lo que **se queda en TypeScript** (web): `presentation/screens/forest/ForestScen
 
 | Riesgo | Mitigación |
 |---|---|
-| El nivel generado en Kotlin difiere del de TypeScript (y la web cambia de aspecto) | Test con valores dorados extraídos del TS actual (fase 3): secuencia de `SeededRandom(42)` y árboles 1–3 y 70 del bosque, bit a bit |
+| El nivel generado en Kotlin difiere del de TypeScript (y la web cambia de aspecto) | Test con valores dorados extraídos del TS actual (fase 3): secuencia de `SeededRandom(42)`, árboles 1–3 y 70 del bosque bit a bit, y tipo de cada uno (`SeededRandom(7)`, mismo orden que la vista web) |
 | Comportamiento del juego cambia al portar | Se portan primero los 64 tests existentes (fases 2–5) como especificación; la fase 6 repite el e2e del navegador y compara con la partida de referencia (16 de madera tras 5 árboles, casa construida, 3/3 misiones) |
 | `lifecycle-viewmodel` de JetBrains sin target JS en la versión elegida | Fase 1, Task 2 lo verifica compilando `jsMain`; si falla, `ForestViewModel` pasa a ser clase propia con `CoroutineScope` interno y Android la envuelve en un `ViewModel` (alternativa descrita en `05-shared-presentation.md`) |
 | Interop JS incómoda (`List`, `Long`, `enum`) | Solo `ForestWebController` está exportado, con tipos planos; nada de `Long` en el modelo (tiempos en `Double`) |

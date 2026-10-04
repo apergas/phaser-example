@@ -19,7 +19,8 @@ shared/src/commonMain/kotlin/com/apergas/rpg/domain/
   entities/
     geometry/   Position.kt, Obstacle.kt
     player/     ToolKind.kt, Inventory.kt, Intent.kt, Activity.kt, Player.kt
-    tree/       Tree.kt
+    tree/       TreeKind.kt, Tree.kt
+    decoration/ DecorationKind.kt, Decoration.kt
     item/       GroundItem.kt
     building/   BlueprintId.kt, Blueprint.kt, Building.kt
     game/       GameEvent.kt, ChopResult.kt, ConstructionResult.kt, PlayerStatus.kt,
@@ -492,20 +493,22 @@ git commit -m "[PROJECT-X]: Add immutable player, inventory and activity to the 
 
 ---
 
-### Task 3: Árbol, objeto en el suelo y edificios
+### Task 3: Árbol (con su tipo), decoración, objeto en el suelo y edificios
 
 **Files:**
-- Create: `domain/entities/tree/Tree.kt`, `domain/entities/item/GroundItem.kt`, `domain/entities/building/BlueprintId.kt`, `Blueprint.kt`, `Building.kt`
+- Create: `domain/entities/tree/TreeKind.kt`, `Tree.kt`, `domain/entities/decoration/DecorationKind.kt`, `Decoration.kt`, `domain/entities/item/GroundItem.kt`, `domain/entities/building/BlueprintId.kt`, `Blueprint.kt`, `Building.kt`
 - Test: `domain/entities/tree/TreeMock.kt`, `TreeTests.kt`, `domain/entities/item/GroundItemMock.kt`, `domain/entities/building/BuildingTests.kt`
 
 **Interfaces:**
 - Consumes: `Position`, `Obstacle`, `ToolKind`.
 - Produces:
-  - `data class Tree(id, position, trunkRadius, woodYield: Int, hitsToFell: Int, hitsTaken: Int = 0)` con `footprint: Obstacle`, `hitsRemaining`, `isFelled`, `hit(): Tree`
+  - `enum class TreeKind { Slim, Round, Wide, Broad, Twisted, Branches, Leaning, Lumpy, Pine, Dome, Oak, Dense, Old, Big }` (este orden es el de la lista de sprites de la web y lo usa el generador: no reordenar)
+  - `data class Tree(id, kind: TreeKind, position, trunkRadius, woodYield: Int, hitsToFell: Int, hitsTaken: Int = 0)` con `footprint: Obstacle`, `hitsRemaining`, `isFelled`, `hit(): Tree`
+  - `enum class DecorationKind { TallGrass, Leaves, Mushrooms, Rock }`; `data class Decoration(id, kind: DecorationKind, position)` — sin colisión
   - `data class GroundItem(id, kind: ToolKind, position)`
   - `enum class BlueprintId { House }`; `data class Blueprint(id, woodCost, hitsToBuild, footprintRadius)`; `object Blueprints { val house; val all; fun of(BlueprintId) }`
   - `data class Building(id, blueprint, position, hitsDone = 0)` con `footprint`, `progress: Double`, `isComplete`, `hammer(): Building`
-  - Test: `val Tree.Companion.mock` (`tree-1` en `(200, 100)`, tronco 10, madera 6, 5 golpes); `val GroundItem.Companion.mock` (`axe-1`, hacha, `(150, 100)`)
+  - Test: `val Tree.Companion.mock` (`tree-1`, roble, en `(200, 100)`, tronco 10, madera 6, 5 golpes); `val GroundItem.Companion.mock` (`axe-1`, hacha, `(150, 100)`)
 
 - [ ] **Step 1: Escribir mocks y tests**
 
@@ -516,7 +519,7 @@ package com.apergas.rpg.domain.entities.tree
 import com.apergas.rpg.domain.entities.geometry.Position
 
 val Tree.Companion.mock: Tree
-    get() = Tree(id = "tree-1", position = Position(200.0, 100.0), trunkRadius = 10.0, woodYield = 6, hitsToFell = 5)
+    get() = Tree(id = "tree-1", kind = TreeKind.Oak, position = Position(200.0, 100.0), trunkRadius = 10.0, woodYield = 6, hitsToFell = 5)
 ```
 
 `GroundItemMock.kt`:
@@ -602,6 +605,34 @@ Expected: FAIL — `Unresolved reference: Tree`.
 
 - [ ] **Step 3: Implementar**
 
+`TreeKind.kt`:
+```kotlin
+package com.apergas.rpg.domain.entities.tree
+
+/**
+ * The species/shape of a tree, decided by the level. Apps map it to their sprite; gameplay may use it
+ * later (e.g. oaks yielding more wood). Order matters: the level generator indexes this list.
+ */
+enum class TreeKind { Slim, Round, Wide, Broad, Twisted, Branches, Leaning, Lumpy, Pine, Dome, Oak, Dense, Old, Big }
+```
+
+`DecorationKind.kt` y `Decoration.kt`:
+```kotlin
+package com.apergas.rpg.domain.entities.decoration
+
+enum class DecorationKind { TallGrass, Leaves, Mushrooms, Rock }
+```
+```kotlin
+package com.apergas.rpg.domain.entities.decoration
+
+import com.apergas.rpg.domain.entities.geometry.Position
+
+/** Ground decoration placed by the level. Purely visual: it never blocks movement. */
+data class Decoration(val id: String, val kind: DecorationKind, val position: Position) {
+    companion object
+}
+```
+
 `Tree.kt`:
 ```kotlin
 package com.apergas.rpg.domain.entities.tree
@@ -612,6 +643,7 @@ import com.apergas.rpg.domain.entities.geometry.Position
 /** A choppable tree. Its trunk blocks movement until it is felled. */
 data class Tree(
     val id: String,
+    val kind: TreeKind,
     val position: Position,
     val trunkRadius: Double,
     /** Wood added to the inventory when the tree is felled. */
@@ -809,6 +841,12 @@ sealed class AppError(message: String, cause: Throwable? = null) : Exception(mes
         class UnknownItemKind(val itemId: String, val kind: String) :
             LevelError("Level item \"$itemId\" has an unknown kind: \"$kind\"")
 
+        class UnknownTreeKind(val treeId: String, val kind: String) :
+            LevelError("Level tree \"$treeId\" has an unknown kind: \"$kind\"")
+
+        class UnknownDecorationKind(val decorationId: String, val kind: String) :
+            LevelError("Level decoration \"$decorationId\" has an unknown kind: \"$kind\"")
+
         class InvalidLevel(reason: String) : LevelError("Invalid level: $reason")
     }
 }
@@ -846,8 +884,8 @@ git commit -m "[PROJECT-X]: Add rules, game events, results and errors to the sh
 **Interfaces:**
 - Consumes: todas las entidades de Tasks 1–4.
 - Produces (`World`, API pública):
-  - `class World(width: Double, height: Double, player: Player, trees: List<Tree>, items: List<GroundItem> = emptyList())`
-  - `val width; val height; val player: Player; val trees: List<Tree>; val items: List<GroundItem>; val buildings: List<Building>; val obstacles: List<Obstacle>`
+  - `class World(width: Double, height: Double, player: Player, trees: List<Tree>, items: List<GroundItem> = emptyList(), decorations: List<Decoration> = emptyList())`
+  - `val width; val height; val player: Player; val trees: List<Tree>; val items: List<GroundItem>; val decorations: List<Decoration>; val buildings: List<Building>; val obstacles: List<Obstacle>` (las decoraciones no entran en `obstacles`)
   - `val workProgress: Double` (0..1); `val playerTarget: Position?`
   - `fun movePlayerTo(destination: Position)`, `fun orderChop(treeId: String): ChopResult`, `fun orderConstruction(blueprint: Blueprint, position: Position): ConstructionResult`, `fun canPlace(blueprint: Blueprint, position: Position): Boolean`, `fun advance(deltaMs: Double): List<GameEvent>`
   - `internal fun updatePlayer(transform: (Player) -> Player)` — solo para preparar estados en tests (los tests de `commonTest` ven `internal`)
@@ -1254,6 +1292,7 @@ Expected: FAIL — `Unresolved reference: World`.
 package com.apergas.rpg.domain.world
 
 import com.apergas.rpg.domain.entities.building.Building
+import com.apergas.rpg.domain.entities.decoration.Decoration
 import com.apergas.rpg.domain.entities.geometry.Obstacle
 import com.apergas.rpg.domain.entities.geometry.Position
 import com.apergas.rpg.domain.entities.item.GroundItem
@@ -1269,6 +1308,8 @@ internal class WorldState(
     var player: Player,
     trees: List<Tree>,
     items: List<GroundItem>,
+    /** Static and non-solid: no system changes it, it never takes part in collisions. */
+    val decorations: List<Decoration>,
 ) {
     init {
         require(width > 0 && height > 0) { "World size must be positive" }
@@ -1531,6 +1572,7 @@ package com.apergas.rpg.domain.world
 
 import com.apergas.rpg.domain.entities.building.Blueprint
 import com.apergas.rpg.domain.entities.building.Building
+import com.apergas.rpg.domain.entities.decoration.Decoration
 import com.apergas.rpg.domain.entities.game.ChopResult
 import com.apergas.rpg.domain.entities.game.ConstructionResult
 import com.apergas.rpg.domain.entities.game.GameEvent
@@ -1547,8 +1589,15 @@ import com.apergas.rpg.domain.entities.tree.Tree
  * rule to a system (navigation, woodcutting, construction, pick-up). Everything it hands out is an
  * immutable entity snapshot.
  */
-class World(width: Double, height: Double, player: Player, trees: List<Tree>, items: List<GroundItem> = emptyList()) {
-    private val state = WorldState(width, height, player, trees, items)
+class World(
+    width: Double,
+    height: Double,
+    player: Player,
+    trees: List<Tree>,
+    items: List<GroundItem> = emptyList(),
+    decorations: List<Decoration> = emptyList(),
+) {
+    private val state = WorldState(width, height, player, trees, items, decorations)
     private val navigation = Navigation(state)
 
     val width: Double get() = state.width
@@ -1556,6 +1605,7 @@ class World(width: Double, height: Double, player: Player, trees: List<Tree>, it
     val player: Player get() = state.player
     val trees: List<Tree> get() = state.trees.values.toList()
     val items: List<GroundItem> get() = state.items.values.toList()
+    val decorations: List<Decoration> get() = state.decorations
     val buildings: List<Building> get() = state.buildings.values.toList()
     val obstacles: List<Obstacle> get() = state.obstacles()
 
@@ -1872,7 +1922,7 @@ git commit -m "[PROJECT-X]: Add quests to the shared domain"
 - Produces:
   - `data class GameSession(val world: World, val quests: QuestLog)`
   - `enum class PlayerActivity { Idle, Walking, Chopping, Constructing }`; `data class PlayerStatus(position, activity: PlayerActivity, target: Position?, swingProgress: Double, wood: Int, hasAxe: Boolean)`
-  - `data class WorldSnapshot(width, height, trees: List<Tree>, items: List<GroundItem>, buildings: List<Building>)`
+  - `data class WorldSnapshot(width, height, trees: List<Tree>, items: List<GroundItem>, decorations: List<Decoration>, buildings: List<Building>)`
   - `data class BuildOption(blueprint: BlueprintId, woodCost: Int, isAffordable: Boolean)`
   - `interface LevelRepository { fun load(): World }`
   - `interface GameSessionRepository { fun current(): GameSession; fun save(session: GameSession) }`
@@ -1915,6 +1965,7 @@ data class PlayerStatus(
 package com.apergas.rpg.domain.entities.game
 
 import com.apergas.rpg.domain.entities.building.Building
+import com.apergas.rpg.domain.entities.decoration.Decoration
 import com.apergas.rpg.domain.entities.item.GroundItem
 import com.apergas.rpg.domain.entities.tree.Tree
 
@@ -1924,6 +1975,7 @@ data class WorldSnapshot(
     val height: Double,
     val trees: List<Tree>,
     val items: List<GroundItem>,
+    val decorations: List<Decoration>,
     val buildings: List<Building>,
 )
 ```

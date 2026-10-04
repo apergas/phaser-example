@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use boost:subagent-driven-development (recommended) or boost:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Portar la generación del nivel y la sesión en memoria a `shared/.../data/` siguiendo la convención de datos de Android (datasource interfaz + impl, DTO todo-nullable, mappers `internal` junto al repositorio, `ErrorHandler`), garantizando que el bosque generado es **idéntico** al de TypeScript.
+**Goal:** Portar la generación del nivel y la sesión en memoria a `shared/.../data/` siguiendo la convención de datos de Android (datasource interfaz + impl, DTO todo-nullable, mappers `internal` junto al repositorio, `ErrorHandler`), garantizando que el bosque generado es **idéntico** al de TypeScript, y que el nivel defina también el tipo de cada árbol y la decoración del suelo (decisión D10 del README).
 
 **Architecture:** `LevelLocalDataSourceImpl` (generador procedimental con semilla) devuelve `LevelDto`; `LevelMappers.kt` (`LevelDto.toDomain()`) valida y construye el `World`; `LevelRepositoryImpl` envuelve la llamada y traduce errores con `ErrorHandler`. La sesión vive en `GameSessionLocalDataSourceImpl` (memoria) detrás de `GameSessionRepositoryImpl`.
 
@@ -47,6 +47,8 @@ shared/src/commonTest/kotlin/com/apergas/rpg/
 | `tree-70` | `x = 1487.0892029069364`, `y = 676.5116280969232`, `wood = 6` |
 | Madera total | `388` |
 | Hacha | `id = "axe"`, `kind = "axe"`, `(856, 608)` |
+| Tipo de árbol (hoy lo elige la vista web con `seededRandom(7)` sobre los árboles en orden) | `tree-1` broad, `tree-2` old, `tree-3` pine, `tree-70` dense |
+| Recuento por tipo | broad 3, old 6, pine 8, slim 4, dense 4, branches 7, big 4, lumpy 4, leaning 8, oak 6, round 5, wide 6, twisted 3, dome 2 |
 | Inicio | `(800, 600)` |
 
 ---
@@ -132,7 +134,7 @@ git commit -m "[PROJECT-X]: Add seeded random generator matching the web impleme
 
 ---
 
-### Task 2: `LevelDto` y datasource local del nivel (generador procedimental)
+### Task 2: `LevelDto` y datasource local del nivel (generador procedimental, con tipos de árbol y decoración)
 
 **Files:**
 - Create: `data/datasources/local/level/dto/LevelDto.kt`, `LevelLocalDataSource.kt`, `LevelLocalDataSourceImpl.kt`
@@ -141,7 +143,7 @@ git commit -m "[PROJECT-X]: Add seeded random generator matching the web impleme
 **Interfaces:**
 - Consumes: `SeededRandom` (Task 1).
 - Produces:
-  - `@Serializable data class LevelDto(width: Double?, height: Double?, playerStart: PointDto?, trees: List<TreeDto>?, items: List<ItemDto>?)`, `PointDto(x: Double?, y: Double?)`, `TreeDto(id: String?, x: Double?, y: Double?, wood: Int?)`, `ItemDto(id: String?, kind: String?, x: Double?, y: Double?)`, todos con `companion object`
+  - `@Serializable data class LevelDto(width: Double?, height: Double?, playerStart: PointDto?, trees: List<TreeDto>?, items: List<ItemDto>?, decorations: List<DecorationDto>?)`, `PointDto(x: Double?, y: Double?)`, `TreeDto(id: String?, kind: String?, x: Double?, y: Double?, wood: Int?)`, `ItemDto(id: String?, kind: String?, x: Double?, y: Double?)`, `DecorationDto(id: String?, kind: String?, x: Double?, y: Double?)`, todos con `companion object`. Los `kind` van en minúsculas y con guiones (`"broad"`, `"tall-grass"`), como vendrían de un JSON o de Tiled
   - `interface LevelLocalDataSource { fun fetch(): LevelDto }`
   - `class LevelLocalDataSourceImpl : LevelLocalDataSource`
 
@@ -153,6 +155,7 @@ package com.apergas.rpg.data.datasources.local.level
 import com.apergas.rpg.data.datasources.local.level.dto.ItemDto
 import com.apergas.rpg.data.datasources.local.level.dto.PointDto
 import com.apergas.rpg.data.datasources.local.level.dto.TreeDto
+import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -177,9 +180,9 @@ class LevelLocalDataSourceImplTests {
     fun testWhenFetchingThenForestMatchesTheWebVersionExactly() {
         // given
         val expectedFirstTrees = listOf(
-            TreeDto(id = "tree-1", x = 433.47085868008435, y = 155.17504904419184, wood = 6),
-            TreeDto(id = "tree-2", x = 389.38031366094947, y = 465.71301287971437, wood = 5),
-            TreeDto(id = "tree-3", x = 721.9763031136245, y = 187.9368040524423, wood = 6),
+            TreeDto(id = "tree-1", kind = "broad", x = 433.47085868008435, y = 155.17504904419184, wood = 6),
+            TreeDto(id = "tree-2", kind = "old", x = 389.38031366094947, y = 465.71301287971437, wood = 5),
+            TreeDto(id = "tree-3", kind = "pine", x = 721.9763031136245, y = 187.9368040524423, wood = 6),
         )
 
         // when
@@ -192,7 +195,12 @@ class LevelLocalDataSourceImplTests {
         assertEquals(PointDto(800.0, 600.0), level.playerStart)
         assertEquals(70, trees.size)
         assertEquals(expectedFirstTrees, trees.take(3))
-        assertEquals(TreeDto(id = "tree-70", x = 1487.0892029069364, y = 676.5116280969232, wood = 6), trees.last())
+        assertEquals(TreeDto(id = "tree-70", kind = "dense", x = 1487.0892029069364, y = 676.5116280969232, wood = 6), trees.last())
+        assertEquals(
+            mapOf("broad" to 3, "old" to 6, "pine" to 8, "slim" to 4, "dense" to 4, "branches" to 7, "big" to 4,
+                "lumpy" to 4, "leaning" to 8, "oak" to 6, "round" to 5, "wide" to 6, "twisted" to 3, "dome" to 2),
+            trees.groupingBy { it.kind }.eachCount(),
+        )
         assertEquals(388, trees.sumOf { it.wood ?: 0 })
         assertEquals(listOf(ItemDto(id = "axe", kind = "axe", x = 856.0, y = 608.0)), level.items)
     }
@@ -207,6 +215,26 @@ class LevelLocalDataSourceImplTests {
 
         // then
         assertTrue(closest >= 200.0)
+    }
+
+    @Test
+    fun testWhenFetchingThenDecorationsAreVariedAndNeverUnderATreeOrOnTheSpawn() {
+        // given
+        val level = sut.fetch()
+        val trees = level.trees.orEmpty()
+
+        // when
+        val decorations = level.decorations.orEmpty()
+
+        // then
+        assertTrue(decorations.size >= 40)
+        assertEquals(setOf("tall-grass", "leaves", "mushrooms", "rock"), decorations.map { it.kind }.toSet())
+        for (decoration in decorations) {
+            val x = decoration.x ?: 0.0
+            val y = decoration.y ?: 0.0
+            assertTrue(trees.none { abs(x - (it.x ?: 0.0)) < 64 && y > (it.y ?: 0.0) - 170 && y < (it.y ?: 0.0) + 20 })
+            assertTrue(abs(x - 800.0) >= 48 || y < 504.0 || y > 648.0)
+        }
     }
 }
 ```
@@ -232,6 +260,7 @@ data class LevelDto(
     val playerStart: PointDto? = null,
     val trees: List<TreeDto>? = null,
     val items: List<ItemDto>? = null,
+    val decorations: List<DecorationDto>? = null,
 ) {
     companion object
 }
@@ -242,12 +271,23 @@ data class PointDto(val x: Double? = null, val y: Double? = null) {
 }
 
 @Serializable
-data class TreeDto(val id: String? = null, val x: Double? = null, val y: Double? = null, val wood: Int? = null) {
+data class TreeDto(
+    val id: String? = null,
+    val kind: String? = null,
+    val x: Double? = null,
+    val y: Double? = null,
+    val wood: Int? = null,
+) {
     companion object
 }
 
 @Serializable
 data class ItemDto(val id: String? = null, val kind: String? = null, val x: Double? = null, val y: Double? = null) {
+    companion object
+}
+
+@Serializable
+data class DecorationDto(val id: String? = null, val kind: String? = null, val x: Double? = null, val y: Double? = null) {
     companion object
 }
 ```
@@ -267,11 +307,13 @@ interface LevelLocalDataSource {
 ```kotlin
 package com.apergas.rpg.data.datasources.local.level
 
+import com.apergas.rpg.data.datasources.local.level.dto.DecorationDto
 import com.apergas.rpg.data.datasources.local.level.dto.ItemDto
 import com.apergas.rpg.data.datasources.local.level.dto.LevelDto
 import com.apergas.rpg.data.datasources.local.level.dto.PointDto
 import com.apergas.rpg.data.datasources.local.level.dto.TreeDto
 import com.apergas.rpg.util.SeededRandom
+import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.hypot
 
@@ -284,24 +326,49 @@ private const val SPAWN_CLEARANCE = 200.0
 private const val BORDER_MARGIN = 60.0
 private const val MIN_WOOD = 5
 private const val MAX_WOOD = 6
-private const val SEED = 42L
+private const val TREE_SEED = 42L
+/** Same seed and order the web view used to pick tree sprites, so the forest keeps its look. */
+private const val TREE_KIND_SEED = 7L
+/** Kinds in the order of TreeKind (domain); the generator indexes this list. */
+private val TREE_KINDS = listOf(
+    "slim", "round", "wide", "broad", "twisted", "branches", "leaning",
+    "lumpy", "pine", "dome", "oak", "dense", "old", "big",
+)
+private const val DECORATION_SEED = 1337L
+private const val DECORATION_ATTEMPTS = 107
+private const val DECORATION_SPACING = 32.0
+/** Repeated names weight the pick: mostly greenery, the odd rock or mushroom. */
+private val DECORATION_KINDS = listOf("tall-grass", "tall-grass", "tall-grass", "leaves", "leaves", "mushrooms", "rock")
+/** Area a tree covers on screen around its trunk base (canopy above, roots below), kept free of decoration. */
+private const val TREE_HALF_WIDTH = 64.0
+private const val TREE_HEIGHT = 170.0
+private const val TREE_ROOTS = 20.0
+/** Area around the spawn point kept free of decoration (same box the web used). */
+private const val SPAWN_HALF_WIDTH = 48.0
+private const val SPAWN_ABOVE = 96.0
+private const val SPAWN_BELOW = 48.0
 private val PLAYER_START = PointDto(WIDTH / 2, HEIGHT / 2)
 /** Close to the spawn point, so it is the first thing the player finds. */
 private val AXE = ItemDto(id = "axe", kind = "axe", x = WIDTH / 2 + 56, y = HEIGHT / 2 + 8)
 
-/** A forest generated from a fixed seed: the same layout on every run and on every platform. */
+/** A forest generated from fixed seeds: the same layout on every run and on every platform. */
 class LevelLocalDataSourceImpl : LevelLocalDataSource {
-    override fun fetch(): LevelDto = LevelDto(
-        width = WIDTH,
-        height = HEIGHT,
-        playerStart = PLAYER_START,
-        trees = scatterTrees(),
-        items = listOf(AXE),
-    )
+    override fun fetch(): LevelDto {
+        val trees = scatterTrees()
+        return LevelDto(
+            width = WIDTH,
+            height = HEIGHT,
+            playerStart = PLAYER_START,
+            trees = trees,
+            items = listOf(AXE),
+            decorations = scatterDecorations(trees),
+        )
+    }
 
     /** Random but reproducible spots, trees kept apart from each other and away from the spawn. */
     private fun scatterTrees(): List<TreeDto> {
-        val random = SeededRandom(SEED)
+        val random = SeededRandom(TREE_SEED)
+        val kinds = SeededRandom(TREE_KIND_SEED)
         val trees = mutableListOf<TreeDto>()
         val start = PLAYER_START
 
@@ -314,10 +381,38 @@ class LevelLocalDataSourceImpl : LevelLocalDataSource {
             val apart = trees.all { hypot(x - it.x!!, y - it.y!!) >= MIN_TREE_SPACING }
             if (clearOfSpawn && apart) {
                 val wood = MIN_WOOD + floor(random.next() * (MAX_WOOD - MIN_WOOD + 1)).toInt()
-                trees += TreeDto(id = "tree-${trees.size + 1}", x = x, y = y, wood = wood)
+                val kind = TREE_KINDS[floor(kinds.next() * TREE_KINDS.size).toInt()]
+                trees += TreeDto(id = "tree-${trees.size + 1}", kind = kind, x = x, y = y, wood = wood)
             }
         }
         return trees
+    }
+
+    /** Non-solid ground decoration, kept off the trees, the spawn point, the axe and each other. */
+    private fun scatterDecorations(trees: List<TreeDto>): List<DecorationDto> {
+        val random = SeededRandom(DECORATION_SEED)
+        val decorations = mutableListOf<DecorationDto>()
+
+        fun isFree(x: Double, y: Double): Boolean {
+            val underTree = trees.any { abs(x - it.x!!) < TREE_HALF_WIDTH && y > it.y!! - TREE_HEIGHT && y < it.y!! + TREE_ROOTS }
+            val onSpawn = abs(x - PLAYER_START.x!!) < SPAWN_HALF_WIDTH && y > PLAYER_START.y!! - SPAWN_ABOVE && y < PLAYER_START.y!! + SPAWN_BELOW
+            val onAxe = hypot(x - AXE.x!!, y - AXE.y!!) < DECORATION_SPACING
+            val crowded = decorations.any { hypot(x - it.x!!, y - it.y!!) < DECORATION_SPACING }
+            return !underTree && !onSpawn && !onAxe && !crowded
+        }
+
+        repeat(DECORATION_ATTEMPTS) {
+            val kind = DECORATION_KINDS[floor(random.next() * DECORATION_KINDS.size).toInt()]
+            for (placement in 0 until 20) {
+                val x = random.next() * WIDTH
+                val y = random.next() * HEIGHT
+                if (isFree(x, y)) {
+                    decorations += DecorationDto(id = "decoration-${decorations.size + 1}", kind = kind, x = x, y = y)
+                    break
+                }
+            }
+        }
+        return decorations
     }
 }
 ```
@@ -354,6 +449,7 @@ git commit -m "[PROJECT-X]: Add procedural forest level datasource identical to 
 ```kotlin
 package com.apergas.rpg.data.datasources.local.level
 
+import com.apergas.rpg.data.datasources.local.level.dto.DecorationDto
 import com.apergas.rpg.data.datasources.local.level.dto.ItemDto
 import com.apergas.rpg.data.datasources.local.level.dto.LevelDto
 import com.apergas.rpg.data.datasources.local.level.dto.PointDto
@@ -364,8 +460,9 @@ val LevelDto.Companion.mock: LevelDto
         width = 400.0,
         height = 300.0,
         playerStart = PointDto(200.0, 150.0),
-        trees = listOf(TreeDto(id = "tree-a", x = 50.0, y = 60.0, wood = 5)),
+        trees = listOf(TreeDto(id = "tree-a", kind = "oak", x = 50.0, y = 60.0, wood = 5)),
         items = listOf(ItemDto(id = "axe", kind = "axe", x = 220.0, y = 150.0)),
+        decorations = listOf(DecorationDto(id = "decoration-a", kind = "tall-grass", x = 300.0, y = 200.0)),
     )
 
 val LevelDto.Companion.mockWithUnknownItem: LevelDto
@@ -373,6 +470,9 @@ val LevelDto.Companion.mockWithUnknownItem: LevelDto
 
 val LevelDto.Companion.mockWithoutSize: LevelDto
     get() = mock.copy(width = null)
+
+val LevelDto.Companion.mockWithUnknownTreeKind: LevelDto
+    get() = mock.copy(trees = listOf(TreeDto(id = "tree-x", kind = "palm", x = 0.0, y = 0.0, wood = 5)))
 ```
 
 `LevelLocalDataSourceMock.kt`:
@@ -401,11 +501,14 @@ package com.apergas.rpg.data.repositories.level
 
 import com.apergas.rpg.data.datasources.local.level.LevelLocalDataSourceMock
 import com.apergas.rpg.data.datasources.local.level.mockWithUnknownItem
+import com.apergas.rpg.data.datasources.local.level.mockWithUnknownTreeKind
 import com.apergas.rpg.data.datasources.local.level.mockWithoutSize
 import com.apergas.rpg.data.datasources.local.level.dto.LevelDto
 import com.apergas.rpg.data.errors.DataErrorHandlerImpl
+import com.apergas.rpg.domain.entities.decoration.DecorationKind
 import com.apergas.rpg.domain.entities.geometry.Position
 import com.apergas.rpg.domain.entities.player.ToolKind
+import com.apergas.rpg.domain.entities.tree.TreeKind
 import com.apergas.rpg.domain.errors.AppError
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -441,6 +544,9 @@ class LevelRepositoryImplTests {
         assertEquals(12.0, world.trees.single().trunkRadius)
         assertEquals(5, world.trees.single().hitsToFell)
         assertEquals(ToolKind.Axe, world.items.single().kind)
+        assertEquals(TreeKind.Oak, world.trees.single().kind)
+        assertEquals(DecorationKind.TallGrass, world.decorations.single().kind)
+        assertEquals(Position(300.0, 200.0), world.decorations.single().position)
     }
 
     @Test
@@ -468,6 +574,19 @@ class LevelRepositoryImplTests {
         // then
         assertEquals("mystery", error.itemId)
         assertEquals("laser", error.kind)
+    }
+
+    @Test
+    fun testWhenLevelHasUnknownTreeKindThenThrowsLevelError() {
+        // given
+        localDataSource.levelDto = LevelDto.mockWithUnknownTreeKind
+
+        // when
+        val error = assertFailsWith<AppError.LevelError.UnknownTreeKind> { sut.load() }
+
+        // then
+        assertEquals("tree-x", error.treeId)
+        assertEquals("palm", error.kind)
     }
 
     @Test
@@ -515,15 +634,19 @@ class DataErrorHandlerImpl : ErrorHandler {
 ```kotlin
 package com.apergas.rpg.data.repositories.level
 
+import com.apergas.rpg.data.datasources.local.level.dto.DecorationDto
 import com.apergas.rpg.data.datasources.local.level.dto.ItemDto
 import com.apergas.rpg.data.datasources.local.level.dto.LevelDto
 import com.apergas.rpg.data.datasources.local.level.dto.PointDto
 import com.apergas.rpg.data.datasources.local.level.dto.TreeDto
+import com.apergas.rpg.domain.entities.decoration.Decoration
+import com.apergas.rpg.domain.entities.decoration.DecorationKind
 import com.apergas.rpg.domain.entities.geometry.Position
 import com.apergas.rpg.domain.entities.item.GroundItem
 import com.apergas.rpg.domain.entities.player.Player
 import com.apergas.rpg.domain.entities.player.ToolKind
 import com.apergas.rpg.domain.entities.tree.Tree
+import com.apergas.rpg.domain.entities.tree.TreeKind
 import com.apergas.rpg.domain.errors.AppError
 import com.apergas.rpg.domain.rules.Rules
 import com.apergas.rpg.domain.world.World
@@ -538,17 +661,36 @@ internal fun LevelDto.toDomain(): World = World(
     ),
     trees = trees.orEmpty().mapIndexed { index, tree -> tree.toDomain(index) },
     items = items.orEmpty().map { it.toDomain() },
+    decorations = decorations.orEmpty().mapIndexed { index, decoration -> decoration.toDomain(index) },
 )
+
+/** "tall-grass" -> TallGrass: level data uses lower-case kebab names. */
+private fun <T : Enum<T>> List<T>.byKebabName(name: String?): T? =
+    firstOrNull { entry -> entry.name.replace(Regex("(?<!^)([A-Z])"), "-$1").lowercase() == name }
 
 internal fun PointDto.toDomain(): Position = Position(x ?: 0.0, y ?: 0.0)
 
-internal fun TreeDto.toDomain(index: Int): Tree = Tree(
-    id = id ?: "tree-${index + 1}",
-    position = Position(x ?: 0.0, y ?: 0.0),
-    trunkRadius = Rules.TREE_TRUNK_RADIUS,
-    woodYield = wood ?: 0,
-    hitsToFell = Rules.HITS_TO_FELL_TREE,
-)
+internal fun TreeDto.toDomain(index: Int): Tree {
+    val treeId = id ?: "tree-${index + 1}"
+    return Tree(
+        id = treeId,
+        kind = TreeKind.entries.byKebabName(kind) ?: throw AppError.LevelError.UnknownTreeKind(treeId, kind.orEmpty()),
+        position = Position(x ?: 0.0, y ?: 0.0),
+        trunkRadius = Rules.TREE_TRUNK_RADIUS,
+        woodYield = wood ?: 0,
+        hitsToFell = Rules.HITS_TO_FELL_TREE,
+    )
+}
+
+internal fun DecorationDto.toDomain(index: Int): Decoration {
+    val decorationId = id ?: "decoration-${index + 1}"
+    return Decoration(
+        id = decorationId,
+        kind = DecorationKind.entries.byKebabName(kind)
+            ?: throw AppError.LevelError.UnknownDecorationKind(decorationId, kind.orEmpty()),
+        position = Position(x ?: 0.0, y ?: 0.0),
+    )
+}
 
 internal fun ItemDto.toDomain(): GroundItem {
     val itemId = id.orEmpty()

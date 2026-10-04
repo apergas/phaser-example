@@ -23,12 +23,12 @@ shared/src/jsMain/kotlin/com/apergas/rpg/web/
 rpg/
   package.json                dependencia "rpg-shared": "file:../shared/build/dist/js/productionLibrary"
   src/main.ts                 monta ForestWebController + Hud + escenas
-  src/presentation/common/seededRandom.ts        (movido desde src/shared/)
   src/presentation/screens/forest/ForestScene.ts (habla con el controller)
   src/presentation/screens/forest/hud/Hud.ts     (render(WebHud) + showMessage)
   src/presentation/screens/forest/player/PlayerView.ts (render(WebPlayer))
-  src/presentation/screens/forest/world/*.ts     (tipos WebPoint)
-  BORRADOS: src/domain/, src/data/, src/shared/, src/presentation/common/labels.ts,
+  src/presentation/screens/forest/world/*.ts     (tipos WebPoint; GroundView pinta la decoración del nivel)
+  src/presentation/common/assets.ts              (sin las listas TREES/DECOR: los nombres vienen del nivel)
+  BORRADOS: src/domain/, src/data/, src/shared/ (incluido seededRandom.ts), src/presentation/common/labels.ts,
             src/presentation/screens/forest/{ForestViewModel,hud/HudViewModel,player/PlayerViewModel}.ts,
             tests/domain/, tests/data/, tests/presentation/, tests/fixtures.ts
   tests/architecture.test.ts  reglas nuevas
@@ -66,8 +66,9 @@ WebHud { wood: number; hasAxe: boolean; questBadge: string; quests: WebQuestItem
 WebQuestItem { title: string; progressText: string; status: string /*done|current|pending*/ }
 WebBuildItem { blueprint: string; name: string; costText: string; missingText: string | null; isEnabled: boolean }
 WebPlacement { blueprint: string; position: WebPoint; isValid: boolean }
-WebWorld { width: number; height: number; trees: WebTree[]; items: WebItem[]; buildings: WebBuilding[] }
-WebTree { id: string; position: WebPoint }   WebItem { id: string; kind: string; position: WebPoint }
+WebWorld { width: number; height: number; trees: WebTree[]; items: WebItem[]; decorations: WebDecoration[]; buildings: WebBuilding[] }
+WebTree { id: string; frame: string /*tree-broad...*/; position: WebPoint }   WebItem { id: string; kind: string; position: WebPoint }
+WebDecoration { id: string; frame: string /*decor-tall-grass...*/; position: WebPoint }
 WebBuilding { id: string; blueprint: string; position: WebPoint; progress: number }
 WebEffect { kind: string; id: string | null; fromX: number; progress: number; text: string | null; building: WebBuilding | null }
   // kind ∈ item-picked-up | tree-hit | tree-felled | building-placed | building-hammered | building-completed | message
@@ -122,7 +123,9 @@ class ForestWebControllerTests {
 
         // then
         assertEquals(70, world.trees.size)
+        assertEquals("tree-broad", world.trees.first().frame)
         assertEquals("axe", world.items.single().kind)
+        assertTrue(world.decorations.all { it.frame.startsWith("decor-") })
     }
 }
 ```
@@ -179,10 +182,13 @@ package com.apergas.rpg.web
     val height: Double,
     val trees: Array<WebTree>,
     val items: Array<WebItem>,
+    val decorations: Array<WebDecoration>,
     val buildings: Array<WebBuilding>,
 )
 
-@JsExport class WebTree(val id: String, val position: WebPoint)
+@JsExport class WebTree(val id: String, val frame: String, val position: WebPoint)
+
+@JsExport class WebDecoration(val id: String, val frame: String, val position: WebPoint)
 
 @JsExport class WebItem(val id: String, val kind: String, val position: WebPoint)
 
@@ -211,6 +217,7 @@ import com.apergas.rpg.presentation.forest.ForestEffect
 import com.apergas.rpg.presentation.forest.ForestState
 import com.apergas.rpg.presentation.forest.PlayerPose
 import com.apergas.rpg.presentation.forest.QuestItemStatus
+import com.apergas.rpg.presentation.forest.SpriteNames
 import com.apergas.rpg.presentation.forest.WorkTool
 
 internal fun Position.toWeb() = WebPoint(x, y)
@@ -220,8 +227,9 @@ internal fun Building.toWeb() = WebBuilding(id, blueprint.id.name, position.toWe
 internal fun WorldSnapshot.toWeb() = WebWorld(
     width = width,
     height = height,
-    trees = trees.map { WebTree(it.id, it.position.toWeb()) }.toTypedArray(),
+    trees = trees.map { WebTree(it.id, SpriteNames.tree(it.kind), it.position.toWeb()) }.toTypedArray(),
     items = items.map { WebItem(it.id, it.kind.name.lowercase(), it.position.toWeb()) }.toTypedArray(),
+    decorations = decorations.map { WebDecoration(it.id, SpriteNames.decoration(it.kind), it.position.toWeb()) }.toTypedArray(),
     buildings = buildings.map { it.toWeb() }.toTypedArray(),
 )
 
@@ -380,8 +388,8 @@ Expected: el paquete enlazado con su `.d.ts`.
 cd rpg
 git rm -r -q src/domain src/data tests/domain tests/data tests/presentation tests/fixtures.ts
 git rm -q src/presentation/common/labels.ts src/presentation/screens/forest/ForestViewModel.ts \
-  src/presentation/screens/forest/hud/HudViewModel.ts src/presentation/screens/forest/player/PlayerViewModel.ts
-git mv src/shared/seededRandom.ts src/presentation/common/seededRandom.ts
+  src/presentation/screens/forest/hud/HudViewModel.ts src/presentation/screens/forest/player/PlayerViewModel.ts \
+  src/shared/seededRandom.ts
 ```
 
 - [ ] **Step 3: `main.ts`**
@@ -421,9 +429,8 @@ if (import.meta.env.DEV) {
 ```ts
 import * as Phaser from 'phaser';
 import type { ForestWebController, WebEffect } from 'rpg-shared';
-import { CAMERA_ZOOM, ForestAtlas } from '../../common/assets';
+import { CAMERA_ZOOM } from '../../common/assets';
 import { Depth } from '../../common/depth';
-import { seededRandom } from '../../common/seededRandom';
 import type { Hud } from './hud/Hud';
 import { PlayerView } from './player/PlayerView';
 import { BuildingView, addHouseImage, placeHouseImage } from './world/BuildingView';
@@ -437,9 +444,6 @@ export interface ForestSceneDependencies {
 }
 
 const CAMERA_LERP = 0.1;
-const TREE_VARIANT_SEED = 7;
-/** Area around the spawn point kept clear of decor so the player does not start on top of it. */
-const SPAWN_CLEARANCE = 48;
 const GHOST_ALPHA = 0.6;
 const GHOST_VALID_TINT = 0xb8ffb8;
 const GHOST_INVALID_TINT = 0xff8080;
@@ -471,24 +475,14 @@ export class ForestScene extends Phaser.Scene {
     const world = this.controller.world();
     const spawn = this.controller.state().player.position;
 
-    const random = seededRandom(TREE_VARIANT_SEED);
-    for (const tree of world.trees) {
-      const frame = ForestAtlas.TREES[Math.floor(random() * ForestAtlas.TREES.length)];
-      this.trees.set(tree.id, new TreeView(this, tree.position, frame));
-    }
+    // What to draw and where comes from the level (shared): no art decisions are made here.
+    for (const tree of world.trees) this.trees.set(tree.id, new TreeView(this, tree.position, tree.frame));
     for (const item of world.items) this.items.set(item.id, new ItemView(this, item.position));
     for (const building of world.buildings) {
       this.buildings.set(building.id, new BuildingView(this, building.position, building.progress));
     }
 
-    const spawnArea = new Phaser.Geom.Rectangle(
-      spawn.x - SPAWN_CLEARANCE,
-      spawn.y - SPAWN_CLEARANCE * 2,
-      SPAWN_CLEARANCE * 2,
-      SPAWN_CLEARANCE * 3,
-    );
-    const occupied = [spawnArea, ...[...this.trees.values(), ...this.items.values()].map((view) => view.bounds)];
-    this.clutter = [...new GroundView(this, world.width, world.height, occupied).decor];
+    this.clutter = [...new GroundView(this, world.width, world.height, world.decorations).decor];
     this.playerView = new PlayerView(this, spawn);
 
     this.setUpCamera(world.width, world.height);
@@ -668,7 +662,41 @@ export class PlayerView {
   5. `showMessage(text: string)` pasa de `private` a público (la escena la llama con los efectos `message`).
   6. `lastRendered: WebHud | null`; como `state()` crea objetos nuevos en cada fotograma, comparar por contenido: `const key = JSON.stringify(state); if (key === this.lastKey) return; this.lastKey = key;` sustituyendo la comparación por referencia.
 
-- [ ] **Step 7: Vistas del mundo** — en `TreeView.ts`, `ItemView.ts` y `BuildingView.ts` sustituir el import de `Point` del dominio por `import type { WebPoint } from 'rpg-shared';` y renombrar el tipo `Point` → `WebPoint` en sus firmas.
+- [ ] **Step 7: Vistas del mundo** — en `TreeView.ts`, `ItemView.ts` y `BuildingView.ts` sustituir el import de `Point` del dominio por `import type { WebPoint } from 'rpg-shared';` y renombrar el tipo `Point` → `WebPoint` en sus firmas. En `common/assets.ts`, borrar `ForestAtlas.TREES` y `ForestAtlas.DECOR` (los nombres de sprite vienen ya en el nivel). Sustituir `world/GroundView.ts` entero por:
+
+```ts
+import * as Phaser from 'phaser';
+import type { WebDecoration } from 'rpg-shared';
+import { ForestAtlas, GroundFrames, Sheets, TILE_SIZE } from '../../../common/assets';
+import { Depth } from '../../../common/depth';
+
+/** Grass tilemap covering the world, plus the level's decoration (non-solid) where the level puts it. */
+export class GroundView {
+  /** Decoration sprites, so buildings can clear what ends up underneath them. */
+  readonly decor: Phaser.GameObjects.Image[] = [];
+
+  constructor(scene: Phaser.Scene, width: number, height: number, decorations: readonly WebDecoration[]) {
+    const columns = Math.ceil(width / TILE_SIZE);
+    const rows = Math.ceil(height / TILE_SIZE);
+    const map = scene.make.tilemap({ tileWidth: TILE_SIZE, tileHeight: TILE_SIZE, width: columns, height: rows });
+    const tileset = map.addTilesetImage(Sheets.GROUND.key, Sheets.GROUND.key, TILE_SIZE, TILE_SIZE, 0, 0);
+    const layer = tileset && map.createBlankLayer('ground', tileset);
+    if (!layer) throw new Error('Could not create ground layer');
+
+    layer.setDepth(Depth.GROUND);
+    for (let row = 0; row < rows; row++) {
+      for (let column = 0; column < columns; column++) layer.putTileAt(GroundFrames.GRASS, column, row);
+    }
+
+    for (const decoration of decorations) {
+      const { x, y } = decoration.position;
+      this.decor.push(scene.add.image(x, y, ForestAtlas.key, decoration.frame).setDepth(Depth.bySortY(y)));
+    }
+  }
+}
+```
+
+**Cambio visual esperado y único:** la decoración del suelo aparece en sitios distintos a los de antes (ahora la decide el nivel). Los árboles, sus tipos y sus posiciones no cambian.
 
 - [ ] **Step 8: Test de arquitectura de la web** — sustituir `rpg/tests/architecture.test.ts` por:
 
@@ -846,3 +874,5 @@ Expected: anotar el nuevo tamaño frente al del Step 1. Si el JS con gzip crece 
 - [ ] `rpg/src` no contiene `domain/`, `data/`, ni ficheros `*ViewModel.ts`.
 - [ ] Ningún texto de juego en TypeScript (`grep -rn "madera\|hacha\|Misión" rpg/src` solo encuentra comentarios o nada).
 - [ ] La partida de referencia da los mismos números que antes de la migración.
+- [ ] Captura de la zona de inicio antes y después: mismos árboles con el mismo dibujo; solo cambia la decoración.
+- [ ] `grep -rn "seededRandom\|ForestAtlas.TREES\|ForestAtlas.DECOR" rpg/src` no devuelve nada.

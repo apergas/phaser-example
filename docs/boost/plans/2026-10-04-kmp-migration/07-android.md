@@ -457,10 +457,10 @@ git commit -m "[PROJECT-X]: Load LPC assets and atlas in the Android app"
 - Test: `androidApp/src/androidTest/kotlin/com/apergas/rpg/android/presentation/forest/ForestScreenTests.kt`
 
 **Interfaces:**
-- Consumes: `LpcAssets`, `AtlasFrame` (Task 2); `ForestViewModel`, `ForestState`, `ForestEffect`, `ForestIntent`, `WorldSnapshot`, `SeededRandom` (shared).
+- Consumes: `LpcAssets`, `AtlasFrame` (Task 2); `ForestViewModel`, `ForestState`, `ForestEffect`, `ForestIntent`, `WorldSnapshot`, `SpriteNames` (shared).
 - Produces: `ForestScreen(viewModel, modifier)` final.
 
-Constantes de render (idénticas a la web, `rpg/src/presentation/common/assets.ts`): zoom de cámara `2`; hoja de personaje 64 px, origen Y `62/64`; filas de dirección `up, left, down, right`; andar: columnas 1–8 a 10 fps; quieto: 2 columnas a 2 fps; trabajo: celdas 128 px, 6 columnas, origen Y `94/128`, secuencias hacha `[0,0,5,5,4,4,3,1]` y martillo `[0,0,5,5,4,4,1]`; árboles: variantes por `SeededRandom(7)` sobre la lista `ForestAtlas.TREES` de la web, en el mismo orden; casa: pivote abajo-centro, dibujada `24` px por debajo del centro de su huella; edificio en obra con alfa `0.35 + 0.65·progreso`.
+Constantes de render (idénticas a la web, `rpg/src/presentation/common/assets.ts`): zoom de cámara `2`; hoja de personaje 64 px, origen Y `62/64`; filas de dirección `up, left, down, right`; andar: columnas 1–8 a 10 fps; quieto: 2 columnas a 2 fps; trabajo: celdas 128 px, 6 columnas, origen Y `94/128`, secuencias hacha `[0,0,5,5,4,4,3,1]` y martillo `[0,0,5,5,4,4,1]`; árboles y decoración: el sprite lo da `SpriteNames` a partir del tipo que trae el nivel; casa: pivote abajo-centro, dibujada `24` px por debajo del centro de su huella; edificio en obra con alfa `0.35 + 0.65·progreso`.
 
 - [ ] **Step 1: `WorldSceneState.kt`** — estado vivo del mundo dibujado y animaciones de efectos
 
@@ -472,17 +472,11 @@ import com.apergas.rpg.domain.entities.building.Building
 import com.apergas.rpg.domain.entities.game.WorldSnapshot
 import com.apergas.rpg.domain.entities.geometry.Position
 import com.apergas.rpg.presentation.forest.ForestEffect
-import com.apergas.rpg.util.SeededRandom
-
-/** Tree variants, in the same order as ForestAtlas.TREES on the web, so both pick the same art. */
-val TREE_FRAMES = listOf(
-    "tree-slim", "tree-round", "tree-wide", "tree-broad", "tree-twisted", "tree-branches", "tree-leaning",
-    "tree-lumpy", "tree-pine", "tree-dome", "tree-oak", "tree-dense", "tree-old", "tree-big",
-)
-private const val TREE_VARIANT_SEED = 7L
+import com.apergas.rpg.presentation.forest.SpriteNames
 
 data class SceneTree(val id: String, val base: Position, val frame: String, val hitAtNanos: Long? = null, val fromX: Double = 0.0, val felledAtNanos: Long? = null)
 data class SceneBuilding(val id: String, val center: Position, val progress: Double, val completedAtNanos: Long? = null)
+data class SceneDecoration(val id: String, val position: Position, val frame: String)
 
 /**
  * What is drawn in the world beyond the player: built from the initial snapshot and kept up to date
@@ -495,12 +489,13 @@ class WorldSceneState(snapshot: WorldSnapshot) {
     val items = mutableStateMapOf<String, Position>()
     val buildings = mutableStateMapOf<String, SceneBuilding>()
     val stumps = mutableStateMapOf<String, Position>()
+    val decorations = mutableStateMapOf<String, SceneDecoration>()
 
     init {
-        val random = SeededRandom(TREE_VARIANT_SEED)
-        snapshot.trees.forEach { tree ->
-            val frame = TREE_FRAMES[(random.next() * TREE_FRAMES.size).toInt()]
-            trees[tree.id] = SceneTree(tree.id, tree.position, frame)
+        // What to draw and where comes from the level (shared): no art decisions are made here.
+        snapshot.trees.forEach { tree -> trees[tree.id] = SceneTree(tree.id, tree.position, SpriteNames.tree(tree.kind)) }
+        snapshot.decorations.forEach { decoration ->
+            decorations[decoration.id] = SceneDecoration(decoration.id, decoration.position, SpriteNames.decoration(decoration.kind))
         }
         snapshot.items.forEach { items[it.id] = it.position }
         snapshot.buildings.forEach { buildings[it.id] = it.toScene() }
@@ -518,6 +513,7 @@ class WorldSceneState(snapshot: WorldSnapshot) {
                 buildings[effect.building.id] = effect.building.toScene()
                 val radius = effect.building.blueprint.footprintRadius + 24
                 stumps.filterValues { base -> base.distanceTo(effect.building.position) < radius }.keys.forEach(stumps::remove)
+                decorations.filterValues { it.position.distanceTo(effect.building.position) < radius }.keys.forEach(decorations::remove)
             }
             is ForestEffect.BuildingHammered -> buildings.computeIfPresent(effect.buildingId) { _, b -> b.copy(progress = effect.progress) }
             is ForestEffect.BuildingCompleted -> buildings.computeIfPresent(effect.buildingId) { _, b -> b.copy(progress = 1.0, completedAtNanos = nowNanos) }
@@ -609,6 +605,7 @@ fun WorldCanvas(
         }) {
             drawGround(scene, assets)
             val drawables = buildList<Pair<Double, DrawScope.() -> Unit>> {
+                scene.decorations.values.forEach { decoration -> add(decoration.position.y to { drawFrame(assets, decoration.frame, decoration.position) }) }
                 scene.stumps.values.forEach { base -> add(base.y - 1 to { drawFrame(assets, "stump", base) }) }
                 scene.items.values.forEach { position -> add(position.y to { drawFrame(assets, "axe-pickup", Position(position.x, position.y - 8)) }) }
                 scene.trees.values.forEach { tree -> add(tree.base.y to { drawTree(assets, tree, frameNanos) }) }
@@ -963,4 +960,5 @@ git commit -m "[PROJECT-X]: Add Compose forest screen with world rendering, HUD 
 - [ ] `androidApp` no importa nada de `com.apergas.rpg.data` (`grep -rn "com.apergas.rpg.data" androidApp/src` vacío).
 - [ ] Toda la lógica de juego y textos de juego vienen de `shared`; las únicas cadenas propias son de accesibilidad y de la barra táctil.
 - [ ] Mismo bosque que la web (comparar visualmente la zona de inicio con una captura de la web).
-- [ ] Pendiente reconocido para una fase posterior: partículas (astillas, polvo) y decoración del suelo (hierba alta, hojas, setas), que en Android requieren un sistema de partículas propio.
+- [ ] Mismos tipos de árbol y misma decoración que la web: vienen del nivel compartido; `grep -rn "SeededRandom\|TREE_FRAMES" androidApp/src` vacío.
+- [ ] Pendiente reconocido para una fase posterior: partículas (astillas, polvo), que en Android requieren un sistema de partículas propio.

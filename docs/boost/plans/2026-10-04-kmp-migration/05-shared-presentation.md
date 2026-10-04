@@ -21,10 +21,10 @@ Las de [`README.md`](README.md#global-constraints). En esta fase (convención de
 
 ```
 shared/src/commonMain/kotlin/com/apergas/rpg/
-  presentation/forest/  ForestContract.kt, ForestViewModel.kt, ForestLabels.kt
+  presentation/forest/  ForestContract.kt, ForestViewModel.kt, ForestLabels.kt, SpriteNames.kt
   di/GameContainer.kt   (+ makeForestViewModel)
 shared/src/commonTest/kotlin/com/apergas/rpg/
-  presentation/forest/  ForestViewModelFixture.kt, ForestViewModelTests.kt
+  presentation/forest/  ForestViewModelFixture.kt, ForestViewModelTests.kt, SpriteNamesTests.kt
 ```
 
 ---
@@ -180,12 +180,57 @@ object ForestLabels {
 }
 ```
 
-- [ ] **Step 3: Compilar**
+- [ ] **Step 3: `SpriteNames.kt` y su test** — único sitio donde un tipo del nivel se convierte en nombre de sprite del atlas (`forest.json`); lo usan la web (vía `jsMain`), Android e iOS.
 
-Run: `./gradlew :shared:compileKotlinMetadata`
-Expected: `BUILD SUCCESSFUL`.
+`SpriteNamesTests.kt`:
+```kotlin
+package com.apergas.rpg.presentation.forest
 
-- [ ] **Step 4: Commit**
+import com.apergas.rpg.domain.entities.decoration.DecorationKind
+import com.apergas.rpg.domain.entities.tree.TreeKind
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class SpriteNamesTests {
+    @Test
+    fun testWhenNamingSpritesThenFollowsTheAtlasFrameNames() {
+        // given
+        val tree = TreeKind.Broad
+        val decoration = DecorationKind.TallGrass
+
+        // when
+        val treeName = SpriteNames.tree(tree)
+        val decorationName = SpriteNames.decoration(decoration)
+
+        // then
+        assertEquals("tree-broad", treeName)
+        assertEquals("decor-tall-grass", decorationName)
+    }
+}
+```
+
+`SpriteNames.kt`:
+```kotlin
+package com.apergas.rpg.presentation.forest
+
+import com.apergas.rpg.domain.entities.decoration.DecorationKind
+import com.apergas.rpg.domain.entities.tree.TreeKind
+
+/** Atlas frame names (forest.json) for what the level places. Shared so every app draws the same art. */
+object SpriteNames {
+    fun tree(kind: TreeKind): String = "tree-${kebab(kind.name)}"
+    fun decoration(kind: DecorationKind): String = "decor-${kebab(kind.name)}"
+
+    private fun kebab(name: String): String = name.replace(Regex("(?<!^)([A-Z])"), "-$1").lowercase()
+}
+```
+
+- [ ] **Step 4: Compilar y ejecutar**
+
+Run: `./gradlew :shared:allTests`
+Expected: PASS.
+
+- [ ] **Step 5: Commit**
 
 ```bash
 git add shared/src

@@ -414,7 +414,7 @@ class GameUseCaseImpl(
 
     override fun worldSnapshot(): WorldSnapshot {
         val world = world
-        return WorldSnapshot(world.width, world.height, world.trees, world.items, world.buildings)
+        return WorldSnapshot(world.width, world.height, world.trees, world.items, world.decorations, world.buildings)
     }
 
     override fun buildOptions(): List<BuildOption> {
@@ -468,8 +468,10 @@ git commit -m "[PROJECT-X]: Add GameUseCase covering every game operation"
 ```kotlin
 package com.apergas.rpg.di
 
+import com.apergas.rpg.domain.entities.tree.TreeKind
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class GameContainerTests {
     @Test
@@ -484,6 +486,8 @@ class GameContainerTests {
         // then
         assertEquals(70, snapshot.trees.size)
         assertEquals(388, snapshot.trees.sumOf { it.woodYield })
+        assertEquals(TreeKind.Broad, snapshot.trees.first().kind)
+        assertTrue(snapshot.decorations.size >= 40)
     }
 
     @Test

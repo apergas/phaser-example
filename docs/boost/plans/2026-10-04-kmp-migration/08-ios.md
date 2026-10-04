@@ -368,10 +368,10 @@ git commit -m "[PROJECT-X]: Add iOS forest view model wrapping the shared one"
 - Modify: `ForestView.swift` (versión final)
 
 **Interfaces:**
-- Consumes: `ForestViewModel` (Task 2); `SeededRandom` (Kotlin, `util`); assets `Resources/lpc`.
+- Consumes: `ForestViewModel` (Task 2); `SpriteNames` (Kotlin, `presentation/forest`); assets `Resources/lpc`.
 - Produces: `ForestView` final.
 
-Constantes de render: las mismas que la web y Android (zoom 2; personaje 64 px con origen Y 62/64; filas `up, left, down, right`; andar columnas 1–8 a 10 fps; quieto 2 columnas a 2 fps; trabajo 128 px, 6 columnas, origen Y 94/128, secuencias `[0,0,5,5,4,4,3,1]` y `[0,0,5,5,4,4,1]`; variantes de árbol con `SeededRandom(7)` sobre la misma lista y orden; casa 24 px por debajo del centro de su huella; obra con alfa `0.35 + 0.65·progreso`).
+Constantes de render: las mismas que la web y Android (zoom 2; personaje 64 px con origen Y 62/64; filas `up, left, down, right`; andar columnas 1–8 a 10 fps; quieto 2 columnas a 2 fps; trabajo 128 px, 6 columnas, origen Y 94/128, secuencias `[0,0,5,5,4,4,3,1]` y `[0,0,5,5,4,4,1]`; árboles y decoración: sprite que da `SpriteNames` a partir del tipo del nivel; casa 24 px por debajo del centro de su huella; obra con alfa `0.35 + 0.65·progreso`).
 
 - [ ] **Step 1: `ScenePoint.swift`**
 
@@ -479,8 +479,6 @@ private let houseFrontOffset = 24.0
 private let facingRows: [Facing] = [.up, .left, .down, .right]
 private let chopSequence = [0, 0, 5, 5, 4, 4, 3, 1]
 private let hammerSequence = [0, 0, 5, 5, 4, 4, 1]
-private let treeFrames = ["tree-slim", "tree-round", "tree-wide", "tree-broad", "tree-twisted", "tree-branches", "tree-leaning",
-                          "tree-lumpy", "tree-pine", "tree-dome", "tree-oak", "tree-dense", "tree-old", "tree-big"]
 
 /// Passive SpriteKit view of the game: advances the view model each frame, plays its effects, draws its state.
 final class ForestScene: SKScene {
@@ -513,10 +511,12 @@ final class ForestScene: SKScene {
             sheets[name] = (LpcAtlas.texture(from: image), image)
         }
         addGround()
-        let random = SeededRandom(seed: 7)
+        // What to draw and where comes from the level (shared): no art decisions are made here.
+        for decoration in snapshot.decorations {
+            addDecoration(frame: SpriteNames.shared.decoration(kind: decoration.kind), position: decoration.position)
+        }
         for tree in snapshot.trees {
-            let frame = treeFrames[Int(random.next() * Double(treeFrames.count))]
-            addTree(id: tree.id, frame: frame, base: tree.position)
+            addTree(id: tree.id, frame: SpriteNames.shared.tree(kind: tree.kind), base: tree.position)
         }
         for item in snapshot.items { addItem(id: item.id, position: item.position) }
         for building in snapshot.buildings { addBuilding(id: building.id, center: building.position, progress: building.progress) }
@@ -584,6 +584,14 @@ private extension ForestScene {
         node.zPosition = base.y
         addChild(node)
         trees[id] = (node, frame, base)
+    }
+
+    func addDecoration(frame: String, position: Position) {
+        let node = SKSpriteNode(texture: atlas.textures[frame])
+        node.anchorPoint = atlas.anchor(of: frame)
+        node.position = points.scene(position)
+        node.zPosition = position.y
+        addChild(node)
     }
 
     func addItem(id: String, position: Position) {
@@ -839,4 +847,5 @@ git commit -m "[PROJECT-X]: Add SpriteKit forest world and SwiftUI HUD on iOS"
 - [ ] Se prueba en local: `xcodebuild test ...` (Task 2) y la partida en simulador (Task 3, Step 6). No hay CI para iOS (alcance acordado).
 - [ ] El código Swift no reimplementa reglas: todo cambio de juego pasa por `onIntent` del ViewModel compartido.
 - [ ] La única conversión de coordenadas está en `ScenePoint`.
-- [ ] Pendiente reconocido (igual que Android): partículas y decoración del suelo; textos de la barra táctil y de accesibilidad a `Localizable.strings` cuando la app tenga más idiomas.
+- [ ] Mismos tipos de árbol y misma decoración que la web y Android: vienen del nivel compartido; ninguna lista de sprites ni `SeededRandom` en Swift.
+- [ ] Pendiente reconocido (igual que Android): partículas; textos de la barra táctil y de accesibilidad a `Localizable.strings` cuando la app tenga más idiomas.

@@ -1,4 +1,4 @@
-import type { World } from '../entities/World';
+import type { World } from '../world/World';
 import type { QuestEvent } from '../events';
 
 export type QuestId = 'pick-up-axe' | 'gather-wood' | 'build-house';

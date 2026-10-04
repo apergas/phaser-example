@@ -29,10 +29,10 @@ describe('Player', () => {
 
   it('tracks time spent on the current task', () => {
     const player = createPlayer();
-    player.startChopping('tree-1');
+    player.startWork({ kind: 'chop', treeId: 'tree-1' });
     player.continueWork(300);
 
-    expect(player.activity).toEqual({ kind: 'chopping', treeId: 'tree-1', elapsedMs: 300 });
+    expect(player.activity).toEqual({ kind: 'working', intent: { kind: 'chop', treeId: 'tree-1' }, elapsedMs: 300 });
   });
 
   it('rejects non-positive speed or radius', () => {

@@ -1,14 +1,18 @@
 import type { Position } from '../value-objects/Position';
 import { Inventory } from './Inventory';
 
-/** Work the player will start as soon as it reaches its destination. */
-export type Intent = { readonly kind: 'chop'; readonly treeId: string } | { readonly kind: 'construct'; readonly buildingId: string };
+/** Work the player is asked to do on a target: walk up to it, then work until it is done. */
+export type Intent =
+  | { readonly kind: 'chop'; readonly treeId: string }
+  | { readonly kind: 'construct'; readonly buildingId: string };
+
+export type IntentKind = Intent['kind'];
 
 export type Activity =
   | { readonly kind: 'idle' }
   | { readonly kind: 'walking'; readonly destination: Position; readonly intent: Intent | null }
-  | { readonly kind: 'chopping'; readonly treeId: string; readonly elapsedMs: number }
-  | { readonly kind: 'constructing'; readonly buildingId: string; readonly elapsedMs: number };
+  /** `elapsedMs` is the time since the last impact (axe hit, hammer blow...). */
+  | { readonly kind: 'working'; readonly intent: Intent; readonly elapsedMs: number };
 
 export class Player {
   /** Movement speed in world units per second. */
@@ -43,20 +47,13 @@ export class Player {
     this.currentActivity = { kind: 'walking', destination, intent };
   }
 
-  startChopping(treeId: string): void {
-    this.currentActivity = { kind: 'chopping', treeId, elapsedMs: 0 };
-  }
-
-  startConstructing(buildingId: string): void {
-    this.currentActivity = { kind: 'constructing', buildingId, elapsedMs: 0 };
+  startWork(intent: Intent): void {
+    this.currentActivity = { kind: 'working', intent, elapsedMs: 0 };
   }
 
   /** Keeps working on the current task; `elapsedMs` is the time since the last impact. */
   continueWork(elapsedMs: number): void {
-    const activity = this.currentActivity;
-    if (activity.kind === 'chopping' || activity.kind === 'constructing') {
-      this.currentActivity = { ...activity, elapsedMs };
-    }
+    if (this.currentActivity.kind === 'working') this.currentActivity = { ...this.currentActivity, elapsedMs };
   }
 
   stop(): void {

@@ -1,39 +1,33 @@
-import type { BuildOptionDto, PlayerStateDto, QuestDto } from '../../application/dto';
-import type { BlueprintId } from '../../domain/entities/Blueprint';
+import type { BlueprintKey } from '../../application/dto';
 import { Labels } from '../labels';
+import type { HudState } from '../viewmodels/HudViewModel';
 import './hud.css';
 
 const MESSAGE_MS = 3500;
 
-/** What the gameplay scene needs from the HUD. */
-export interface HudPort {
-  update(player: PlayerStateDto, buildOptions: readonly BuildOptionDto[], quests: readonly QuestDto[]): void;
-  showMessage(text: string): void;
-  setPlacing(blueprintId: BlueprintId | null): void;
+export interface HudActions {
+  build(blueprint: BlueprintKey): void;
 }
 
 type PanelName = 'quests' | 'build';
 
 /**
- * HTML overlay on top of the canvas: resources, tools, the quest log, the build menu and short
- * messages. Plain DOM keeps text crisp at any zoom; it only reads DTOs and reports clicks through
- * callbacks.
+ * HTML overlay on top of the canvas. A passive view: it copies `HudState` (already formatted by
+ * `HudViewModel`) into the page and reports clicks. Opening and closing its own panels is the only
+ * state it keeps.
  */
-export class Hud implements HudPort {
+export class Hud {
   private readonly wood: HTMLElement;
   private readonly axe: HTMLElement;
   private readonly panels: Record<PanelName, { button: HTMLButtonElement; panel: HTMLElement }>;
   private readonly buildOptions: HTMLElement;
   private readonly questList: HTMLElement;
-  private readonly questCount: HTMLElement;
+  private readonly questBadge: HTMLElement;
   private readonly message: HTMLElement;
-  private readonly onBuildRequested: (blueprintId: BlueprintId) => void;
-  private lastRendered = '';
+  private lastRendered: HudState | null = null;
   private messageTimer: number | undefined;
 
-  constructor(parent: HTMLElement, onBuildRequested: (blueprintId: BlueprintId) => void) {
-    this.onBuildRequested = onBuildRequested;
-
+  constructor(parent: HTMLElement, actions: HudActions) {
     const root = element('div', 'hud');
     root.innerHTML = `
       <div class="hud__panel hud__resources">
@@ -50,7 +44,7 @@ export class Hud implements HudPort {
       <div class="hud__actions">
         <div class="hud__buttons">
           <button class="hud__panel hud__button" data-ref="quests-button" aria-expanded="false" aria-controls="hud-quests">
-            ${Labels.quests} <span class="hud__badge" data-ref="quest-count"></span>
+            ${Labels.quests} <span class="hud__badge" data-ref="quest-badge"></span>
           </button>
           <button class="hud__panel hud__button" data-ref="build-button" aria-expanded="false" aria-controls="hud-build">
             ${Labels.build}
@@ -72,7 +66,7 @@ export class Hud implements HudPort {
     this.axe = ref(root, 'axe');
     this.buildOptions = ref(root, 'build-options');
     this.questList = ref(root, 'quest-list');
-    this.questCount = ref(root, 'quest-count');
+    this.questBadge = ref(root, 'quest-badge');
     this.message = ref(root, 'message');
     this.panels = {
       quests: { button: ref(root, 'quests-button') as HTMLButtonElement, panel: ref(root, 'quests-panel') },
@@ -86,66 +80,56 @@ export class Hud implements HudPort {
       const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-blueprint]');
       if (!button || button.disabled) return;
       this.closePanels();
-      this.onBuildRequested(button.dataset.blueprint as BlueprintId);
+      actions.build(button.dataset.blueprint as BlueprintKey);
     });
   }
 
-  update(player: PlayerStateDto, buildOptions: readonly BuildOptionDto[], quests: readonly QuestDto[]): void {
-    // Rendered every frame by the scene; touch the DOM only when something changed.
-    const key = JSON.stringify([player.wood, player.hasAxe, buildOptions, quests]);
-    if (key === this.lastRendered) return;
-    this.lastRendered = key;
+  /** Called every frame; touches the DOM only for the parts that changed. */
+  render(state: HudState): void {
+    const previous = this.lastRendered;
+    if (previous === state) return;
+    this.lastRendered = state;
 
-    this.wood.textContent = String(player.wood);
-    this.axe.classList.toggle('hud__tool--owned', player.hasAxe);
-    this.renderBuildOptions(player.wood, buildOptions);
-    this.renderQuests(quests);
+    if (previous?.wood !== state.wood) this.wood.textContent = String(state.wood);
+    if (previous?.hasAxe !== state.hasAxe) this.axe.classList.toggle('hud__tool--owned', state.hasAxe);
+    if (previous?.buildLocked !== state.buildLocked) this.panels.build.button.disabled = state.buildLocked;
+    if (previous?.message?.serial !== state.message?.serial && state.message) this.showMessage(state.message.text);
+    if (!previous || JSON.stringify(previous.quests) !== JSON.stringify(state.quests)) this.renderQuests(state);
+    if (!previous || JSON.stringify(previous.buildItems) !== JSON.stringify(state.buildItems)) this.renderBuildItems(state);
   }
 
-  showMessage(text: string): void {
+  private renderQuests(state: HudState): void {
+    this.questBadge.textContent = state.questBadge;
+    this.questList.innerHTML = state.quests
+      .map(
+        (quest) => `
+          <li class="hud__quest hud__quest--${quest.status}">
+            <span class="hud__check" aria-hidden="true"></span>
+            <span class="hud__quest-title">${quest.title}</span>
+            <span class="hud__quest-progress">${quest.progressText}</span>
+          </li>`,
+      )
+      .join('');
+  }
+
+  private renderBuildItems(state: HudState): void {
+    this.buildOptions.innerHTML = state.buildItems
+      .map(
+        (item) => `
+          <button class="hud__option" data-blueprint="${item.blueprint}" ${item.enabled ? '' : 'disabled'}>
+            <span class="hud__option-name">${item.name}</span>
+            <span class="hud__option-cost">${item.costText}</span>
+            <span class="hud__option-status">${item.missingText ?? ''}</span>
+          </button>`,
+      )
+      .join('');
+  }
+
+  private showMessage(text: string): void {
     this.message.textContent = text;
     this.message.classList.add('hud__message--visible');
     window.clearTimeout(this.messageTimer);
     this.messageTimer = window.setTimeout(() => this.message.classList.remove('hud__message--visible'), MESSAGE_MS);
-  }
-
-  setPlacing(blueprintId: BlueprintId | null): void {
-    this.panels.build.button.disabled = blueprintId !== null;
-  }
-
-  private renderBuildOptions(wood: number, buildOptions: readonly BuildOptionDto[]): void {
-    this.buildOptions.innerHTML = buildOptions
-      .map((option) => {
-        const missing = option.affordable ? '' : Labels.missing(option.woodCost - wood);
-        return `
-          <button class="hud__option" data-blueprint="${option.blueprintId}" ${option.affordable ? '' : 'disabled'}>
-            <span class="hud__option-name">${Labels.blueprints[option.blueprintId]}</span>
-            <span class="hud__option-cost">${Labels.cost(option.woodCost)}</span>
-            <span class="hud__option-status">${missing}</span>
-          </button>`;
-      })
-      .join('');
-  }
-
-  private renderQuests(quests: readonly QuestDto[]): void {
-    const done = quests.filter((quest) => quest.completed).length;
-    this.questCount.textContent = `${done}/${quests.length}`;
-    this.questList.innerHTML = quests
-      .map((quest) => {
-        const state = quest.completed ? 'done' : quest.current ? 'current' : 'pending';
-        const progress = quest.completed
-          ? Labels.questDone
-          : quest.target > 1
-            ? `${quest.progress}/${quest.target}`
-            : '';
-        return `
-          <li class="hud__quest hud__quest--${state}">
-            <span class="hud__check" aria-hidden="true"></span>
-            <span class="hud__quest-title">${Labels.questTitles[quest.id]}</span>
-            <span class="hud__quest-progress">${progress}</span>
-          </li>`;
-      })
-      .join('');
   }
 
   private toggle(name: PanelName): void {

@@ -1,5 +1,4 @@
-import type { BlueprintId } from '../domain/entities/Blueprint';
-import type { QuestId } from '../domain/quests/QuestLog';
+import type { BlueprintKey, QuestKey } from '../application/dto';
 
 /** Every player-facing text, in one place. */
 export const Labels = {
@@ -11,12 +10,12 @@ export const Labels = {
     'pick-up-axe': 'Recoge el hacha',
     'gather-wood': 'Consigue al menos 15 de madera',
     'build-house': 'Construye una casa',
-  } satisfies Record<QuestId, string>,
+  } satisfies Record<QuestKey, string>,
   questDone: 'Hecha',
   close: 'Cerrar',
   cost: (wood: number) => `${wood} de madera`,
   missing: (wood: number) => `Faltan ${wood}`,
-  blueprints: { house: 'Casa' } satisfies Record<BlueprintId, string>,
+  blueprints: { house: 'Casa' } satisfies Record<BlueprintKey, string>,
   messages: {
     welcome: 'Hay un hacha en el suelo, cerca de ti. Recógela pasando por encima.',
     needAxe: 'Necesitas un hacha para talar.',

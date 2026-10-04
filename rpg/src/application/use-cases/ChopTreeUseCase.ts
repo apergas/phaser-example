@@ -1,13 +1,15 @@
-import type { ChopOrderResult, World } from '../../domain/entities/World';
+import type { GameSessionRepository } from '../ports/GameSessionRepository';
+
+export type ChopTreeResult = 'ok' | 'no-axe' | 'unknown-tree';
 
 export class ChopTreeUseCase {
-  private readonly world: World;
+  private readonly sessions: GameSessionRepository;
 
-  constructor(world: World) {
-    this.world = world;
+  constructor(sessions: GameSessionRepository) {
+    this.sessions = sessions;
   }
 
-  execute(treeId: string): ChopOrderResult {
-    return this.world.orderChop(treeId);
+  execute(treeId: string): ChopTreeResult {
+    return this.sessions.current().world.orderChop(treeId);
   }
 }

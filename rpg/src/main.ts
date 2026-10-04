@@ -4,52 +4,33 @@ import { ChopTreeUseCase } from './application/use-cases/ChopTreeUseCase';
 import { ConstructBuildingUseCase } from './application/use-cases/ConstructBuildingUseCase';
 import { GetGameStateUseCase } from './application/use-cases/GetGameStateUseCase';
 import { MovePlayerToUseCase } from './application/use-cases/MovePlayerToUseCase';
-import { GroundItem } from './domain/entities/GroundItem';
-import { Player } from './domain/entities/Player';
-import { Tree } from './domain/entities/Tree';
-import { World } from './domain/entities/World';
-import { QuestLog } from './domain/quests/QuestLog';
-import { Rules } from './domain/rules';
-import { Position } from './domain/value-objects/Position';
-import { forestLevel } from './infrastructure/levels/forestLevel';
+import { StartGameUseCase } from './application/use-cases/StartGameUseCase';
+import { ProceduralForestLevel } from './infrastructure/levels/ProceduralForestLevel';
+import { InMemoryGameSessionRepository } from './infrastructure/persistence/InMemoryGameSessionRepository';
 import { Hud } from './presentation/dom/Hud';
 import { ForestScene } from './presentation/phaser/scenes/ForestScene';
 import { PreloadScene } from './presentation/phaser/scenes/PreloadScene';
+import { GameViewModel } from './presentation/viewmodels/GameViewModel';
 
 // Composition root: the only place that knows every layer and wires them together.
-// World units are native art pixels (LPC: 32px tiles); the camera zooms them in.
-const PLAYER_SPEED = 110;
-const PLAYER_RADIUS = 8;
-const TREE_TRUNK_RADIUS = 12;
 
-const world = new World(
-  forestLevel.width,
-  forestLevel.height,
-  new Player(new Position(forestLevel.playerStart.x, forestLevel.playerStart.y), PLAYER_SPEED, PLAYER_RADIUS),
-  forestLevel.trees.map(
-    (tree) => new Tree(tree.id, new Position(tree.x, tree.y), TREE_TRUNK_RADIUS, tree.wood, Rules.HITS_TO_FELL_TREE),
-  ),
-  [new GroundItem('axe', 'axe', new Position(forestLevel.axe.x, forestLevel.axe.y))],
-);
+const sessions = new InMemoryGameSessionRepository();
+new StartGameUseCase(new ProceduralForestLevel(), sessions).execute();
+const gameState = new GetGameStateUseCase(sessions);
 
-const questLog = new QuestLog();
-const gameState = new GetGameStateUseCase(world, questLog);
+const viewModel = new GameViewModel({
+  movePlayerTo: new MovePlayerToUseCase(sessions),
+  chopTree: new ChopTreeUseCase(sessions),
+  constructBuilding: new ConstructBuildingUseCase(sessions),
+  advanceWorld: new AdvanceWorldUseCase(sessions),
+  gameState,
+});
 
 const app = document.querySelector<HTMLElement>('#app');
 if (!app) throw new Error('Missing #app container');
 
-// The HUD and the scene reference each other: the HUD asks the scene to start placing a building.
-let forestScene: ForestScene | undefined = undefined;
-const hud = new Hud(app, (blueprintId) => forestScene?.startPlacing(blueprintId));
-
-forestScene = new ForestScene({
-  movePlayerTo: new MovePlayerToUseCase(world),
-  chopTree: new ChopTreeUseCase(world),
-  constructBuilding: new ConstructBuildingUseCase(world),
-  advanceWorld: new AdvanceWorldUseCase(world, questLog),
-  gameState,
-  hud,
-});
+const hud = new Hud(app, { build: (blueprint) => viewModel.requestBuild(blueprint) });
+const forestScene = new ForestScene({ viewModel, hud });
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,
@@ -66,5 +47,5 @@ const game = new Phaser.Game({
 
 // Dev-only handle for browser automation (e2e checks); stripped from production builds.
 if (import.meta.env.DEV) {
-  Object.assign(window, { __rpg: { game, gameState } });
+  Object.assign(window, { __rpg: { game, gameState, viewModel } });
 }

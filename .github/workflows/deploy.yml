@@ -29,6 +29,7 @@ jobs:
           cache: npm
           cache-dependency-path: rpg/package-lock.json
       - run: npm ci
+      - run: npm run typecheck
       - run: npm test
       - run: npm run build
       - uses: actions/configure-pages@v6

@@ -10,4 +10,10 @@ export const Rules = {
   WORK_GAP: 2,
   /** The player picks up items whose position is within this distance of its feet. */
   PICK_UP_RANGE: 14,
+  /** Walking speed in world units (native art pixels) per second. */
+  PLAYER_SPEED: 110,
+  /** Radius of the player's footprint on the ground. */
+  PLAYER_RADIUS: 8,
+  /** Radius of a tree trunk's footprint on the ground. */
+  TREE_TRUNK_RADIUS: 12,
 } as const;

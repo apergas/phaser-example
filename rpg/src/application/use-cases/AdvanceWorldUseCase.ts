@@ -1,19 +1,19 @@
-import type { World } from '../../domain/entities/World';
 import type { GameEvent } from '../../domain/events';
-import type { QuestLog } from '../../domain/quests/QuestLog';
+import type { GameEventDto } from '../dto';
+import { toEventDto } from '../mappers';
+import type { GameSessionRepository } from '../ports/GameSessionRepository';
 
 export class AdvanceWorldUseCase {
-  private readonly world: World;
-  private readonly questLog: QuestLog;
+  private readonly sessions: GameSessionRepository;
 
-  constructor(world: World, questLog: QuestLog) {
-    this.world = world;
-    this.questLog = questLog;
+  constructor(sessions: GameSessionRepository) {
+    this.sessions = sessions;
   }
 
   /** Advances the simulation by `deltaMs` and returns what happened, including completed quests. */
-  execute(deltaMs: number): GameEvent[] {
-    const events: GameEvent[] = this.world.advance(deltaMs);
-    return [...events, ...this.questLog.update(this.world)];
+  execute(deltaMs: number): GameEventDto[] {
+    const { world, quests } = this.sessions.current();
+    const events: GameEvent[] = [...world.advance(deltaMs), ...quests.update(world)];
+    return events.map((event) => toEventDto(event, world));
   }
 }

@@ -1,14 +1,14 @@
-import type { World } from '../../domain/entities/World';
 import { Position } from '../../domain/value-objects/Position';
+import type { GameSessionRepository } from '../ports/GameSessionRepository';
 
 export class MovePlayerToUseCase {
-  private readonly world: World;
+  private readonly sessions: GameSessionRepository;
 
-  constructor(world: World) {
-    this.world = world;
+  constructor(sessions: GameSessionRepository) {
+    this.sessions = sessions;
   }
 
   execute(x: number, y: number): void {
-    this.world.movePlayerTo(new Position(x, y));
+    this.sessions.current().world.movePlayerTo(new Position(x, y));
   }
 }

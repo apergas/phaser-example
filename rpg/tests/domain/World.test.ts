@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Blueprints } from '../../src/domain/entities/Blueprint';
-import { World } from '../../src/domain/entities/World';
+import { World } from '../../src/domain/world/World';
 import { Rules } from '../../src/domain/rules';
 import { Position } from '../../src/domain/value-objects/Position';
 import { WOOD_PER_TREE, advanceFor, createAxe, createPlayer, createTree, createWorld } from '../fixtures';
@@ -74,7 +74,7 @@ describe('World chopping', () => {
     expect(world.orderChop('tree-1')).toBe('ok');
     advanceFor(world, 1500);
 
-    expect(world.player.activity.kind).toBe('chopping');
+    expect(world.player.activity).toMatchObject({ kind: 'working', intent: { kind: 'chop' } });
     // trunk (10) + player (8) + gap (2) to the left, a pixel in front so it is drawn over the trunk
     expect(world.player.position).toEqual(new Position(180, 101));
   });
@@ -89,7 +89,7 @@ describe('World chopping', () => {
 
     advanceFor(world, 4000);
 
-    expect(world.player.activity.kind).toBe('chopping');
+    expect(world.player.activity).toMatchObject({ kind: 'working', intent: { kind: 'chop' } });
     expect(world.player.position.x).toBeGreaterThan(200);
   });
 
@@ -174,7 +174,7 @@ describe('World construction', () => {
 
     advanceFor(world, 3000);
 
-    expect(world.player.activity.kind).toBe('constructing');
+    expect(world.player.activity).toMatchObject({ kind: 'working', intent: { kind: 'construct' } });
     expect(world.player.position).toEqual(new Position(300, 100 + house.footprintRadius + 10));
   });
 

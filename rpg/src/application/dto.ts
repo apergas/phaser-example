@@ -1,8 +1,11 @@
-import type { BlueprintId } from '../domain/entities/Blueprint';
-import type { ToolKind } from '../domain/entities/Inventory';
-import type { QuestId } from '../domain/quests/QuestLog';
+/**
+ * Read-only data handed to adapters. Adapters depend on these types only, never on domain ones;
+ * `mappers.ts` converts between both and the compiler checks the two stay in sync.
+ */
 
-/** Read-only data handed to adapters, so they never touch domain entities directly. */
+export type ToolKey = 'axe';
+export type BlueprintKey = 'house';
+export type QuestKey = 'pick-up-axe' | 'gather-wood' | 'build-house';
 
 export interface PointDto {
   readonly x: number;
@@ -23,7 +26,7 @@ export interface PlayerStateDto {
 }
 
 export interface BuildOptionDto {
-  readonly blueprintId: BlueprintId;
+  readonly blueprintId: BlueprintKey;
   readonly woodCost: number;
   readonly affordable: boolean;
 }
@@ -35,13 +38,13 @@ export interface TreeDto {
 
 export interface GroundItemDto {
   readonly id: string;
-  readonly kind: ToolKind;
+  readonly kind: ToolKey;
   readonly position: PointDto;
 }
 
 export interface BuildingDto {
   readonly id: string;
-  readonly blueprintId: BlueprintId;
+  readonly blueprintId: BlueprintKey;
   readonly position: PointDto;
   readonly progress: number;
 }
@@ -55,10 +58,20 @@ export interface WorldSnapshotDto {
 }
 
 export interface QuestDto {
-  readonly id: QuestId;
+  readonly id: QuestKey;
   readonly progress: number;
   readonly target: number;
   readonly completed: boolean;
   /** The first unfinished quest: what the player should do next. */
   readonly current: boolean;
 }
+
+/** What happened during a simulation step, for adapters to animate or announce. */
+export type GameEventDto =
+  | { readonly type: 'item-picked-up'; readonly itemId: string; readonly kind: ToolKey }
+  | { readonly type: 'player-blocked' }
+  | { readonly type: 'tree-hit'; readonly treeId: string; readonly hitsRemaining: number }
+  | { readonly type: 'tree-felled'; readonly treeId: string; readonly wood: number }
+  | { readonly type: 'building-hammered'; readonly buildingId: string; readonly progress: number }
+  | { readonly type: 'building-completed'; readonly buildingId: string; readonly blueprintId: BlueprintKey }
+  | { readonly type: 'quest-completed'; readonly questId: QuestKey };

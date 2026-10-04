@@ -23,7 +23,7 @@ There is no linter. Regenerate art after editing the asset script: `cd asset-pac
 
 ## Architecture
 
-Clean Architecture with ports & adapters; the dependency rule is enforced by `tests/architecture.test.ts` (domain imports nothing outside itself, application only the domain, presentation only the application layer, never the domain).
+Clean Architecture with ports & adapters; the dependency rule is enforced by `tests/architecture.test.ts` (domain imports nothing outside itself, application only the domain, presentation only the application layer, never the domain; view models never import Phaser or DOM views).
 
 - `src/domain/` — pure TypeScript, no Phaser.
   - `world/World.ts` is the aggregate root and the only entry point that changes the world. It holds a `WorldState` and delegates each rule to a system: `Navigation` (walking, collisions, reach, where to stand), `Woodcutting`, `Construction`, `pickUpItems`. Commands return results instead of throwing; `advance(deltaMs)` returns `WorldEvent[]`.
@@ -33,8 +33,10 @@ Clean Architecture with ports & adapters; the dependency rule is enforced by `te
   - `ports/GameSessionRepository` (current `{ world, quests }`) and `ports/LevelSource` (`LevelDefinition` as plain data). `StartGameUseCase` builds a session from a level; every other use case fetches the session from the repository on each call.
   - `dto.ts` + `mappers.ts`: everything crossing to adapters is a DTO, including events (`GameEventDto`) and ids (`BlueprintKey`, `QuestKey`, `ToolKey`). The identity mappers only compile while domain and DTO unions match.
 - `src/infrastructure/` — port implementations: `levels/ProceduralForestLevel` (seeded generator; a Tiled loader would be another `LevelSource`), `persistence/InMemoryGameSessionRepository`.
-- `src/presentation/` — `phaser/` scenes translate input into use cases and turn `GameEventDto`s into effects; views only draw (one per tree/item/building, keyed by id). `dom/Hud.ts` is the HTML overlay behind `HudPort`. Player-facing text lives in `labels.ts`.
-- `src/main.ts` — composition root. In dev builds it exposes `window.__rpg = { game, gameState }` for browser automation (stripped from production).
+- `src/presentation/` — MVVM on top of the use cases.
+  - `viewmodels/` (plain TypeScript, no Phaser/DOM, unit-tested in `tests/presentation`): `GameViewModel` owns presentation logic — what a map click means (chop / walk / place), placement mode and its validity, which message each event shows, and turning `GameEventDto`s into `Effect`s (tree-hit, building-placed...). `HudViewModel` exposes display-ready `HudState` (formatted texts, quest status, build items, message with a `serial`); `PlayerViewModel` exposes `PlayerRenderState` (facing + pose: idle/walk with or without axe, or work with tool and swing progress).
+  - `phaser/` and `dom/` are passive views: `ForestScene` forwards input to the view model (after pixel hit-testing trees), plays the effects it returns and renders its state each frame; `Hud` copies `HudState` into the page and reports clicks. Views only decide engine/art matters (sprite keys, LPC frame sequences, tweens, camera). Player-facing text lives in `labels.ts`.
+- `src/main.ts` — composition root. In dev builds it exposes `window.__rpg = { game, gameState, viewModel }` for browser automation (stripped from production).
 
 Key cross-cutting conventions:
 

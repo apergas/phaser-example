@@ -4,12 +4,17 @@ Top-down (3/4 view) RPG prototype built with **TypeScript + Phaser 4 + Vite**, f
 
 ```
 rpg/src/
-  domain/          pure game rules (Player, World, Obstacle, Position) — no Phaser
-  application/     use cases (MovePlayerTo, AdvanceWorld)
-  infrastructure/  level data
-  presentation/    Phaser adapter: scenes and views
+  domain/          pure game rules — World aggregate split into systems (navigation,
+                   woodcutting, construction, pick-up), quests. No Phaser.
+  application/     use cases, ports (GameSessionRepository, LevelSource) and the DTOs
+                   that cross to adapters
+  infrastructure/  port implementations: procedural level, in-memory session
+  presentation/    MVVM: view models (plain TS, tested) + passive Phaser scenes/views and
+                   HTML HUD; only talk to the application layer
   main.ts          composition root
 ```
+
+The dependency rule is checked by `rpg/tests/architecture.test.ts`.
 
 Gather-and-build loop: pick up the axe next to the spawn point, click a tree to chop it (5 hits,
 5–6 wood each), then use **Construir** to place a house (15 wood) and watch it being built. **Misiones** lists the
@@ -21,7 +26,8 @@ current goals and their progress.
 cd rpg
 npm install
 npm run dev    # dev server
-npm test       # domain and use-case tests (Vitest)
+npm test       # domain, use-case, view-model and architecture tests (Vitest)
+npm run typecheck
 npm run build  # static build in rpg/dist
 ```
 

@@ -14,4 +14,4 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-include(":shared")
+include(":shared", ":androidApp")

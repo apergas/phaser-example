@@ -278,3 +278,28 @@ Lo que cambió respecto a lo escrito al ejecutar cada fase. Las fases siguientes
 - `deploy.yml`: la tarea de tests JVM es `:shared:testAndroidHostTest` (fase 1); `actions/setup-java@v6` y `gradle/actions/setup-gradle@v6` (últimas versiones); el filtro de rutas incluye también `gradlew`.
 - Bundle de producción: 1.407,68 kB (368,70 kB gzip) antes → 1.642,09 kB (428,24 kB gzip) después: +60 kB gzip por el núcleo Kotlin/JS.
 - Partida e2e idéntica a la de referencia: mismos árboles talados (tree-54, 26, 63, 49, 19), madera 5 → 10 → 16, mismo sitio de la casa, 3/3 misiones, sin errores de consola. Capturas: mismos árboles con el mismo dibujo; solo cambia la decoración del suelo.
+
+### Preparación de las fases 7 y 8 (2026-10-04)
+
+- `build_assets.py` copia el arte a `androidApp/src/main/assets/lpc/` e `iosApp/iosApp/Resources/lpc/` en un solo commit previo, para que las dos fases (en paralelo) no tocaran el mismo fichero.
+- El proyecto Xcode se escribió a mano (formato de Xcode 27 con carpetas sincronizadas: los `.swift` nuevos entran solos en su target), con el run script de Gradle, `-framework Shared`, iOS 17, `com.apergas.rpg`, solo horizontal, y `Resources/lpc` como referencia de carpeta. El `.gitignore` global excluye `*.xcscheme`: el repo lo reincluye para el esquema compartido `iosApp`.
+
+### Fase 7 (2026-10-04)
+
+- **Versiones bajadas para mantener `compileSdk` 36** (las últimas de AndroidX exigen `minCompileSdk` 37; decisión del usuario): `lifecycle` (JetBrains, `shared`) 2.11.0 → 2.10.0, `androidxLifecycle` 2.11.0 → 2.10.0, Compose BOM 2026.09.00 → 2026.06.01, navigation-compose 2.10.2 → 2.9.8, core-ktx 1.19.1 → 1.18.0. `shared` sigue verde en los tres targets.
+- `androidApp/build.gradle.kts` sin `kotlinAndroid` (Kotlin integrado en AGP 9); `kotlin { jvmToolchain(17) }` funciona igual. Tests con `kotlin("test-junit")`: sin el plugin de Kotlin nadie elige la variante JUnit. Se añaden `lifecycle-viewmodel-compose` y `androidx-test-runner`.
+- `LpcAssets` guarda `context.assets` en una propiedad (el plan usaba el parámetro del constructor dentro de un método).
+- `ForestScreenTests`: el bucle de juego nunca deja Compose ocioso; el test controla el reloj (`mainClock.autoAdvance = false`, `advanceTimeByFrame()`) y usa `junit4.v2.createComposeRule`.
+- Corregido al jugar en el emulador: `showSnackbar` bloqueaba el colector de efectos (cada mensaje va en su corrutina y sustituye al anterior); costuras entre baldosas (cámara redondeada a píxeles enteros); la barra táctil pasa a ser `PlacementBar` en el `bottomBar` del `ForestScaffold` para que el snackbar no la tape; botones del HUD con fondo `surface`; "Hecha" sin partirse en dos líneas; astillas a `base.y + 1` (como la web) para pintarse delante del jugador.
+- Verificado: tests unitarios 4/4, instrumentado 1/1, partida completa en el emulador (5 → 11 → 16 de madera, casa, 3/3).
+
+### Fase 8 (2026-10-04)
+
+- SKIE aplana las clases de una interfaz sellada en Swift: `ForestIntentTick(deltaMs:)`, `ForestIntentMapClicked(...)`, `ForestIntentPlacementCancelled.shared`… en vez de `ForestIntent.Tick`. `onEnum(of:)`, los Flows como `AsyncSequence` y los `.shared` funcionan como dice el plan.
+- En los tests, `ForestViewModel` es ambiguo con `import Shared` + `@testable import iosApp`: se usa `iosApp.ForestViewModel`. `ForestView.swift` necesita `import Shared` para `ForestLabels`.
+- El fantasma de colocación necesita `ghost.size = ghost.texture?.size() ?? .zero` (un `SKSpriteNode()` vacío tiene tamaño cero). Los emisores no usan `targetNode = self` (con él, las partículas se pintaban detrás de todo); astillas a `base.y + 1` como en la web.
+- Simulador iPhone 17 (no hay iPhone 16 en esta máquina). Verificado: 8 tests; partida completa dirigida por el ViewModel dentro de la app con capturas (16 de madera, casa, 3/3). Pendiente: jugarla con toques reales en el simulador.
+
+### Diferencias con la web que el plan no cubre (Android e iOS)
+
+- Barra de progreso de la obra, sombra del hacha en el suelo, iconos del HUD; en iOS además retirar la decoración que queda bajo la casa y el contraste del botón "Cancelar".

@@ -249,3 +249,13 @@ Lo que cambió respecto a lo escrito al ejecutar cada fase. Las fases siguientes
 - `lifecycle-viewmodel` resuelve para JS: `ForestViewModel` puede extender `ViewModel` tal como dice la fase 5 (no hace falta la alternativa).
 - `kotlin-js-store/yarn.lock` se versiona ya en la fase 1 (lo genera la primera compilación JS).
 - La Task 3 (push + `gh run watch`) no aplica en una rama `feature/*`: el despliegue solo corre en `main`. Se sustituye por `npm run typecheck && npm test && npm run build` en `rpg/` (64 tests verdes, sin cambios en `rpg/`).
+
+### Fase 2 (2026-10-04)
+
+- Sin desviaciones: el código del plan compila y pasa tal cual (39 tests en JVM, JS e iOS).
+
+### Fase 3 (2026-10-04)
+
+- `LevelLocalDataSourceImplTests`: el recuento por tipo se compara con `mapOf<String?, Int>(...)`, porque `TreeDto.kind` es `String?` y Kotlin 2.4 no infiere el tipo con `mapOf("broad" to 3, ...)`. Los valores esperados no cambian.
+- `LevelLocalDataSourceImpl.scatterDecorations`: los `!!` repetidos sobre la misma propiedad generaban avisos de "aserción innecesaria"; se leen una vez en variables locales (`spawnX`, `spawnY`, `treeX`, `treeY`). Mismo comportamiento.
+- Valores dorados del bosque (posiciones, madera, tipos de árbol y recuentos) idénticos al TypeScript en los tres targets.

@@ -3,6 +3,16 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      - 'shared/**'
+      - 'rpg/**'
+      - 'asset-packs/**'
+      - 'kotlin-js-store/**'
+      - 'gradle/**'
+      - '*.gradle.kts'
+      - 'gradle.properties'
+      - 'gradlew'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 permissions:
@@ -14,24 +24,35 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
-defaults:
-  run:
-    working-directory: rpg
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+
+      # 1. Shared Kotlin core: the tests that matter for the web, then the npm package the web depends on.
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+      - run: ./gradlew :shared:testAndroidHostTest :shared:jsBrowserTest :shared:jsBrowserProductionLibraryDistribution
+
+      # 2. Web app: same steps as before the migration.
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
           cache-dependency-path: rpg/package-lock.json
       - run: npm ci
+        working-directory: rpg
       - run: npm run typecheck
+        working-directory: rpg
       - run: npm test
+        working-directory: rpg
       - run: npm run build
+        working-directory: rpg
+
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

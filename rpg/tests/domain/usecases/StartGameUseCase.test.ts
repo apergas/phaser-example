@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { InMemoryGameSessionRepository } from '../../../src/data/repositories/InMemoryGameSessionRepository';
+import { GameSessionRepositoryImpl } from '../../../src/data/repositories/GameSessionRepositoryImpl';
 import type { LevelRepository } from '../../../src/domain/repositories/LevelRepository';
 import { GetGameStateUseCase } from '../../../src/domain/usecases/GetGameStateUseCase';
 import { StartGameUseCase } from '../../../src/domain/usecases/StartGameUseCase';
@@ -13,7 +13,7 @@ const smallLevel: LevelRepository = {
 
 describe('StartGameUseCase', () => {
   it('starts a session in the level world with a fresh quest log', () => {
-    const sessions = new InMemoryGameSessionRepository();
+    const sessions = new GameSessionRepositoryImpl();
 
     new StartGameUseCase(smallLevel, sessions).execute();
 
@@ -24,7 +24,7 @@ describe('StartGameUseCase', () => {
   });
 
   it('replaces the previous game when started again', () => {
-    const sessions = new InMemoryGameSessionRepository();
+    const sessions = new GameSessionRepositoryImpl();
     const start = new StartGameUseCase(smallLevel, sessions);
     start.execute();
     sessions.current().world.player.inventory.addWood(10);

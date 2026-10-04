@@ -15,6 +15,9 @@
     "noEmit": true,
 
     /* Linting */
+    // Explicit because TypeScript 6 enables it by default but 5.x (bundled with some editors) does not:
+    // without it, checks like `if (!result.ok)` stop narrowing discriminated unions.
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,

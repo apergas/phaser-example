@@ -1,7 +1,7 @@
 import type { GameSession, GameSessionRepository } from '../../domain/repositories/GameSessionRepository';
 
 /** Keeps the session in memory for the lifetime of the page. A save-game adapter would persist it. */
-export class InMemoryGameSessionRepository implements GameSessionRepository {
+export class GameSessionRepositoryImpl implements GameSessionRepository {
   private session: GameSession | null = null;
 
   current(): GameSession {

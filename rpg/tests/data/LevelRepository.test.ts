@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ProceduralForestLevelDataSource } from '../../src/data/datasources/ProceduralForestLevelDataSource';
 import type { LevelDto } from '../../src/data/dtos/LevelDto';
 import { toWorld } from '../../src/data/mappers/LevelMapper';
-import { InMemoryGameSessionRepository } from '../../src/data/repositories/InMemoryGameSessionRepository';
+import { GameSessionRepositoryImpl } from '../../src/data/repositories/GameSessionRepositoryImpl';
 import { LevelRepositoryImpl } from '../../src/data/repositories/LevelRepositoryImpl';
 import { Rules } from '../../src/domain/rules';
 
@@ -66,8 +66,8 @@ describe('ProceduralForestLevelDataSource', () => {
   });
 });
 
-describe('InMemoryGameSessionRepository', () => {
+describe('GameSessionRepositoryImpl', () => {
   it('fails clearly when no game has been started', () => {
-    expect(() => new InMemoryGameSessionRepository().current()).toThrow(/StartGameUseCase/);
+    expect(() => new GameSessionRepositoryImpl().current()).toThrow(/StartGameUseCase/);
   });
 });

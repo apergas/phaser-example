@@ -3,7 +3,7 @@ import { Player } from '../src/domain/entities/Player';
 import { Tree } from '../src/domain/entities/Tree';
 import { QuestLog } from '../src/domain/quests/QuestLog';
 import { World } from '../src/domain/world/World';
-import { InMemoryGameSessionRepository } from '../src/data/repositories/InMemoryGameSessionRepository';
+import { GameSessionRepositoryImpl } from '../src/data/repositories/GameSessionRepositoryImpl';
 import { Rules } from '../src/domain/rules';
 import { Position } from '../src/domain/value-objects/Position';
 
@@ -31,7 +31,7 @@ export function advanceFor(world: World, totalMs: number) {
 
 /** A session repository holding `world`, as the use cases expect it. */
 export function sessionFor(world: World, quests = new QuestLog()) {
-  const sessions = new InMemoryGameSessionRepository();
+  const sessions = new GameSessionRepositoryImpl();
   sessions.save({ world, quests });
   return sessions;
 }

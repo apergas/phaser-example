@@ -4,13 +4,13 @@ Top-down (3/4 view) RPG prototype built with **TypeScript + Phaser 4 + Vite**, f
 
 ```
 rpg/src/
-  domain/          pure game rules — World aggregate split into systems (navigation,
-                   woodcutting, construction, pick-up), quests. No Phaser.
-  application/     use cases, ports (GameSessionRepository, LevelSource) and the DTOs
-                   that cross to adapters
-  infrastructure/  port implementations: procedural level, in-memory session
-  presentation/    MVVM: view models (plain TS, tested) + passive Phaser scenes/views and
-                   HTML HUD; only talk to the application layer
+  domain/          pure game rules: World aggregate split into systems (navigation,
+                   woodcutting, construction, pick-up), quests, repository protocols,
+                   use cases and the read-only models they return. No Phaser.
+  data/            datasources, DTOs, mappers and repository implementations
+                   (procedural level, in-memory session)
+  presentation/    MVVM by screen: screens/<name>/ holds the Scene + ViewModel pair and its
+                   child components (hud/, player/, world/); view models are plain TS and tested
   main.ts          composition root
 ```
 

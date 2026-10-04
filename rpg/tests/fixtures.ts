@@ -3,7 +3,7 @@ import { Player } from '../src/domain/entities/Player';
 import { Tree } from '../src/domain/entities/Tree';
 import { QuestLog } from '../src/domain/quests/QuestLog';
 import { World } from '../src/domain/world/World';
-import { InMemoryGameSessionRepository } from '../src/infrastructure/persistence/InMemoryGameSessionRepository';
+import { InMemoryGameSessionRepository } from '../src/data/repositories/InMemoryGameSessionRepository';
 import { Rules } from '../src/domain/rules';
 import { Position } from '../src/domain/value-objects/Position';
 

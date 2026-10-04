@@ -1,24 +1,26 @@
 import * as Phaser from 'phaser';
-import { AdvanceWorldUseCase } from './application/use-cases/AdvanceWorldUseCase';
-import { ChopTreeUseCase } from './application/use-cases/ChopTreeUseCase';
-import { ConstructBuildingUseCase } from './application/use-cases/ConstructBuildingUseCase';
-import { GetGameStateUseCase } from './application/use-cases/GetGameStateUseCase';
-import { MovePlayerToUseCase } from './application/use-cases/MovePlayerToUseCase';
-import { StartGameUseCase } from './application/use-cases/StartGameUseCase';
-import { ProceduralForestLevel } from './infrastructure/levels/ProceduralForestLevel';
-import { InMemoryGameSessionRepository } from './infrastructure/persistence/InMemoryGameSessionRepository';
-import { Hud } from './presentation/dom/Hud';
-import { ForestScene } from './presentation/phaser/scenes/ForestScene';
-import { PreloadScene } from './presentation/phaser/scenes/PreloadScene';
-import { GameViewModel } from './presentation/viewmodels/GameViewModel';
+import { AdvanceWorldUseCase } from './domain/usecases/AdvanceWorldUseCase';
+import { ChopTreeUseCase } from './domain/usecases/ChopTreeUseCase';
+import { ConstructBuildingUseCase } from './domain/usecases/ConstructBuildingUseCase';
+import { GetGameStateUseCase } from './domain/usecases/GetGameStateUseCase';
+import { MovePlayerToUseCase } from './domain/usecases/MovePlayerToUseCase';
+import { StartGameUseCase } from './domain/usecases/StartGameUseCase';
+import { ProceduralForestLevelDataSource } from './data/datasources/ProceduralForestLevelDataSource';
+import { LevelRepositoryImpl } from './data/repositories/LevelRepositoryImpl';
+import { InMemoryGameSessionRepository } from './data/repositories/InMemoryGameSessionRepository';
+import { Hud } from './presentation/screens/forest/hud/Hud';
+import { ForestScene } from './presentation/screens/forest/ForestScene';
+import { PreloadScene } from './presentation/screens/preload/PreloadScene';
+import { ForestViewModel } from './presentation/screens/forest/ForestViewModel';
 
 // Composition root: the only place that knows every layer and wires them together.
 
 const sessions = new InMemoryGameSessionRepository();
-new StartGameUseCase(new ProceduralForestLevel(), sessions).execute();
+const levels = new LevelRepositoryImpl(new ProceduralForestLevelDataSource());
+new StartGameUseCase(levels, sessions).execute();
 const gameState = new GetGameStateUseCase(sessions);
 
-const viewModel = new GameViewModel({
+const viewModel = new ForestViewModel({
   movePlayerTo: new MovePlayerToUseCase(sessions),
   chopTree: new ChopTreeUseCase(sessions),
   constructBuilding: new ConstructBuildingUseCase(sessions),

@@ -26,23 +26,31 @@ function violations(folder: string, forbidden: RegExp): string[] {
 }
 
 describe('Dependency rule', () => {
-  it('domain depends on nothing outside itself (no app, infrastructure, presentation or Phaser)', () => {
-    expect(violations('domain', /\/(application|infrastructure|presentation|shared)\/|^phaser$/)).toEqual([]);
+  it('domain depends on nothing outside itself (no data, presentation, shared helpers or Phaser)', () => {
+    expect(violations('domain', /\/(data|presentation|shared)\/|^phaser$/)).toEqual([]);
   });
 
-  it('application depends only on the domain', () => {
-    expect(violations('application', /\/(infrastructure|presentation)\/|^phaser$/)).toEqual([]);
+  it('the domain core (entities, world, quests) does not know about use cases or repositories', () => {
+    const core = ['domain/entities', 'domain/world', 'domain/quests', 'domain/value-objects'];
+    expect(core.flatMap((folder) => violations(folder, /\/(usecases|repositories)\//))).toEqual([]);
   });
 
-  it('presentation talks to the application layer only, never to the domain', () => {
-    expect(violations('presentation', /\/(domain|infrastructure)\//)).toEqual([]);
+  it('data implements domain repositories without touching presentation', () => {
+    expect(violations('data', /\/presentation\/|^phaser$/)).toEqual([]);
   });
 
-  it('view models are plain TypeScript: no Phaser, no DOM views', () => {
-    expect(violations('presentation/viewmodels', /^phaser$|\/(phaser|dom)\//)).toEqual([]);
+  it('presentation only reaches the domain through use cases and their models, never data', () => {
+    const outsideUseCases = /\/domain\/(?!usecases\/)/;
+    expect(violations('presentation', /\/data\//)).toEqual([]);
+    expect(violations('presentation', outsideUseCases)).toEqual([]);
   });
 
-  it('infrastructure implements application ports without touching presentation', () => {
-    expect(violations('infrastructure', /\/presentation\/|^phaser$/)).toEqual([]);
+  it('view models are plain TypeScript: no Phaser, no views', () => {
+    const viewModelImports = importsUnder('presentation').filter(({ file }) => file.endsWith('ViewModel.ts'));
+    const forbidden = viewModelImports.filter(
+      ({ specifier }) => specifier === 'phaser' || /(Scene|View)$/.test(specifier) || specifier.endsWith('.css'),
+    );
+    expect(forbidden.map(({ file, specifier }) => `${file} -> ${specifier}`)).toEqual([]);
+    expect(viewModelImports.length).toBeGreaterThan(0);
   });
 });

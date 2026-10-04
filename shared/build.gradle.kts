@@ -29,6 +29,7 @@ kotlin {
             testTask { useKarma { useChromeHeadless() } }
         }
         binaries.library()
+        useEsModules()
         generateTypeScriptDefinitions()
     }
 
@@ -41,6 +42,9 @@ kotlin {
         commonTest.dependencies {
             implementation(kotlin("test"))
             implementation(libs.kotlinx.coroutines.test)
+        }
+        jsTest.dependencies {
+            implementation(kotlin("test"))
         }
     }
 }

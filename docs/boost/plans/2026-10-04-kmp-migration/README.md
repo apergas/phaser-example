@@ -263,3 +263,10 @@ Lo que cambió respecto a lo escrito al ejecutar cada fase. Las fases siguientes
 ### Fase 4 (2026-10-04)
 
 - Sin desviaciones: el código del plan compila sin avisos y pasa tal cual (64 tests en JVM, JS e iOS).
+
+### Fase 5 (2026-10-04)
+
+- El bloque de `ForestContract.kt` no tenía cabecera de fichero en el plan; el fichero se llama `ForestContract.kt` como pide la convención.
+- `ForestViewModel` extiende el `ViewModel` de JetBrains en los tres targets (no hizo falta la alternativa sin superclase).
+- La etiqueta `close` (\"Cerrar\") de `labels.ts` no se porta: la web no la usa.
+- 74 tests en JVM, JS e iOS, sin avisos del compilador.

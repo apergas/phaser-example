@@ -270,3 +270,11 @@ Lo que cambió respecto a lo escrito al ejecutar cada fase. Las fases siguientes
 - `ForestViewModel` extiende el `ViewModel` de JetBrains en los tres targets (no hizo falta la alternativa sin superclase).
 - La etiqueta `close` (\"Cerrar\") de `labels.ts` no se porta: la web no la usa.
 - 74 tests en JVM, JS e iOS, sin avisos del compilador.
+
+### Fase 6 (2026-10-04)
+
+- El paquete generado declara las clases exportadas en el nivel superior (`rpg-shared.d.mts`) y ya trae `"types"` en su `package.json`: `import { ForestWebController } from 'rpg-shared'` funciona sin ajustes.
+- Kotlin/JS tipa los nulos como `Nullable<T>` (`T | null | undefined`): `ForestScene.renderGhost` recibe `WebPlacement | null | undefined` en vez del tipo literal del plan.
+- `deploy.yml`: la tarea de tests JVM es `:shared:testAndroidHostTest` (fase 1); `actions/setup-java@v6` y `gradle/actions/setup-gradle@v6` (últimas versiones); el filtro de rutas incluye también `gradlew`.
+- Bundle de producción: 1.407,68 kB (368,70 kB gzip) antes → 1.642,09 kB (428,24 kB gzip) después: +60 kB gzip por el núcleo Kotlin/JS.
+- Partida e2e idéntica a la de referencia: mismos árboles talados (tree-54, 26, 63, 49, 19), madera 5 → 10 → 16, mismo sitio de la casa, 3/3 misiones, sin errores de consola. Capturas: mismos árboles con el mismo dibujo; solo cambia la decoración del suelo.

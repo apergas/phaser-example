@@ -132,6 +132,14 @@ private extension ForestScene {
         items[id] = node
     }
 
+    /// Plays a one-shot emitter in world coordinates and removes it once its particles have faded.
+    func emit(_ emitter: SKEmitterNode, at position: Position, zPosition: Double) {
+        emitter.position = points.scene(position)
+        emitter.zPosition = zPosition
+        addChild(emitter)
+        emitter.run(.sequence([.wait(forDuration: 0.6), .removeFromParent()]))
+    }
+
     func addBuilding(id: String, center: Position, progress: Double) {
         let front = Position(x: center.x, y: center.y + houseFrontOffset)
         let node = SKSpriteNode(texture: atlas.textures["house"])
@@ -151,6 +159,8 @@ private extension ForestScene {
             guard let tree = trees[hit.treeId] else { return }
             let direction: CGFloat = hit.fromX < tree.base.x ? -1 : 1
             tree.node.run(.sequence([.rotate(byAngle: 0.05 * direction, duration: 0.07), .rotate(byAngle: -0.05 * direction, duration: 0.07)]))
+            emit(ParticleEmitters.woodChips(playerOnLeft: hit.fromX < tree.base.x),
+                 at: Position(x: tree.base.x, y: tree.base.y - 10), zPosition: tree.base.y + 1)
         case .treeFelled(let felled):
             guard let tree = trees.removeValue(forKey: felled.treeId) else { return }
             let direction: CGFloat = felled.fromX < tree.base.x ? -1 : 1
@@ -163,7 +173,10 @@ private extension ForestScene {
         case .buildingPlaced(let placed):
             addBuilding(id: placed.building.id, center: placed.building.position, progress: placed.building.progress)
         case .buildingHammered(let hammered):
-            buildings[hammered.buildingId]?.alpha = 0.35 + 0.65 * hammered.progress
+            guard let building = buildings[hammered.buildingId] else { return }
+            building.alpha = 0.35 + 0.65 * hammered.progress
+            let front = points.world(building.position)
+            emit(ParticleEmitters.dust(), at: Position(x: front.x, y: front.y - 4), zPosition: front.y + 1)
         case .buildingCompleted(let completed):
             buildings[completed.buildingId]?.alpha = 1
         case .showMessage:

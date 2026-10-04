@@ -1,11 +1,13 @@
 package com.apergas.rpg.android.presentation.forest.world
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import com.apergas.rpg.domain.entities.building.Building
 import com.apergas.rpg.domain.entities.game.WorldSnapshot
 import com.apergas.rpg.domain.entities.geometry.Position
 import com.apergas.rpg.presentation.forest.ForestEffect
 import com.apergas.rpg.presentation.forest.SpriteNames
+import kotlin.random.Random
 
 data class SceneTree(val id: String, val base: Position, val frame: String, val hitAtNanos: Long? = null, val fromX: Double = 0.0, val felledAtNanos: Long? = null)
 data class SceneBuilding(val id: String, val center: Position, val progress: Double, val completedAtNanos: Long? = null)
@@ -23,6 +25,8 @@ class WorldSceneState(snapshot: WorldSnapshot) {
     val buildings = mutableStateMapOf<String, SceneBuilding>()
     val stumps = mutableStateMapOf<String, Position>()
     val decorations = mutableStateMapOf<String, SceneDecoration>()
+    val particles = mutableStateListOf<Particle>()
+    private val random = Random.Default
 
     init {
         // What to draw and where comes from the level (shared): no art decisions are made here.
@@ -37,7 +41,10 @@ class WorldSceneState(snapshot: WorldSnapshot) {
     fun play(effect: ForestEffect, nowNanos: Long) {
         when (effect) {
             is ForestEffect.ItemPickedUp -> items.remove(effect.itemId)
-            is ForestEffect.TreeHit -> trees.computeIfPresent(effect.treeId) { _, tree -> tree.copy(hitAtNanos = nowNanos, fromX = effect.fromX) }
+            is ForestEffect.TreeHit -> trees[effect.treeId]?.let { tree ->
+                trees[tree.id] = tree.copy(hitAtNanos = nowNanos, fromX = effect.fromX)
+                particles += ParticleBursts.woodChips(tree.base, playerOnLeft = effect.fromX < tree.base.x, nowNanos, random)
+            }
             is ForestEffect.TreeFelled -> trees[effect.treeId]?.let { tree ->
                 trees[tree.id] = tree.copy(felledAtNanos = nowNanos, fromX = effect.fromX)
                 stumps[tree.id] = tree.base
@@ -48,15 +55,19 @@ class WorldSceneState(snapshot: WorldSnapshot) {
                 stumps.filterValues { base -> base.distanceTo(effect.building.position) < radius }.keys.forEach(stumps::remove)
                 decorations.filterValues { it.position.distanceTo(effect.building.position) < radius }.keys.forEach(decorations::remove)
             }
-            is ForestEffect.BuildingHammered -> buildings.computeIfPresent(effect.buildingId) { _, b -> b.copy(progress = effect.progress) }
+            is ForestEffect.BuildingHammered -> buildings[effect.buildingId]?.let { building ->
+                buildings[building.id] = building.copy(progress = effect.progress)
+                particles += ParticleBursts.dust(building.center, nowNanos, random)
+            }
             is ForestEffect.BuildingCompleted -> buildings.computeIfPresent(effect.buildingId) { _, b -> b.copy(progress = 1.0, completedAtNanos = nowNanos) }
             is ForestEffect.ShowMessage -> Unit
         }
     }
 
-    /** Removes trees whose fall animation has finished. */
+    /** Removes trees whose fall animation has finished and particles that have faded out. */
     fun prune(nowNanos: Long) {
         trees.values.filter { it.felledAtNanos != null && nowNanos - it.felledAtNanos > FALL_NANOS }.forEach { trees.remove(it.id) }
+        particles.removeAll { !it.isAlive(nowNanos) }
     }
 
     /** The tree drawn on top at this world point, pixel-accurate, or null. */

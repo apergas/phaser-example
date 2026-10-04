@@ -66,6 +66,7 @@ fun WorldCanvas(
                     add(building.center.y + HOUSE_FRONT_OFFSET to { drawHouse(assets, building.center, 0.35f + 0.65f * building.progress.toFloat()) })
                 }
                 add(player.position.y to { drawPlayer(assets, player, frameNanos) })
+                scene.particles.forEach { particle -> add(particle.sortY to { drawParticle(particle, frameNanos) }) }
             }
             drawables.sortedBy { it.first }.forEach { (_, draw) -> draw() }
             placement?.let { ghost ->
@@ -151,3 +152,21 @@ private fun DrawScope.drawPlayer(assets: LpcAssets, player: PlayerRenderState, n
 }
 
 private data class SheetFrame(val sheet: ImageBitmap, val cell: Int, val column: Int, val originY: Float)
+
+private val CHIP_DARK = Color(0xFF8A5A2B)
+private val CHIP_LIGHT = Color(0xFFC89A5E)
+private val DUST_COLOR = Color(0xFFD8CDB0)
+
+private fun DrawScope.drawParticle(particle: Particle, now: Long) {
+    val at = particle.position(now)
+    val center = Offset(at.x.toFloat(), at.y.toFloat())
+    val alpha = particle.alpha(now).toFloat()
+    when (particle.kind) {
+        ParticleKind.WoodChip -> rotate(particle.rotationDegrees.toFloat(), center) {
+            val topLeft = Offset(center.x - 1.5f, center.y - 1f)
+            drawRect(CHIP_DARK, topLeft, Size(3f, 2f), alpha)
+            drawRect(CHIP_LIGHT, topLeft, Size(2f, 1f), alpha)
+        }
+        ParticleKind.Dust -> drawCircle(DUST_COLOR, radius = 3f * particle.scale(now).toFloat(), center = center, alpha = alpha)
+    }
+}

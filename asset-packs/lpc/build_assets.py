@@ -17,6 +17,7 @@ Requires Pillow. Licences and authors: see CREDITS.md next to the outputs.
 
 from pathlib import Path
 import json
+import shutil
 
 from PIL import Image
 
@@ -271,3 +272,11 @@ if __name__ == "__main__":
     build_character()
     build_forest()
     print(f"Assets written to {OUT}")
+
+    # The native apps draw the same art: copy it next to each one.
+    for app_assets in (
+        ROOT.parent.parent / "androidApp" / "src" / "main" / "assets" / "lpc",
+        ROOT.parent.parent / "iosApp" / "iosApp" / "Resources" / "lpc",
+    ):
+        shutil.copytree(OUT, app_assets, dirs_exist_ok=True)
+        print(f"Copied to {app_assets}")

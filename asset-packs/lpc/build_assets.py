@@ -3,7 +3,7 @@ Builds the game's LPC textures from the raw sources in ./sources.
 
   python3 build_assets.py
 
-Outputs (into webApp/public/assets/lpc/):
+Outputs (into shared/assets/lpc/, the one copy the web, Android and iOS apps all read):
   hero-{walk,idle}[-axe].png       64x64 character sheets composed from layers, clothes recoloured,
                                    with and without the axe in hand
   hero-{chop,hammer}.png           128x128 work animations: body slash frames between the tool's
@@ -17,13 +17,12 @@ Requires Pillow. Licences and authors: see CREDITS.md next to the outputs.
 
 from pathlib import Path
 import json
-import shutil
 
 from PIL import Image
 
 ROOT = Path(__file__).parent
 SOURCES = ROOT / "sources"
-OUT = ROOT.parent.parent / "webApp" / "public" / "assets" / "lpc"
+OUT = ROOT.parent.parent / "shared" / "assets" / "lpc"
 
 # --- Character -------------------------------------------------------------------------------
 
@@ -272,11 +271,3 @@ if __name__ == "__main__":
     build_character()
     build_forest()
     print(f"Assets written to {OUT}")
-
-    # The native apps draw the same art: copy it next to each one.
-    for app_assets in (
-        ROOT.parent.parent / "androidApp" / "src" / "main" / "assets" / "lpc",
-        ROOT.parent.parent / "iosApp" / "Resources" / "lpc",
-    ):
-        shutil.copytree(OUT, app_assets, dirs_exist_ok=True)
-        print(f"Copied to {app_assets}")

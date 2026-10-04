@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `androidApp/` — Jetpack Compose + Hilt app. Only views.
 - `iosApp/` — SwiftUI + SpriteKit app (`iosApp.xcodeproj`, hand-written, Xcode file-system synchronized folders: new `.swift` files under `iosApp/iosApp` or `iosApp/iosAppTests` join their target automatically). Only views.
 - `webApp/` — Vite + Phaser 4 + TypeScript. Only views; consumes `shared` as the npm package `rpg-shared` (`file:../shared/build/dist/js/productionLibrary`).
-- `asset-packs/lpc/` — raw LPC art and `build_assets.py`, which generates `webApp/public/assets/lpc/` and copies it to `androidApp/src/main/assets/lpc/` and `iosApp/Resources/lpc/`.
+- `asset-packs/lpc/` — raw LPC art and `build_assets.py`, which generates `shared/assets/lpc/`, the only copy of the art: Android adds `shared/assets` as an assets folder (`androidApp/build.gradle.kts`), iOS has `../shared/assets/lpc` as a folder reference, and the web serves/copies it at `assets/lpc` with a small plugin in `webApp/vite.config.ts`.
 - `.github/workflows/deploy.yml` — on pushes to `main` that touch the web or `shared`: shared JVM + JS tests, the `rpg-shared` package, then `npm ci`, typecheck, test, build in `webApp/` and publish `webApp/dist` to GitHub Pages (https://apergas.github.io/phaser-example/). Android and iOS are tested locally only.
 - `docs/boost/plans/2026-10-04-kmp-migration/` — the migration plan; its README section 8 records every deviation found while executing it.
 
@@ -58,5 +58,5 @@ Key cross-cutting conventions:
 - Tests (Kotlin and Swift): `// given`, `// when`, `// then`; names `testWhen<Action>Then<Result>`; mock data as `val <Entity>.Companion.mock` / `static let mock`; hand-written mocks with an `error` property and `<method>Called` flags.
 - Code, identifiers and comments in English; player-facing text in Spanish only in `ForestLabels` (the app name is the only per-platform text: `app_name`, `Info.plist`, `<title>`).
 - `webApp` tsconfig has `erasableSyntaxOnly`: no constructor parameter properties or enums. Vite `base: './'` keeps asset URLs relative for the Pages sub-path.
-- LPC art is CC-BY-SA 3.0 / GPL 3.0 / OGA-BY 3.0: any new LPC asset must be credited in `webApp/public/assets/lpc/CREDITS.md`.
+- LPC art is CC-BY-SA 3.0 / GPL 3.0 / OGA-BY 3.0: any new LPC asset must be credited in `shared/assets/lpc/CREDITS.md`.
 - Git flow: `main` (published) / `develop` (default) / `feature/PROJECT-X-<description>` branches. A git hook enforces commit messages as `[PROJECT-123]: Imperative description` (or `[PROJECT-X]: ...` without a ticket), branches as `(feature|bugfix|hotfix)/PROJECT-123-description`, and rejects any AI attribution (no `Co-Authored-By` for an AI, no Claude/Anthropic mentions).

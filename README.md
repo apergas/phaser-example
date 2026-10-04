@@ -37,7 +37,7 @@ web app, and publishes `webApp/dist` to GitHub Pages (`.github/workflows/deploy.
 ## Art
 
 - `asset-packs/lpc/` — Liberated Pixel Cup sources and `build_assets.py`, which generates the textures in
-  `webApp/public/assets/lpc/` and copies them to the Android and iOS apps (requires Pillow).
+  `shared/assets/lpc/`, the single copy the web, Android and iOS apps all read (requires Pillow).
 
 LPC art is licensed CC-BY-SA 3.0 / GPL 3.0 / OGA-BY 3.0 and requires attribution:
-see [`webApp/public/assets/lpc/CREDITS.md`](webApp/public/assets/lpc/CREDITS.md).
+see [`shared/assets/lpc/CREDITS.md`](shared/assets/lpc/CREDITS.md).

@@ -18,6 +18,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true }
+    // The LPC art lives once in shared/assets/lpc, read as assets/lpc like any other app asset.
+    sourceSets.getByName("main").assets.directories.add("../shared/assets")
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

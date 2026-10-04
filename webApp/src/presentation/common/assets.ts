@@ -1,6 +1,6 @@
 /**
  * Textures built from Liberated Pixel Cup (LPC) art by asset-packs/lpc/build_assets.py.
- * Licences require attribution: see public/assets/lpc/CREDITS.md.
+ * Licences require attribution: see shared/assets/lpc/CREDITS.md.
  */
 export const TILE_SIZE = 32;
 /** Pixel art is drawn at native size; the camera zooms in by this integer factor. */

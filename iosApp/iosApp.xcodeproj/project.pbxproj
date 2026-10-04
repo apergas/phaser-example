@@ -23,7 +23,7 @@
 /* Begin PBXFileReference section */
 		A10000000000000000000101 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000000000000000000102 /* iosAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A10000000000000000000201 /* lpc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lpc; path = Resources/lpc; sourceTree = "<group>"; };
+		A10000000000000000000201 /* lpc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lpc; path = ../shared/assets/lpc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */

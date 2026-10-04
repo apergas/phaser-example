@@ -315,3 +315,7 @@ Lo que cambió respecto a lo escrito al ejecutar cada fase. Las fases siguientes
 - Los assets pasan de `iosApp/iosApp/Resources/lpc` a `iosApp/Resources/lpc`, fuera de la carpeta sincronizada: dentro de ella Xcode los copiaba también sueltos en la raíz del bundle (duplicados), y la excepción de carpeta no lo evitaba.
 - `INFOPLIST_KEY_UIRequiresFullScreen = YES`: la app solo admite horizontal, y sin pantalla completa Xcode avisa de que hay que soportar todas las orientaciones.
 - El framework `Shared` declara `binaryOption("bundleId", "com.apergas.rpg.shared")`, que quita el aviso de Kotlin/Native sobre el bundle ID.
+
+### Arte en una sola copia (2026-10-04)
+
+- D8 copiaba el arte generado en las tres apps (tres copias idénticas en git). Ahora `build_assets.py` escribe solo en `shared/assets/lpc/` y las apps leen de ahí: Android añade `../shared/assets` como carpeta de assets de `main`, la referencia de carpeta de Xcode apunta a `../shared/assets/lpc`, y la web usa un plugin en `vite.config.ts` que lo sirve en `assets/lpc` en desarrollo y lo copia al build (Vite solo admite una carpeta `public`). Las rutas en tiempo de ejecución (`assets/lpc`, `lpc/` en el bundle) no cambian.

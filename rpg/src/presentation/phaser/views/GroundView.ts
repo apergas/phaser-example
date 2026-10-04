@@ -12,6 +12,9 @@ const MAX_PLACEMENT_ATTEMPTS = 20;
  * Decor placement is seeded, so it looks the same every run.
  */
 export class GroundView {
+  /** Non-solid decor sprites, so buildings can clear what ends up underneath them. */
+  readonly decor: Phaser.GameObjects.Image[] = [];
+
   /** @param occupied areas already taken (e.g. trees) where decor must not be placed */
   constructor(scene: Phaser.Scene, width: number, height: number, occupied: readonly Phaser.Geom.Rectangle[]) {
     const random = seededRandom(SEED);
@@ -42,6 +45,7 @@ export class GroundView {
       }
       decor.setDepth(Depth.bySortY(decor.y));
       taken.push(decor.getBounds());
+      this.decor.push(decor);
     }
   }
 }

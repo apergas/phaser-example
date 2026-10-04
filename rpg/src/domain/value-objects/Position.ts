@@ -23,4 +23,16 @@ export class Position {
     const ratio = maxStep / distance;
     return new Position(this.x + (target.x - this.x) * ratio, this.y + (target.y - this.y) * ratio);
   }
+
+  /**
+   * The point at exactly `distance` from this position, in the direction of `towards`.
+   * When both positions coincide there is no direction, so the point is placed below (south).
+   */
+  pointAtDistance(distance: number, towards: Position): Position {
+    const length = this.distanceTo(towards);
+    if (length === 0) return new Position(this.x, this.y + distance);
+
+    const ratio = distance / length;
+    return new Position(this.x + (towards.x - this.x) * ratio, this.y + (towards.y - this.y) * ratio);
+  }
 }

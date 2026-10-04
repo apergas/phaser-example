@@ -4,8 +4,12 @@ Builds the game's LPC textures from the raw sources in ./sources.
   python3 build_assets.py
 
 Outputs (into rpg/public/assets/lpc/):
-  hero-walk.png / hero-idle.png   character sheets composed from layers, clothes recoloured
-  forest.png + forest.json         Phaser JSON-hash atlas with trees (pivot = trunk base) and decor
+  hero-{walk,idle}[-axe].png       64x64 character sheets composed from layers, clothes recoloured,
+                                   with and without the axe in hand
+  hero-{chop,hammer}.png           128x128 work animations: body slash frames between the tool's
+                                   back and front layers (same layout as the LPC generator)
+  forest.png + forest.json         Phaser JSON-hash atlas: trees (pivot = trunk base), decor, stump,
+                                   axe pickup and the house (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
 
 Requires Pillow. Licences and authors: see CREDITS.md next to the outputs.
@@ -54,15 +58,58 @@ def recolour(image: Image.Image, source: list, target: list) -> Image.Image:
     return image
 
 
+FRAME = 64
+WORK_FRAME = 128
+DIRECTIONS = 4
+
+
+def body_sheet(animation: str) -> Image.Image:
+    sheet = None
+    for layer in CHARACTER_LAYERS:
+        image = Image.open(SOURCES / "character" / f"{layer}__{animation}.png").convert("RGBA")
+        if layer in RECOLOURS:
+            image = recolour(image, *RECOLOURS[layer])
+        sheet = image if sheet is None else Image.alpha_composite(sheet, image)
+    return sheet
+
+
+def tool(name: str) -> Image.Image:
+    return Image.open(SOURCES / "tools" / f"{name}.png").convert("RGBA")
+
+
+def with_idle_axe(idle: Image.Image) -> Image.Image:
+    """The axe only ships a walk sheet; its standing pose (column 0) is reused for every idle frame."""
+    axe = tool("axe_walk")
+    sheet = idle.copy()
+    for row in range(DIRECTIONS):
+        pose = axe.crop((0, row * FRAME, FRAME, (row + 1) * FRAME))
+        for column in range(idle.width // FRAME):
+            sheet.alpha_composite(pose, (column * FRAME, row * FRAME))
+    return sheet
+
+
+def work_sheet(slash: Image.Image, tool_name: str) -> Image.Image:
+    """Tool back layer, then the 64px body slash frames centred in 128px cells, then the tool front."""
+    back, front = tool(f"{tool_name}_bg"), tool(f"{tool_name}_fg")
+    sheet = Image.new("RGBA", back.size)
+    sheet.alpha_composite(back)
+    offset = (WORK_FRAME - FRAME) // 2
+    for row in range(DIRECTIONS):
+        for column in range(slash.width // FRAME):
+            frame = slash.crop((column * FRAME, row * FRAME, (column + 1) * FRAME, (row + 1) * FRAME))
+            sheet.alpha_composite(frame, (column * WORK_FRAME + offset, row * WORK_FRAME + offset))
+    sheet.alpha_composite(front)
+    return sheet
+
+
 def build_character() -> None:
-    for animation in ("walk", "idle"):
-        sheet = None
-        for layer in CHARACTER_LAYERS:
-            image = Image.open(SOURCES / "character" / f"{layer}__{animation}.png").convert("RGBA")
-            if layer in RECOLOURS:
-                image = recolour(image, *RECOLOURS[layer])
-            sheet = image if sheet is None else Image.alpha_composite(sheet, image)
-        sheet.save(OUT / f"hero-{animation}.png")
+    walk, idle, slash = body_sheet("walk"), body_sheet("idle"), body_sheet("slash")
+    walk.save(OUT / "hero-walk.png")
+    idle.save(OUT / "hero-idle.png")
+    Image.alpha_composite(walk, tool("axe_walk")).save(OUT / "hero-walk-axe.png")
+    with_idle_axe(idle).save(OUT / "hero-idle-axe.png")
+    work_sheet(slash, "axe").save(OUT / "hero-chop.png")
+    work_sheet(slash, "hammer").save(OUT / "hero-hammer.png")
 
 
 # --- Forest atlas ----------------------------------------------------------------------------
@@ -94,6 +141,24 @@ DECOR = {
 }
 GROUND_TILES = [(1, 23)]
 CELL = 32
+# Pixel boxes (x0, y0, x1, y1) of single sprites.
+STUMP_BOX = (391, 395, 441, 436)  # terrain_atlas.png
+AXE_PICKUP = (1, 5)  # (row, column) of a 128px axe frame (back + front layers) showing the whole axe
+
+# House assembled from LPC cottage pieces: a 3x3 timber-frame wall, a thatched hip roof on top
+# (overlapping the wall's top edge) and a door centred at the bottom.
+HOUSE_WALL_BOX = (0, 128, 96, 224)  # cottage.png
+HOUSE_ROOF_BOX = (80, 0, 215, 128)  # thatched-roof.png
+HOUSE_DOOR_BOX = (16, 0, 48, 48)  # doors_0.png
+HOUSE_ROOF_OVERLAP = 28
+
+
+def trim(image: Image.Image, name: str) -> Image.Image:
+    """Crops to the visible pixels; fails loudly instead of shipping an empty sprite."""
+    box = image.getbbox()
+    if box is None:
+        raise ValueError(f"{name}: the source region is fully transparent")
+    return image.crop(box)
 
 
 def trunk_base(image: Image.Image, rows: int = 8) -> tuple:
@@ -135,6 +200,23 @@ def pack(frames: dict, width: int = 1024, padding: int = 2) -> tuple:
     return atlas, positions
 
 
+def build_house() -> Image.Image:
+    buildings = SOURCES / "buildings"
+    wall = Image.open(buildings / "cottage.png").convert("RGBA").crop(HOUSE_WALL_BOX)
+    roof = Image.open(buildings / "thatched-roof.png").convert("RGBA").crop(HOUSE_ROOF_BOX)
+    roof = roof.crop(roof.getbbox())
+    door = Image.open(buildings / "doors_0.png").convert("RGBA").crop(HOUSE_DOOR_BOX)
+    door = door.crop(door.getbbox())
+
+    width = max(roof.width, wall.width)
+    house = Image.new("RGBA", (width, roof.height + wall.height - HOUSE_ROOF_OVERLAP))
+    wall_x, wall_y = (width - wall.width) // 2, roof.height - HOUSE_ROOF_OVERLAP
+    house.alpha_composite(wall, (wall_x, wall_y))
+    house.alpha_composite(door, (wall_x + (wall.width - door.width) // 2, wall_y + wall.height - door.height))
+    house.alpha_composite(roof, ((width - roof.width) // 2, 0))
+    return house
+
+
 def build_forest() -> None:
     trees_sheet = Image.open(SOURCES / "terrain" / "trees-green.png").convert("RGBA")
     terrain = Image.open(SOURCES / "terrain" / "terrain_atlas.png").convert("RGBA")
@@ -147,8 +229,18 @@ def build_forest() -> None:
         pivots[name] = {"x": round(base_x / image.width, 4), "y": round(base_y / image.height, 4)}
     for name, (column, row) in DECOR.items():
         image = terrain.crop((column * CELL, row * CELL, (column + 1) * CELL, (row + 1) * CELL))
-        frames[name] = image.crop(image.getbbox())
+        frames[name] = trim(image, name)
         pivots[name] = {"x": 0.5, "y": 1}
+
+    frames["stump"] = terrain.crop(STUMP_BOX)
+    pivots["stump"] = {"x": 0.5, "y": 0.85}
+    row, column = AXE_PICKUP
+    cell = (column * WORK_FRAME, row * WORK_FRAME, (column + 1) * WORK_FRAME, (row + 1) * WORK_FRAME)
+    axe = Image.alpha_composite(tool("axe_bg"), tool("axe_fg")).crop(cell)
+    frames["axe-pickup"] = trim(axe, "axe-pickup")
+    pivots["axe-pickup"] = {"x": 0.5, "y": 0.5}
+    frames["house"] = build_house()
+    pivots["house"] = {"x": 0.5, "y": 1}
 
     atlas, positions = pack(frames)
     atlas.save(OUT / "forest.png")

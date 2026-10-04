@@ -1,0 +1,269 @@
+#app {
+  position: relative;
+}
+
+.hud {
+  --hud-bg: rgba(28, 22, 16, 0.82);
+  --hud-border: #8a6a3f;
+  --hud-text: #f3e7cf;
+  --hud-muted: #b9a888;
+  --hud-accent: #e8c05a;
+
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font: 600 15px/1.2 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--hud-text);
+  user-select: none;
+}
+
+.hud__panel {
+  pointer-events: auto;
+  background: var(--hud-bg);
+  border: 2px solid var(--hud-border);
+  border-radius: 8px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+.hud__resources {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 16px;
+  padding: 8px 14px;
+}
+
+.hud__resource {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud__value {
+  min-width: 2ch;
+  font-size: 18px;
+  color: var(--hud-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.hud__tool {
+  opacity: 0.35;
+}
+
+.hud__tool--owned {
+  opacity: 1;
+}
+
+.hud__icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+
+/* A log seen from the side: bark body with a lighter cut end. */
+.hud__icon--wood {
+  background:
+    radial-gradient(circle at 78% 50%, #e3b878 0 22%, #b3803f 23% 30%, transparent 31%),
+    linear-gradient(#7a4d24, #5a3518);
+  border-radius: 4px 50% 50% 4px;
+  height: 14px;
+}
+
+/* Axe: a blade on a handle. */
+.hud__icon--axe {
+  background:
+    linear-gradient(135deg, transparent 0 34%, #c9ced6 35% 62%, transparent 63%) top right / 60% 60% no-repeat,
+    linear-gradient(45deg, transparent 0 44%, #8a5a2b 45% 57%, transparent 58%);
+}
+
+.hud__actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.hud__buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.hud__badge {
+  margin-left: 4px;
+  padding: 1px 6px;
+  font-size: 12px;
+  color: #1c1610;
+  background: var(--hud-accent);
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud__button {
+  padding: 10px 18px;
+  font: inherit;
+  color: var(--hud-text);
+  cursor: pointer;
+}
+
+.hud__button:hover:not(:disabled),
+.hud__button[aria-expanded='true'] {
+  border-color: var(--hud-accent);
+}
+
+.hud__button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.hud__menu {
+  padding: 8px;
+  min-width: 220px;
+  max-width: min(320px, calc(100vw - 24px));
+}
+
+.hud__menu-title {
+  margin: 4px 8px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hud-muted);
+}
+
+.hud__quests {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hud__quest {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+
+.hud__quest--current {
+  border-color: var(--hud-accent);
+  background: rgba(232, 192, 90, 0.12);
+}
+
+.hud__quest--pending {
+  color: var(--hud-muted);
+}
+
+.hud__quest--done .hud__quest-title {
+  color: var(--hud-muted);
+  text-decoration: line-through;
+}
+
+.hud__check {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+}
+
+.hud__quest--current .hud__check {
+  border-color: var(--hud-accent);
+}
+
+.hud__quest--done .hud__check {
+  border-color: #7cc36b;
+  background: #7cc36b;
+  box-shadow: inset 0 0 0 2px var(--hud-bg);
+}
+
+.hud__quest-progress {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--hud-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.hud__quest--done .hud__quest-progress {
+  color: #7cc36b;
+}
+
+.hud__option {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  width: 100%;
+  padding: 10px 12px;
+  font: inherit;
+  text-align: left;
+  color: var(--hud-text);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.hud__option:hover:not(:disabled) {
+  border-color: var(--hud-accent);
+  background: rgba(232, 192, 90, 0.12);
+}
+
+.hud__option:disabled {
+  cursor: not-allowed;
+  color: var(--hud-muted);
+}
+
+.hud__option-cost {
+  font-weight: 500;
+  color: var(--hud-accent);
+}
+
+.hud__option:disabled .hud__option-cost {
+  color: var(--hud-muted);
+}
+
+.hud__option-status {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  font-weight: 500;
+  color: #e38b6b;
+}
+
+.hud__option-status:empty {
+  display: none;
+}
+
+.hud__message {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  max-width: min(90vw, 560px);
+  padding: 10px 16px;
+  text-align: center;
+  background: var(--hud-bg);
+  border: 2px solid var(--hud-border);
+  border-radius: 8px;
+  transform: translate(-50%, 8px);
+  opacity: 0;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+
+.hud__message--visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (max-width: 480px) {
+  .hud {
+    font-size: 13px;
+  }
+  .hud__label {
+    display: none;
+  }
+}

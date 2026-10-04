@@ -4,7 +4,7 @@ All art in this folder comes from the Liberated Pixel Cup (LPC) family of assets
 recombined and recoloured by `asset-packs/lpc/build_assets.py`. Derived files keep the
 original licences: **CC-BY-SA 3.0** (also offered under GPL 3.0 / OGA-BY 3.0 where noted).
 
-## Character (`hero-walk.png`, `hero-idle.png`)
+## Character (`hero-*.png`)
 
 Composed from the [Universal LPC Spritesheet Character Generator](https://github.com/liberatedpixelcup/Universal-LPC-Spritesheet-Character-Generator).
 Clothes and hair recoloured.
@@ -17,8 +17,12 @@ Clothes and hair recoloured.
 | Longsleeve shirt | JaidynReiman, Johannes Sjölund (wulax) | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
 | Pants | bluecarrot16, JaidynReiman, ElizaWy, Matthew Krohn (makrohn), Johannes Sjölund (wulax), Stephen Challener (Redshrike) | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
 | Basic boots | JaidynReiman, bluecarrot16, Nila122 | OGA-BY 3.0, CC-BY-SA 3.0, GPL 2.0, GPL 3.0 |
+| Axe and hammer (tools) | bluecarrot16, JaidynReiman, Pierre Vigier (pvigier), Tuomo Untinen (reemax) | OGA-BY 3.0, CC-BY 4.0, CC-BY-SA 3.0+, GPL 2.0+ |
+
+The axe pickup sprite in `forest.png` is cropped from the axe tool sheet.
 
 Sources: <https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles>,
+<https://opengameart.org/content/lpc-hand-tools>,
 <https://opengameart.org/content/lpc-medieval-fantasy-character-sprites>,
 <https://opengameart.org/content/lpc-clothes-and-hair>
 
@@ -38,3 +42,12 @@ CC-BY-SA 3.0 — <https://opengameart.org/content/lpc-trees>. Full per-source li
 Daniel Eddeland, Johann Charlot, Skyler Robert Colladay.
 CC-BY-SA 3.0 / GPL 3.0 — <https://opengameart.org/content/lpc-tile-atlas>. Full list in
 `asset-packs/lpc/sources/terrain/Attribution.txt`.
+
+## House (`house` frame in `forest.png`)
+
+Assembled from "[LPC] Thatched-roof Cottage" (timber-frame wall and thatched roof) and
+"[LPC] Windows & Doors" (door), both by bluecarrot16. CC-BY-SA 3.0 / GPL 3.0 —
+<https://opengameart.org/content/lpc-thatched-roof-cottage>,
+<https://opengameart.org/content/lpc-windows-doors>.
+
+The stump (`stump` frame) comes from the LPC Tile Atlas above.

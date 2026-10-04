@@ -11,7 +11,9 @@ rpg/src/
   main.ts          composition root
 ```
 
-Click anywhere to walk; trees block the way and the camera follows the player.
+Gather-and-build loop: pick up the axe next to the spawn point, click a tree to chop it (5 hits,
+5–6 wood each), then use **Construir** to place a house (15 wood) and watch it being built. **Misiones** lists the
+current goals and their progress.
 
 ## Run locally
 

@@ -303,3 +303,9 @@ Lo que cambió respecto a lo escrito al ejecutar cada fase. Las fases siguientes
 ### Diferencias con la web que el plan no cubre (Android e iOS)
 
 - Barra de progreso de la obra, sombra del hacha en el suelo, iconos del HUD; en iOS además retirar la decoración que queda bajo la casa y el contraste del botón "Cancelar".
+
+### Fase 9 (2026-10-04)
+
+- Con el plugin Android-KMP de AGP 9 el source set de tests JVM es `androidHostTest`: `ArchitectureTests.kt` vive en `shared/src/androidHostTest/` (no en `androidUnitTest`). Comprobado que detecta una importación prohibida (`domain/rules/Rules.kt -> com.apergas.rpg.data.errors.DataErrorHandlerImpl`).
+- La Task 2 no espera al despliegue (`gh run watch`): se comprueba en GitHub Pages cuando la rama llegue a `main`.
+- Cierre: `:shared:allTests` 78 JVM (74 + 4 de arquitectura) / 76 JS / 74 iOS; `androidApp` 4 unitarios + 1 instrumentado; `iosApp` 8; `webApp` typecheck, 2 tests, build y partida e2e idéntica a la de referencia. Ninguna regla de juego fuera de `shared`.

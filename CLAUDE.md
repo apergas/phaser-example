@@ -11,6 +11,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `asset-packs/lpc/` — raw LPC art and `build_assets.py`, which generates `shared/assets/lpc/`, the only copy of the art: Android adds `shared/assets` as an assets folder (`androidApp/build.gradle.kts`), iOS has `../shared/assets/lpc` as a folder reference, and the web serves/copies it at `assets/lpc` with a small plugin in `webApp/vite.config.ts`.
 - `.github/workflows/deploy.yml` — on pushes to `main` that touch the web or `shared`: shared JVM + JS tests, the `rpg-shared` package, then `npm ci`, typecheck, test, build in `webApp/` and publish `webApp/dist` to GitHub Pages (https://apergas.github.io/phaser-example/). Android and iOS are tested locally only.
 - `docs/boost/plans/2026-10-04-kmp-migration/` — the migration plan; its README section 8 records every deviation found while executing it.
+- `docs/GAME_DESIGN.md` — gameplay analysis and ideas; `docs/boost/plans/2026-10-04-game-design/` — the phased roadmap built from it (README = phase table, parallel-work rules and deviations; one `F<n>-*.md` per phase).
+- `.claude/skills/` — project skills `siguiente-tarea` (pick and start the next roadmap task) and `cerrar-tarea` (verify, update the plan, open the PR, update the tracker).
+
+## Work in progress
+
+Two developers work the gameplay roadmap in parallel (stream A: world and resources; stream B: persistence and economy). **Start with `/siguiente-tarea` and finish with `/cerrar-tarea`.** To get context, read only the roadmap README, your task's section in its phase file and your GitHub issue (`gh issue list --assignee @me`); each task lists its own *Files* and *Interfaces*. The "what and how" lives in the Markdown plans; "who and status" lives in GitHub Issues (labels `phase:F<n>`, `stream:A|B`, `platform:*`).
 
 ## Commands
 

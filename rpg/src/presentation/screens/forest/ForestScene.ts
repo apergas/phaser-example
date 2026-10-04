@@ -1,37 +1,32 @@
 import * as Phaser from 'phaser';
-import { seededRandom } from '../../../shared/seededRandom';
-import type { Hud } from './hud/Hud';
-import type { Effect, ForestViewModel } from './ForestViewModel';
-import { CAMERA_ZOOM, ForestAtlas } from '../../common/assets';
-import { BuildingView, addHouseImage, placeHouseImage } from './world/BuildingView';
+import type { ForestWebController, WebEffect, WebPlacement } from 'rpg-shared';
+import { CAMERA_ZOOM } from '../../common/assets';
 import { Depth } from '../../common/depth';
+import type { Hud } from './hud/Hud';
+import { PlayerView } from './player/PlayerView';
+import { BuildingView, addHouseImage, placeHouseImage } from './world/BuildingView';
 import { GroundView } from './world/GroundView';
 import { ItemView } from './world/ItemView';
-import { PlayerView } from './player/PlayerView';
 import { TreeView } from './world/TreeView';
 
 export interface ForestSceneDependencies {
-  readonly viewModel: ForestViewModel;
+  readonly controller: ForestWebController;
   readonly hud: Hud;
 }
 
 const CAMERA_LERP = 0.1;
-const TREE_VARIANT_SEED = 7;
-/** Area around the spawn point kept clear of decor so the player does not start on top of it. */
-const SPAWN_CLEARANCE = 48;
 const GHOST_ALPHA = 0.6;
 const GHOST_VALID_TINT = 0xb8ffb8;
 const GHOST_INVALID_TINT = 0xff8080;
 
 /**
- * Passive Phaser view of the game. It forwards input to the `ForestViewModel`, draws its state every
- * frame and plays the effects it returns. It only decides engine matters: sprites, hit-testing,
- * camera and tweens.
+ * Passive Phaser view of the game. Each frame: advance the shared view model, play the effects it
+ * returns, draw its state. It only decides engine matters: sprites, hit-testing, camera and tweens.
  */
 export class ForestScene extends Phaser.Scene {
   static readonly KEY = 'ForestScene';
 
-  private readonly vm: ForestViewModel;
+  private readonly controller: ForestWebController;
   private readonly hud: Hud;
   private playerView!: PlayerView;
   private ghost: Phaser.GameObjects.Image | null = null;
@@ -43,32 +38,22 @@ export class ForestScene extends Phaser.Scene {
 
   constructor(deps: ForestSceneDependencies) {
     super(ForestScene.KEY);
-    this.vm = deps.viewModel;
+    this.controller = deps.controller;
     this.hud = deps.hud;
   }
 
   create(): void {
-    const world = this.vm.world();
-    const spawn = this.vm.player.state.position;
+    const world = this.controller.world();
+    const spawn = this.controller.state().player.position;
 
-    const random = seededRandom(TREE_VARIANT_SEED);
-    for (const tree of world.trees) {
-      const frame = ForestAtlas.TREES[Math.floor(random() * ForestAtlas.TREES.length)];
-      this.trees.set(tree.id, new TreeView(this, tree.position, frame));
-    }
+    // What to draw and where comes from the level (shared): no art decisions are made here.
+    for (const tree of world.trees) this.trees.set(tree.id, new TreeView(this, tree.position, tree.frame));
     for (const item of world.items) this.items.set(item.id, new ItemView(this, item.position));
     for (const building of world.buildings) {
       this.buildings.set(building.id, new BuildingView(this, building.position, building.progress));
     }
 
-    const spawnArea = new Phaser.Geom.Rectangle(
-      spawn.x - SPAWN_CLEARANCE,
-      spawn.y - SPAWN_CLEARANCE * 2,
-      SPAWN_CLEARANCE * 2,
-      SPAWN_CLEARANCE * 3,
-    );
-    const occupied = [spawnArea, ...[...this.trees.values(), ...this.items.values()].map((view) => view.bounds)];
-    this.clutter = [...new GroundView(this, world.width, world.height, occupied).decor];
+    this.clutter = [...new GroundView(this, world.width, world.height, world.decorations).decor];
     this.playerView = new PlayerView(this, spawn);
 
     this.setUpCamera(world.width, world.height);
@@ -76,68 +61,74 @@ export class ForestScene extends Phaser.Scene {
   }
 
   update(_time: number, delta: number): void {
-    this.vm.tick(delta).forEach((effect) => this.play(effect));
-    if (this.vm.placement) this.vm.pointerMoved(this.pointerInWorld());
+    if (this.controller.state().placement) {
+      const pointer = this.pointerInWorld();
+      this.controller.pointerMoved(pointer.x, pointer.y);
+    }
+    this.controller.tick(delta);
+    this.controller.takeEffects().forEach((effect) => this.play(effect));
 
-    this.playerView.render(this.vm.player.state);
-    this.hud.render(this.vm.hud.state);
-    this.renderGhost();
+    const state = this.controller.state();
+    this.playerView.render(state.player);
+    this.hud.render(state.hud);
+    this.renderGhost(state.placement);
   }
 
-  private play(effect: Effect): void {
+  private play(effect: WebEffect): void {
     switch (effect.kind) {
+      case 'message':
+        if (effect.text) this.hud.showMessage(effect.text);
+        break;
       case 'item-picked-up':
-        this.items.get(effect.itemId)?.pickUp();
-        this.items.delete(effect.itemId);
+        this.items.get(effect.id ?? '')?.pickUp();
+        this.items.delete(effect.id ?? '');
         break;
       case 'tree-hit':
-        this.trees.get(effect.treeId)?.hit(effect.fromX);
+        this.trees.get(effect.id ?? '')?.hit(effect.fromX);
         break;
       case 'tree-felled': {
-        const stump = this.trees.get(effect.treeId)?.fell(effect.fromX);
+        const stump = this.trees.get(effect.id ?? '')?.fell(effect.fromX);
         if (stump) this.clutter.push(stump);
-        this.trees.delete(effect.treeId);
+        this.trees.delete(effect.id ?? '');
         break;
       }
       case 'building-placed': {
-        const { building } = effect;
-        const view = new BuildingView(this, building.position, building.progress);
-        this.buildings.set(building.id, view);
+        if (!effect.building) break;
+        const view = new BuildingView(this, effect.building.position, effect.building.progress);
+        this.buildings.set(effect.building.id, view);
         this.clearClutterUnder(view.bounds);
         break;
       }
       case 'building-hammered':
-        this.buildings.get(effect.buildingId)?.hammered(effect.progress);
+        this.buildings.get(effect.id ?? '')?.hammered(effect.progress);
         break;
       case 'building-completed':
-        this.buildings.get(effect.buildingId)?.complete();
+        this.buildings.get(effect.id ?? '')?.complete();
         break;
     }
   }
 
   private setUpInput(): void {
     this.input.mouse?.disableContextMenu();
-    this.input.keyboard?.on('keydown-ESC', () => this.vm.cancel());
+    this.input.keyboard?.on('keydown-ESC', () => this.controller.cancelPlacement());
 
     this.input.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
-      const point = { x: pointer.worldX, y: pointer.worldY };
-      const button = pointer.rightButtonDown() ? 'secondary' : 'primary';
-      this.vm.mapClicked(point, this.treeAt(point.x, point.y), button).forEach((effect) => this.play(effect));
+      const { worldX: x, worldY: y } = pointer;
+      this.controller.mapClicked(x, y, this.treeAt(x, y), pointer.rightButtonDown());
+      this.controller.takeEffects().forEach((effect) => this.play(effect));
     });
   }
 
-  /** Draws the placement preview from the view model, creating or removing it as needed. */
-  private renderGhost(): void {
-    const placement = this.vm.placement;
+  /** Draws the placement preview, creating or removing it as needed. */
+  private renderGhost(placement: WebPlacement | null | undefined): void {
     if (!placement) {
       this.ghost?.destroy();
       this.ghost = null;
       return;
     }
-
     this.ghost ??= addHouseImage(this, placement.position).setAlpha(GHOST_ALPHA);
     placeHouseImage(this.ghost, placement.position)
-      .setTint(placement.valid ? GHOST_VALID_TINT : GHOST_INVALID_TINT)
+      .setTint(placement.isValid ? GHOST_VALID_TINT : GHOST_INVALID_TINT)
       .setDepth(Depth.OVERLAY);
   }
 
@@ -169,8 +160,7 @@ export class ForestScene extends Phaser.Scene {
     camera.setZoom(CAMERA_ZOOM);
     camera.startFollow(this.playerView.followTarget, true, CAMERA_LERP, CAMERA_LERP);
 
-    // Keeps the camera inside the world. On an axis where the viewport is larger than the world,
-    // bounds grow symmetrically so the world stays centred instead of stuck to the top-left corner.
+    // Keeps the camera inside the world; a world smaller than the window stays centred.
     const fitBounds = () => {
       const viewWidth = this.scale.gameSize.width / CAMERA_ZOOM;
       const viewHeight = this.scale.gameSize.height / CAMERA_ZOOM;

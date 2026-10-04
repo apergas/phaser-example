@@ -1,5 +1,5 @@
 import type * as Phaser from 'phaser';
-import type { Point } from '../../../../domain/usecases/models/Point';
+import type { WebPoint } from 'rpg-shared';
 import { ForestAtlas } from '../../../common/assets';
 import { Depth } from '../../../common/depth';
 
@@ -11,7 +11,7 @@ export class ItemView {
   private readonly shadow: Phaser.GameObjects.Ellipse;
   private readonly image: Phaser.GameObjects.Image;
 
-  constructor(scene: Phaser.Scene, position: Point) {
+  constructor(scene: Phaser.Scene, position: WebPoint) {
     this.scene = scene;
     this.shadow = scene.add.ellipse(position.x, position.y, 16, 5, 0x000000, 0.3).setDepth(Depth.SHADOW);
     this.image = scene.add

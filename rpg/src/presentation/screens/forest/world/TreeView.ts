@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import type { Point } from '../../../../domain/usecases/models/Point';
+import type { WebPoint } from 'rpg-shared';
 import { ForestAtlas, GeneratedTextures } from '../../../common/assets';
 import { Depth } from '../../../common/depth';
 
@@ -18,11 +18,11 @@ const SOLID_ALPHA = 200;
  */
 export class TreeView {
   private readonly scene: Phaser.Scene;
-  private readonly base: Point;
+  private readonly base: WebPoint;
   private readonly image: Phaser.GameObjects.Image;
 
-  /** @param frame one of ForestAtlas.TREES */
-  constructor(scene: Phaser.Scene, base: Point, frame: string) {
+  /** @param frame atlas frame chosen by the level (`tree-broad`...) */
+  constructor(scene: Phaser.Scene, base: WebPoint, frame: string) {
     this.scene = scene;
     this.base = base;
     this.image = scene.add.image(base.x, base.y, ForestAtlas.key, frame).setDepth(Depth.bySortY(base.y));

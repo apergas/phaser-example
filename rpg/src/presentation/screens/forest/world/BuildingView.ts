@@ -1,5 +1,5 @@
 import type * as Phaser from 'phaser';
-import type { Point } from '../../../../domain/usecases/models/Point';
+import type { WebPoint } from 'rpg-shared';
 import { ForestAtlas, GeneratedTextures, HOUSE_FRONT_OFFSET } from '../../../common/assets';
 import { Depth } from '../../../common/depth';
 
@@ -10,12 +10,12 @@ const BAR_HEIGHT = 5;
 const BAR_MARGIN = 6;
 
 /** Draws a house where `position` is the centre of its ground footprint. */
-export function addHouseImage(scene: Phaser.Scene, position: Point): Phaser.GameObjects.Image {
+export function addHouseImage(scene: Phaser.Scene, position: WebPoint): Phaser.GameObjects.Image {
   return placeHouseImage(scene.add.image(0, 0, ForestAtlas.key, ForestAtlas.HOUSE), position);
 }
 
 /** Anchors a house image to a footprint centre: the front wall sits below it, y-sorted by that wall. */
-export function placeHouseImage(image: Phaser.GameObjects.Image, position: Point): Phaser.GameObjects.Image {
+export function placeHouseImage(image: Phaser.GameObjects.Image, position: WebPoint): Phaser.GameObjects.Image {
   const frontY = position.y + HOUSE_FRONT_OFFSET;
   return image.setPosition(position.x, frontY).setDepth(Depth.bySortY(frontY));
 }
@@ -29,7 +29,7 @@ export class BuildingView {
   private readonly image: Phaser.GameObjects.Image;
   private readonly bar: Phaser.GameObjects.Graphics;
 
-  constructor(scene: Phaser.Scene, position: Point, progress: number) {
+  constructor(scene: Phaser.Scene, position: WebPoint, progress: number) {
     this.scene = scene;
     this.image = addHouseImage(scene, position);
     this.bar = scene.add.graphics().setDepth(Depth.bySortY(this.image.y) + 1);

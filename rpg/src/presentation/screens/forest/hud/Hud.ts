@@ -1,19 +1,17 @@
-import type { BlueprintKey } from '../../../../domain/usecases/models/keys';
-import { Labels } from '../../../common/labels';
-import type { HudState } from './HudViewModel';
+import type { WebHud, WebLabels } from 'rpg-shared';
 import './hud.css';
 
 const MESSAGE_MS = 3500;
 
 export interface HudActions {
-  build(blueprint: BlueprintKey): void;
+  build(blueprint: string): void;
 }
 
 type PanelName = 'quests' | 'build';
 
 /**
- * HTML overlay on top of the canvas. A passive view: it copies `HudState` (already formatted by
- * `HudViewModel`) into the page and reports clicks. Opening and closing its own panels is the only
+ * HTML overlay on top of the canvas. A passive view: it copies `WebHud` (already formatted by the
+ * shared view model) into the page and reports clicks. Opening and closing its own panels is the only
  * state it keeps.
  */
 export class Hud {
@@ -24,34 +22,35 @@ export class Hud {
   private readonly questList: HTMLElement;
   private readonly questBadge: HTMLElement;
   private readonly message: HTMLElement;
-  private lastRendered: HudState | null = null;
+  private lastRendered: WebHud | null = null;
+  private lastKey = '';
   private messageTimer: number | undefined;
 
-  constructor(parent: HTMLElement, actions: HudActions) {
+  constructor(parent: HTMLElement, labels: WebLabels, actions: HudActions) {
     const root = element('div', 'hud');
     root.innerHTML = `
       <div class="hud__panel hud__resources">
-        <span class="hud__resource" title="${Labels.wood}">
+        <span class="hud__resource" title="${labels.wood}">
           <span class="hud__icon hud__icon--wood" aria-hidden="true"></span>
-          <span class="hud__label">${Labels.wood}</span>
+          <span class="hud__label">${labels.wood}</span>
           <strong class="hud__value" data-ref="wood">0</strong>
         </span>
-        <span class="hud__resource hud__tool" data-ref="axe" title="${Labels.axe}">
+        <span class="hud__resource hud__tool" data-ref="axe" title="${labels.axe}">
           <span class="hud__icon hud__icon--axe" aria-hidden="true"></span>
-          <span class="hud__label">${Labels.axe}</span>
+          <span class="hud__label">${labels.axe}</span>
         </span>
       </div>
       <div class="hud__actions">
         <div class="hud__buttons">
           <button class="hud__panel hud__button" data-ref="quests-button" aria-expanded="false" aria-controls="hud-quests">
-            ${Labels.quests} <span class="hud__badge" data-ref="quest-badge"></span>
+            ${labels.quests} <span class="hud__badge" data-ref="quest-badge"></span>
           </button>
           <button class="hud__panel hud__button" data-ref="build-button" aria-expanded="false" aria-controls="hud-build">
-            ${Labels.build}
+            ${labels.build}
           </button>
         </div>
         <div class="hud__panel hud__menu" id="hud-quests" data-ref="quests-panel" hidden>
-          <h2 class="hud__menu-title">${Labels.quests}</h2>
+          <h2 class="hud__menu-title">${labels.quests}</h2>
           <ol class="hud__quests" data-ref="quest-list"></ol>
         </div>
         <div class="hud__panel hud__menu" id="hud-build" data-ref="build-panel" hidden>
@@ -80,25 +79,27 @@ export class Hud {
       const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-blueprint]');
       if (!button || button.disabled) return;
       this.closePanels();
-      actions.build(button.dataset.blueprint as BlueprintKey);
+      actions.build(button.dataset.blueprint ?? '');
     });
   }
 
   /** Called every frame; touches the DOM only for the parts that changed. */
-  render(state: HudState): void {
+  render(state: WebHud): void {
+    // state() builds new objects every frame, so compare by content.
+    const key = JSON.stringify(state);
+    if (key === this.lastKey) return;
+    this.lastKey = key;
     const previous = this.lastRendered;
-    if (previous === state) return;
     this.lastRendered = state;
 
     if (previous?.wood !== state.wood) this.wood.textContent = String(state.wood);
     if (previous?.hasAxe !== state.hasAxe) this.axe.classList.toggle('hud__tool--owned', state.hasAxe);
-    if (previous?.buildLocked !== state.buildLocked) this.panels.build.button.disabled = state.buildLocked;
-    if (previous?.message?.serial !== state.message?.serial && state.message) this.showMessage(state.message.text);
+    if (previous?.isBuildLocked !== state.isBuildLocked) this.panels.build.button.disabled = state.isBuildLocked;
     if (!previous || JSON.stringify(previous.quests) !== JSON.stringify(state.quests)) this.renderQuests(state);
     if (!previous || JSON.stringify(previous.buildItems) !== JSON.stringify(state.buildItems)) this.renderBuildItems(state);
   }
 
-  private renderQuests(state: HudState): void {
+  private renderQuests(state: WebHud): void {
     this.questBadge.textContent = state.questBadge;
     this.questList.innerHTML = state.quests
       .map(
@@ -112,11 +113,11 @@ export class Hud {
       .join('');
   }
 
-  private renderBuildItems(state: HudState): void {
+  private renderBuildItems(state: WebHud): void {
     this.buildOptions.innerHTML = state.buildItems
       .map(
         (item) => `
-          <button class="hud__option" data-blueprint="${item.blueprint}" ${item.enabled ? '' : 'disabled'}>
+          <button class="hud__option" data-blueprint="${item.blueprint}" ${item.isEnabled ? '' : 'disabled'}>
             <span class="hud__option-name">${item.name}</span>
             <span class="hud__option-cost">${item.costText}</span>
             <span class="hud__option-status">${item.missingText ?? ''}</span>
@@ -125,7 +126,8 @@ export class Hud {
       .join('');
   }
 
-  private showMessage(text: string): void {
+  /** Shows a message for a few seconds; the scene calls it for every `message` effect. */
+  showMessage(text: string): void {
     this.message.textContent = text;
     this.message.classList.add('hud__message--visible');
     window.clearTimeout(this.messageTimer);

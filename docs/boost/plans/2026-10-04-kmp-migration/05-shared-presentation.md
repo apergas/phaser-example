@@ -177,6 +177,17 @@ object ForestLabels {
         fun buildingCompleted(name: String) = "¡$name construida!"
         fun questCompleted(title: String) = "Misión completada: $title"
     }
+
+    /** Bar shown on touch screens while placing a building (the web uses right click / Esc instead). */
+    object Placement {
+        const val CONFIRM = "Construir aquí"
+        const val CANCEL = "Cancelar"
+    }
+
+    /** Screen-reader descriptions (TalkBack / VoiceOver). */
+    object Accessibility {
+        const val GAME_WORLD = "Mundo de juego: bosque con árboles, el personaje y los edificios"
+    }
 }
 ```
 
@@ -754,4 +765,5 @@ git commit -m "[PROJECT-X]: Add shared ForestViewModel with MVI contract"
 
 - [ ] Los 10 tests de `ForestViewModel.test.ts` tienen su equivalente (el de `serial` de mensajes desaparece: los mensajes son efectos y cada uno llega aunque el texto se repita).
 - [ ] `ForestViewModel` solo importa `domain` (casos de uso y entidades), nunca `data`.
-- [ ] Ningún texto en español fuera de `ForestLabels`.
+- [ ] Ningún texto en español fuera de `ForestLabels`, tampoco en las apps (botones táctiles y accesibilidad incluidos). Única excepción: el nombre de la app, que lo lee el sistema antes de arrancar el código (`app_name` en Android, `Info.plist` en iOS, `<title>` en la web).
+- [ ] Si llegan más idiomas: `ForestLabels` pasa a ser una interfaz con una implementación por idioma (`SpanishLabels`, `EnglishLabels`…) y cada app indica el idioma del dispositivo al crear el `ForestViewModel`; el resto del código no cambia.

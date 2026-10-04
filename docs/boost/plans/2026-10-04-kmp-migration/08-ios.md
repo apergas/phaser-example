@@ -775,8 +775,8 @@ struct HudView: View {
 
     private var placementBar: some View {
         HStack(spacing: 12) {
-            Button("Construir aquí", action: onConfirmPlacement).buttonStyle(.borderedProminent)
-            Button("Cancelar", action: onCancelPlacement).buttonStyle(.bordered)
+            Button(ForestLabels.Placement.shared.CONFIRM, action: onConfirmPlacement).buttonStyle(.borderedProminent)
+            Button(ForestLabels.Placement.shared.CANCEL, action: onCancelPlacement).buttonStyle(.bordered)
         }
     }
 
@@ -810,7 +810,7 @@ struct ForestView: View {
                 if let scene {
                     SpriteView(scene: scene, preferredFramesPerSecond: 60)
                         .ignoresSafeArea()
-                        .accessibilityLabel("Mundo de juego: bosque con árboles, el personaje y los edificios")
+                        .accessibilityLabel(ForestLabels.Accessibility.shared.GAME_WORLD)
                 }
                 HudView(
                     hud: viewModel.state.hud,
@@ -1047,4 +1047,4 @@ git commit -m "[PROJECT-X]: Add wood chip and dust particles to the iOS forest"
 - [ ] La única conversión de coordenadas está en `ScenePoint`.
 - [ ] Mismos tipos de árbol y misma decoración que la web y Android: vienen del nivel compartido; ninguna lista de sprites ni `SeededRandom` en Swift.
 - [ ] Astillas y polvo con los mismos valores que los emisores de Phaser (tabla de la Task 4), traducidos a la convención de SpriteKit.
-- [ ] Pendiente reconocido: textos de la barra táctil y de accesibilidad a `Localizable.strings` cuando la app tenga más idiomas.
+- [ ] Todos los textos salen de `ForestLabels` (shared), también la barra táctil y la accesibilidad: ningún literal en español en Swift salvo en los tests que comprueban mensajes. El nombre de la app va en `Info.plist`.

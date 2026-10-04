@@ -25,7 +25,7 @@ androidApp/
   build.gradle.kts
   src/main/AndroidManifest.xml
   src/main/assets/lpc/                 copiado por build_assets.py
-  src/main/res/values/strings.xml      nombre de la app y descripciones de accesibilidad
+  src/main/res/values/strings.xml      solo el nombre de la app (el resto de textos, en ForestLabels de shared)
   src/main/kotlin/com/apergas/rpg/android/
     app/App.kt                         @HiltAndroidApp
     app/MainActivity.kt                @AndroidEntryPoint, setContent { RpgTheme { NavGraph() } }
@@ -150,12 +150,8 @@ dependencies {
 `res/values/strings.xml`:
 ```xml
 <resources>
+    <!-- Read by the launcher before the app runs, so it cannot come from shared. Every other text is in ForestLabels. -->
     <string name="app_name">RPG</string>
-    <string name="cd_game_world">Mundo de juego: bosque con árboles, el personaje y los edificios</string>
-    <string name="cd_wood">Madera</string>
-    <string name="cd_axe">Hacha</string>
-    <string name="build_here">Construir aquí</string>
-    <string name="cancel">Cancelar</string>
 </resources>
 ```
 
@@ -723,10 +719,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.apergas.rpg.android.R
 import com.apergas.rpg.domain.entities.building.BlueprintId
 import com.apergas.rpg.presentation.forest.ForestLabels
 import com.apergas.rpg.presentation.forest.HudState
@@ -789,8 +783,8 @@ fun HudOverlay(
         }
         if (isPlacing) {
             Row(modifier = Modifier.align(Alignment.BottomCenter), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Button(onClick = onConfirmPlacement) { Text(stringResource(R.string.build_here)) }
-                OutlinedButton(onClick = onCancelPlacement) { Text(stringResource(R.string.cancel)) }
+                Button(onClick = onConfirmPlacement) { Text(ForestLabels.Placement.CONFIRM) }
+                OutlinedButton(onClick = onCancelPlacement) { Text(ForestLabels.Placement.CANCEL) }
             }
         }
     }
@@ -819,12 +813,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.apergas.rpg.android.R
 import com.apergas.rpg.android.presentation.forest.components.HudOverlay
 import com.apergas.rpg.android.presentation.forest.world.CAMERA_ZOOM
 import com.apergas.rpg.android.presentation.forest.world.LpcAssets
@@ -834,6 +826,7 @@ import com.apergas.rpg.android.presentation.forest.world.cameraOrigin
 import com.apergas.rpg.domain.entities.geometry.Position
 import com.apergas.rpg.presentation.forest.ForestEffect
 import com.apergas.rpg.presentation.forest.ForestIntent
+import com.apergas.rpg.presentation.forest.ForestLabels
 import com.apergas.rpg.presentation.forest.ForestViewModel
 import kotlinx.coroutines.isActive
 
@@ -866,7 +859,7 @@ fun ForestScreen(viewModel: ForestViewModel, modifier: Modifier = Modifier) {
 
     ForestScaffold(snackbarHostState = snackbarHostState, modifier = modifier) { padding ->
         Box(modifier = Modifier.fillMaxSize()) {
-            val description = stringResource(R.string.cd_game_world)
+            val description = ForestLabels.Accessibility.GAME_WORLD
             WorldCanvas(
                 scene = scene,
                 player = state.player,
@@ -1233,3 +1226,4 @@ git commit -m "[PROJECT-X]: Add wood chip and dust particles to the Android fore
 - [ ] Mismo bosque que la web (comparar visualmente la zona de inicio con una captura de la web).
 - [ ] Mismos tipos de árbol y misma decoración que la web: vienen del nivel compartido; `grep -rn "SeededRandom\|TREE_FRAMES" androidApp/src` vacío.
 - [ ] Astillas y polvo con los mismos valores que los emisores de Phaser (tabla de la Task 4).
+- [ ] Todos los textos salen de `ForestLabels` (shared); `strings.xml` solo tiene `app_name` y `grep -rn "stringResource" androidApp/src` vacío.

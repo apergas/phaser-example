@@ -153,8 +153,8 @@ Cada fase es un plan ejecutable por separado y deja todo funcionando. Orden obli
 | 4 | [`04-usecases-and-di.md`](04-usecases-and-di.md) | `GameUseCase` + `GameUseCaseImpl` + `GameContainer` | `:shared:allTests` |
 | 5 | [`05-shared-presentation.md`](05-shared-presentation.md) | `ForestContract`, `ForestViewModel`, `ForestLabels` compartidos | `:shared:allTests` |
 | 6 | [`06-web.md`](06-web.md) | La web usa `shared` vía Kotlin/JS; se borra la lógica TypeScript; el despliegue a Pages genera el paquete Kotlin antes de compilar | partida completa e2e en navegador; GitHub Pages desplegado |
-| 7 | [`07-android.md`](07-android.md) | App Android con Compose (mundo en `Canvas`, HUD, misiones, construir) | instalar en emulador y completar las 3 misiones |
-| 8 | [`08-ios.md`](08-ios.md) | App iOS con SwiftUI + SpriteKit | ejecutar en simulador y completar las 3 misiones |
+| 7 | [`07-android.md`](07-android.md) | App Android con Compose (mundo en `Canvas`, HUD, misiones, construir, partículas) | instalar en emulador y completar las 3 misiones |
+| 8 | [`08-ios.md`](08-ios.md) | App iOS con SwiftUI + SpriteKit (partículas con `SKEmitterNode`) | ejecutar en simulador y completar las 3 misiones |
 | 9 | [`09-cleanup.md`](09-cleanup.md) | `rpg/` renombrado a `webApp/`, documentación, `CLAUDE.md`, reglas de arquitectura de Gradle | despliegue a Pages verde, docs al día |
 
 Las fases 7 y 8 son independientes entre sí y pueden ir en paralelo tras la 6.

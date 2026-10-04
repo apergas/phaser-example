@@ -37,8 +37,9 @@ androidApp/
     presentation/forest/world/LpcAssets.kt       carga de bitmaps y atlas
     presentation/forest/world/AtlasParser.kt     forest.json (JSON-hash de Phaser) → frames con pivote
     presentation/forest/world/WorldSceneState.kt árboles/objetos/edificios vivos + animaciones de efectos
-    presentation/forest/world/WorldCanvas.kt     dibujo ordenado por Y, cámara, fantasma
-  src/test/kotlin/.../world/AtlasParserTests.kt
+    presentation/forest/world/WorldCanvas.kt     dibujo ordenado por Y, cámara, fantasma, partículas
+    presentation/forest/world/Particles.kt       astillas y polvo (mismos valores que la web)
+  src/test/kotlin/.../world/AtlasParserTests.kt, ParticlesTests.kt
   src/androidTest/kotlin/.../forest/ForestScreenTests.kt
 asset-packs/lpc/build_assets.py        + copia a androidApp/src/main/assets/lpc/
 ```
@@ -943,7 +944,7 @@ Expected: PASS.
 
 - [ ] **Step 6: Partida manual en emulador**
 
-Run: `./gradlew :androidApp:installDebug`, abrir la app y comprobar: bosque idéntico al de la web (mismos árboles en las mismas posiciones); recoger el hacha → snackbar "¡Hacha recogida!…"; tocar un árbol → se coloca a su lado, da hachazos con sacudida del árbol (sin astillas: las partículas quedan fuera de esta fase), el árbol cae y deja tocón; 3 árboles → ≥15 madera; **Construir** → Casa → tocar sitio (fantasma verde/rojo) → **Construir aquí**; casa construida; **Misiones 3/3**.
+Run: `./gradlew :androidApp:installDebug`, abrir la app y comprobar: bosque idéntico al de la web (mismos árboles en las mismas posiciones); recoger el hacha → snackbar "¡Hacha recogida!…"; tocar un árbol → se coloca a su lado, da hachazos con sacudida del árbol (las astillas llegan en la Task 4), el árbol cae y deja tocón; 3 árboles → ≥15 madera; **Construir** → Casa → tocar sitio (fantasma verde/rojo) → **Construir aquí**; casa construida; **Misiones 3/3**.
 
 - [ ] **Step 7: Commit**
 
@@ -952,13 +953,283 @@ git add androidApp asset-packs
 git commit -m "[PROJECT-X]: Add Compose forest screen with world rendering, HUD and touch placement"
 ```
 
+### Task 4: Partículas (astillas y polvo)
+
+**Files:**
+- Create: `presentation/forest/world/Particles.kt`
+- Modify: `presentation/forest/world/WorldSceneState.kt`, `presentation/forest/world/WorldCanvas.kt`
+- Test: `androidApp/src/test/kotlin/com/apergas/rpg/android/presentation/forest/world/ParticlesTests.kt`
+
+**Interfaces:**
+- Consumes: `WorldSceneState.play`/`prune`, `WorldCanvas` (Task 3); `ForestEffect.TreeHit`, `ForestEffect.BuildingHammered` (shared).
+- Produces: `Particle`, `ParticleKind`, `ParticleBursts.woodChips(trunkBase, playerOnLeft, nowNanos, random)`, `ParticleBursts.dust(buildingCenter, nowNanos, random)`; `WorldSceneState.particles`.
+
+Compose no trae sistema de partículas, así que se escribe uno mínimo. Cada partícula tiene trayectoria cerrada (posición = origen + v·t + ½·g·t²): no se actualiza fotograma a fotograma, se calcula en el instante del dibujo con el `frameNanos` que ya existe. Valores copiados de la web (`TreeView.hit`, `BuildingView.hammered`, `PreloadScene.generateParticleTextures`), con los ángulos en grados y la Y hacia abajo como en Phaser:
+
+| Efecto | Origen | Cantidad | Velocidad | Ángulo | Gravedad | Vida | Alfa | Escala | Aspecto |
+|---|---|---|---|---|---|---|---|---|---|
+| Astillas (`TreeHit`) | base del tronco − 10 en Y | 8 | 30–80 | 200–290 si el jugador está a la izquierda, 250–340 si a la derecha | 220 | 500 ms | 1 → 0 | 1 | rectángulo 3×2 `#8A5A2B` con brillo 2×1 `#C89A5E`, giro fijo al azar 0–360 |
+| Polvo (`BuildingHammered`) | frente de la casa (centro + 24) − 4 en Y | 6 | 10–35 | 180–360 | 0 | 450 ms | 0.7 → 0 | 0.8 → 0.2 | círculo de radio 3 `#D8CDB0` |
+
+- [ ] **Step 1: Test**
+
+`ParticlesTests.kt`:
+```kotlin
+package com.apergas.rpg.android.presentation.forest.world
+
+import com.apergas.rpg.domain.entities.geometry.Position
+import kotlin.math.atan2
+import kotlin.random.Random
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+
+class ParticlesTests {
+    private val trunkBase = Position(200.0, 300.0)
+
+    @Test
+    fun testWhenTreeIsHitFromTheLeftThenEightChipsFlyUpTowardsThePlayer() {
+        // given
+        val random = Random(1)
+
+        // when
+        val chips = ParticleBursts.woodChips(trunkBase, playerOnLeft = true, nowNanos = 0, random = random)
+
+        // then
+        assertEquals(8, chips.size)
+        chips.forEach { chip ->
+            assertEquals(Position(200.0, 290.0), chip.origin)
+            assertTrue(chip.angleDegrees() in 200.0..290.0)
+        }
+    }
+
+    @Test
+    fun testWhenTimePassesThenAChipFallsWithGravityAndFadesOut() {
+        // given
+        val chip = ParticleBursts.woodChips(trunkBase, playerOnLeft = false, nowNanos = 0, random = Random(1)).first()
+
+        // when
+        val position = chip.position(nowNanos = 250_000_000)
+
+        // then
+        assertEquals(chip.origin.x + chip.velocityX * 0.25, position.x, 1e-9)
+        assertEquals(chip.origin.y + chip.velocityY * 0.25 + 0.5 * 220 * 0.25 * 0.25, position.y, 1e-9)
+        assertEquals(0.5, chip.alpha(nowNanos = 250_000_000), 1e-9)
+        assertFalse(chip.isAlive(nowNanos = 500_000_000))
+    }
+
+    @Test
+    fun testWhenBuildingIsHammeredThenSixDustPuffsRiseFromItsFront() {
+        // given
+        val center = Position(400.0, 400.0)
+
+        // when
+        val dust = ParticleBursts.dust(center, nowNanos = 0, random = Random(1))
+
+        // then
+        assertEquals(6, dust.size)
+        dust.forEach { puff ->
+            assertEquals(Position(400.0, 420.0), puff.origin)
+            assertTrue(puff.velocityY <= 0.0)
+            assertEquals(0.2, puff.scale(nowNanos = 450_000_000), 1e-9)
+        }
+    }
+
+    private fun Particle.angleDegrees(): Double = (Math.toDegrees(atan2(velocityY, velocityX)) + 360) % 360
+}
+```
+
+- [ ] **Step 2: Ejecutar y ver que falla**
+
+Run: `./gradlew :androidApp:testDebugUnitTest --tests "*ParticlesTests"`
+Expected: FAIL (`Unresolved reference: ParticleBursts`).
+
+- [ ] **Step 3: `Particles.kt`**
+
+```kotlin
+package com.apergas.rpg.android.presentation.forest.world
+
+import com.apergas.rpg.domain.entities.geometry.Position
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.random.Random
+
+enum class ParticleKind { WoodChip, Dust }
+
+/** One particle with a closed-form trajectory: its state at any instant is computed, never stepped. */
+data class Particle(
+    val kind: ParticleKind,
+    val origin: Position,
+    val velocityX: Double,
+    val velocityY: Double,
+    val gravity: Double,
+    val rotationDegrees: Double,
+    val bornAtNanos: Long,
+    val lifespanNanos: Long,
+    val alphaStart: Double,
+    val alphaEnd: Double,
+    val scaleStart: Double,
+    val scaleEnd: Double,
+    /** Draw order: just in front of whatever emitted it. */
+    val sortY: Double,
+) {
+    fun isAlive(nowNanos: Long): Boolean = nowNanos - bornAtNanos < lifespanNanos
+
+    fun position(nowNanos: Long): Position {
+        val seconds = (nowNanos - bornAtNanos) / 1e9
+        return Position(
+            origin.x + velocityX * seconds,
+            origin.y + velocityY * seconds + 0.5 * gravity * seconds * seconds,
+        )
+    }
+
+    fun alpha(nowNanos: Long): Double = alphaStart + (alphaEnd - alphaStart) * progress(nowNanos)
+
+    fun scale(nowNanos: Long): Double = scaleStart + (scaleEnd - scaleStart) * progress(nowNanos)
+
+    private fun progress(nowNanos: Long): Double = ((nowNanos - bornAtNanos).toDouble() / lifespanNanos).coerceIn(0.0, 1.0)
+}
+
+private const val CHIPS_PER_HIT = 8
+private const val IMPACT_HEIGHT = 10.0
+private const val DUST_PER_HAMMER = 6
+/** The dust rises from the house's front wall, which is drawn 24 px below its footprint centre. */
+private const val HOUSE_FRONT_OFFSET = 24.0
+private const val DUST_LIFT = 4.0
+
+/** The web's bursts (TreeView.hit, BuildingView.hammered) with the same Phaser emitter values: degrees, Y down. */
+object ParticleBursts {
+    fun woodChips(trunkBase: Position, playerOnLeft: Boolean, nowNanos: Long, random: Random): List<Particle> {
+        val angles = if (playerOnLeft) 200.0..290.0 else 250.0..340.0
+        return List(CHIPS_PER_HIT) {
+            val speed = random.between(30.0..80.0)
+            val angle = Math.toRadians(random.between(angles))
+            Particle(
+                kind = ParticleKind.WoodChip,
+                origin = Position(trunkBase.x, trunkBase.y - IMPACT_HEIGHT),
+                velocityX = speed * cos(angle),
+                velocityY = speed * sin(angle),
+                gravity = 220.0,
+                rotationDegrees = random.between(0.0..360.0),
+                bornAtNanos = nowNanos,
+                lifespanNanos = 500_000_000,
+                alphaStart = 1.0,
+                alphaEnd = 0.0,
+                scaleStart = 1.0,
+                scaleEnd = 1.0,
+                sortY = trunkBase.y + 0.5,
+            )
+        }
+    }
+
+    fun dust(buildingCenter: Position, nowNanos: Long, random: Random): List<Particle> {
+        val front = buildingCenter.y + HOUSE_FRONT_OFFSET
+        return List(DUST_PER_HAMMER) {
+            val speed = random.between(10.0..35.0)
+            val angle = Math.toRadians(random.between(180.0..360.0))
+            Particle(
+                kind = ParticleKind.Dust,
+                origin = Position(buildingCenter.x, front - DUST_LIFT),
+                velocityX = speed * cos(angle),
+                velocityY = speed * sin(angle),
+                gravity = 0.0,
+                rotationDegrees = 0.0,
+                bornAtNanos = nowNanos,
+                lifespanNanos = 450_000_000,
+                alphaStart = 0.7,
+                alphaEnd = 0.0,
+                scaleStart = 0.8,
+                scaleEnd = 0.2,
+                sortY = front + 1,
+            )
+        }
+    }
+
+    private fun Random.between(range: ClosedFloatingPointRange<Double>): Double =
+        range.start + nextDouble() * (range.endInclusive - range.start)
+}
+```
+
+- [ ] **Step 4: Ejecutar y ver que pasa**
+
+Run: `./gradlew :androidApp:testDebugUnitTest --tests "*ParticlesTests"`
+Expected: PASS.
+
+- [ ] **Step 5: Emitir desde `WorldSceneState.kt`** — añadir el import `kotlin.random.Random`, la lista de partículas y sustituir las ramas `TreeHit` y `BuildingHammered` y la función `prune`:
+
+```kotlin
+    val particles = mutableStateListOf<Particle>()
+    private val random = Random.Default
+```
+(import `androidx.compose.runtime.mutableStateListOf`)
+
+```kotlin
+            is ForestEffect.TreeHit -> trees[effect.treeId]?.let { tree ->
+                trees[tree.id] = tree.copy(hitAtNanos = nowNanos, fromX = effect.fromX)
+                particles += ParticleBursts.woodChips(tree.base, playerOnLeft = effect.fromX < tree.base.x, nowNanos, random)
+            }
+```
+```kotlin
+            is ForestEffect.BuildingHammered -> buildings[effect.buildingId]?.let { building ->
+                buildings[building.id] = building.copy(progress = effect.progress)
+                particles += ParticleBursts.dust(building.center, nowNanos, random)
+            }
+```
+```kotlin
+    /** Removes trees whose fall animation has finished and particles that have faded out. */
+    fun prune(nowNanos: Long) {
+        trees.values.filter { it.felledAtNanos != null && nowNanos - it.felledAtNanos > FALL_NANOS }.forEach { trees.remove(it.id) }
+        particles.removeAll { !it.isAlive(nowNanos) }
+    }
+```
+
+- [ ] **Step 6: Dibujar en `WorldCanvas.kt`** — en `buildList` de `WorldCanvas`, tras la línea del jugador:
+
+```kotlin
+                scene.particles.forEach { particle -> add(particle.sortY to { drawParticle(particle, frameNanos) }) }
+```
+
+y al final del fichero (mismo aspecto que las texturas que genera `PreloadScene` en la web):
+
+```kotlin
+private val CHIP_DARK = Color(0xFF8A5A2B)
+private val CHIP_LIGHT = Color(0xFFC89A5E)
+private val DUST_COLOR = Color(0xFFD8CDB0)
+
+private fun DrawScope.drawParticle(particle: Particle, now: Long) {
+    val at = particle.position(now)
+    val center = Offset(at.x.toFloat(), at.y.toFloat())
+    val alpha = particle.alpha(now).toFloat()
+    when (particle.kind) {
+        ParticleKind.WoodChip -> rotate(particle.rotationDegrees.toFloat(), center) {
+            val topLeft = Offset(center.x - 1.5f, center.y - 1f)
+            drawRect(CHIP_DARK, topLeft, Size(3f, 2f), alpha)
+            drawRect(CHIP_LIGHT, topLeft, Size(2f, 1f), alpha)
+        }
+        ParticleKind.Dust -> drawCircle(DUST_COLOR, radius = 3f * particle.scale(now).toFloat(), center = center, alpha = alpha)
+    }
+}
+```
+
+- [ ] **Step 7: Comprobar en emulador**
+
+Run: `./gradlew :androidApp:installDebug` y talar un árbol y construir la casa: en cada hachazo saltan 8 astillas hacia el jugador y caen; en cada martillazo sube un poco de polvo del frente de la casa. Comparar a ojo con la web abierta al lado.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add androidApp
+git commit -m "[PROJECT-X]: Add wood chip and dust particles to the Android forest"
+```
+
 ---
 
 ## Self-review de la fase
 
-- [ ] Se prueba en local: `./gradlew :androidApp:testDebugUnitTest :androidApp:connectedDebugAndroidTest` con un emulador arrancado, y la partida manual del Step 6 de la Task 3. No hay CI para Android (alcance acordado).
+- [ ] Se prueba en local: `./gradlew :androidApp:testDebugUnitTest :androidApp:connectedDebugAndroidTest` con un emulador arrancado, la partida manual del Step 6 de la Task 3 y las partículas (Task 4, Step 7). No hay CI para Android (alcance acordado).
 - [ ] `androidApp` no importa nada de `com.apergas.rpg.data` (`grep -rn "com.apergas.rpg.data" androidApp/src` vacío).
 - [ ] Toda la lógica de juego y textos de juego vienen de `shared`; las únicas cadenas propias son de accesibilidad y de la barra táctil.
 - [ ] Mismo bosque que la web (comparar visualmente la zona de inicio con una captura de la web).
 - [ ] Mismos tipos de árbol y misma decoración que la web: vienen del nivel compartido; `grep -rn "SeededRandom\|TREE_FRAMES" androidApp/src` vacío.
-- [ ] Pendiente reconocido para una fase posterior: partículas (astillas, polvo), que en Android requieren un sistema de partículas propio.
+- [ ] Astillas y polvo con los mismos valores que los emisores de Phaser (tabla de la Task 4).

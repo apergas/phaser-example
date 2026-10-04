@@ -32,11 +32,13 @@ iosApp/
       World/ScenePoint.swift      conversión mundo ↔ escena
       World/LpcAtlas.swift        texturas, frames del atlas y máscara alfa
       World/ForestScene.swift     SKScene: nodos, cámara, bucle, efectos, toques
+      World/ParticleEmitters.swift astillas y polvo con SKEmitterNode (mismos valores que la web)
     Resources/lpc/               copiado por build_assets.py (referencia de carpeta)
   iosAppTests/
     Presentation/Screens/Forest/ForestViewModelTests.swift
     Presentation/Screens/Forest/Tests/TickForestViewModelTests.swift
     Presentation/Screens/Forest/Tests/PlacementForestViewModelTests.swift
+    Presentation/Screens/Forest/World/ParticleEmittersTests.swift
 asset-packs/lpc/build_assets.py   + copia a iosApp/iosApp/Resources/lpc/
 ```
 
@@ -840,12 +842,209 @@ git add iosApp
 git commit -m "[PROJECT-X]: Add SpriteKit forest world and SwiftUI HUD on iOS"
 ```
 
+### Task 4: Partículas (astillas y polvo)
+
+**Files:**
+- Create: `iosApp/iosApp/Presentation/Screens/Forest/World/ParticleEmitters.swift`
+- Modify: `World/ForestScene.swift` (ramas `treeHit` y `buildingHammered` de `play`, y un `emit`)
+- Test: `iosApp/iosAppTests/Presentation/Screens/Forest/World/ParticleEmittersTests.swift`
+
+**Interfaces:**
+- Consumes: `ForestScene.play(_:)`, `ScenePoint` (Task 3).
+- Produces: `ParticleEmitters.woodChips(playerOnLeft:) -> SKEmitterNode`, `ParticleEmitters.dust() -> SKEmitterNode`.
+
+SpriteKit ya trae sistema de partículas (`SKEmitterNode`): basta configurarlo con los valores de la web (`TreeView.hit`, `BuildingView.hammered`, `PreloadScene.generateParticleTextures`). Dos diferencias de convención: SpriteKit mide los ángulos en sentido antihorario con la Y hacia arriba (el ángulo web `a` pasa a ser `360 − a`), y sus rangos son el ancho total alrededor de un valor central (30–80 → `55` ± `50/2`).
+
+| Efecto | Origen (mundo) | Cantidad | Velocidad | Ángulo web → SpriteKit | Gravedad | Vida | Alfa | Escala | Aspecto |
+|---|---|---|---|---|---|---|---|---|---|
+| Astillas (`treeHit`) | base del tronco − 10 en Y | 8 | 55 ± 25 | 200–290 → 115° ± 45° si el jugador está a la izquierda; 250–340 → 65° ± 45° si a la derecha | `yAcceleration = −220` | 0.5 s | 1 → 0 | 1 | textura 3×2 `#8A5A2B` con brillo 2×1 `#C89A5E`, giro al azar |
+| Polvo (`buildingHammered`) | frente de la casa − 4 en Y | 6 | 22.5 ± 12.5 | 180–360 → 90° ± 90° | 0 | 0.45 s | 0.7 → 0 | 0.8 → 0.2 | círculo de 6 px `#D8CDB0` |
+
+- [ ] **Step 1: Test**
+
+`ParticleEmittersTests.swift`:
+```swift
+import XCTest
+import SpriteKit
+@testable import iosApp
+
+final class ParticleEmittersTests: XCTestCase {
+    func testWhenPlayerIsOnTheLeftThenChipsAimUpAndLeft() {
+        // given
+        let playerOnLeft = true
+
+        // when
+        let emitter = ParticleEmitters.woodChips(playerOnLeft: playerOnLeft)
+
+        // then
+        XCTAssertEqual(emitter.numParticlesToEmit, 8)
+        XCTAssertEqual(emitter.emissionAngle, 115 * .pi / 180, accuracy: 0.0001)
+        XCTAssertEqual(emitter.emissionAngleRange, 90 * .pi / 180, accuracy: 0.0001)
+        XCTAssertEqual(emitter.yAcceleration, -220)
+    }
+
+    func testWhenPlayerIsOnTheRightThenChipsAimUpAndRight() {
+        // given
+        let playerOnLeft = false
+
+        // when
+        let emitter = ParticleEmitters.woodChips(playerOnLeft: playerOnLeft)
+
+        // then
+        XCTAssertEqual(emitter.emissionAngle, 65 * .pi / 180, accuracy: 0.0001)
+    }
+
+    func testWhenHammeringThenDustRisesAndShrinksOverItsLifetime() {
+        // given / when
+        let emitter = ParticleEmitters.dust()
+
+        // then
+        XCTAssertEqual(emitter.numParticlesToEmit, 6)
+        XCTAssertEqual(emitter.emissionAngle, .pi / 2, accuracy: 0.0001)
+        XCTAssertEqual(emitter.particleScale + emitter.particleScaleSpeed * emitter.particleLifetime, 0.2, accuracy: 0.0001)
+        XCTAssertEqual(emitter.particleAlpha + emitter.particleAlphaSpeed * emitter.particleLifetime, 0, accuracy: 0.0001)
+    }
+}
+```
+
+- [ ] **Step 2: Ejecutar y ver que falla**
+
+Run: `xcodebuild test -project iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 16' -only-testing:iosAppTests/ParticleEmittersTests`
+Expected: FAIL (`Cannot find 'ParticleEmitters' in scope`).
+
+- [ ] **Step 3: `ParticleEmitters.swift`**
+
+```swift
+import SpriteKit
+import UIKit
+
+/// The web's bursts (TreeView.hit, BuildingView.hammered) with the same Phaser emitter values.
+/// SpriteKit angles are counter-clockwise with Y up, so a web angle `a` becomes `360 − a`;
+/// its ranges are total widths around a centre value.
+enum ParticleEmitters {
+    static func woodChips(playerOnLeft: Bool) -> SKEmitterNode {
+        let emitter = burst(texture: woodChip, count: 8, lifetime: 0.5)
+        emitter.particleSpeed = 55
+        emitter.particleSpeedRange = 50
+        emitter.emissionAngle = degrees(playerOnLeft ? 115 : 65)
+        emitter.emissionAngleRange = degrees(90)
+        emitter.yAcceleration = -220
+        emitter.particleRotationRange = 2 * .pi
+        emitter.particleAlpha = 1
+        emitter.particleAlphaSpeed = -1 / 0.5
+        return emitter
+    }
+
+    static func dust() -> SKEmitterNode {
+        let emitter = burst(texture: dustPuff, count: 6, lifetime: 0.45)
+        emitter.particleSpeed = 22.5
+        emitter.particleSpeedRange = 25
+        emitter.emissionAngle = degrees(90)
+        emitter.emissionAngleRange = degrees(180)
+        emitter.particleScale = 0.8
+        emitter.particleScaleSpeed = (0.2 - 0.8) / 0.45
+        emitter.particleAlpha = 0.7
+        emitter.particleAlphaSpeed = -0.7 / 0.45
+        return emitter
+    }
+
+    /// All particles at once, like Phaser's `explode()`.
+    private static func burst(texture: SKTexture, count: Int, lifetime: CGFloat) -> SKEmitterNode {
+        let emitter = SKEmitterNode()
+        emitter.particleTexture = texture
+        emitter.numParticlesToEmit = count
+        emitter.particleBirthRate = 10_000
+        emitter.particleLifetime = lifetime
+        return emitter
+    }
+
+    private static let woodChip = texture(width: 3, height: 2) { context in
+        context.setFillColor(color(0x8A5A2B))
+        context.fill(CGRect(x: 0, y: 0, width: 3, height: 2))
+        context.setFillColor(color(0xC89A5E))
+        context.fill(CGRect(x: 0, y: 0, width: 2, height: 1))
+    }
+
+    private static let dustPuff = texture(width: 6, height: 6) { context in
+        context.setFillColor(color(0xD8CDB0))
+        context.fillEllipse(in: CGRect(x: 0, y: 0, width: 6, height: 6))
+    }
+
+    private static func texture(width: Int, height: Int, draw: (CGContext) -> Void) -> SKTexture {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let image = UIGraphicsImageRenderer(size: CGSize(width: width, height: height), format: format)
+            .image { draw($0.cgContext) }
+        let texture = SKTexture(image: image)
+        texture.filteringMode = .nearest
+        return texture
+    }
+
+    private static func color(_ hex: UInt32) -> CGColor {
+        CGColor(
+            red: CGFloat((hex >> 16) & 0xFF) / 255,
+            green: CGFloat((hex >> 8) & 0xFF) / 255,
+            blue: CGFloat(hex & 0xFF) / 255,
+            alpha: 1
+        )
+    }
+
+    private static func degrees(_ value: CGFloat) -> CGFloat { value * .pi / 180 }
+}
+```
+
+- [ ] **Step 4: Ejecutar y ver que pasa**
+
+Run: el mismo comando del Step 2.
+Expected: PASS.
+
+- [ ] **Step 5: Emitir desde `ForestScene.swift`** — sustituir las ramas `treeHit` y `buildingHammered` de `play(_:)`:
+
+```swift
+        case .treeHit(let hit):
+            guard let tree = trees[hit.treeId] else { return }
+            let direction: CGFloat = hit.fromX < tree.base.x ? -1 : 1
+            tree.node.run(.sequence([.rotate(byAngle: 0.05 * direction, duration: 0.07), .rotate(byAngle: -0.05 * direction, duration: 0.07)]))
+            emit(ParticleEmitters.woodChips(playerOnLeft: hit.fromX < tree.base.x),
+                 at: Position(x: tree.base.x, y: tree.base.y - 10), zPosition: tree.base.y + 0.5)
+```
+```swift
+        case .buildingHammered(let hammered):
+            guard let building = buildings[hammered.buildingId] else { return }
+            building.alpha = 0.35 + 0.65 * hammered.progress
+            let front = points.world(building.position)
+            emit(ParticleEmitters.dust(), at: Position(x: front.x, y: front.y - 4), zPosition: front.y + 1)
+```
+
+y añadir, junto a `addItem`:
+
+```swift
+    /// Plays a one-shot emitter in world coordinates and removes it once its particles have faded.
+    func emit(_ emitter: SKEmitterNode, at position: Position, zPosition: Double) {
+        emitter.position = points.scene(position)
+        emitter.zPosition = zPosition
+        emitter.targetNode = self
+        addChild(emitter)
+        emitter.run(.sequence([.wait(forDuration: 0.6), .removeFromParent()]))
+    }
+```
+
+- [ ] **Step 6: Comprobar en simulador** — talar un árbol y construir la casa: en cada hachazo saltan 8 astillas hacia el jugador y caen; en cada martillazo sube polvo del frente de la casa. Comparar a ojo con la web abierta al lado.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add iosApp
+git commit -m "[PROJECT-X]: Add wood chip and dust particles to the iOS forest"
+```
+
 ---
 
 ## Self-review de la fase
 
-- [ ] Se prueba en local: `xcodebuild test ...` (Task 2) y la partida en simulador (Task 3, Step 6). No hay CI para iOS (alcance acordado).
+- [ ] Se prueba en local: `xcodebuild test ...` (Tasks 2 y 4) y la partida en simulador (Task 3, Step 6, y Task 4, Step 6). No hay CI para iOS (alcance acordado).
 - [ ] El código Swift no reimplementa reglas: todo cambio de juego pasa por `onIntent` del ViewModel compartido.
 - [ ] La única conversión de coordenadas está en `ScenePoint`.
 - [ ] Mismos tipos de árbol y misma decoración que la web y Android: vienen del nivel compartido; ninguna lista de sprites ni `SeededRandom` en Swift.
-- [ ] Pendiente reconocido (igual que Android): partículas; textos de la barra táctil y de accesibilidad a `Localizable.strings` cuando la app tenga más idiomas.
+- [ ] Astillas y polvo con los mismos valores que los emisores de Phaser (tabla de la Task 4), traducidos a la convención de SpriteKit.
+- [ ] Pendiente reconocido: textos de la barra táctil y de accesibilidad a `Localizable.strings` cuando la app tenga más idiomas.

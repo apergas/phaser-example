@@ -1,0 +1,4 @@
+<resources>
+    <!-- Read by the launcher before the app runs, so it cannot come from shared. Every other text is in ForestLabels. -->
+    <string name="app_name">RPG</string>
+</resources>

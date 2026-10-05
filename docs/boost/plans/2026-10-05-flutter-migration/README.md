@@ -447,3 +447,26 @@ Durante la ejecución: cada desviación nueva del plan, con su motivo y el commi
 - Fase 6 (aislamiento del motor, decisión del usuario): `package:flame`/`flame_bloc` solo se permiten en `features/forest/game/` y `forest_page.dart` (regla en `architecture_test.dart`); `RenderConstants` pasa de `core/config/constants/` a `features/forest/game/render/` (es del arte LPC); `CameraFraming` deja de usar `Vector2`. Los enums `PlayerSheet`/`ParticleKind` siguen en `core/config/constants/enum/forest/` (regla del plugin).
 - Fase 7, tarea 7: `GameWidget(autofocus: false)`; el `GameWidget` de Flame devuelve `handled` para cualquier tecla si el juego no usa `KeyboardEvents`, así que Esc nunca llegaba al `CallbackShortcuts` del ancestro. Los tests de página llaman a `rootBundle.clear()` en `setUp` (una segunda carga real de assets se quedaba colgada). El HUD usa `FittedBox` en la fila de botones y limita el ancho de los paneles a `ancho − 24` (evita el desbordamiento del código del plan a 400 px; el solape de 260–420 px también existe en la web). Commits `078e12d`, `6042266`.
 - Fase 7 (revisión de arquitectura): `ForestPage` activa y desactiva el menú contextual del navegador (`BrowserContextMenu`) en su ciclo de vida, solo en web; es un detalle de plataforma de la propia página y no pasa por el BLoC.
+
+### Resumen de desviaciones (fases 1–8)
+
+| Fase | Desviación | Motivo | Commit |
+|---|---|---|---|
+| 1 | `analysis_options.yaml` conserva 4 `exclude` que añade Flutter | Flutter 3.47 las reescribe en cada `pub get`; decisión del usuario | `9338877` |
+| 1 | Contraste de `CustomButtonColor` corregido respecto al plugin | Texto deshabilitado invisible y `warning` ilegible; decisión del usuario | `8eead64` |
+| 1 | `showSnackbar` con `SnackBarBehavior.floating` | La referencia del plugin dispara una aserción de Flutter | `46aa16b` |
+| 1 | Revisión de arquitectura: excepción `_coreAllowed` acotada a ficheros, `ContainerAppView` en su propio fichero, `EnvironmentConstants.name` eliminado | Hallazgos del revisor del plugin | `2340d8a` |
+| 2 | Regex de campos mutables más estricta; reglas internas de `World` no importables fuera de `domain/world` | La regex del plan no detectaba inicializadores; encapsular el agregado | `37a6379`, `765d311` |
+| 2 | `LevelRepository` devuelve el agregado `World`; validaciones de entidades con `assert` | Parte de E1/E5 | — |
+| 2–7 | Ningún dato de test declarado dentro del test (entidades, DBO, modelos, excepciones) salvo `PositionEntity` | Regla global del usuario | `223c230`, `c6fc8d9`, `3c749be`, `f3882cc` |
+| 4 | Mapeo `Activity → PlayerActivity` y "¿alcanza la madera?" en extensiones de dominio | Reglas de negocio fuera de los casos de uso (E2) | `fe6091f` |
+| 5 | Mocks generados se commitean tal como los escribe `build_runner` | `dart format` a 120 columnas los dejaba desfasados de la CI | `a23295a` |
+| 5 | Botón del popup de error = "Aceptar" (`commonAccept`) en vez de `commonError`; `ForestStarted` reinicia el estado privado del BLoC | Texto correcto y "Reintentar" funcional | `7da2a00` |
+| 6 | Flame solo en `game/` + `forest_page.dart`; `RenderConstants` en `game/render/`; `CameraFraming` con `Offset`/`Size` | Aislar el motor gráfico para poder cambiarlo; decisión del usuario | `f5ccdb8`..`7e64221` |
+| 6 | Fantasma sigue al ratón con el botón pulsado; `pickUp()` idempotente; `Picture` del suelo liberado | Hallazgos de revisión | `d6dfda4`, `98af808` |
+| 7 | `GameWidget(autofocus: false)`; `FittedBox` en la fila de botones del HUD; números tabulares | Esc no llegaba; desbordamiento a 400 px; paridad con la web | `6042266`, `078e12d`, `e4c5796` |
+| 7 | `ForestPage` activa/desactiva el menú contextual del navegador en su ciclo de vida | Detalle de plataforma de la página | `6042266` |
+| 8 | Fallo al cargar el arte → panel de error con "Reintentar" (antes pantalla negra) | Revisión final de la rama | `5c71b04` |
+| 8 | `dt` limitado una sola vez y usado también por las animaciones | Las animaciones se adelantaban tras un tirón | `c20fae2` |
+| 8 | Flutter fijado a 3.47.6 en la CI | Evitar que una estable nueva rompa el despliegue | `bee880a` |
+| 8 | `DEVELOPMENT_TEAM` del proyecto iOS se mantiene | Decisión del usuario | — |

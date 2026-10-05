@@ -37,10 +37,10 @@ void main() {
     await configureDependencies(environment: environment);
 
     // then
-    expect(locator<NavigationService>(), isA<NavifyImpl>());
-    expect(locator<Logger>(), isA<CustomLoggerImpl>());
-    expect(locator<BlocLogger>(), isA<BlocLogger>());
-    expect(locator<AppExceptionHandler>(), isA<AppExceptionHandler>());
+    expect(locator.get<NavigationService>(), isA<NavifyImpl>());
+    expect(locator.get<Logger>(), isA<CustomLoggerImpl>());
+    expect(locator.get<BlocLogger>(), isA<BlocLogger>());
+    expect(locator.get<AppExceptionHandler>(), isA<AppExceptionHandler>());
   });
 
   test('testWhenResolvingTheNavigationServiceTwiceThenItIsTheSameInstance', () async {
@@ -48,8 +48,8 @@ void main() {
     await configureDependencies(environment: DiEnvironment.dev);
 
     // when
-    final first = locator<NavigationService>();
-    final second = locator<NavigationService>();
+    final first = locator.get<NavigationService>();
+    final second = locator.get<NavigationService>();
 
     // then
     expect(identical(first, second), isTrue);

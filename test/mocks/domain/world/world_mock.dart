@@ -32,6 +32,8 @@ abstract final class WorldMock {
 
   static World withTreeBlockingPath() => make(trees: [TreeEntityMock.blockingPath]);
 
+  static World withFifteenWood() => make(player: PlayerEntityMock.withFifteenWood);
+
   static World withSeventeenWood() => make(player: PlayerEntityMock.withSeventeenWood);
 
   static World withFifteenWoodAndTreeAtSite() {

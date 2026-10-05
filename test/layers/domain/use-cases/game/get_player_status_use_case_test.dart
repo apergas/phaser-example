@@ -1,13 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/player_activity.dart';
 import 'package:rpg/core/error-handling/exceptions/app_exceptions.dart';
 import 'package:rpg/layers/domain/rules/rules.dart';
+import 'package:rpg/layers/domain/use-cases/game/construct_building_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/get_player_status_use_case.dart';
 
 import '../../../../mocks/domain/game/game_scenario_mock.dart';
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
+import '../../../../mocks/domain/world/world_mock.dart';
 
 void main() {
   late MockGameSessionRepository sessionRepository;
@@ -73,5 +76,19 @@ void main() {
     // then
     expect(status.activity, PlayerActivity.walking);
     expect(status.target, GameScenarioMock.playerDestination);
+  });
+
+  test('testWhenPlayerHammersASiteThenStatusReportsConstructing', () {
+    // given
+    final session = GameSessionEntityMock.playing(WorldMock.withSeventeenWood());
+    when(sessionRepository.current()).thenReturn(session);
+    ConstructBuildingUseCase(sessionRepository: sessionRepository)(blueprint: BlueprintId.house, x: 300, y: 100);
+    session.world.advanceFor(3000);
+
+    // when
+    final status = sut();
+
+    // then
+    expect(status.activity, PlayerActivity.constructing);
   });
 }

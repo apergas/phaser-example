@@ -21,6 +21,10 @@ import 'package:rpg/core/services/logging/source/logger.dart' as _i879;
 import 'package:rpg/core/services/navigation/navify/navify_impl.dart' as _i192;
 import 'package:rpg/core/services/navigation/source/navigation_service.dart'
     as _i100;
+import 'package:rpg/layers/data/datasources/level/local/level_local_datasource_impl.dart'
+    as _i25;
+import 'package:rpg/layers/data/datasources/level/source/level_local_datasource.dart'
+    as _i217;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -31,6 +35,9 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.factory<_i216.AppExceptionHandler>(() => _i216.AppExceptionHandler());
     gh.singleton<_i879.Logger>(() => _i540.CustomLoggerImpl());
+    gh.factory<_i217.LevelLocalDatasource>(
+      () => const _i25.LevelLocalDatasourceImpl(),
+    );
     gh.singleton<_i100.NavigationService>(() => _i192.NavifyImpl());
     gh.singleton<_i685.BlocLogger>(
       () => _i685.BlocLogger(logger: gh<_i879.Logger>()),

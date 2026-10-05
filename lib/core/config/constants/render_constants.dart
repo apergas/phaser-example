@@ -24,4 +24,9 @@ abstract final class RenderConstants {
   static const List<int> hammerSequence = [0, 0, 5, 5, 4, 4, 1];
 
   static const double houseFrontOffset = 24;
+
+  static const double cameraLerp = 0.1;
+  static const double maxFrameSeconds = 0.1;
+  static const int backgroundColor = 0xFF0E150E;
+  static const int solidAlpha = 200;
 }

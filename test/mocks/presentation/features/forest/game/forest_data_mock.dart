@@ -118,6 +118,12 @@ abstract final class ForestDataMock {
     isValid: true,
   );
 
+  static final PlacementData invalidPlacement = PlacementData(
+    blueprint: BlueprintId.house,
+    position: const PositionEntity(x: 100, y: 100),
+    isValid: false,
+  );
+
   static final ForestData initial = ForestData(world: world, player: player);
 
   static final ForestData treeHit = ForestData(

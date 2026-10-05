@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/assets/i18n/internationalize.dart';
-import '../features/forest/forest_page.dart';
 import '../theme/colors/custom_colors.dart';
 import 'bloc/container_app_bloc.dart';
 
@@ -22,17 +21,13 @@ class ContainerAppView extends StatelessWidget {
     return switch (state) {
       ContainerAppInitial() => _loadingBody(),
       ContainerAppInProgress() => _loadingBody(),
-      ContainerAppSuccess() => _emptyBody(),
+      ContainerAppSuccess() => _loadingBody(),
       ContainerAppFailure() => _errorBody(),
     };
   }
 
   Widget _loadingBody() {
     return const Center(child: CircularProgressIndicator());
-  }
-
-  Widget _emptyBody() {
-    return const ForestPage();
   }
 
   Widget _errorBody() {

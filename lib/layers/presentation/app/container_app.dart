@@ -15,7 +15,8 @@ class ContainerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ContainerAppBloc()..add(ContainerAppStarted()),
+      create: (context) =>
+          ContainerAppBloc(navigationService: locator.get<NavigationService>())..add(ContainerAppStarted()),
       child: MaterialApp(
         title: Internationalize.appTitle,
         navigatorKey: locator<NavigationService>().navigatorKey,

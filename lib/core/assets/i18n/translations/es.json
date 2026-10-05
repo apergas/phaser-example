@@ -1,0 +1,23 @@
+{
+  "app": {
+    "title": "RPG"
+  },
+  "common": {
+    "error": "Error",
+    "accept": "Aceptar"
+  },
+  "error": {
+    "genericTitle": "Error",
+    "genericMessage": "Se ha producido un error. Inténtalo de nuevo más tarde.",
+    "invalidLevelTitle": "Nivel no válido",
+    "invalidLevelMessage": "El nivel no es válido: {reason}",
+    "unknownTreeKindTitle": "Árbol desconocido",
+    "unknownTreeKindMessage": "El nivel tiene un árbol de un tipo desconocido: {detail}",
+    "unknownDecorationKindTitle": "Decoración desconocida",
+    "unknownDecorationKindMessage": "El nivel tiene una decoración de un tipo desconocido: {detail}",
+    "unknownItemKindTitle": "Objeto desconocido",
+    "unknownItemKindMessage": "El nivel tiene un objeto de un tipo desconocido: {detail}",
+    "noGameInProgressTitle": "No hay partida",
+    "noGameInProgressMessage": "No hay ninguna partida en curso."
+  }
+}

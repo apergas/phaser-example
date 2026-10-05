@@ -35,4 +35,5 @@ flutter:
   uses-material-design: true
 
   assets:
+    - lib/core/assets/i18n/translations/
     - lib/core/assets/images/lpc/

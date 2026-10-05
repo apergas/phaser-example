@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `test/` mirrors `lib/`; `test/mocks/` holds centralised mock data; `test/helpers/` has `loadSpanishTranslations` (`spanish_translations.dart`), `pumpUntil` (`pump_until.dart`) and `hud_test_app.dart`; `test/architecture_test.dart` enforces the layer rules.
 - `android/`, `ios/`, `web/` — Flutter runners (app name `RPG`, ids `com.apergas.rpg`, landscape only on mobile: Android `userLandscape`, iOS landscape left/right + full screen).
 - `asset-packs/lpc/` — raw LPC art and `build_assets.py`, which generates `lib/core/assets/images/lpc/`.
-- `.github/workflows/deploy.yml` — on pushes to `main` that touch the app: `build_runner` + `git diff --exit-code`, `flutter analyze`, `flutter test`, golden tests in Chrome, `flutter build web --base-href /phaser-example/` (production env file) and publish `build/web` to GitHub Pages (https://apergas.github.io/phaser-example/). Android and iOS are tested locally only.
+- `.github/workflows/deploy.yml` — Flutter pinned to 3.47.6 (`flutter-version` in `subosito/flutter-action`, bump it in its own commit); on pushes to `main` that touch the app: `build_runner` + `git diff --exit-code`, `flutter analyze`, `flutter test`, golden tests in Chrome, `flutter build web --base-href /phaser-example/` (production env file) and publish `build/web` to GitHub Pages (https://apergas.github.io/phaser-example/). Android and iOS are tested locally only.
 - `docs/boost/plans/2026-10-05-flutter-migration/` — the migration plan; its README section 2 lists the exceptions to the plugin (E1-E11) and section 7 records every decision and deviation found while executing it. `2026-10-04-kmp-migration/` is historical.
 
 ## Commands

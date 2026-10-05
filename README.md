@@ -37,11 +37,13 @@ flutter run -d emulator-5554                                # Android emulator
 flutter run -d "iPhone 17"                                  # iOS simulator
 ```
 
-Needs the Flutter SDK (stable), Chrome for the web, the Android SDK and Xcode for the mobile targets.
+Needs the Flutter SDK (stable, 3.47.6), Chrome for the web, the Android SDK and Xcode for the mobile targets.
 
 Every push to `main` that touches the app runs analysis and tests, builds the web app with
 `--base-href /phaser-example/` and `--dart-define-from-file=lib/core/config/env/production_environment.json`, and
 publishes `build/web` to GitHub Pages: https://apergas.github.io/phaser-example/ (`.github/workflows/deploy.yml`).
+CI pins Flutter 3.47.6 (`flutter-version` in `subosito/flutter-action`); to bump it, change that value in its own
+commit together with any `pubspec.yaml`/`pubspec.lock` update it needs.
 
 ## Art
 

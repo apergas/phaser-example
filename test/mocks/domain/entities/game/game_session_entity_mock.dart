@@ -8,4 +8,6 @@ abstract final class GameSessionEntityMock {
   static GameSessionEntity make({World? world, QuestLog? quests}) {
     return GameSessionEntity(world: world ?? WorldMock.make(), quests: quests ?? QuestLog());
   }
+
+  static GameSessionEntity playing(World world) => GameSessionEntity(world: world, quests: QuestLog());
 }

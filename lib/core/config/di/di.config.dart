@@ -47,6 +47,8 @@ import 'package:rpg/layers/domain/repositories/level/level_repository.dart'
     as _i38;
 import 'package:rpg/layers/domain/repositories/session/game_session_repository.dart'
     as _i745;
+import 'package:rpg/layers/domain/use-cases/game/start_game_use_case.dart'
+    as _i368;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -90,6 +92,12 @@ extension GetItInjectableX on _i174.GetIt {
         localDatasource: gh<_i217.LevelLocalDatasource>(),
         levelMapperDBO: gh<_i491.LevelMapperDBO>(),
         appExceptionHandler: gh<_i216.AppExceptionHandler>(),
+      ),
+    );
+    gh.factory<_i368.StartGameUseCase>(
+      () => _i368.StartGameUseCase(
+        levelRepository: gh<_i38.LevelRepository>(),
+        sessionRepository: gh<_i745.GameSessionRepository>(),
       ),
     );
     return this;

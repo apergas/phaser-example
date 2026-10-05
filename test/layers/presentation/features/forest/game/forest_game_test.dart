@@ -1,8 +1,11 @@
 import 'package:flame/extensions.dart';
+import 'package:flame/events.dart';
 import 'package:flame_test/flame_test.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
 import 'package:rpg/layers/presentation/features/forest/game/forest_game.dart';
+import 'package:rpg/layers/presentation/features/forest/game/particles/particle_burst_component.dart';
 
 import '../../../../../mocks/presentation/features/forest/forest_bloc_fake.dart';
 import '../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';
@@ -187,4 +190,50 @@ void main() {
       expect(moved.position.y, closeTo(150, 1e-9));
     },
   );
+
+  testWithGame<ForestGame>(
+    'testWhenDraggingTheMouseWhilePlacingThenTheGhostKeepsFollowingIt',
+    () => ForestGame(
+      bloc: bloc = ForestBlocFake(ForestSuccess(data: ForestDataMock.placing)),
+      assetsLoader: loader,
+    ),
+    (game) async {
+      // given
+      await game.ready();
+      game.onGameResize(Vector2(800, 600));
+      game.update(0.016);
+      game.world.onDragStart(
+        DragStartEvent(1, game, DragStartDetails(globalPosition: Offset.zero, kind: PointerDeviceKind.mouse)),
+      );
+
+      // when
+      game.world.onDragUpdate(
+        DragUpdateEvent(1, game, DragUpdateDetails(globalPosition: const Offset(400, 300))),
+      );
+      game.update(0.016);
+      await _settle();
+
+      // then
+      final moved = bloc.events.whereType<ForestPointerMoved>().last;
+      expect(moved.position.x, closeTo(200, 1e-9));
+      expect(moved.position.y, closeTo(150, 1e-9));
+    },
+  );
+
+  testWithGame<ForestGame>('testWhenTheBlocPushesAnEffectThenItIsPlayedExactlyOnce', createGame, (game) async {
+    // given
+    await game.ready();
+    final scene = game.world.scene!;
+    final chipsBefore = scene.children.whereType<ParticleBurstComponent>().length;
+
+    // when
+    bloc.push(ForestSuccess(data: ForestDataMock.treeHit));
+    await _settle();
+    await game.ready();
+    game.update(0);
+    game.update(0);
+
+    // then
+    expect(scene.children.whereType<ParticleBurstComponent>().length, chipsBefore + 1);
+  });
 }

@@ -158,4 +158,22 @@ void main() {
     expect(scene.ghost, isNull);
     expect(ghostWhilePlacing.isMounted, isFalse);
   });
+
+  testWithFlameGame('testWhenShowingTheSameSnapshotTwiceThenComponentCountsStayTheSame', (game) async {
+    // given
+    final scene = await _mountedScene(game);
+    final childrenBefore = scene.children.length;
+
+    // when
+    scene.show(ForestDataMock.initial);
+    await game.ready();
+
+    // then
+    expect(scene.children.length, childrenBefore);
+    expect(scene.trees.keys, ['tree-1', 'tree-2']);
+    expect(scene.items.keys, ['axe']);
+    expect(scene.clutter, hasLength(1));
+    expect(scene.buildings, isEmpty);
+    expect(scene.children.whereType<GroundComponent>(), hasLength(1));
+  });
 }

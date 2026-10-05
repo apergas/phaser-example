@@ -93,6 +93,10 @@ class ForestWorld extends World with TapCallbacks, SecondaryTapCallbacks, Pointe
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
-    if (_dragDeviceKind != PointerDeviceKind.mouse) dragTo(event.localEndPosition);
+    if (_dragDeviceKind == PointerDeviceKind.mouse) {
+      mouseMovedTo(event.canvasEndPosition);
+    } else {
+      dragTo(event.localEndPosition);
+    }
   }
 }

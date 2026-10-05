@@ -39,4 +39,21 @@ void main() {
     expect(item.isMounted, isFalse);
     expect(item.shadow.isMounted, isFalse);
   });
+
+  testWithFlameGame('testWhenPickedUpTwiceThenTheSecondCallDoesNotRestartTheAnimation', (game) async {
+    // given
+    final item = GroundItemComponent(assets: LpcAssetsMock.create(), item: ForestDataMock.axe);
+    await game.ensureAdd(item.shadow);
+    await game.ensureAdd(item);
+    item.pickUp();
+    game.update(0.2);
+
+    // when
+    item.pickUp();
+    game.update(0.11);
+    await game.ready();
+
+    // then
+    expect(item.isMounted, isFalse);
+  });
 }

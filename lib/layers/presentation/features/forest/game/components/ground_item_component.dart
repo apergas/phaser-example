@@ -48,6 +48,7 @@ class GroundItemComponent extends AtlasSpriteComponent {
   }
 
   void pickUp() {
+    if (isPickingUp) return;
     shadow.removeFromParent();
     _pickUpElapsedMs = 0;
     _pickUpStartY = position.y;

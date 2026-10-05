@@ -47,12 +47,22 @@ import 'package:rpg/layers/domain/repositories/level/level_repository.dart'
     as _i38;
 import 'package:rpg/layers/domain/repositories/session/game_session_repository.dart'
     as _i745;
+import 'package:rpg/layers/domain/use-cases/game/advance_game_use_case.dart'
+    as _i785;
 import 'package:rpg/layers/domain/use-cases/game/can_place_building_use_case.dart'
     as _i997;
 import 'package:rpg/layers/domain/use-cases/game/chop_tree_use_case.dart'
     as _i763;
 import 'package:rpg/layers/domain/use-cases/game/construct_building_use_case.dart'
     as _i382;
+import 'package:rpg/layers/domain/use-cases/game/get_build_options_use_case.dart'
+    as _i886;
+import 'package:rpg/layers/domain/use-cases/game/get_player_status_use_case.dart'
+    as _i243;
+import 'package:rpg/layers/domain/use-cases/game/get_quests_use_case.dart'
+    as _i606;
+import 'package:rpg/layers/domain/use-cases/game/get_world_snapshot_use_case.dart'
+    as _i903;
 import 'package:rpg/layers/domain/use-cases/game/move_player_use_case.dart'
     as _i470;
 import 'package:rpg/layers/domain/use-cases/game/start_game_use_case.dart'
@@ -108,6 +118,11 @@ extension GetItInjectableX on _i174.GetIt {
         sessionRepository: gh<_i745.GameSessionRepository>(),
       ),
     );
+    gh.factory<_i785.AdvanceGameUseCase>(
+      () => _i785.AdvanceGameUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
     gh.factory<_i997.CanPlaceBuildingUseCase>(
       () => _i997.CanPlaceBuildingUseCase(
         sessionRepository: gh<_i745.GameSessionRepository>(),
@@ -120,6 +135,26 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i382.ConstructBuildingUseCase>(
       () => _i382.ConstructBuildingUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i886.GetBuildOptionsUseCase>(
+      () => _i886.GetBuildOptionsUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i243.GetPlayerStatusUseCase>(
+      () => _i243.GetPlayerStatusUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i606.GetQuestsUseCase>(
+      () => _i606.GetQuestsUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i903.GetWorldSnapshotUseCase>(
+      () => _i903.GetWorldSnapshotUseCase(
         sessionRepository: gh<_i745.GameSessionRepository>(),
       ),
     );

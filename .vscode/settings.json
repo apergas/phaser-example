@@ -1,6 +1,7 @@
 {
-  // Use the project's TypeScript (6.x) instead of the one bundled with the editor, so tsconfig
-  // options like target "es2023" or "erasableSyntaxOnly" are understood.
-  "typescript.tsdk": "webApp/node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "dart.lineLength": 120,
+  "[dart]": {
+    "editor.rulers": [120],
+    "editor.formatOnSave": true
+  }
 }

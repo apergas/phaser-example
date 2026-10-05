@@ -1,0 +1,1 @@
+enum ConstructionRejection { notEnoughWood, blocked }

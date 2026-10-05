@@ -16,4 +16,10 @@ abstract final class PlayerRenderDataMock {
     facing: Facing.right,
     pose: const WalkPose(withAxe: true),
   );
+
+  static PlayerRenderData get walkingWithAxeNearby => PlayerRenderData(
+    position: const PositionEntity(x: 160, y: 155),
+    facing: Facing.right,
+    pose: const WalkPose(withAxe: true),
+  );
 }

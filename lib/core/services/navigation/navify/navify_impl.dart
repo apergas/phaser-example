@@ -80,7 +80,7 @@ class NavifyImpl implements NavigationService {
     showModalBottomSheet(
       isScrollControlled: true,
       useSafeArea: true,
-      barrierColor: Colors.transparent,
+      barrierColor: CustomColors.transparent,
       isDismissible: isDismissible,
       enableDrag: isDismissible,
       backgroundColor: CustomColors.white,
@@ -115,8 +115,8 @@ class NavifyImpl implements NavigationService {
       useSafeArea: false,
       isDismissible: isDismissible,
       enableDrag: isDismissible,
-      barrierColor: Colors.transparent,
-      backgroundColor: Colors.transparent,
+      barrierColor: CustomColors.transparent,
+      backgroundColor: CustomColors.transparent,
       shape: null,
       builder: (_) {
         return Material(

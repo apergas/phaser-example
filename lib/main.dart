@@ -8,6 +8,7 @@ import 'core/config/di/locator.dart';
 import 'core/config/env/environment_constants.dart';
 import 'core/services/logging/bloc/bloc_logger.dart';
 import 'layers/presentation/app/container_app.dart';
+import 'layers/presentation/theme/colors/custom_colors.dart';
 
 void main() async {
   await _initialize();
@@ -27,9 +28,9 @@ Future<void> _initialize() async {
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
+      statusBarColor: CustomColors.transparent,
+      systemNavigationBarColor: CustomColors.transparent,
+      systemNavigationBarDividerColor: CustomColors.transparent,
       systemNavigationBarIconBrightness: Brightness.light,
       systemNavigationBarContrastEnforced: false,
       systemStatusBarContrastEnforced: false,

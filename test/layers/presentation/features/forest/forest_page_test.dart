@@ -9,7 +9,6 @@ import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/di/di.dart';
 import 'package:rpg/core/config/di/di_environment.dart';
 import 'package:rpg/core/config/di/locator.dart';
-import 'package:rpg/core/error-handling/exceptions/app_exceptions.dart';
 import 'package:rpg/core/services/navigation/source/navigation_service.dart';
 import 'package:rpg/layers/domain/repositories/level/level_repository.dart';
 import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
@@ -18,7 +17,9 @@ import 'package:rpg/layers/presentation/features/forest/game/forest_game.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_overlay.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/placement_bar.dart';
 
+import '../../../../helpers/pump_until.dart';
 import '../../../../helpers/spanish_translations.dart';
+import '../../../../mocks/core/error-handling/app_exception_mock.dart';
 import '../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
 import '../../../../mocks/presentation/features/forest/forest_scenario_mock.dart';
@@ -26,7 +27,7 @@ import '../../../../mocks/presentation/features/forest/forest_scenario_mock.dart
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const invalidLevel = InvalidLevelException(data: 'missing width');
+  const invalidLevel = AppExceptionMock.invalidLevel;
 
   late MockLevelRepository levelRepository;
   late MockNavigationService navigationService;
@@ -46,15 +47,6 @@ void main() {
   tearDown(() async {
     await locator.reset();
   });
-
-  Future<void> pumpUntil(WidgetTester tester, bool Function() condition) async {
-    final deadline = DateTime.now().add(const Duration(seconds: 10));
-    while (!condition()) {
-      if (DateTime.now().isAfter(deadline)) fail('Condition not met within 10 seconds');
-      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 100)));
-      await tester.pump(const Duration(milliseconds: 50));
-    }
-  }
 
   Future<ForestBloc> pumpGame(WidgetTester tester) async {
     when(levelRepository.load()).thenReturn(ForestScenarioMock.fifteenWood());
@@ -153,19 +145,24 @@ void main() {
     final bloc = await pumpGame(tester);
     bloc.add(const ForestBuildRequested(blueprint: BlueprintId.house));
     await pumpUntil(tester, () => find.byType(PlacementBar).evaluate().isNotEmpty);
+    bloc.add(const ForestPointerMoved(position: ForestScenarioMock.freeSite));
+    await pumpUntil(tester, () => bloc.state.data.placement?.position == ForestScenarioMock.freeSite);
 
     // when
     await tester.tap(find.text(Internationalize.forestPlacementConfirm));
-    await tester.pump(const Duration(milliseconds: 200));
+    await pumpUntil(tester, () => find.byType(PlacementBar).evaluate().isEmpty);
 
     // then
+    expect(bloc.state.data.placement, isNull);
     final messages = verify(navigationService.showSnackbar(message: captureAnyNamed('message'))).captured;
-    expect(messages, contains(Internationalize.forestMessageBlockedSite));
+    expect(messages, contains(Internationalize.forestMessageBuildingStarted));
+    expect(messages, isNot(contains(Internationalize.forestMessageBlockedSite)));
+    expect(find.byType(PlacementBar), findsNothing);
   }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
 
   testWidgets('testWhenTheGameStartsWithRealAssetsThenTheWorldIsReady', (tester) async {
     // given
-    when(levelRepository.load()).thenAnswer((_) => ForestScenarioMock.empty());
+    when(levelRepository.load()).thenReturn(ForestScenarioMock.empty());
 
     // when
     await tester.pumpWidget(const MaterialApp(home: ForestPage()));

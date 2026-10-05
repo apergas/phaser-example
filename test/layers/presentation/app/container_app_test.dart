@@ -10,6 +10,7 @@ import 'package:rpg/layers/domain/repositories/level/level_repository.dart';
 import 'package:rpg/layers/presentation/app/container_app.dart';
 import 'package:rpg/layers/presentation/features/forest/forest_page.dart';
 
+import '../../../helpers/pump_until.dart';
 import '../../../mocks/domain/repositories/repository_mocks.mocks.dart';
 import '../../../mocks/presentation/features/forest/forest_scenario_mock.dart';
 
@@ -52,10 +53,7 @@ void main() {
         child: const ContainerApp(),
       ),
     );
-    for (var i = 0; i < 20 && find.byType(ForestPage).evaluate().isEmpty; i++) {
-      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
-      await tester.pump(const Duration(milliseconds: 50));
-    }
+    await pumpUntil(tester, () => find.byType(ForestPage).evaluate().isNotEmpty);
 
     // then
     expect(find.byType(ForestPage), findsOneWidget);

@@ -22,6 +22,7 @@ class ContainerAppBloc extends Bloc<ContainerAppEvent, ContainerAppState> {
     emit(ContainerAppInProgress(data: state.data));
 
     _navigationService.pushReplacement(const ForestPage());
+
     emit(ContainerAppSuccess(data: state.data));
   }
 }

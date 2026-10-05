@@ -12,7 +12,6 @@ void main() {
 
   test('testWhenNothingWasSetThenGetReturnsNull', () {
     // given
-    // a fresh datasource
 
     // when
     final session = sut.get();

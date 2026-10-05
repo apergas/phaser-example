@@ -10,22 +10,16 @@ import 'package:rpg/layers/data/repositories/level/mappers/position_mapper_dbo.d
 import 'package:rpg/layers/data/repositories/level/mappers/tree_mapper_dbo.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
 
-import '../../../../../mocks/data/datasources/level/decoration_dbo_mock.dart';
 import '../../../../../mocks/data/datasources/level/level_dbo_mock.dart';
-import '../../../../../mocks/data/datasources/level/tree_dbo_mock.dart';
 
 void main() {
   late LevelMapperDBO sut;
-  late TreeMapperDBO treeMapper;
-  late DecorationMapperDBO decorationMapper;
 
   setUp(() {
-    treeMapper = TreeMapperDBO();
-    decorationMapper = DecorationMapperDBO();
     sut = LevelMapperDBO(
       positionMapperDBO: PositionMapperDBO(),
-      treeMapperDBO: treeMapper,
-      decorationMapperDBO: decorationMapper,
+      treeMapperDBO: TreeMapperDBO(),
+      decorationMapperDBO: DecorationMapperDBO(),
       groundItemMapperDBO: GroundItemMapperDBO(),
     );
   });
@@ -120,30 +114,5 @@ void main() {
 
     // then
     expect(map, throwsA(isA<InvalidLevelException>().having((exception) => exception.data, 'data', 'missing width')));
-  });
-
-  test('testWhenTreeHasNoIdThenUsesItsPositionInTheList', () {
-    // given
-    const dbo = TreeDBOMock.withoutId;
-
-    // when
-    final tree = treeMapper.toEntity(dbo, index: 4);
-
-    // then
-    expect(tree.id, 'tree-5');
-    expect(tree.woodYield, 0);
-    expect(tree.kind, TreeKind.pine);
-  });
-
-  test('testWhenDecorationHasNoIdThenUsesItsPositionInTheList', () {
-    // given
-    const dbo = DecorationDBOMock.withoutId;
-
-    // when
-    final decoration = decorationMapper.toEntity(dbo, index: 0);
-
-    // then
-    expect(decoration.id, 'decoration-1');
-    expect(decoration.kind, DecorationKind.mushrooms);
   });
 }

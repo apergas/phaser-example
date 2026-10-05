@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/config/constants/enum/decoration_kind.dart';
+import 'package:rpg/core/config/constants/enum/tree_kind.dart';
+import 'package:rpg/core/utils/kebab_case.dart';
 import 'package:rpg/layers/data/datasources/level/local/dbo/tree_dbo.dart';
 import 'package:rpg/layers/data/datasources/level/local/level_local_datasource_impl.dart';
 
@@ -97,5 +100,29 @@ void main() {
       expect(underTree, isFalse);
       expect((x - 800.0).abs() >= 48 || y < 504.0 || y > 648.0, isTrue);
     }
+  });
+
+  test('testWhenFetchingThenEveryGeneratedTreeKindMapsToATreeKind', () {
+    // given
+    final level = sut.fetch();
+
+    // when
+    final generated = (level.trees ?? const <TreeDBO>[]).map((tree) => tree.kind).toSet();
+
+    // then
+    final known = TreeKind.values.map((kind) => kind.name.toKebabCase()).toSet();
+    expect(generated, known);
+  });
+
+  test('testWhenFetchingThenEveryGeneratedDecorationKindMapsToADecorationKind', () {
+    // given
+    final level = sut.fetch();
+
+    // when
+    final generated = (level.decorations ?? const []).map((decoration) => decoration.kind).toSet();
+
+    // then
+    final known = DecorationKind.values.map((kind) => kind.name.toKebabCase()).toSet();
+    expect(generated, known);
   });
 }

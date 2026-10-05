@@ -1,3 +1,5 @@
+> **Histórico.** Este plan describe la migración a Kotlin Multiplatform, sustituida por la app Flutter (ver `../2026-10-05-flutter-migration/`). Ningún fichero que menciona sigue en el repo.
+
 # Migración a Kotlin Multiplatform — Plan maestro
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use boost:subagent-driven-development (recommended) or boost:executing-plans to implement each phase plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Execute the phase documents **in order**; each one leaves the project working and green.

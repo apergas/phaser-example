@@ -16,6 +16,11 @@ abstract final class ActivityEntityMock {
 
   static const WorkingActivityEntity working = WorkingActivityEntity(intent: IntentEntityMock.chop, elapsedMs: 100);
 
+  static IdleActivityEntity makeIdle() {
+    // ignore: prefer_const_constructors
+    return IdleActivityEntity();
+  }
+
   static WalkingActivityEntity makeWalking({double x = 50, double y = 60, IntentEntity? intent}) =>
       WalkingActivityEntity(
         destination: PositionEntity(x: x, y: y),

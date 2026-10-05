@@ -9,4 +9,6 @@ abstract final class PlayerPoseMock {
   static IdlePose get idle => IdlePose(withAxe: true);
 
   static WalkPose get walk => WalkPose(withAxe: true);
+
+  static IdlePose get idleWithoutAxe => IdlePose(withAxe: false);
 }

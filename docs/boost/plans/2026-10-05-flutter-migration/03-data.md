@@ -588,13 +588,14 @@ Expected: `All tests passed!` — mismo bosque compilado a JavaScript (README D8
 - [ ] **Step 7: Format, analyze and commit**
 
 ```bash
+dart run build_runner build --delete-conflicting-outputs
 dart format --line-length 120 lib/layers/data test/layers/data
 flutter analyze
-git add lib/layers/data/datasources/level test/layers/data/datasources/level
+git add lib/layers/data/datasources/level lib/core/config/di/di.config.dart test/layers/data/datasources/level
 git commit -m "[PROJECT-X]: Port the seeded forest generator and level DBOs"
 ```
 
-Expected: `flutter analyze` → `No issues found!`.
+Expected: build_runner `Succeeded after ...` (`di.config.dart` registra `LevelLocalDatasource`, regla 14 del plugin); `flutter analyze` → `No issues found!`.
 
 ---
 
@@ -1021,13 +1022,14 @@ Expected: `All tests passed!` (8 tests).
 - [ ] **Step 6: Format, analyze and commit**
 
 ```bash
+dart run build_runner build --delete-conflicting-outputs
 dart format --line-length 120 lib/layers/data test/layers/data test/mocks
 flutter analyze
-git add lib/layers/data/repositories/level/mappers test/layers/data/repositories/level/mappers test/mocks/data
+git add lib/layers/data/repositories/level/mappers lib/core/config/di/di.config.dart test/layers/data/repositories/level/mappers test/mocks/data
 git commit -m "[PROJECT-X]: Map level DBOs to the world aggregate"
 ```
 
-Expected: `flutter analyze` → `No issues found!`.
+Expected: build_runner `Succeeded after ...` (`di.config.dart` registra los cinco mappers); `flutter analyze` → `No issues found!`.
 
 ---
 
@@ -1165,10 +1167,10 @@ void main() {
 }
 ```
 
-- [ ] **Step 2: Generate the mocks and run the test to verify it fails**
+- [ ] **Step 2: Run the test to verify it fails**
 
-Run: `dart run build_runner build --delete-conflicting-outputs && flutter test test/layers/data/repositories/level/level_repository_impl_test.dart`
-Expected: build_runner `Succeeded after ...` (genera `level_repository_impl_test.mocks.dart`); el test FAIL — compilation error, `level_repository_impl.dart` not found.
+Run: `flutter test test/layers/data/repositories/level/level_repository_impl_test.dart`
+Expected: FAIL — compilation error, `level_repository_impl.dart` and `level_repository_impl_test.mocks.dart` not found (los mocks se generan en el Step 4, cuando el import ya resuelve).
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -1351,10 +1353,11 @@ void main() {
 
   test('testWhenDatasourceFailsThenErrorIsRoutedThroughTheHandler', () {
     // given
-    when(localDatasource.set(any)).thenThrow(StateError('storage unavailable'));
+    final session = GameSessionEntityMock.make();
+    when(localDatasource.set(session)).thenThrow(StateError('storage unavailable'));
 
     // when
-    void save() => sut.save(GameSessionEntityMock.make());
+    void save() => sut.save(session);
 
     // then
     expect(save, throwsA(isA<GenericException>()));
@@ -1362,10 +1365,10 @@ void main() {
 }
 ```
 
-- [ ] **Step 3: Generate the mocks and run the tests to verify they fail**
+- [ ] **Step 3: Run the tests to verify they fail**
 
-Run: `dart run build_runner build --delete-conflicting-outputs && flutter test test/layers/data/datasources/session test/layers/data/repositories/session`
-Expected: build_runner falla o los tests FAIL — compilation error, `game_session_local_datasource.dart` / `game_session_local_datasource_impl.dart` / `game_session_repository_impl.dart` not found.
+Run: `flutter test test/layers/data/datasources/session test/layers/data/repositories/session`
+Expected: FAIL — compilation error, `game_session_local_datasource.dart` / `game_session_local_datasource_impl.dart` / `game_session_repository_impl.dart` / `game_session_repository_impl_test.mocks.dart` not found (los mocks se generan en el Step 5).
 
 - [ ] **Step 4: Write the datasource and the repository**
 

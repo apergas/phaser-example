@@ -338,11 +338,11 @@ final class ForestPlacementCancelled extends ForestEvent {}
 
 // bloc/forest_state.dart  (part of forest_bloc.dart)
 class ForestData { final WorldSnapshotEntity? world; final PlayerRenderData? player; final HudData? hud; final PlacementData? placement; final List<ForestEffect> effects; ForestData copyWith(...); }
-sealed class ForestState { final ForestData data; const ForestState({this.data = const ForestData()}); }   // ForestData: todos los campos opcionales, effects = const []
-class ForestInitial extends ForestState {}
-class ForestInProgress extends ForestState {}
-class ForestSuccess extends ForestState {}
-class ForestFailure extends ForestState { final CustomException exception; }
+sealed class ForestState { final ForestData data; const ForestState({required this.data}); }   // ForestData: todos los campos opcionales, effects = const []
+final class ForestInitial extends ForestState { const ForestInitial() : super(data: const ForestData()); }
+final class ForestInProgress extends ForestState { const ForestInProgress({required super.data}); }
+final class ForestSuccess extends ForestState { const ForestSuccess({required super.data}); }
+final class ForestFailure extends ForestState { final CustomException exception; const ForestFailure({required super.data, required this.exception}); }
 
 // models/
 class PlayerRenderData { final PositionEntity position; final Facing facing; final PlayerPose pose; }          // player_render_data.dart
@@ -429,7 +429,7 @@ Orden obligatorio: cada una consume lo que produjo la anterior.
 Conocidas al escribir el plan (se confirman o corrigen al ejecutar):
 
 - Textos: los getters de `Internationalize` con parámetros usan argumentos con nombre (`forestCost(wood:)`, `forestBlueprint(id:)`, `forestQuestTitle(id:)`...). Nuevo texto `forest.retry` = "Reintentar" para la pantalla de error al cargar el nivel (antes no existía esa pantalla).
-- Solo `es` (el plugin propone `es` + `en`) y sin orientación fija (`gen-main` fuerza vertical; las apps actuales no la bloquean).
+- Solo `es` (el plugin propone `es` + `en`). Orientación: no se fuerza vertical como en `gen-main`; se mantiene la de las apps actuales, apaisado en móvil (Android `userLandscape`, iOS landscape left/right), configurada en los runners en la fase 8.
 - `ContainerAppBloc` recibe `NavigationService` en la fase 7 y navega con `pushReplacement(const ForestPage())`.
 - Fase 6 (sigue a la web publicada cuando las apps difieren): barra de progreso y rebote de la casa, hacha flotando con sombra, curvas de árbol y cámara con lerp 0,1 de la web; la decoración bajo la casa se limpia con el rectángulo del sprite (como la web). Nuevo: `dt` limitado a 100 ms por fotograma y arrastre táctil del fantasma durante la colocación.
 - `RenderConstants` gana `cameraLerp`, `maxFrameSeconds`, `backgroundColor` y `solidAlpha` en la fase 6.

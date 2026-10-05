@@ -39,7 +39,7 @@ Ver [README §Global Constraints](README.md#global-constraints). Además, en est
 
 ```bash
 cd /Users/axelperezgaspar/phaser-example
-git status --porcelain   # debe estar limpio salvo docs/boost/plans/2026-10-05-flutter-migration/
+git status --porcelain   # debe estar limpio (el plan ya está commiteado)
 ```
 
 `README.md` y `.gitignore` están versionados: si `flutter create` los modifica se restauran con `git checkout` en el paso 3.
@@ -191,7 +191,7 @@ const Map<String, List<String>> _coreAllowed = {
 final RegExp _importPattern = RegExp(r'''^\s*(?:import|export)\s+['"]([^'"]+)['"]''', multiLine: true);
 
 final RegExp _mutableFieldPattern = RegExp(
-  r'^  (?!final\b|static\b|const\b|factory\b|return\b|@|//)(?:late\s+)?(?:var\b|[A-Za-z_]\w*(?:<[^;{}()]*>)?\??\s+_?[a-z]\w*\s*(?:=.*)?;)',
+  r'^  (?!final\b|static\b|const\b|factory\b|return\b|@|//)(?:late\s+)?(?:var\b[^;]*;|[A-Za-z_]\w*(?:<[^;{}()]*>)?\??\s+_?(?!get\b|set\b|operator\b)[a-z]\w*\s*(?:=(?![=>]).*)?;)',
   multiLine: true,
 );
 
@@ -1951,7 +1951,7 @@ git commit -m "[PROJECT-X]: Add the logging and navigation services"
 - Consumes: `NavifyImpl`, `CustomLoggerImpl`, `BlocLogger`, `AppExceptionHandler` (tareas 6–7).
 - Produces:
   - `GetIt get locator` (`locator.dart`).
-  - `Future<void> configureDependencies({required String environment})` (`di.dart`). La fase 4 añade aquí, tras `locator.init(...)`, el registro manual del `ForestBloc`.
+  - `Future<void> configureDependencies({required String environment})` (`di.dart`). El `ForestBloc` no se registra aquí: lo crea `ForestPage` en `BlocProvider.create` (README D4).
   - `DiEnvironment.dev`, `DiEnvironment.prod`, `DiEnvironment.mock`.
   - `EnvironmentConstants.name`, `EnvironmentConstants.diEnvironment` (por defecto `dev`, así `flutter run` funciona sin flags; la fase 8 compila la web con `--dart-define-from-file=lib/core/config/env/production_environment.json`).
 
@@ -2022,14 +2022,18 @@ GetIt get locator => GetIt.instance;
 `lib/core/config/di/di.dart`:
 
 ```dart
-import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 import 'di.config.dart';
+import 'locator.dart';
 
 @InjectableInit()
-Future<void> configureDependencies({required String environment}) => GetIt.instance.init(environment: environment);
+Future<void> configureDependencies({required String environment}) async {
+  locator.init(environment: environment);
+}
 ```
+
+(El ejemplo del plugin usa `=> GetIt.instance.init(...)` porque sus módulos tienen `@preResolve` y el `init` generado devuelve `Future<GetIt>`. Aquí no hay dependencias asíncronas, el `init` generado es síncrono y devuelve `GetIt`, y la forma con flecha no compilaría contra `Future<void>`. Se mantiene la firma asíncrona del plugin para que `main` haga `await`. Se usa `locator` (regla del plugin: nunca `GetIt.instance` fuera de `locator.dart`). Si una fase futura añade un `@preResolve`, se cambia a `await locator.init(...)`.)
 
 `lib/core/config/di/di_environment.dart`:
 

@@ -17,7 +17,9 @@
 - Orientación como hoy: Android `android:screenOrientation="userLandscape"`; iOS solo `UIInterfaceOrientationLandscapeLeft` y `UIInterfaceOrientationLandscapeRight` (iPhone y iPad) y `UIRequiresFullScreen = YES`; despliegue mínimo iOS 17.0.
 - Las apps antiguas no tienen iconos propios (Android solo tiene `res/values`, iOS no tiene `.xcassets` de icono): se mantienen los iconos por defecto de Flutter. El único recurso gráfico propio es `webApp/public/favicon.svg`, que pasa a `web/favicon.svg`.
 - Web: `base href` solo por el flag `--base-href /phaser-example/` en CI; `web/index.html` conserva el `$FLUTTER_BASE_HREF` de la plantilla para que `flutter run -d chrome` funcione en `/`.
-- CI genera el código con `build_runner` siempre (`--delete-conflicting-outputs`): funciona igual si la fase 1 decidió versionar `di.config.dart` / `*.mocks.dart` o ignorarlos.
+- Código generado: la fase 1 **versiona** `di.config.dart` y los `*.mocks.dart` (no hay `build.yaml`). La CI ejecuta igualmente `build_runner build --delete-conflicting-outputs` y después `git diff --exit-code` para fallar si lo versionado está desactualizado.
+- Entorno: la web publicada se compila con `--dart-define-from-file=lib/core/config/env/production_environment.json` (`EnvironmentConstants`, fase 1); `flutter run` sin flags usa `dev`.
+- Tests dorados en Chrome (números JS): `test/core/utils` (fase 1), `test/layers/data` (fase 3) y `test/core/config/di/di_test.dart` (fase 4: 70 árboles / 388 de madera).
 - Memoria del usuario: tras el merge a `main` se comprueba el despliegue real en Pages; **no** se simula CI con Docker ni `act`.
 - Commits `[PROJECT-X]: Imperative description`, sin ninguna atribución a IA. `CLAUDE.md` se añade en un `git add` propio, separado del resto.
 
@@ -242,7 +244,7 @@ Expected: sin salida.
 
 Run:
 ```bash
-flutter build web --release --base-href /phaser-example/
+flutter build web --release --base-href /phaser-example/ --dart-define-from-file=lib/core/config/env/production_environment.json
 grep -o '<base href="[^"]*">' build/web/index.html
 grep -o '<title>[^<]*</title>' build/web/index.html
 ls build/web/assets/lib/core/assets/images/lpc/forest.json
@@ -294,7 +296,6 @@ on:
       - 'pubspec.yaml'
       - 'pubspec.lock'
       - 'analysis_options.yaml'
-      - 'build.yaml'
       - 'asset-packs/**'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
@@ -321,11 +322,13 @@ jobs:
 
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
+      # Generated code is committed: fail if it is out of date.
+      - run: git diff --exit-code
       - run: flutter analyze
       - run: flutter test
       # The forest must be identical on the web (JS numbers): golden values also run in Chrome.
-      - run: flutter test --platform chrome test/core/utils test/layers/data
-      - run: flutter build web --release --base-href /phaser-example/
+      - run: flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart
+      - run: flutter build web --release --base-href /phaser-example/ --dart-define-from-file=lib/core/config/env/production_environment.json
 
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
@@ -343,21 +346,21 @@ jobs:
         uses: actions/deploy-pages@v5
 ```
 
-Si `build.yaml` no existe en la raíz (la fase 1 decide si hace falta), quitar esa línea de `paths`. Si al ejecutar `subosito/flutter-action@v2` ya hay una versión mayor publicada, usar la mayor estable vigente ese día.
+Si al ejecutar `subosito/flutter-action@v2` ya hay una versión mayor publicada, usar la mayor estable vigente ese día.
 
 - [ ] **Step 2: Validar la sintaxis localmente (sin simular CI)**
 
 Run:
 ```bash
-python3 -c "import yaml,sys; yaml.safe_load(open('.github/workflows/deploy.yml')); print('ok')"
+ruby -ryaml -e 'YAML.load_file(".github/workflows/deploy.yml"); puts "ok"' 
 ```
-Expected: `ok`. (No se usa `act` ni Docker: el despliegue real se comprueba en la Task 8.)
+Expected: `ok` (Ruby viene con macOS; `python3` no trae PyYAML). (No se usa `act` ni Docker: el despliegue real se comprueba en la Task 8.)
 
 - [ ] **Step 3: Ejecutar en local los mismos pasos**
 
 Run:
 ```bash
-flutter pub get && dart run build_runner build --delete-conflicting-outputs && flutter analyze && flutter test && flutter test --platform chrome test/core/utils test/layers/data
+flutter pub get && dart run build_runner build --delete-conflicting-outputs && git diff --exit-code && flutter analyze && flutter test && flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart
 ```
 Expected: `No issues found!` y `All tests passed!` en ambas ejecuciones de tests.
 
@@ -411,30 +414,46 @@ Expected: `removed`. (`android/local.properties` lo gestiona Flutter y no se toc
 
 - [ ] **Step 4: `build_assets.py` escribe solo en la carpeta de Flutter**
 
-Sustituir la línea 6 del docstring:
+La fase 1 dejó `OUT` apuntando a `lib/core/assets/images/lpc/` más una réplica `LEGACY_OUT` en `shared/assets/lpc/`. Se quita la réplica.
+
+En `asset-packs/lpc/build_assets.py`, sustituir la cabecera del docstring:
 ```python
-Outputs (into shared/assets/lpc/, the one copy the web, Android and iOS apps all read):
+Outputs (into lib/core/assets/images/lpc/, the copy the Flutter app bundles; mirrored into
+shared/assets/lpc/ while the Kotlin Multiplatform apps still exist):
 ```
 por:
 ```python
 Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on every platform):
 ```
-y la línea 25:
+
+Las constantes de salida quedan:
 ```python
-OUT = ROOT.parent.parent / "shared" / "assets" / "lpc"
-```
-por:
-```python
+from pathlib import Path
+import json
+
+from PIL import Image
+
+ROOT = Path(__file__).parent
+SOURCES = ROOT / "sources"
 OUT = ROOT.parent.parent / "lib" / "core" / "assets" / "images" / "lpc"
 ```
-Si la fase 1 ya cambió `OUT` y añadió escrituras adicionales a `shared/assets/lpc`, eliminar esas escrituras para que solo quede `OUT`.
+(se borran `import shutil` y `LEGACY_OUT`; si `shutil` se usa en otra parte del script, se conserva el import).
+
+Y el bloque final:
+```python
+if __name__ == "__main__":
+    OUT.mkdir(parents=True, exist_ok=True)
+    build_character()
+    build_forest()
+    print(f"Assets written to {OUT}")
+```
 
 Run:
 ```bash
-grep -nE 'shared|OUT =' asset-packs/lpc/build_assets.py
+grep -nE 'shared|LEGACY_OUT|shutil|OUT =' asset-packs/lpc/build_assets.py
 cd asset-packs/lpc && python3 build_assets.py && cd ../.. && git status --short lib/core/assets/images/lpc
 ```
-Expected: solo `OUT = ROOT.parent.parent / "lib" / "core" / "assets" / "images" / "lpc"` (ninguna línea con `shared`) y `git status` sin cambios en el arte (la salida es idéntica a la versionada).
+Expected: una sola línea, `OUT = ROOT.parent.parent / "lib" / "core" / "assets" / "images" / "lpc"` (ninguna con `shared`, `LEGACY_OUT` ni `shutil`), `Assets written to …/lib/core/assets/images/lpc` y `git status` sin cambios en el arte. Si Pillow genera PNG distintos, restaurarlos con `git checkout -- lib/core/assets/images/lpc`: el arte no cambia en esta migración.
 
 - [ ] **Step 5: Escribir `.gitignore`**
 
@@ -456,7 +475,12 @@ graphify-out/
 .pub-cache/
 .pub/
 build/
-coverage/
+/coverage/
+app.*.symbols
+app.*.map.json
+/android/app/debug
+/android/app/profile
+/android/app/release
 
 # IDE
 *.iml
@@ -464,7 +488,7 @@ coverage/
 xcuserdata/
 ```
 
-Si la fase 1 decidió **no** versionar el código generado, añadir al final las líneas que la fase 1 puso en su `.gitignore` (por ejemplo `*.mocks.dart` y `lib/core/config/di/di.config.dart`); si lo versiona, no añadir nada.
+Desaparecen las reglas de Gradle/Kotlin (`.gradle/`, `.kotlin/`, `local.properties` de la raíz) y la excepción del esquema de Xcode de `iosApp`. El código generado (`di.config.dart`, `*.mocks.dart`) se versiona (fase 1), así que no se ignora.
 
 - [ ] **Step 6: Escribir `.vscode/settings.json`**
 
@@ -538,7 +562,7 @@ flutter pub get
 dart run build_runner build --delete-conflicting-outputs   # DI config and mockito mocks
 flutter analyze
 flutter test                                                # all tests on the VM
-flutter test --platform chrome test/core/utils test/layers/data   # forest golden values on the web
+flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart   # forest golden values on the web
 flutter run -d chrome                                       # web
 flutter run -d emulator-5554                                # Android emulator
 flutter run -d "iPhone 17"                                  # iOS simulator
@@ -603,26 +627,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Layout
 
 - Single **Flutter** app at the repo root (Android, iOS, web), Dart package `rpg`. All game logic and all views live in `lib/`.
-- `lib/core/` — `assets/` (`images/lpc/`: the only copy of the art, with `CREDITS.md`; `i18n/translations/es.json` + `i18n/internationalize.dart`), `config/` (`constants/enum/` with every enum, `constants/render_constants.dart`, `di/` with `locator.dart`, `di.dart`, generated `di.config.dart`, `di_environment.dart`), `error-handling/` (`CustomException`, `AppException` cases, `AppExceptionHandler`), `services/navigation/` (`NavigationService`: snackbars), `utils/seeded_random.dart`.
+- `lib/core/` — `assets/` (`images/lpc/`: the only copy of the art, with `CREDITS.md`; `images/icons/`: HUD SVG icons; `i18n/translations/es.json` + `i18n/internationalize.dart`), `config/` (`constants/enum/` with every enum, screen-only ones in `enum/forest/`; `constants/render_constants.dart`; `di/` with `locator.dart`, `di.dart`, generated `di.config.dart`, `di_environment.dart`; `env/` with `EnvironmentConstants` and the dev/prod `--dart-define-from-file` JSON files), `error-handling/` (`CustomException`, `AppException` cases, `AppExceptionHandler`), `services/logging/` (`Logger`, `CustomLoggerImpl`, `BlocLogger`), `services/navigation/` (`NavigationService` + `NavifyImpl`: navigation, snackbars, error pop-ups), `utils/` (`seeded_random.dart`, `kebab_case.dart`).
 - `lib/layers/domain/`, `lib/layers/data/`, `lib/layers/presentation/` — see Architecture.
 - `test/` mirrors `lib/`; `test/mocks/` holds centralised mock data; `test/architecture_test.dart` enforces the layer rules.
-- `android/`, `ios/`, `web/` — Flutter runners (app name `RPG`, ids `com.apergas.rpg`, landscape only).
+- `android/`, `ios/`, `web/` — Flutter runners (app name `RPG`, ids `com.apergas.rpg`, landscape only on mobile: Android `userLandscape`, iOS landscape left/right + full screen).
 - `asset-packs/lpc/` — raw LPC art and `build_assets.py`, which generates `lib/core/assets/images/lpc/`.
-- `.github/workflows/deploy.yml` — on pushes to `main` that touch the app: `build_runner`, `flutter analyze`, `flutter test`, golden tests in Chrome, `flutter build web --base-href /phaser-example/` and publish `build/web` to GitHub Pages (https://apergas.github.io/phaser-example/). Android and iOS are tested locally only.
+- `.github/workflows/deploy.yml` — on pushes to `main` that touch the app: `build_runner` + `git diff --exit-code`, `flutter analyze`, `flutter test`, golden tests in Chrome, `flutter build web --base-href /phaser-example/` (production env file) and publish `build/web` to GitHub Pages (https://apergas.github.io/phaser-example/). Android and iOS are tested locally only.
 - `docs/boost/plans/2026-10-05-flutter-migration/` — the migration plan; its README section 7 records every deviation found while executing it. `2026-10-04-kmp-migration/` is historical.
 
 ## Commands
 
 ```sh
 flutter pub get
-dart run build_runner build --delete-conflicting-outputs          # regenerate di.config.dart and *.mocks.dart after DI/mock changes
+dart run build_runner build --delete-conflicting-outputs          # regenerate di.config.dart and *.mocks.dart (both committed) after DI/mock changes
 flutter analyze                                                   # lints (flutter_lints + prefer_relative_imports); must be clean
 flutter test                                                      # all tests on the Dart VM
 flutter test test/layers/domain/world                             # filtered
-flutter test --platform chrome test/core/utils test/layers/data   # forest golden values on the web
+flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart   # forest golden values on the web
 dart format --line-length 120 lib test
 flutter run -d chrome | flutter run -d emulator-5554 | flutter run -d "iPhone 17"
-flutter build web --release --base-href /phaser-example/
+flutter build web --release --base-href /phaser-example/ --dart-define-from-file=lib/core/config/env/production_environment.json
 ```
 
 Regenerate art after editing the asset script: `cd asset-packs/lpc && python3 build_assets.py` (needs Pillow).
@@ -638,12 +662,12 @@ Team conventions from the `flutter-arch-conventions` plugin: `PRESENTATION -> DO
   - `use-cases/game/` — one `@Injectable()` class per action with a synchronous `call()`: start game, move player, chop tree, can place / construct building, advance, player status, world snapshot, build options, quests. Each reads the session from `GameSessionRepository`.
 - `lib/layers/data/` — `datasources/level` (`LevelLocalDatasourceImpl`: seeded procedural forest that also decides each tree's kind and the ground decoration; all-nullable DBOs in `local/dbo/`), `datasources/session` (in-memory, `@LazySingleton`: one game per app), `repositories/level` (`LevelRepositoryImpl` + injected `*MapperDBO`s), `repositories/session`. Errors go through `AppExceptionHandler`.
 - `lib/layers/presentation/`
-  - `app/container_app.dart` — `ContainerApp` (`MaterialApp` with easy_localization and the navigator key of `NavigationService`).
+  - `app/` — `ContainerApp` (`MaterialApp` with easy_localization and the navigator key of `NavigationService`) and `ContainerAppBloc`, which replaces the start screen with `ForestPage` through `NavigationService`.
   - `features/forest/bloc/` — `ForestBloc` (single `on<ForestEvent>` with `await switch`; events `ForestStarted`, `ForestTicked`, `ForestMapClicked`, `ForestPointerMoved`, `ForestBuildRequested`, `ForestPlacementCancelled`; states `ForestInitial` / `ForestInProgress` / `ForestSuccess` / `ForestFailure` carrying `ForestData`). Handlers are synchronous so ticks keep frame order. Messages are snackbars through `NavigationService`.
   - `features/forest/models/` — view models (`PlayerRenderData`, sealed `PlayerPose`, `HudData`, `QuestItemData`, `BuildItemData`, `PlacementData`) and sealed `ForestEffect` (played once per emitted state).
-  - `features/forest/game/` — Flame: `ForestGame` (`update` adds `ForestTicked`; reconciles components with `ForestData.world` by id; plays effects), `components/` (ground, decoration, trees with pixel-accurate taps, items, buildings by stage, animated player, placement ghost, particles), `atlas/` (`LpcAtlas` for `forest.json`, `SpriteNames`).
-  - `features/forest/widgets/` — HUD (wood, axe, build menu, quest panel, touch placement bar), rebuilt only when `HudData` changes. `forest_page.dart` — `ForestPage` (creates the BLoC from `locator`, adds `ForestStarted`) + `_ForestView` (`_bodyByState` switch; `GameWidget` under the HUD).
-  - `theme/` — `CustomColors`, `CustomTextStyles`.
+  - `features/forest/game/` — Flame: `ForestGame` + `ForestWorld` + `ForestSceneComponent` + `ForestStateListener` (`update` adds `ForestTicked` with `dt` capped at 100 ms; reconciles components with `ForestData.world` by id; plays effects), `components/` (ground, atlas sprites, shadows, trees with pixel-accurate taps, items, buildings by stage, placement ghost, animated player), `atlas/` (`LpcAtlas` for `forest.json`, `AlphaMask`, `LpcAssets`, `SpriteNames`), `render/` (depth, position conversion, easing, tree motion, player frames, camera framing), `particles/`.
+  - `features/forest/widgets/` — HUD, one class per file: `HudOverlay`, `ResourceBar` (wood, axe), `BuildMenu` + `BuildOptionTile`, `QuestPanel` + `QuestRow`, `PlacementBar` (touch), `HudPanel`, `HudButton`; rebuilt only when `HudData` changes. `forest_page.dart` — `ForestPage` (creates the BLoC in `BlocProvider.create` from `locator`, adds `ForestStarted`) + `_ForestView` (`_bodyByState` switch; `GameWidget` under the HUD; error view with *Reintentar*).
+  - `widgets/` — `CustomButton`, `CustomPopUp` (used by `NavifyImpl`). `theme/` — `colors/custom_colors.dart`, `styles/custom_text_styles.dart`, `images/custom_icons.dart`, `custom_theme.dart`.
 
 Documented exceptions to the plugin (keep them; do not "fix" them):
 
@@ -653,9 +677,11 @@ Documented exceptions to the plugin (keep them; do not "fix" them):
 - E4 — entities use the enums in `core/config/constants/enum/` (`TreeKind`, `ToolKind`, ...).
 - E5 — `GameSessionLocalDatasource` stores the `GameSessionEntity` in memory (no DBO).
 - E6 — repositories read only the local datasource (no remote, no cache-first).
-- E7 — core has only `di`, `error-handling`, `services/navigation`, `utils`, `assets` (no network/storage/connection yet).
+- E7 — core has only `assets`, `config` (`constants`, `di`, `env`), `error-handling`, `services/{logging,navigation}`, `utils` (no network/storage/connection yet).
 - E8 — sealed hierarchies are declared in a single file.
 - E9 — `features/forest/` adds `models/` and `game/` (Flame) next to `bloc/`, `widgets/` and the page.
+- E10 — `BlocLogger` logs only `onError` (`ForestTicked` arrives 60 times per second).
+- E11 — BLoC and page tests use the real use cases over `MockLevelRepository` / `MockGameSessionRepository` and mock only `NavigationService`: use cases are `final class` and mockito cannot mock them.
 
 Key cross-cutting conventions:
 
@@ -680,7 +706,7 @@ Ajustar antes de escribir: si alguna fase anterior registró en el README del pl
 
 Run:
 ```bash
-for p in lib/core/assets/images/lpc/CREDITS.md lib/core/assets/i18n/translations/es.json lib/core/config/constants/render_constants.dart lib/core/config/di/di.dart lib/core/utils/seeded_random.dart lib/layers/domain/world lib/layers/presentation/features/forest/game test/architecture_test.dart; do [ -e "$p" ] && echo "ok $p" || echo "MISSING $p"; done
+for p in lib/core/assets/images/lpc/CREDITS.md lib/core/assets/i18n/translations/es.json lib/core/config/constants/render_constants.dart lib/core/config/di/di.dart lib/core/utils/seeded_random.dart lib/core/utils/kebab_case.dart lib/core/config/env/production_environment.json lib/core/services/logging/bloc/bloc_logger.dart lib/core/services/navigation/navify/navify_impl.dart lib/layers/presentation/app/bloc/container_app_bloc.dart lib/layers/presentation/theme/colors/custom_colors.dart lib/layers/presentation/theme/images/custom_icons.dart lib/layers/presentation/features/forest/widgets/hud_overlay.dart lib/layers/domain/world lib/layers/presentation/features/forest/game test/architecture_test.dart; do [ -e "$p" ] && echo "ok $p" || echo "MISSING $p"; done
 ```
 Expected: todas las líneas `ok ...`. Si alguna es `MISSING`, corregir la ruta en `CLAUDE.md` con la real.
 
@@ -733,19 +759,18 @@ pubspec.yaml
 test
 web
 ```
-(más `build.yaml` si la fase 1 lo creó).
 
 - [ ] **Step 3: Análisis y tests completos**
 
 Run:
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build --delete-conflicting-outputs && git diff --exit-code
 dart format --line-length 120 --output=none --set-exit-if-changed lib test
 flutter analyze
 flutter test
-flutter test --platform chrome test/core/utils test/layers/data
+flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart
 ```
-Expected: `0 changed`, `No issues found!`, `All tests passed!` (×2).
+Expected: `git diff` sin salida, `0 changed`, `No issues found!`, `All tests passed!` (×2).
 
 - [ ] **Step 4: Partida completa en las tres plataformas**
 

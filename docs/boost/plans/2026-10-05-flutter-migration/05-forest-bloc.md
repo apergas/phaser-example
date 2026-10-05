@@ -616,7 +616,9 @@ Expected: aparecen `class Internationalize`, `commonError` y el bloque `"common"
 
 - [ ] **Step 2: Crear el helper de traducciones para tests**
 
-`easy_localization` no expone una API pública para cargar traducciones sin `EasyLocalization` (widget); `Localization.load` es la que usa el propio paquete en sus tests.
+`easy_localization` no expone una API pública para cargar traducciones sin `EasyLocalization` (widget); `Localization.load` es la que usa el propio paquete en sus tests (`test/easy_localization_test.dart` del paquete).
+
+Si en la versión instalada `Localization.load` o `Translations` tienen otra firma (el analizador marca el import de `src/`), abrir `~/.pub-cache/hosted/pub.dev/easy_localization-<versión>/lib/src/localization.dart` y adaptar **solo este helper** a la firma real (el resto de la fase no depende de cómo se cargue). Alternativa sin API interna, si `src/` ya no expone nada usable: convertir los tests que comprueban textos en `testWidgets` que montan `EasyLocalization(supportedLocales: const [Locale('es')], path: 'lib/core/assets/i18n/translations', startLocale: const Locale('es'), child: const SizedBox())` tras `await EasyLocalization.ensureInitialized()`, con `SharedPreferences.setMockInitialValues({})`, y anotar la desviación en README §7.
 
 ```dart
 // test/helpers/spanish_translations.dart
@@ -1440,7 +1442,7 @@ Expected: `All tests passed!` (3 tests).
 - [ ] **Step 9: Formatear y analizar**
 
 Run: `dart format --line-length 120 lib/layers/presentation/features/forest/bloc test/mocks test/layers/presentation/features/forest/bloc && flutter analyze`
-Expected: `No issues found!` (el analizador puede avisar de `unused_import` en `blueprint_id.dart`/`ConstructionRejection` si se añaden antes de la tarea 4: esta tarea solo importa lo que usa, tal y como está arriba).
+Expected: única excepción temporal a "cero avisos" de todo el plan, porque los handlers de esta tarea están vacíos: `warning • The value of the field '_movePlayerUseCase' isn't used • unused_field` (y lo mismo para `_chopTreeUseCase`, `_canPlaceBuildingUseCase`, `_constructBuildingUseCase`, `_advanceGameUseCase`) e `info • The private field _placement could be 'final' • prefer_final_fields`. Ningún otro aviso. La tarea 4 los hace desaparecer (su Step 5 exige `No issues found!`); no se añaden `// ignore`.
 
 - [ ] **Step 10: Commit**
 
@@ -1479,7 +1481,7 @@ git commit -m "[PROJECT-X]: Add the forest bloc and start the game from it"
 
 - [ ] **Step 1: Escribir los tests que fallan**
 
-Cada test de `ForestViewModelTests.kt` con el mismo nombre, mismos datos y mismas comprobaciones, más tres nuevos: cancelar la colocación con el botón, el orden de eventos (README §6) y la ruta bloqueada.
+Cada test de `ForestViewModelTests.kt` (9) con el mismo nombre, mismos datos y mismas comprobaciones, más tres nuevos: cancelar la colocación con el botón, el orden de eventos (README §6) y que cada emisión solo lleva sus propios efectos.
 
 ```dart
 // test/layers/presentation/features/forest/bloc/forest_bloc_test.dart
@@ -1868,7 +1870,7 @@ void main() {
 - [ ] **Step 2: Ejecutar los tests y ver que fallan**
 
 Run: `flutter test test/layers/presentation/features/forest/bloc/forest_bloc_test.dart`
-Expected: FAIL. Fallan todos salvo `testWhenEachEventEmitsThenOnlyCarriesItsOwnEffects` (los handlers vacíos no emiten): p. ej. `testWhenFirstTickThenGreetsAndShowsTheQuestList` con `No matching calls` en `shownMessages` y `testWhenClickingEmptyGroundThenWalksThereFacingIt` con `Expected: PositionEntity(150.0, 100.0) Actual: PositionEntity(100.0, 100.0)` (el texto exacto depende del `toString` de la fase 2).
+Expected: FAIL. Fallan todos salvo `testWhenEachEventEmitsThenOnlyCarriesItsOwnEffects` y `testWhenSecondaryClickWhilePlacingThenCancelsWithoutBuilding` (con los handlers vacíos no hay colocación ni edificios, así que sus comprobaciones ya se cumplen; pasan de verdad tras el Step 3): p. ej. `testWhenFirstTickThenGreetsAndShowsTheQuestList` con `No matching calls` en `shownMessages` y `testWhenClickingEmptyGroundThenWalksThereFacingIt` con `Expected: PositionEntity(150.0, 100.0) Actual: PositionEntity(100.0, 100.0)` (el texto exacto depende del `toString` de la fase 2).
 
 - [ ] **Step 3: Implementar el BLoC completo**
 

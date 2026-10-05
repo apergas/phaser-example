@@ -1997,7 +1997,7 @@ class WorldSnapshotEntity {
 - [ ] **Step 6: Ejecutar y ver que pasan**
 
 Run: `flutter test test/layers/domain/entities/game`
-Expected: `All tests passed!` (7 tests).
+Expected: `All tests passed!` (8 tests).
 
 - [ ] **Step 7: Formatear, analizar y hacer commit**
 
@@ -3033,7 +3033,7 @@ class World {
 - [ ] **Step 11: Ejecutar y ver que pasan**
 
 Run: `flutter test test/layers/domain/world`
-Expected: `All tests passed!` (22 tests: 5 de `WorldState`, 3 de movimiento, 1 de objetos, 7 de talar, 6 de construir).
+Expected: `All tests passed!` (41 tests: 19 de `world/extensions/` de las tareas 1–4, 5 de `WorldState`, 3 de movimiento, 1 de objetos, 7 de talar, 6 de construir).
 
 - [ ] **Step 12: Formatear, analizar y hacer commit**
 
@@ -3437,7 +3437,7 @@ Quitar la línea y volver a ejecutar: `All tests passed!`.
 - [ ] **Step 6: Ejecutar toda la fase**
 
 Run: `flutter test test/layers/domain`
-Expected: `All tests passed!` (80 tests aprox.: 10 + 7 + 4 + 9 + 7 + 22 + 5 + 3 + los de la fase 1 que estén bajo esa carpeta, si los hay).
+Expected: `All tests passed!` (68 tests: 10 + 7 + 4 + 9 + 8 + 5 + 17 + 5 + 3).
 
 Run: `flutter test`
 Expected: `All tests passed!` (incluye `test/architecture_test.dart` de la fase 1).

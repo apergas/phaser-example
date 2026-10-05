@@ -24,7 +24,7 @@
 - `RenderConstants` (`lib/core/config/constants/render_constants.dart`, fase 1): `cameraZoom`, `tileSize`, `characterFrameSize`, `characterAnchorY`, `rowUp/rowLeft/rowDown/rowRight`, `walkFirstStep`, `walkLastStep`, `walkFps`, `idleColumns`, `idleFps`, `workFrameSize`, `workAnchorY`, `chopSequence`, `hammerSequence`, `houseFrontOffset`. Esta fase **añade** `cameraLerp`, `maxFrameSeconds`, `backgroundColor` y `solidAlpha`.
 - Enums `TreeKind`, `DecorationKind`, `Facing`, `WorkTool` (`lib/core/config/constants/enum/`).
 - Entidades (README §3.2) con constructores con nombre: `PositionEntity(x:, y:)`, `TreeEntity(id:, kind:, position:, trunkRadius:, woodYield:, hitsToFell:)`, `GroundItemEntity(id:, kind:, position:)`, `DecorationEntity(id:, kind:, position:)`, `BuildingEntity(id:, blueprint:, position:, hitsDone:)` con `progress`, `WorldSnapshotEntity(width:, height:, trees:, items:, decorations:, buildings:)`; `Blueprints.house` (`lib/layers/domain/rules/blueprints.dart`).
-- BLoC (fase 5, `lib/layers/presentation/features/forest/bloc/forest_bloc.dart` con `part` de eventos y estado): `ForestTicked(deltaMs:)`, `ForestMapClicked(position:, treeId:, isSecondary:)`, `ForestPointerMoved(position:)`, `ForestStarted()`; `ForestInitial()`, `ForestSuccess(stateData:)`; `ForestData(world:, player:, hud:, placement:, effects:)` con `effects` por defecto `const []`.
+- BLoC (fase 5, `lib/layers/presentation/features/forest/bloc/forest_bloc.dart` con `part` de eventos y estado): `ForestTicked(deltaMs:)`, `ForestMapClicked(position:, treeId:, isSecondary:)`, `ForestPointerMoved(position:)`, `ForestStarted()`; `ForestInitial()`, `ForestSuccess(data:)`, `ForestInProgress(data:)`, `ForestFailure(data:, exception:)`; `ForestData(world:, player:, hud:, placement:, effects:)` con `effects` por defecto `const []`.
 - Modelos (fase 5, `features/forest/models/`): `PlayerRenderData(position:, facing:, pose:)`, `IdlePose(withAxe:)`, `WalkPose(withAxe:)`, `WorkPose(tool:, swingProgress:)`, `PlacementData(blueprint:, position:, isValid:)`, `ItemPickedUpEffect(itemId:)`, `TreeHitEffect(treeId:, fromX:)`, `TreeFelledEffect(treeId:, fromX:)`, `BuildingPlacedEffect(building:)`, `BuildingHammeredEffect(buildingId:, progress:)`, `BuildingCompletedEffect(buildingId:)`.
 - Arte en `lib/core/assets/images/lpc/` declarado en `pubspec.yaml` (fase 1).
 
@@ -49,7 +49,7 @@
 | `game/forest_scene_component.dart`, `forest_state_listener.dart`, `forest_world.dart`, `forest_game.dart` | escena, puente con el BLoC, entrada, bucle y cámara |
 | `features/forest/forest_page.dart` | página mínima (la reescribe la fase 7) |
 | `test/layers/presentation/features/forest/game/**` | tests espejo |
-| `test/mocks/presentation/forest/game/*`, `test/mocks/presentation/forest/forest_bloc_fake.dart` | datos y dobles de test |
+| `test/mocks/presentation/features/forest/game/*`, `test/mocks/presentation/features/forest/forest_bloc_fake.dart` | datos y dobles de test |
 
 (`game/` = `lib/layers/presentation/features/forest/game/`.)
 
@@ -222,7 +222,7 @@ git commit -m "[PROJECT-X]: Add sprite names, render depth and world render cons
 
 **Files:**
 - Create: `game/atlas/atlas_frame.dart`, `game/atlas/lpc_atlas.dart`, `game/atlas/alpha_mask.dart`, `game/atlas/lpc_assets.dart`, `game/atlas/lpc_assets_loader.dart`
-- Create: `test/mocks/presentation/forest/game/lpc_assets_mock.dart`, `test/mocks/presentation/forest/game/lpc_assets_loader_fake.dart`
+- Create: `test/mocks/presentation/features/forest/game/lpc_assets_mock.dart`, `test/mocks/presentation/features/forest/game/lpc_assets_loader_fake.dart`
 - Test: `test/layers/presentation/features/forest/game/atlas/lpc_atlas_test.dart`, `test/layers/presentation/features/forest/game/atlas/alpha_mask_test.dart`, `test/layers/presentation/features/forest/game/atlas/lpc_assets_test.dart`
 
 **Interfaces:**
@@ -237,7 +237,7 @@ git commit -m "[PROJECT-X]: Add sprite names, render depth and world render cons
 
 - [ ] **Step 1: Escribir los dobles de test**
 
-`test/mocks/presentation/forest/game/lpc_assets_mock.dart`:
+`test/mocks/presentation/features/forest/game/lpc_assets_mock.dart`:
 
 ```dart
 import 'dart:typed_data';
@@ -309,7 +309,7 @@ abstract final class LpcAssetsMock {
 }
 ```
 
-`test/mocks/presentation/forest/game/lpc_assets_loader_fake.dart`:
+`test/mocks/presentation/features/forest/game/lpc_assets_loader_fake.dart`:
 
 ```dart
 import 'package:rpg/layers/presentation/features/forest/game/atlas/lpc_assets.dart';
@@ -443,7 +443,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/config/constants/enum/forest/player_sheet.dart';
 import 'package:rpg/layers/presentation/features/forest/game/atlas/sprite_names.dart';
 
-import '../../../../../../mocks/presentation/forest/game/lpc_assets_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -712,7 +712,7 @@ Expected: `All tests passed!` y `No issues found!`
 - [ ] **Step 6: Commit**
 
 ```bash
-git add lib/layers/presentation/features/forest/game/atlas test/layers/presentation/features/forest/game/atlas test/mocks/presentation/forest/game
+git add lib/layers/presentation/features/forest/game/atlas test/layers/presentation/features/forest/game/atlas test/mocks/presentation/features/forest/game
 git commit -m "[PROJECT-X]: Load the LPC atlas, alpha mask and character sheets"
 ```
 
@@ -1580,7 +1580,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/layers/presentation/features/forest/game/components/ground_component.dart';
 import 'package:rpg/layers/presentation/features/forest/game/render/render_depth.dart';
 
-import '../../../../../../mocks/presentation/forest/game/lpc_assets_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
 
 void main() {
   test('testWhenTilingTheForestThenCoversItWithWholeTiles', () {
@@ -1621,7 +1621,7 @@ import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
 import 'package:rpg/layers/presentation/features/forest/game/atlas/sprite_names.dart';
 import 'package:rpg/layers/presentation/features/forest/game/components/atlas_sprite_component.dart';
 
-import '../../../../../../mocks/presentation/forest/game/lpc_assets_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
 
 void main() {
   testWithFlameGame('testWhenPlacingAnAtlasSpriteThenItsPivotSitsOnThePoint', (game) async {
@@ -1654,8 +1654,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/layers/presentation/features/forest/game/components/ground_item_component.dart';
 import 'package:rpg/layers/presentation/features/forest/game/render/render_depth.dart';
 
-import '../../../../../../mocks/presentation/forest/game/forest_data_mock.dart';
-import '../../../../../../mocks/presentation/forest/game/lpc_assets_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
 
 void main() {
   test('testWhenBobbingThenFloatsBetweenEightAndElevenPixelsUp', () {
@@ -1697,7 +1697,7 @@ Estos tests usan `ForestDataMock`, que se crea en el Step 2.
 
 - [ ] **Step 2: Crear los datos de test de la escena**
 
-`test/mocks/presentation/forest/game/forest_data_mock.dart`:
+`test/mocks/presentation/features/forest/game/forest_data_mock.dart`:
 
 ```dart
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
@@ -1858,7 +1858,6 @@ abstract final class ForestDataMock {
 }
 ```
 
-(Si algún constructor de la fase 2/5 no es `const`, quitar el `const` de esa expresión; los campos ya son `static final`.)
 
 - [ ] **Step 3: Ejecutar los tests y ver que fallan**
 
@@ -2073,7 +2072,7 @@ Expected: `All tests passed!` y `No issues found!`
 - [ ] **Step 6: Commit**
 
 ```bash
-git add lib/layers/presentation/features/forest/game/components test/layers/presentation/features/forest/game/components test/mocks/presentation/forest/game/forest_data_mock.dart
+git add lib/layers/presentation/features/forest/game/components test/layers/presentation/features/forest/game/components test/mocks/presentation/features/forest/game/forest_data_mock.dart
 git commit -m "[PROJECT-X]: Draw the ground, atlas sprites, shadows and the axe pickup"
 ```
 
@@ -2102,8 +2101,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/layers/presentation/features/forest/game/components/tree_component.dart';
 import 'package:rpg/layers/presentation/features/forest/game/render/render_depth.dart';
 
-import '../../../../../../mocks/presentation/forest/game/forest_data_mock.dart';
-import '../../../../../../mocks/presentation/forest/game/lpc_assets_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
 
 double _degrees(double value) => value * math.pi / 180;
 
@@ -2205,6 +2204,7 @@ class TreeComponent extends AtlasSpriteComponent {
 
   bool get isFalling => _fallElapsedMs != null;
 
+  @override
   bool containsPoint(Vector2 point) {
     if (isFalling || !boundsContain(point)) return false;
     final area = bounds;
@@ -2281,8 +2281,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/layers/presentation/features/forest/game/components/building_component.dart';
 import 'package:rpg/layers/presentation/features/forest/game/render/render_depth.dart';
 
-import '../../../../../../mocks/presentation/forest/game/forest_data_mock.dart';
-import '../../../../../../mocks/presentation/forest/game/lpc_assets_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
 
 void main() {
   testWithFlameGame('testWhenASiteIsPlacedThenIsDrawnBelowItsFootprintAndTranslucent', (game) async {
@@ -2344,8 +2344,8 @@ import 'package:rpg/layers/presentation/features/forest/game/components/placemen
 import 'package:rpg/layers/presentation/features/forest/game/render/render_depth.dart';
 import 'package:rpg/layers/presentation/features/forest/models/placement_data.dart';
 
-import '../../../../../../mocks/presentation/forest/game/forest_data_mock.dart';
-import '../../../../../../mocks/presentation/forest/game/lpc_assets_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
 
 void main() {
   testWithFlameGame('testWhenPlacingOnAFreeSpotThenTheGhostIsGreen', (game) async {
@@ -2559,8 +2559,8 @@ import 'package:rpg/layers/presentation/features/forest/game/render/render_depth
 import 'package:rpg/layers/presentation/features/forest/models/player_pose.dart';
 import 'package:rpg/layers/presentation/features/forest/models/player_render_data.dart';
 
-import '../../../../../../mocks/presentation/forest/game/forest_data_mock.dart';
-import '../../../../../../mocks/presentation/forest/game/lpc_assets_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';
+import '../../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
 
 void main() {
   testWithFlameGame('testWhenIdleThenBreathesAtTwoFramesPerSecond', (game) async {
@@ -2717,8 +2717,8 @@ import 'package:rpg/layers/presentation/features/forest/game/components/tree_com
 import 'package:rpg/layers/presentation/features/forest/game/forest_scene_component.dart';
 import 'package:rpg/layers/presentation/features/forest/game/particles/particle_burst_component.dart';
 
-import '../../../../../mocks/presentation/forest/game/forest_data_mock.dart';
-import '../../../../../mocks/presentation/forest/game/lpc_assets_mock.dart';
+import '../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
 
 Future<ForestSceneComponent> _mountedScene(FlameGame game) async {
   final scene = ForestSceneComponent(assets: LpcAssetsMock.create(), random: math.Random(1));
@@ -3099,7 +3099,7 @@ git commit -m "[PROJECT-X]: Reconcile the forest scene with the bloc state and p
 
 **Files:**
 - Create: `game/forest_state_listener.dart`, `game/forest_world.dart`, `game/forest_game.dart`
-- Create: `test/mocks/presentation/forest/forest_bloc_fake.dart`
+- Create: `test/mocks/presentation/features/forest/forest_bloc_fake.dart`
 - Test: `test/layers/presentation/features/forest/game/forest_game_test.dart`
 
 **Interfaces:**
@@ -3119,7 +3119,7 @@ Entrada (en `ForestWorld`, un `World` de Flame, que contiene cualquier punto):
 
 - [ ] **Step 1: Escribir el doble del BLoC**
 
-`test/mocks/presentation/forest/forest_bloc_fake.dart`:
+`test/mocks/presentation/features/forest/forest_bloc_fake.dart`:
 
 ```dart
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -3149,10 +3149,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
 import 'package:rpg/layers/presentation/features/forest/game/forest_game.dart';
 
-import '../../../../../mocks/presentation/forest/forest_bloc_fake.dart';
-import '../../../../../mocks/presentation/forest/game/forest_data_mock.dart';
-import '../../../../../mocks/presentation/forest/game/lpc_assets_loader_fake.dart';
-import '../../../../../mocks/presentation/forest/game/lpc_assets_mock.dart';
+import '../../../../../mocks/presentation/features/forest/forest_bloc_fake.dart';
+import '../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/game/lpc_assets_loader_fake.dart';
+import '../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
 
 Future<void> _settle() => Future<void>.delayed(Duration.zero);
 
@@ -3163,7 +3163,7 @@ void main() {
   ForestGame createGame() => ForestGame(bloc: bloc, assetsLoader: loader);
 
   setUp(() {
-    bloc = ForestBlocFake(ForestSuccess(stateData: ForestDataMock.initial));
+    bloc = ForestBlocFake(ForestSuccess(data: ForestDataMock.initial));
     loader = LpcAssetsLoaderFake(LpcAssetsMock.create());
   });
 
@@ -3256,7 +3256,7 @@ void main() {
 
   testWithGame<ForestGame>(
     'testWhenTappingWhilePlacingThenMovesTheGhostInsteadOfBuilding',
-    () => ForestGame(bloc: bloc = ForestBlocFake(ForestSuccess(stateData: ForestDataMock.placing)), assetsLoader: loader),
+    () => ForestGame(bloc: bloc = ForestBlocFake(ForestSuccess(data: ForestDataMock.placing)), assetsLoader: loader),
     (game) async {
       // given
       await game.ready();
@@ -3275,7 +3275,7 @@ void main() {
 
   testWithGame<ForestGame>(
     'testWhenTheMouseHoversWhilePlacingThenTheGhostFollowsItEveryFrame',
-    () => ForestGame(bloc: bloc = ForestBlocFake(ForestSuccess(stateData: ForestDataMock.placing)), assetsLoader: loader),
+    () => ForestGame(bloc: bloc = ForestBlocFake(ForestSuccess(data: ForestDataMock.placing)), assetsLoader: loader),
     (game) async {
       // given
       await game.ready();
@@ -3337,7 +3337,7 @@ import 'dart:math' as math;
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame_bloc/flame_bloc.dart';
-import 'package:flutter/gestures.dart';
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 
 import '../../../../domain/entities/geometry/position_entity.dart';
 import '../bloc/forest_bloc.dart';
@@ -3352,6 +3352,7 @@ class ForestWorld extends World with TapCallbacks, SecondaryTapCallbacks, Pointe
   final math.Random? _random;
   ForestSceneComponent? _scene;
   Vector2? _mouseCanvasPosition;
+  PointerDeviceKind _dragDeviceKind = PointerDeviceKind.unknown;
 
   ForestWorld({required ForestBloc bloc, required LpcAssetsLoader assetsLoader, math.Random? random})
     : _bloc = bloc,
@@ -3418,9 +3419,15 @@ class ForestWorld extends World with TapCallbacks, SecondaryTapCallbacks, Pointe
   }
 
   @override
+  void onDragStart(DragStartEvent event) {
+    super.onDragStart(event);
+    _dragDeviceKind = event.deviceKind;
+  }
+
+  @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
-    if (event.deviceKind != PointerDeviceKind.mouse) dragTo(event.localEndPosition);
+    if (_dragDeviceKind != PointerDeviceKind.mouse) dragTo(event.localEndPosition);
   }
 }
 ```
@@ -3499,7 +3506,9 @@ class ForestGame extends FlameGame<ForestWorld> {
 }
 ```
 
-Si la versión de Flame instalada no tiene `SecondaryTapCallbacks` o no expone `deviceKind` en `TapDownEvent` / `PointerMoveEvent` / `DragUpdateEvent`, se usa el mismo dato desde el evento original de Flutter (`event.raw.kind`). Si no existe ninguna de las dos cosas, la página envuelve el `GameWidget` en un `Listener` que llama a `world.clickAt(..., isSecondary: true)` cuando `event.buttons == kSecondaryMouseButton`, convirtiendo el punto con `game.camera.globalToLocal`. La desviación se anota en el README §7.
+El import de `package:flutter/gestures.dart` lleva `show PointerDeviceKind` porque `package:flame/events.dart` también exporta un `PointerMoveEvent`; sin el `show` el nombre es ambiguo y no compila. El tipo de dispositivo del arrastre se guarda en `onDragStart` porque `DragStartEvent` lo expone y `DragUpdateEvent` no siempre.
+
+Si la versión de Flame instalada no tiene `SecondaryTapCallbacks` o no expone `deviceKind` en `TapDownEvent` / `PointerMoveEvent` / `DragStartEvent`, se usa el mismo dato desde el evento original de Flutter (`event.raw.kind`). Si no existe ninguna de las dos cosas, la página envuelve el `GameWidget` en un `Listener` que llama a `world.clickAt(..., isSecondary: true)` cuando `event.buttons == kSecondaryMouseButton`, convirtiendo el punto con `game.camera.globalToLocal`. La desviación se anota en el README §7.
 
 - [ ] **Step 5: Ejecutar los tests y analizar**
 
@@ -3509,7 +3518,7 @@ Expected: `All tests passed!` y `No issues found!`
 - [ ] **Step 6: Commit**
 
 ```bash
-git add lib/layers/presentation/features/forest/game test/layers/presentation/features/forest/game test/mocks/presentation/forest/forest_bloc_fake.dart
+git add lib/layers/presentation/features/forest/game test/layers/presentation/features/forest/game test/mocks/presentation/features/forest/forest_bloc_fake.dart
 git commit -m "[PROJECT-X]: Drive the Flame world from the forest bloc with input, ticks and camera"
 ```
 

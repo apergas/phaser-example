@@ -96,7 +96,7 @@ Correspondencia de tests Kotlin → Dart:
 - [ ] **Step 1: Comprobar los mocks de la fase 2**
 
 Run: `ls test/mocks/domain/entities/player/player_entity_mock.dart test/mocks/domain/entities/tree/tree_entity_mock.dart test/mocks/domain/entities/item/ground_item_entity_mock.dart test/mocks/domain/world/world_mock.dart && grep -n "static" test/mocks/domain/entities/player/player_entity_mock.dart test/mocks/domain/entities/tree/tree_entity_mock.dart test/mocks/domain/entities/item/ground_item_entity_mock.dart test/mocks/domain/world/world_mock.dart`
-Expected: los cuatro ficheros existen y declaran `PlayerEntityMock.mock`, `TreeEntityMock.mock`, `GroundItemEntityMock.mock` y `WorldMock.make`.
+Expected: los cuatro ficheros existen y declaran `PlayerEntityMock.mock`, `TreeEntityMock.mock`, `GroundItemEntityMock.mock`, `WorldMock.make` y la extensión `WorldAdvanceFor`; además existe `test/mocks/domain/entities/game/game_session_entity_mock.dart` con `GameSessionEntityMock.make()` (fase 3).
 
 Si alguno falta o se llama distinto, crearlo (o añadir el miembro) con exactamente este contenido, que reproduce los mocks Kotlin (`PlayerMock.kt`, `TreeMock.kt`, `GroundItemMock.kt`, `WorldMock.kt`):
 
@@ -163,7 +163,7 @@ abstract final class WorldMock {
   }
 }
 
-extension WorldAdvance on World {
+extension WorldAdvanceFor on World {
   List<GameEventEntity> advanceFor(double totalMs) {
     final events = <GameEventEntity>[];
     var elapsed = 0.0;
@@ -1187,7 +1187,6 @@ git commit -m "[PROJECT-X]: Add the simulation and query use cases"
 **Files:**
 - Modify (generated): `lib/core/config/di/di.config.dart`
 - Test: `test/core/config/di/di_test.dart`
-- Modify: `docs/boost/plans/2026-10-05-flutter-migration/README.md` (§7, nota de desviación)
 
 **Interfaces:**
 - Consumes: `configureDependencies({required String environment})`, `DiEnvironment.dev`, `locator` (fase 1); todas las clases anotadas de las fases 1–4.
@@ -1363,13 +1362,10 @@ y `NavigationService` con la anotación que fije `references/core/navigation_ser
 Run: `flutter test test/core/config/di/di_test.dart`
 Expected: `All tests passed!` (4 tests).
 
-- [ ] **Step 6: Registrar la desviación en el plan maestro**
+- [ ] **Step 6: Comprobar que el plan maestro ya recoge la creación del BLoC**
 
-El README (D4 y §3.7) preveía registrar el `ForestBloc` con `registerFactory` en `di.dart`. `references/presentation/bloc.md` (línea "Do NOT add `@Injectable()` to BLoC classes. BLoCs are not registered in DI — they are instantiated by their `Page` via `BlocProvider`") y `references/presentation/pages.md` mandan crearlo en `BlocProvider.create` con `locator.get<T>()`. Añadir al final de la sección "## 7. Desviaciones encontradas al ejecutar" de `docs/boost/plans/2026-10-05-flutter-migration/README.md`:
-
-```markdown
-- **Fase 4 — el `ForestBloc` no se registra en DI.** D4 preveía `registerFactory` en `di.dart`; el plugin (`references/presentation/bloc.md`, `pages.md`) prohíbe registrar BLoCs: `ForestPage` lo crea en `BlocProvider.create` pasando cada caso de uso y `NavigationService` con `locator.get<T>()`, y dispara `ForestStarted()` con `..add(...)`. `di.dart` no cambia. (commit de la tarea 4)
-```
+Run: `grep -n "no se registra en DI" docs/boost/plans/2026-10-05-flutter-migration/README.md`
+Expected: una línea en D4 (`El ForestBloc no se registra en DI ... ForestPage lo crea en BlocProvider.create ...`). El README ya se corrigió al escribir el plan: no hay que editarlo. Si `di.dart` de la fase 1 todavía menciona un registro manual del `ForestBloc`, no se añade nada: los BLoC no se registran.
 
 - [ ] **Step 7: Suite completa, análisis y formato**
 
@@ -1379,7 +1375,7 @@ Expected: `No issues found!` y `All tests passed!` (todas las fases 1–4).
 - [ ] **Step 8: Commit**
 
 ```bash
-git add lib/core/config/di/di.config.dart test/core/config/di/di_test.dart docs/boost/plans/2026-10-05-flutter-migration/README.md
+git add lib/core/config/di/di.config.dart test/core/config/di/di_test.dart
 git commit -m "[PROJECT-X]: Register the game use cases in the dependency graph"
 ```
 

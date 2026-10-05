@@ -32,16 +32,18 @@ Específicas de esta fase:
 | `NavigationService` (`navigatorKey`, `showSnackbar`, `showErrorPopUp`) | `lib/core/services/navigation/source/navigation_service.dart` | 1 |
 | `CustomColors.hudBackground, hudBorder, hudText, hudMuted, hudAccent, questDone, black` (+ `white`, `gray6` de `NavifyImpl`) | `lib/layers/presentation/theme/colors/custom_colors.dart` | 1 |
 | `CustomTextStyles.system13w500, system13w700, system15w600, system18w600` | `lib/layers/presentation/theme/styles/custom_text_styles.dart` | 1 |
-| `Internationalize` (getters estáticos sobre `es.json`) | `lib/core/assets/i18n/internationalize.dart` | 1, 5 |
+| `Internationalize` (fase 5 ya trae `forestWood`, `forestAxe`, `forestBuild`, `forestQuests`, `forestQuestDone`, `forestPlacementConfirm`, `forestPlacementCancel`, `forestAccessibilityGameWorld`, con `static const String _forest = 'forest'`) | `lib/core/assets/i18n/internationalize.dart` | 1, 5 |
 | `ContainerApp` + `ContainerAppView` + `ContainerAppBloc()` (`ContainerAppStarted` → `ContainerAppInProgress`, `ContainerAppSuccess`; hoy `Success` pinta una pantalla vacía) | `lib/layers/presentation/app/container_app.dart`, `app/bloc/container_app_{bloc,event,state}.dart`, `test/layers/presentation/app/bloc/container_app_bloc_test.dart` | 1 |
 | `CustomException.title` / `.message`, `InvalidLevelException({required String data})` | `lib/core/error-handling/exceptions/` | 1, 3 |
+| `MockNavigationService` (`test/mocks/core/services/navigation_service_mocks.dart` + `.mocks.dart`) | — | 5 |
+| `ForestPage` mínima (solo `GameWidget`, desactiva el menú contextual en web) y `ContainerAppView._emptyBody()` devolviendo `const ForestPage()` | `features/forest/forest_page.dart`, `app/container_app.dart` | 6 |
 | `LevelRepository` + `MockLevelRepository` | `lib/layers/domain/repositories/level/level_repository.dart`, `test/mocks/domain/repositories/repository_mocks.dart` (+ `.mocks.dart`) | 2, 4 |
 | Los 10 casos de uso (`StartGameUseCase` … `GetQuestsUseCase`) | `lib/layers/domain/use-cases/game/` | 4 |
 | `ForestBloc({required ... startGameUseCase, movePlayerUseCase, chopTreeUseCase, canPlaceBuildingUseCase, constructBuildingUseCase, advanceGameUseCase, getPlayerStatusUseCase, getWorldSnapshotUseCase, getBuildOptionsUseCase, getQuestsUseCase, navigationService})` | `features/forest/bloc/forest_bloc.dart` | 5 |
-| Eventos (sin constructor `const`, como `ContainerAppStarted` de la fase 1): `ForestStarted()`, `ForestMapClicked({required PositionEntity position, String? treeId, bool isSecondary = false})`, `ForestBuildRequested({required BlueprintId blueprint})`, `ForestPlacementCancelled()` | `features/forest/bloc/forest_event.dart` | 5 |
+| Eventos (todos `const`, fase 5): `ForestStarted()`, `ForestMapClicked({required PositionEntity position, String? treeId, bool isSecondary = false})`, `ForestBuildRequested({required BlueprintId blueprint})`, `ForestPlacementCancelled()` | `features/forest/bloc/forest_event.dart` | 5 |
 | Estados `ForestInitial`, `ForestInProgress`, `ForestSuccess`, `ForestFailure(exception)`; `state.data.hud` (`HudData?`), `state.data.placement` (`PlacementData?`) | `features/forest/bloc/forest_state.dart` | 5 |
 | `HudData({required int wood, required bool hasAxe, required String questBadge, required List<QuestItemData> quests, required List<BuildItemData> buildItems, required bool isBuildLocked})`, `QuestItemData({required String title, required String progressText, required QuestItemStatus status})`, `BuildItemData({required BlueprintId blueprint, required String name, required String costText, String? missingText, required bool isEnabled})`, `PlacementData.position`; todos con `==`/`hashCode` | `features/forest/models/` | 5 |
-| `ForestGame({required ForestBloc bloc})`: envía `ForestTicked` por fotograma, `ForestMapClicked` (con `treeId` por píxel y `isSecondary` en clic derecho) y, en táctil durante la colocación, `ForestPointerMoved` | `features/forest/game/forest_game.dart` | 6 |
+| `ForestGame({required ForestBloc bloc, LpcAssetsLoader? assetsLoader, math.Random? random})` (aquí solo se pasa `bloc`): envía `ForestTicked` por fotograma, `ForestMapClicked` (con `treeId` por píxel y `isSecondary` en clic derecho) y, en táctil durante la colocación, `ForestPointerMoved` | `features/forest/game/forest_game.dart` | 6 |
 
 Si al ejecutar esta fase algún nombre de las fases 1, 5 o 6 difiere de esta tabla, se usa el nombre real y la diferencia se anota en el README § 7.
 
@@ -65,14 +67,14 @@ lib/layers/presentation/features/forest/widgets/build_option_tile.dart
 lib/layers/presentation/features/forest/widgets/build_menu.dart
 lib/layers/presentation/features/forest/widgets/placement_bar.dart
 lib/layers/presentation/features/forest/widgets/hud_overlay.dart
-lib/layers/presentation/features/forest/forest_page.dart
-lib/layers/presentation/app/container_app.dart                          (Success -> navega a ForestPage)
+lib/layers/presentation/features/forest/forest_page.dart                (se reescribe: la fase 6 dejó una versión mínima)
+lib/layers/presentation/app/container_app.dart                          (Success -> carga; navega el BLoC)
 lib/layers/presentation/app/bloc/container_app_bloc.dart               (recibe NavigationService)
 pubspec.yaml                                                            (carpeta de iconos)
 test/helpers/hud_test_app.dart
-test/mocks/layers/presentation/features/forest/models/quest_item_data_mock.dart
-test/mocks/layers/presentation/features/forest/models/build_item_data_mock.dart
-test/mocks/layers/presentation/features/forest/models/hud_data_mock.dart
+test/mocks/presentation/features/forest/models/quest_item_data_mock.dart
+test/mocks/presentation/features/forest/models/build_item_data_mock.dart
+test/mocks/presentation/features/forest/models/hud_data_mock.dart
 test/layers/presentation/features/forest/widgets/*_test.dart            (uno por widget)
 test/layers/presentation/features/forest/forest_page_test.dart
 ```
@@ -91,11 +93,11 @@ test/layers/presentation/features/forest/forest_page_test.dart
 - Test: `test/layers/presentation/features/forest/widgets/hud_panel_test.dart`, `hud_button_test.dart`
 
 **Interfaces:**
-- Consumes: `CustomColors` (fase 1), `Internationalize` (fases 1 y 5).
+- Consumes: `CustomColors`, `CustomTextStyles` (fase 1), `Internationalize` con los getters `forest*` (fase 5).
 - Produces:
   - Nuevos `CustomColors.hudAccentSoft, hudOptionBackground, hudWarning, hudShadow` (`Color`).
   - Nuevos `CustomTextStyles.system12w500, system12w600` (`TextStyle`).
-  - `Internationalize.forestWood, forestAxe, forestBuild, forestQuests, forestPlacementConfirm, forestPlacementCancel, forestAccessibilityGameWorld, forestRetry` (`String`).
+  - `Internationalize.forestRetry` (`String`, nuevo; el resto de getters del HUD vienen de la fase 5).
   - `HudPanel({Key? key, required Widget child, EdgeInsetsGeometry padding = EdgeInsets.zero, bool isHighlighted = false})`; `HudPanel.decorationKey` (`Key` del `DecoratedBox`).
   - `HudButton({Key? key, required String label, String? badge, VoidCallback? onPressed, bool isActive = false})`; desactivado cuando `onPressed == null` (opacidad 0,5).
   - `extension HudTestApp on WidgetTester { Future<void> pumpHud(Widget child) }` (test).
@@ -114,49 +116,30 @@ Y crear la carpeta vacía con un `.gitkeep` provisional (la Task 2 pone los SVG 
 mkdir -p lib/core/assets/images/icons && touch lib/core/assets/images/icons/.gitkeep
 ```
 
-- [ ] **Step 2: Textos del HUD en `es.json` e `Internationalize`**
+- [ ] **Step 2: Texto de *Reintentar* en `es.json` e `Internationalize`**
 
-Abrir `lib/core/assets/i18n/internationalize.dart`. Si la fase 5 ya expone alguno de estos textos con otro nombre de getter, **no se duplica**: se usa ese getter en todo el código de esta fase y la equivalencia se anota en el README § 7. Si no existen, se añade a `es.json` (fusionando con el objeto `"forest"` que haya) este bloque:
+La fase 5 ya dejó en el bloque `"forest"` de `es.json` todos los textos del HUD (`forest.hud.*`, `forest.placement.*`, `forest.accessibility.gameWorld`) y sus getters (`forestWood`, `forestAxe`, `forestBuild`, `forestQuests`, `forestQuestDone`, `forestPlacementConfirm`, `forestPlacementCancel`, `forestAccessibilityGameWorld`). Esta fase solo añade el texto nuevo de la pantalla de error.
+
+Comprobar lo que hay:
+
+Run: `grep -n "forestWood\|forestPlacementConfirm\|forestAccessibilityGameWorld\|forestRetry\|_forest =" lib/core/assets/i18n/internationalize.dart`
+Expected: aparecen `_forest =`, `forestWood`, `forestPlacementConfirm` y `forestAccessibilityGameWorld`; **no** aparece `forestRetry`.
+
+En `lib/core/assets/i18n/translations/es.json`, dentro del objeto `"forest"` existente, añadir como última clave:
 
 ```json
-{
-  "forest": {
-    "hud": {
-      "wood": "Madera",
-      "axe": "Hacha",
-      "build": "Construir",
-      "quests": "Misiones"
-    },
-    "placement": {
-      "confirm": "Construir aquí",
-      "cancel": "Cancelar"
-    },
-    "accessibility": {
-      "gameWorld": "Mundo de juego: bosque con árboles, el personaje y los edificios"
-    },
     "retry": "Reintentar"
-  }
-}
 ```
 
-y a la clase `Internationalize` estos miembros (mismo estilo que los existentes):
+(con la coma que corresponda en la clave anterior).
+
+En la clase `Internationalize`, tras `forestAccessibilityGameWorld`:
 
 ```dart
-  static const String _forestHud = 'forest.hud';
-  static const String _forestPlacement = 'forest.placement';
-  static const String _forestAccessibility = 'forest.accessibility';
-
-  static String get forestWood => '$_forestHud.wood'.tr();
-  static String get forestAxe => '$_forestHud.axe'.tr();
-  static String get forestBuild => '$_forestHud.build'.tr();
-  static String get forestQuests => '$_forestHud.quests'.tr();
-  static String get forestPlacementConfirm => '$_forestPlacement.confirm'.tr();
-  static String get forestPlacementCancel => '$_forestPlacement.cancel'.tr();
-  static String get forestAccessibilityGameWorld => '$_forestAccessibility.gameWorld'.tr();
-  static String get forestRetry => 'forest.retry'.tr();
+  static String get forestRetry => '$_forest.retry'.tr();
 ```
 
-En los widget tests easy_localization no se inicializa: `.tr()` devuelve la clave tal cual. Por eso los tests buscan siempre `find.text(Internationalize.forestWood)` y nunca el literal en español.
+En los widget tests easy_localization no se inicializa: `.tr()` devuelve la clave tal cual (`forest.hud.wood`). Por eso los tests buscan siempre `find.text(Internationalize.forestWood)` y nunca el literal en español.
 
 - [ ] **Step 3: Colores y estilos que faltan**
 
@@ -421,7 +404,7 @@ git commit -m "[PROJECT-X]: Add the HUD theme, texts, panel and button"
 - Test: `test/layers/presentation/features/forest/widgets/resource_bar_test.dart`
 
 **Interfaces:**
-- Consumes: `HudPanel`, `CustomTextStyles`, `Internationalize.forestWood/forestAxe` (Task 1).
+- Consumes: `HudPanel` (Task 1), `CustomTextStyles`, `Internationalize.forestWood/forestAxe` (fase 5).
 - Produces: `CustomIcons.wood`, `CustomIcons.axe` (`String` rutas de asset); `ResourceBar({Key? key, required int wood, required bool hasAxe, bool showLabels = true})`; `ResourceBar.axeKey` (`Key` del `Opacity` del hacha).
 
 - [ ] **Step 1: Iconos SVG**
@@ -585,7 +568,7 @@ class ResourceBar extends StatelessWidget {
           if (showLabels) Text(Internationalize.forestWood, style: CustomTextStyles.system15w600.copyWith(color: CustomColors.hudText)),
           ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 20),
-            child: Text('$wood', style: CustomTextStyles.system18w600.copyWith(color: CustomColors.hudAccent, fontFeatures: const [FontFeature.tabularFigures()])),
+            child: Text('$wood', style: CustomTextStyles.system18w600.copyWith(color: CustomColors.hudAccent)),
           ),
         ],
       ),
@@ -635,7 +618,7 @@ git commit -m "[PROJECT-X]: Add the HUD resource bar with wood and axe icons"
 
 **Files:**
 - Create: `lib/layers/presentation/features/forest/widgets/quest_row.dart`, `quest_panel.dart`
-- Create: `test/mocks/layers/presentation/features/forest/models/quest_item_data_mock.dart`
+- Create: `test/mocks/presentation/features/forest/models/quest_item_data_mock.dart`
 - Test: `test/layers/presentation/features/forest/widgets/quest_row_test.dart`, `quest_panel_test.dart`
 
 **Interfaces:**
@@ -646,7 +629,7 @@ git commit -m "[PROJECT-X]: Add the HUD resource bar with wood and axe icons"
 
 Si la fase 5 ya creó `quest_item_data_mock.dart`, se añaden estos campos a su clase en vez de crear el fichero.
 
-`test/mocks/layers/presentation/features/forest/models/quest_item_data_mock.dart`:
+`test/mocks/presentation/features/forest/models/quest_item_data_mock.dart`:
 
 ```dart
 import 'package:rpg/core/config/constants/enum/forest/quest_item_status.dart';
@@ -686,7 +669,7 @@ import 'package:rpg/layers/presentation/features/forest/widgets/quest_row.dart';
 import 'package:rpg/layers/presentation/theme/colors/custom_colors.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
-import '../../../../../mocks/layers/presentation/features/forest/models/quest_item_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/models/quest_item_data_mock.dart';
 
 void main() {
   TextStyle titleStyleOf(WidgetTester tester, String title) => tester.widget<Text>(find.text(title)).style!;
@@ -751,7 +734,7 @@ import 'package:rpg/layers/presentation/features/forest/widgets/quest_panel.dart
 import 'package:rpg/layers/presentation/features/forest/widgets/quest_row.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
-import '../../../../../mocks/layers/presentation/features/forest/models/quest_item_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/models/quest_item_data_mock.dart';
 
 void main() {
   testWidgets('testWhenRenderedThenItShowsTheTitleAndOneRowPerQuest', (tester) async {
@@ -915,7 +898,7 @@ Expected: `No issues found!`
 - [ ] **Step 8: Commit**
 
 ```bash
-git add lib/layers/presentation/features/forest/widgets/quest_row.dart lib/layers/presentation/features/forest/widgets/quest_panel.dart test/mocks/layers/presentation/features/forest/models/quest_item_data_mock.dart test/layers/presentation/features/forest/widgets/quest_row_test.dart test/layers/presentation/features/forest/widgets/quest_panel_test.dart
+git add lib/layers/presentation/features/forest/widgets/quest_row.dart lib/layers/presentation/features/forest/widgets/quest_panel.dart test/mocks/presentation/features/forest/models/quest_item_data_mock.dart test/layers/presentation/features/forest/widgets/quest_row_test.dart test/layers/presentation/features/forest/widgets/quest_panel_test.dart
 git commit -m "[PROJECT-X]: Add the HUD quest panel"
 ```
 
@@ -925,7 +908,7 @@ git commit -m "[PROJECT-X]: Add the HUD quest panel"
 
 **Files:**
 - Create: `lib/layers/presentation/features/forest/widgets/build_option_tile.dart`, `build_menu.dart`
-- Create: `test/mocks/layers/presentation/features/forest/models/build_item_data_mock.dart`
+- Create: `test/mocks/presentation/features/forest/models/build_item_data_mock.dart`
 - Test: `test/layers/presentation/features/forest/widgets/build_option_tile_test.dart`, `build_menu_test.dart`
 
 **Interfaces:**
@@ -936,7 +919,7 @@ git commit -m "[PROJECT-X]: Add the HUD quest panel"
 
 Si la fase 5 ya creó `build_item_data_mock.dart`, se añaden estos campos a su clase.
 
-`test/mocks/layers/presentation/features/forest/models/build_item_data_mock.dart`:
+`test/mocks/presentation/features/forest/models/build_item_data_mock.dart`:
 
 ```dart
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
@@ -972,7 +955,7 @@ import 'package:rpg/layers/presentation/features/forest/widgets/build_option_til
 import 'package:rpg/layers/presentation/theme/colors/custom_colors.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
-import '../../../../../mocks/layers/presentation/features/forest/models/build_item_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/models/build_item_data_mock.dart';
 
 void main() {
   testWidgets('testWhenItemIsAffordableThenTappingCallsOnPressed', (tester) async {
@@ -1020,7 +1003,7 @@ import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/build_menu.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
-import '../../../../../mocks/layers/presentation/features/forest/models/build_item_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/models/build_item_data_mock.dart';
 
 void main() {
   testWidgets('testWhenAnEnabledItemIsTappedThenOnSelectedReceivesItsBlueprint', (tester) async {
@@ -1166,7 +1149,7 @@ Expected: `No issues found!`
 - [ ] **Step 8: Commit**
 
 ```bash
-git add lib/layers/presentation/features/forest/widgets/build_option_tile.dart lib/layers/presentation/features/forest/widgets/build_menu.dart test/mocks/layers/presentation/features/forest/models/build_item_data_mock.dart test/layers/presentation/features/forest/widgets/build_option_tile_test.dart test/layers/presentation/features/forest/widgets/build_menu_test.dart
+git add lib/layers/presentation/features/forest/widgets/build_option_tile.dart lib/layers/presentation/features/forest/widgets/build_menu.dart test/mocks/presentation/features/forest/models/build_item_data_mock.dart test/layers/presentation/features/forest/widgets/build_option_tile_test.dart test/layers/presentation/features/forest/widgets/build_menu_test.dart
 git commit -m "[PROJECT-X]: Add the HUD build menu"
 ```
 
@@ -1179,7 +1162,7 @@ git commit -m "[PROJECT-X]: Add the HUD build menu"
 - Test: `test/layers/presentation/features/forest/widgets/placement_bar_test.dart`
 
 **Interfaces:**
-- Consumes: `HudButton`, `Internationalize.forestPlacementConfirm/forestPlacementCancel` (Task 1).
+- Consumes: `HudButton` (Task 1), `Internationalize.forestPlacementConfirm/forestPlacementCancel` (fase 5).
 - Produces: `PlacementBar({Key? key, required VoidCallback onConfirm, required VoidCallback onCancel})`.
 
 - [ ] **Step 1: Escribir el test que falla**
@@ -1289,7 +1272,7 @@ git commit -m "[PROJECT-X]: Add the touch placement bar"
 **Files:**
 - Create: `lib/core/config/constants/enum/forest/hud_menu.dart`
 - Create: `lib/layers/presentation/features/forest/widgets/hud_overlay.dart`
-- Create: `test/mocks/layers/presentation/features/forest/models/hud_data_mock.dart`
+- Create: `test/mocks/presentation/features/forest/models/hud_data_mock.dart`
 - Test: `test/layers/presentation/features/forest/widgets/hud_overlay_test.dart`
 
 **Interfaces:**
@@ -1310,7 +1293,7 @@ enum HudMenu { quests, build }
 
 Si la fase 5 ya creó `hud_data_mock.dart`, se añaden estos campos a su clase (renombrándolos si chocan).
 
-`test/mocks/layers/presentation/features/forest/models/hud_data_mock.dart`:
+`test/mocks/presentation/features/forest/models/hud_data_mock.dart`:
 
 ```dart
 import 'package:rpg/layers/presentation/features/forest/models/hud_data.dart';
@@ -1364,7 +1347,7 @@ import 'package:rpg/layers/presentation/features/forest/widgets/hud_overlay.dart
 import 'package:rpg/layers/presentation/features/forest/widgets/quest_panel.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
-import '../../../../../mocks/layers/presentation/features/forest/models/hud_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/models/hud_data_mock.dart';
 
 void main() {
   Future<List<BlueprintId>> pumpOverlay(WidgetTester tester, HudData hud) async {
@@ -1614,7 +1597,7 @@ Expected: `No issues found!`
 - [ ] **Step 8: Commit**
 
 ```bash
-git add lib/core/config/constants/enum/forest/hud_menu.dart lib/layers/presentation/features/forest/widgets/hud_overlay.dart test/mocks/layers/presentation/features/forest/models/hud_data_mock.dart test/layers/presentation/features/forest/widgets/hud_overlay_test.dart
+git add lib/core/config/constants/enum/forest/hud_menu.dart lib/layers/presentation/features/forest/widgets/hud_overlay.dart test/mocks/presentation/features/forest/models/hud_data_mock.dart test/layers/presentation/features/forest/widgets/hud_overlay_test.dart
 git commit -m "[PROJECT-X]: Compose the HUD overlay with its quest and build panels"
 ```
 
@@ -1623,14 +1606,14 @@ git commit -m "[PROJECT-X]: Compose the HUD overlay with its quest and build pan
 ### Task 7: `ForestPage` y arranque desde `ContainerApp`
 
 **Files:**
-- Create: `lib/layers/presentation/features/forest/forest_page.dart`
+- Modify (reescritura completa): `lib/layers/presentation/features/forest/forest_page.dart` (versión mínima de la fase 6, Task 11)
 - Modify: `lib/layers/presentation/app/bloc/container_app_bloc.dart` (recibe `NavigationService` y navega a `ForestPage`)
 - Modify: `lib/layers/presentation/app/container_app.dart` (crea el BLoC con `NavigationService`; `Success` pinta la carga mientras se reemplaza la ruta)
-- Test: `test/layers/presentation/features/forest/forest_page_test.dart` (+ generado `forest_page_test.mocks.dart`)
-- Test: `test/layers/presentation/app/bloc/container_app_bloc_test.dart` (+ generado `container_app_bloc_test.mocks.dart`)
+- Test: `test/layers/presentation/features/forest/forest_page_test.dart`
+- Test: `test/layers/presentation/app/bloc/container_app_bloc_test.dart`
 
 **Interfaces:**
-- Consumes: los 10 casos de uso y `NavigationService` vía `locator` (fases 1 y 4), `ForestBloc` y sus eventos/estados (fase 5), `ForestGame({required ForestBloc bloc})` (fase 6), `HudOverlay`, `PlacementBar`, `HudPanel`, `HudButton` (Tasks 1–6), `MockLevelRepository` (fase 4), `InvalidLevelException` (fase 3).
+- Consumes: los 10 casos de uso y `NavigationService` vía `locator` (fases 1 y 4), `ForestBloc` y sus eventos/estados (fase 5), `ForestGame({required ForestBloc bloc})` (fase 6), `HudOverlay`, `PlacementBar`, `HudPanel`, `HudButton` (Tasks 1–6), `MockLevelRepository` (fase 4), `MockNavigationService` (fase 5), `InvalidLevelException` (fases 1 y 3).
 - Produces: `ForestPage({Key? key})` (`const`), pantalla inicial de la app; `ContainerAppBloc({required NavigationService navigationService})`.
 
 Vista:
@@ -1649,7 +1632,6 @@ Vista:
 ```dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/di/di.dart';
@@ -1660,10 +1642,9 @@ import 'package:rpg/core/services/navigation/source/navigation_service.dart';
 import 'package:rpg/layers/domain/repositories/level/level_repository.dart';
 import 'package:rpg/layers/presentation/features/forest/forest_page.dart';
 
+import '../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
-import 'forest_page_test.mocks.dart';
 
-@GenerateMocks([NavigationService])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -1717,18 +1698,17 @@ void main() {
 
 `InvalidLevelException` es `const` (fase 1 / README § 3.4). Si la fase 1 dejó las excepciones en otro fichero que `app_exceptions.dart`, se ajusta solo ese import.
 
-- [ ] **Step 2: Generar el mock y ver que falla**
+- [ ] **Step 2: Ejecutar y ver que falla**
 
-Run: `dart run build_runner build --delete-conflicting-outputs && flutter test test/layers/presentation/features/forest/forest_page_test.dart`
-Expected: `build_runner` genera `test/layers/presentation/features/forest/forest_page_test.mocks.dart`; el test FALLA con `No such file or directory` para `forest_page.dart`.
+Run: `flutter test test/layers/presentation/features/forest/forest_page_test.dart`
+Expected: FAIL — la página mínima de la fase 6 no tiene pantalla de error: `Expected: exactly one matching candidate` / `Found 0 widgets with text "forest.retry"` (o el título de la excepción).
 
-- [ ] **Step 3: Implementar `ForestPage`**
+- [ ] **Step 3: Reescribir `ForestPage`**
 
-`lib/layers/presentation/features/forest/forest_page.dart`:
+Se sustituye todo el contenido de `lib/layers/presentation/features/forest/forest_page.dart` (se conservan el nombre, la creación del BLoC y la desactivación del menú contextual de la fase 6):
 
 ```dart
 import 'package:flame/game.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -1775,7 +1755,7 @@ class ForestPage extends StatelessWidget {
         getBuildOptionsUseCase: locator.get<GetBuildOptionsUseCase>(),
         getQuestsUseCase: locator.get<GetQuestsUseCase>(),
         navigationService: locator.get<NavigationService>(),
-      )..add(ForestStarted()),
+      )..add(const ForestStarted()),
       child: const _ForestView(),
     );
   }
@@ -1842,7 +1822,7 @@ class _ForestViewState extends State<_ForestView> {
   Widget _gameBody() {
     return CallbackShortcuts(
       bindings: {
-        const SingleActivator(LogicalKeyboardKey.escape): () => bloc.add(ForestPlacementCancelled()),
+        const SingleActivator(LogicalKeyboardKey.escape): () => bloc.add(const ForestPlacementCancelled()),
       },
       child: Focus(
         autofocus: true,
@@ -1887,7 +1867,7 @@ class _ForestViewState extends State<_ForestView> {
     if (placement == null) return const SizedBox.shrink();
     return PlacementBar(
       onConfirm: () => bloc.add(ForestMapClicked(position: placement.position, treeId: null)),
-      onCancel: () => bloc.add(ForestPlacementCancelled()),
+      onCancel: () => bloc.add(const ForestPlacementCancelled()),
     );
   }
 
@@ -1903,7 +1883,7 @@ class _ForestViewState extends State<_ForestView> {
             children: [
               Text(state.exception.title, textAlign: TextAlign.center, style: CustomTextStyles.system18w600.copyWith(color: CustomColors.hudAccent, fontFeatures: const [FontFeature.tabularFigures()])),
               Text(state.exception.message, textAlign: TextAlign.center, style: CustomTextStyles.system15w600.copyWith(color: CustomColors.hudText)),
-              HudButton(label: Internationalize.forestRetry, onPressed: () => bloc.add(ForestStarted())),
+              HudButton(label: Internationalize.forestRetry, onPressed: () => bloc.add(const ForestStarted())),
             ],
           ),
         ),
@@ -1930,15 +1910,12 @@ Según `references/presentation/presentation.md`, `ContainerAppView` nunca pinta
 ```dart
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/services/navigation/source/navigation_service.dart';
 import 'package:rpg/layers/presentation/app/bloc/container_app_bloc.dart';
 import 'package:rpg/layers/presentation/features/forest/forest_page.dart';
 
-import 'container_app_bloc_test.mocks.dart';
+import '../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
 
-@GenerateMocks([NavigationService])
 void main() {
   late MockNavigationService navigationService;
 
@@ -1979,7 +1956,7 @@ void main() {
 }
 ```
 
-Run: `dart run build_runner build --delete-conflicting-outputs && flutter test test/layers/presentation/app/bloc/container_app_bloc_test.dart`
+Run: `flutter test test/layers/presentation/app/bloc/container_app_bloc_test.dart`
 Expected: FAIL — `No named parameter with the name 'navigationService'`.
 
 - [ ] **Step 6: El contenedor recibe `NavigationService` y navega**
@@ -2025,7 +2002,7 @@ En `lib/layers/presentation/app/container_app.dart` cambian solo dos cosas (regl
         ..add(ContainerAppStarted()),
 ```
 
-2. En `ContainerAppView._bodyByState`, el caso `Success` deja de pintar la pantalla vacía y reutiliza la carga mientras la navegación reemplaza la ruta; se borra el método `_emptyBody`:
+2. En `ContainerAppView._bodyByState`, el caso `Success` deja de pintar `ForestPage` directamente (la fase 6 lo dejó en `_emptyBody()`) y reutiliza la carga mientras la navegación reemplaza la ruta; se borran el método `_emptyBody` y el import `import '../features/forest/forest_page.dart';` que añadió la fase 6 (si no, `flutter analyze` avisa de import sin usar):
 
 ```dart
       ContainerAppSuccess() => _loadingBody(),
@@ -2044,7 +2021,7 @@ Expected: `No issues found!` y `All tests passed!` (incluido `test/architecture_
 - [ ] **Step 8: Commit**
 
 ```bash
-git add lib/layers/presentation/features/forest/forest_page.dart lib/layers/presentation/app test/layers/presentation/features/forest/forest_page_test.dart test/layers/presentation/features/forest/forest_page_test.mocks.dart test/layers/presentation/app/bloc/container_app_bloc_test.dart test/layers/presentation/app/bloc/container_app_bloc_test.mocks.dart
+git add lib/layers/presentation/features/forest/forest_page.dart lib/layers/presentation/app test/layers/presentation/features/forest/forest_page_test.dart test/layers/presentation/app/bloc/container_app_bloc_test.dart
 git commit -m "[PROJECT-X]: Open the forest game with its HUD when the app starts"
 ```
 

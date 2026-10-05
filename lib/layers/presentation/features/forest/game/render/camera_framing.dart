@@ -1,21 +1,21 @@
-import 'package:flame/extensions.dart';
+import 'dart:ui';
 
 abstract final class CameraFraming {
-  static Vector2 center({
-    required Vector2 current,
-    required Vector2 target,
-    required Vector2 world,
-    required Vector2 view,
+  static Offset center({
+    required Offset current,
+    required Offset target,
+    required Size world,
+    required Size view,
     required double lerp,
   }) {
-    return Vector2(
-      _axis(current: current.x, target: target.x, world: world.x, view: view.x, lerp: lerp),
-      _axis(current: current.y, target: target.y, world: world.y, view: view.y, lerp: lerp),
+    return Offset(
+      _axis(current: current.dx, target: target.dx, world: world.width, view: view.width, lerp: lerp),
+      _axis(current: current.dy, target: target.dy, world: world.height, view: view.height, lerp: lerp),
     );
   }
 
-  static Vector2 snap(Vector2 center, double zoom) {
-    return Vector2((center.x * zoom).roundToDouble() / zoom, (center.y * zoom).roundToDouble() / zoom);
+  static Offset snap(Offset center, double zoom) {
+    return Offset((center.dx * zoom).roundToDouble() / zoom, (center.dy * zoom).roundToDouble() / zoom);
   }
 
   static double _axis({

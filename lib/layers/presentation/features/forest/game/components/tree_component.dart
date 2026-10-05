@@ -4,6 +4,7 @@ import '../../../../../domain/entities/geometry/position_entity.dart';
 import '../../../../../domain/entities/tree/tree_entity.dart';
 import '../atlas/lpc_assets.dart';
 import '../atlas/sprite_names.dart';
+import '../render/position_conversion.dart';
 import '../render/render_depth.dart';
 import '../render/tree_motion.dart';
 import 'atlas_sprite_component.dart';
@@ -23,7 +24,7 @@ class TreeComponent extends AtlasSpriteComponent {
       super.fromFrame(
         frame: assets.frame(SpriteNames.tree(tree.kind)),
         sprite: assets.sprite(SpriteNames.tree(tree.kind)),
-        position: Vector2(tree.position.x, tree.position.y),
+        position: tree.position.toVector2(),
         priority: RenderDepth.bySortY(tree.position.y),
       );
 

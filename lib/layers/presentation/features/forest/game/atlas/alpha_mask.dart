@@ -15,6 +15,7 @@ class AlphaMask {
 
   static Future<AlphaMask> fromImage(Image image) async {
     final data = await image.toByteData(format: ImageByteFormat.rawRgba);
-    return AlphaMask(width: image.width, height: image.height, rgba: data!.buffer.asUint8List());
+    if (data == null) throw StateError('Could not read the pixels of the ${image.width}x${image.height} image');
+    return AlphaMask(width: image.width, height: image.height, rgba: data.buffer.asUint8List());
   }
 }

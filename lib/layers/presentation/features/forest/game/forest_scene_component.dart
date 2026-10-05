@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flame/components.dart';
 
+import '../../../../domain/entities/building/building_entity.dart';
 import '../../../../domain/entities/game/world_snapshot_entity.dart';
 import '../../../../domain/entities/geometry/position_entity.dart';
 import '../bloc/forest_bloc.dart';
@@ -79,45 +80,68 @@ class ForestSceneComponent extends Component {
   void _play(ForestEffect effect) {
     switch (effect) {
       case ItemPickedUpEffect(:final itemId):
-        _items.remove(itemId)?.pickUp();
+        _onItemPickedUp(itemId);
       case TreeHitEffect(:final treeId, :final fromX):
-        final tree = _trees[treeId];
-        if (tree == null) return;
-        tree.hit(fromX);
-        add(
-          ParticleBurstComponent(
-            particles: ParticleBursts.woodChips(
-              trunkBase: tree.base,
-              playerOnLeft: fromX < tree.base.x,
-              random: _random,
-            ),
-            sortY: ParticleBursts.chipsSortY(tree.base),
-          ),
-        );
+        _onTreeHit(treeId, fromX);
       case TreeFelledEffect(:final treeId, :final fromX):
-        final tree = _trees.remove(treeId);
-        if (tree == null) return;
-        tree.fell(fromX);
-        _addClutter(SpriteNames.stump, tree.base, tree.base.y - 1);
+        _onTreeFelled(treeId, fromX);
       case BuildingPlacedEffect(:final building):
-        final component = _buildings.putIfAbsent(
-          building.id,
-          () => _added(BuildingComponent(assets: _assets, building: building)),
-        );
-        _clearClutterUnder(component);
+        _onBuildingPlaced(building);
       case BuildingHammeredEffect(:final buildingId, :final progress):
-        final building = _buildings[buildingId];
-        if (building == null) return;
-        building.hammered(progress);
-        add(
-          ParticleBurstComponent(
-            particles: ParticleBursts.dust(buildingCenter: building.footprint, random: _random),
-            sortY: ParticleBursts.dustSortY(building.footprint),
-          ),
-        );
+        _onBuildingHammered(buildingId, progress);
       case BuildingCompletedEffect(:final buildingId):
-        _buildings[buildingId]?.complete();
+        _onBuildingCompleted(buildingId);
     }
+  }
+
+  void _onItemPickedUp(String itemId) {
+    _items.remove(itemId)?.pickUp();
+  }
+
+  void _onTreeHit(String treeId, double fromX) {
+    final tree = _trees[treeId];
+    if (tree == null) return;
+    tree.hit(fromX);
+    add(
+      ParticleBurstComponent(
+        particles: ParticleBursts.woodChips(trunkBase: tree.base, playerOnLeft: fromX < tree.base.x, random: _random),
+        sortY: ParticleBursts.chipsSortY(tree.base),
+      ),
+    );
+  }
+
+  void _onTreeFelled(String treeId, double fromX) {
+    final tree = _trees.remove(treeId);
+    if (tree == null) return;
+    tree.fell(fromX);
+    _addClutter(SpriteNames.stump, tree.base, tree.base.y - 1);
+  }
+
+  void _onBuildingPlaced(BuildingEntity building) {
+    _clearClutterUnder(_building(building));
+  }
+
+  void _onBuildingHammered(String buildingId, double progress) {
+    final building = _buildings[buildingId];
+    if (building == null) return;
+    building.hammered(progress);
+    add(
+      ParticleBurstComponent(
+        particles: ParticleBursts.dust(buildingCenter: building.footprint, random: _random),
+        sortY: ParticleBursts.dustSortY(building.footprint),
+      ),
+    );
+  }
+
+  void _onBuildingCompleted(String buildingId) {
+    _buildings[buildingId]?.complete();
+  }
+
+  BuildingComponent _building(BuildingEntity building) {
+    return _buildings.putIfAbsent(
+      building.id,
+      () => _added(BuildingComponent(assets: _assets, building: building)),
+    );
   }
 
   void _reconcile(WorldSnapshotEntity world) {
@@ -144,12 +168,8 @@ class ForestSceneComponent extends Component {
     }
 
     for (final building in world.buildings) {
-      final existing = _buildings[building.id];
-      if (existing == null) {
-        _buildings[building.id] = _added(BuildingComponent(assets: _assets, building: building));
-      } else if (!existing.isComplete && existing.progress != building.progress) {
-        existing.progress = building.progress;
-      }
+      final component = _building(building);
+      if (!component.isComplete && component.progress != building.progress) component.progress = building.progress;
     }
   }
 

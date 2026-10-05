@@ -13,6 +13,8 @@ class ParticleBurstComponent extends Component {
   static const Color chipLight = Color(0xFFC89A5E);
   static const Color dustColor = Color(0xFFD8CDB0);
   static const double dustRadius = 3;
+  static const Rect chipBody = Rect.fromLTWH(-1.5, -1, 3, 2);
+  static const Rect chipHighlight = Rect.fromLTWH(-1.5, -1, 2, 1);
 
   final List<Particle> _particles;
   final Paint _paint = Paint();
@@ -51,9 +53,9 @@ class ParticleBurstComponent extends Component {
     canvas.translate(at.x, at.y);
     canvas.rotate(rotationDegrees * math.pi / 180);
     _paint.color = chipDark.withValues(alpha: alpha);
-    canvas.drawRect(const Rect.fromLTWH(-1.5, -1, 3, 2), _paint);
+    canvas.drawRect(chipBody, _paint);
     _paint.color = chipLight.withValues(alpha: alpha);
-    canvas.drawRect(const Rect.fromLTWH(-1.5, -1, 2, 1), _paint);
+    canvas.drawRect(chipHighlight, _paint);
     canvas.restore();
   }
 }

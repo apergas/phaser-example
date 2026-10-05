@@ -7,6 +7,7 @@ import '../../../../../domain/entities/item/ground_item_entity.dart';
 import '../atlas/lpc_assets.dart';
 import '../atlas/sprite_names.dart';
 import '../render/easing.dart';
+import '../render/position_conversion.dart';
 import '../render/render_depth.dart';
 import 'atlas_sprite_component.dart';
 import 'shadow_component.dart';
@@ -17,6 +18,8 @@ class GroundItemComponent extends AtlasSpriteComponent {
   static const double bobMs = 700;
   static const double pickUpRise = 16;
   static const double pickUpMs = 300;
+  static const double shadowWidth = 16;
+  static const double shadowHeight = 5;
 
   final String itemId;
   final PositionEntity ground;
@@ -28,11 +31,11 @@ class GroundItemComponent extends AtlasSpriteComponent {
   GroundItemComponent({required LpcAssets assets, required GroundItemEntity item})
     : itemId = item.id,
       ground = item.position,
-      shadow = ShadowComponent(center: Vector2(item.position.x, item.position.y), size: Vector2(16, 5)),
+      shadow = ShadowComponent(center: item.position.toVector2(), size: Vector2(shadowWidth, shadowHeight)),
       super.fromFrame(
         frame: assets.frame(SpriteNames.axePickup),
         sprite: assets.sprite(SpriteNames.axePickup),
-        position: Vector2(item.position.x, item.position.y - floatHeight),
+        position: item.position.toVector2()..y -= floatHeight,
         priority: RenderDepth.bySortY(item.position.y),
       );
 

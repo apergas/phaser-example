@@ -27,9 +27,6 @@ class ForestWorld extends World with TapCallbacks, SecondaryTapCallbacks, Pointe
   bool get isReady => _scene != null;
 
   @override
-  bool containsLocalPoint(Vector2 point) => true;
-
-  @override
   Future<void> onLoad() async {
     final scene = ForestSceneComponent(assets: await _assetsLoader.load(), random: _random);
     await add(

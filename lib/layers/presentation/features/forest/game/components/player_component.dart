@@ -6,10 +6,15 @@ import '../../models/player_render_data.dart';
 import '../atlas/lpc_assets.dart';
 import '../render/player_frame.dart';
 import '../render/player_frames.dart';
+import '../render/position_conversion.dart';
 import '../render/render_depth.dart';
 import 'shadow_component.dart';
 
 class PlayerComponent extends PositionComponent {
+  static const double shadowWidth = 22;
+  static const double shadowHeight = 7;
+  static const double shadowOffsetY = -1;
+
   final LpcAssets _assets;
   final ShadowComponent shadow;
   final Paint _paint = Paint()..filterQuality = FilterQuality.none;
@@ -20,8 +25,11 @@ class PlayerComponent extends PositionComponent {
   PlayerComponent({required this._assets, required PlayerRenderData player})
     : _player = player,
       _animationKey = PlayerFrames.animationKey(player),
-      shadow = ShadowComponent(center: Vector2(player.position.x, player.position.y - 1), size: Vector2(22, 7)),
-      super(position: Vector2(player.position.x, player.position.y), priority: RenderDepth.bySortY(player.position.y));
+      shadow = ShadowComponent(
+        center: player.position.toVector2()..y += shadowOffsetY,
+        size: Vector2(shadowWidth, shadowHeight),
+      ),
+      super(position: player.position.toVector2(), priority: RenderDepth.bySortY(player.position.y));
 
   PlayerFrame get currentFrame => PlayerFrames.frame(_player, _animationSeconds);
 
@@ -34,7 +42,7 @@ class PlayerComponent extends PositionComponent {
     _player = player;
     position.setValues(player.position.x, player.position.y);
     priority = RenderDepth.bySortY(player.position.y);
-    shadow.position.setValues(player.position.x, player.position.y - 1);
+    shadow.position.setValues(player.position.x, player.position.y + shadowOffsetY);
   }
 
   @override

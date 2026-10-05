@@ -1,14 +1,13 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
-import 'package:flame/components.dart';
-
 import '../render/render_constants.dart';
 import '../../../../../domain/entities/building/building_entity.dart';
 import '../../../../../domain/entities/geometry/position_entity.dart';
 import '../atlas/lpc_assets.dart';
 import '../atlas/sprite_names.dart';
 import '../render/easing.dart';
+import '../render/position_conversion.dart';
 import '../render/render_depth.dart';
 import 'atlas_sprite_component.dart';
 
@@ -34,7 +33,7 @@ class BuildingComponent extends AtlasSpriteComponent {
       super.fromFrame(
         frame: assets.frame(SpriteNames.house),
         sprite: assets.sprite(SpriteNames.house),
-        position: Vector2(building.position.x, building.position.y + RenderConstants.houseFrontOffset),
+        position: building.position.toVector2()..y += RenderConstants.houseFrontOffset,
         priority: RenderDepth.bySortY(building.position.y + RenderConstants.houseFrontOffset),
       ) {
     progress = building.progress;

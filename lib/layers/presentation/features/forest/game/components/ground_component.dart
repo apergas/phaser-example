@@ -37,6 +37,13 @@ class GroundComponent extends PositionComponent {
   }
 
   @override
+  void onRemove() {
+    _picture?.dispose();
+    _picture = null;
+    super.onRemove();
+  }
+
+  @override
   void render(Canvas canvas) {
     final picture = _picture;
     if (picture != null) canvas.drawPicture(picture);

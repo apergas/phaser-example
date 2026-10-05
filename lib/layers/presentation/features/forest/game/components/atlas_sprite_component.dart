@@ -5,6 +5,7 @@ import 'package:flame/components.dart';
 import '../../../../../domain/entities/geometry/position_entity.dart';
 import '../atlas/atlas_frame.dart';
 import '../atlas/lpc_assets.dart';
+import '../render/position_conversion.dart';
 
 class AtlasSpriteComponent extends SpriteComponent {
   final AtlasFrame frame;
@@ -32,7 +33,7 @@ class AtlasSpriteComponent extends SpriteComponent {
     return AtlasSpriteComponent.fromFrame(
       frame: assets.frame(frameName),
       sprite: assets.sprite(frameName),
-      position: Vector2(at.x, at.y),
+      position: at.toVector2(),
       priority: priority,
     );
   }

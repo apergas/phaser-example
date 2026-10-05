@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/config/constants/enum/decoration_kind.dart';
 import 'package:rpg/core/config/constants/enum/tree_kind.dart';
-import 'package:rpg/layers/presentation/features/forest/game/atlas/atlas_frame.dart';
 import 'package:rpg/layers/presentation/features/forest/game/atlas/lpc_atlas.dart';
 import 'package:rpg/layers/presentation/features/forest/game/atlas/sprite_names.dart';
 
+import '../../../../../../mocks/presentation/features/forest/game/atlas_frame_mock.dart';
 import '../../../../../../mocks/presentation/features/forest/game/lpc_atlas_source_mock.dart';
 
 void main() {
@@ -20,11 +20,11 @@ void main() {
     // then
     expect(
       frames['house'],
-      const AtlasFrame(name: 'house', x: 0, y: 0, width: 120, height: 191, pivotX: 0.5, pivotY: 1),
+      AtlasFrameMock.house,
     );
     expect(
       frames['tree-old'],
-      const AtlasFrame(name: 'tree-old', x: 122, y: 0, width: 150, height: 169, pivotX: 0.4067, pivotY: 0.9941),
+      AtlasFrameMock.treeOld,
     );
   });
 
@@ -36,7 +36,7 @@ void main() {
     final frame = LpcAtlas.parse(source)['no-pivot'];
 
     // then
-    expect(frame, const AtlasFrame(name: 'no-pivot', x: 1, y: 2, width: 3, height: 4, pivotX: 0.5, pivotY: 0.5));
+    expect(frame, AtlasFrameMock.noPivot);
   });
 
   test('testWhenParsingTheGeneratedAtlasThenEveryLevelSpriteExists', () {

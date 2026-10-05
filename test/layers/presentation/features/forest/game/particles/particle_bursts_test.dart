@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/config/constants/enum/forest/particle_kind.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
 import 'package:rpg/layers/presentation/features/forest/game/particles/particle_bursts.dart';
 
 import '../../../../../../mocks/presentation/features/forest/game/particle_mock.dart';
@@ -25,7 +24,7 @@ void main() {
     for (final chip in chips) {
       final speed = math.sqrt(chip.velocityX * chip.velocityX + chip.velocityY * chip.velocityY);
       expect(chip.kind, ParticleKind.woodChip);
-      expect(chip.origin, const PositionEntity(x: 100, y: 110));
+      expect(chip.origin, ParticleMock.chipOrigin);
       expect(speed, inInclusiveRange(30, 80));
       expect(_angleDegrees(chip.velocityX, chip.velocityY), inInclusiveRange(200, 290));
       expect(chip.gravity, 220);
@@ -55,7 +54,7 @@ void main() {
 
     // then
     expect(dust, hasLength(6));
-    expect(dust.first.origin, const PositionEntity(x: 200, y: 200));
+    expect(dust.first.origin, ParticleMock.dustOrigin);
     expect(dust.first.lifespanSeconds, 0.45);
     expect(ParticleBursts.dustSortY(center), 205);
     expect(ParticleBursts.chipsSortY(ParticleMock.trunkBase), 121);

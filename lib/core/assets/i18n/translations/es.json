@@ -19,5 +19,45 @@
     "unknownItemKindMessage": "El nivel tiene un objeto de un tipo desconocido: {detail}",
     "noGameInProgressTitle": "No hay partida",
     "noGameInProgressMessage": "No hay ninguna partida en curso."
+  },
+  "forest": {
+    "hud": {
+      "wood": "Madera",
+      "axe": "Hacha",
+      "build": "Construir",
+      "quests": "Misiones",
+      "questDone": "Hecha",
+      "cost": "{wood} de madera",
+      "missing": "Faltan {wood}"
+    },
+    "blueprint": {
+      "house": "Casa"
+    },
+    "quest": {
+      "pickUpAxe": "Recoge el hacha",
+      "gatherWood": "Consigue al menos 15 de madera",
+      "buildHouse": "Construye una casa"
+    },
+    "message": {
+      "welcome": "Hay un hacha en el suelo, cerca de ti. Recógela pasando por encima.",
+      "needAxe": "Necesitas un hacha para talar.",
+      "blockedPath": "Hay algo en medio. Acércate por otro lado.",
+      "pickedUpAxe": "¡Hacha recogida! Haz clic en un árbol para talarlo.",
+      "blockedSite": "Ahí no cabe. Busca un sitio despejado.",
+      "notEnoughWood": "No tienes madera suficiente.",
+      "buildingStarted": "Manos a la obra…",
+      "allQuestsCompleted": "¡Has completado todas las misiones!",
+      "woodGained": "+{wood} de madera",
+      "placing": "Elige dónde construir: {name}. Clic derecho o Esc para cancelar.",
+      "buildingCompleted": "¡{name} construida!",
+      "questCompleted": "Misión completada: {title}"
+    },
+    "placement": {
+      "confirm": "Construir aquí",
+      "cancel": "Cancelar"
+    },
+    "accessibility": {
+      "gameWorld": "Mundo de juego: bosque con árboles, el personaje y los edificios"
+    }
   }
 }

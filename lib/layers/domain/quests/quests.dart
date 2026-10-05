@@ -6,7 +6,7 @@ import '../world/world.dart';
 import 'quest.dart';
 
 abstract final class Quests {
-  static final List<Quest> all = [
+  static final List<Quest> all = List.unmodifiable([
     _MeasuredQuest(
       id: QuestId.pickUpAxe,
       target: 1,
@@ -19,7 +19,7 @@ abstract final class Quests {
       measure: (world) =>
           world.buildings.where((building) => building.isComplete && building.blueprint.id == BlueprintId.house).length,
     ),
-  ];
+  ]);
 }
 
 final class _MeasuredQuest implements Quest {

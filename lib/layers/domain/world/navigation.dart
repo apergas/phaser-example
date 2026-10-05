@@ -8,8 +8,6 @@ import 'extensions/position_geometry.dart';
 import 'work.dart';
 import 'world_state.dart';
 
-const double _reachTolerance = 6;
-
 class Navigation {
   Navigation(this._state);
 
@@ -59,7 +57,7 @@ class Navigation {
   bool _isWithinReach(IntentEntity intent) {
     final target = workFor(intent).target(_state);
     if (target == null) return false;
-    final reach = target.radius + _state.player.radius + Rules.workGap + _reachTolerance;
+    final reach = target.radius + _state.player.radius + Rules.workGap + Rules.reachTolerance;
     return _state.player.position.distanceTo(target.position) <= reach;
   }
 

@@ -29,5 +29,6 @@ class QuestProgressEntity {
 
   @override
   String toString() =>
-      'QuestProgressEntity(id: $id, progress: $progress, target: $target, isCompleted: $isCompleted, isCurrent: $isCurrent)';
+      'QuestProgressEntity(id: $id, progress: $progress, target: $target, '
+      'isCompleted: $isCompleted, isCurrent: $isCurrent)';
 }

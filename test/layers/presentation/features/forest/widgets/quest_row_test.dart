@@ -5,7 +5,7 @@ import 'package:rpg/layers/presentation/theme/colors/custom_colors.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
 import '../../../../../helpers/spanish_translations.dart';
-import '../../../../../mocks/presentation/features/forest/models/quest_item_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/quest_item_data_mock.dart';
 
 void main() {
   setUpAll(loadSpanishTranslations);

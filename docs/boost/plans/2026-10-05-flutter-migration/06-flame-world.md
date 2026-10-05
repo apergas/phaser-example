@@ -21,7 +21,7 @@
 
 ## Contratos que consume (fases 1–5)
 
-- `RenderConstants` (`lib/core/config/constants/render_constants.dart`, fase 1): `cameraZoom`, `tileSize`, `characterFrameSize`, `characterAnchorY`, `rowUp/rowLeft/rowDown/rowRight`, `walkFirstStep`, `walkLastStep`, `walkFps`, `idleColumns`, `idleFps`, `workFrameSize`, `workAnchorY`, `chopSequence`, `hammerSequence`, `houseFrontOffset`. Esta fase **añade** `cameraLerp`, `maxFrameSeconds`, `backgroundColor` y `solidAlpha`.
+- `RenderConstants` (`lib/layers/presentation/features/forest/game/render/render_constants.dart`, fase 1, movido aquí por el aislamiento del motor): `cameraZoom`, `tileSize`, `characterFrameSize`, `characterAnchorY`, `rowUp/rowLeft/rowDown/rowRight`, `walkFirstStep`, `walkLastStep`, `walkFps`, `idleColumns`, `idleFps`, `workFrameSize`, `workAnchorY`, `chopSequence`, `hammerSequence`, `houseFrontOffset`. Esta fase **añade** `cameraLerp`, `maxFrameSeconds`, `backgroundColor` y `solidAlpha`.
 - Enums `TreeKind`, `DecorationKind`, `Facing`, `WorkTool` (`lib/core/config/constants/enum/`).
 - Entidades (README §3.2) con constructores con nombre: `PositionEntity(x:, y:)`, `TreeEntity(id:, kind:, position:, trunkRadius:, woodYield:, hitsToFell:)`, `GroundItemEntity(id:, kind:, position:)`, `DecorationEntity(id:, kind:, position:)`, `BuildingEntity(id:, blueprint:, position:, hitsDone:)` con `progress`, `WorldSnapshotEntity(width:, height:, trees:, items:, decorations:, buildings:)`; `Blueprints.house` (`lib/layers/domain/rules/blueprints.dart`).
 - BLoC (fase 5, `lib/layers/presentation/features/forest/bloc/forest_bloc.dart` con `part` de eventos y estado): `ForestTicked(deltaMs:)`, `ForestMapClicked(position:, treeId:, isSecondary:)`, `ForestPointerMoved(position:)`, `ForestStarted()`; `ForestInitial()`, `ForestSuccess(data:)`, `ForestInProgress(data:)`, `ForestFailure(data:, exception:)`; `ForestData(world:, player:, hud:, placement:, effects:)` con `effects` por defecto `const []`.
@@ -32,7 +32,7 @@
 
 | Fichero | Responsabilidad |
 |---|---|
-| `lib/core/config/constants/render_constants.dart` (modificar) | + `cameraLerp`, `maxFrameSeconds`, `backgroundColor`, `solidAlpha` |
+| `game/render/render_constants.dart` (modificar) | + `cameraLerp`, `maxFrameSeconds`, `backgroundColor`, `solidAlpha` |
 | `lib/core/config/constants/enum/forest/player_sheet.dart` | `enum PlayerSheet { walk, idle, walkAxe, idleAxe, chop, hammer }` |
 | `lib/core/config/constants/enum/forest/particle_kind.dart` | `enum ParticleKind { woodChip, dust }` |
 | `game/atlas/sprite_names.dart` | nombre de fotograma del atlas por tipo |
@@ -58,7 +58,7 @@
 ### Task 1: Constantes, enums, `SpriteNames`, `RenderDepth` y conversión de posiciones
 
 **Files:**
-- Modify: `lib/core/config/constants/render_constants.dart`
+- Modify: `game/render/render_constants.dart`
 - Create: `lib/core/config/constants/enum/forest/player_sheet.dart`, `lib/core/config/constants/enum/forest/particle_kind.dart`
 - Create: `lib/layers/presentation/features/forest/game/atlas/sprite_names.dart`
 - Create: `lib/layers/presentation/features/forest/game/render/render_depth.dart`
@@ -137,7 +137,7 @@ Expected: FAIL, `Error when reading 'lib/layers/presentation/features/forest/gam
 
 - [ ] **Step 4: Implementar**
 
-Añadir al final de la clase `RenderConstants` (`lib/core/config/constants/render_constants.dart`), sin tocar lo que creó la fase 1:
+Añadir al final de la clase `RenderConstants` (`game/render/render_constants.dart`), sin tocar lo que creó la fase 1:
 
 ```dart
   static const double cameraLerp = 0.1;
@@ -604,7 +604,7 @@ import 'package:flame/extensions.dart';
 import 'package:flame/sprite.dart';
 
 import '../../../../../../core/config/constants/enum/forest/player_sheet.dart';
-import '../../../../../../core/config/constants/render_constants.dart';
+import '../render/render_constants.dart';
 import 'alpha_mask.dart';
 import 'atlas_frame.dart';
 
@@ -731,7 +731,7 @@ git commit -m "[PROJECT-X]: Load the LPC atlas, alpha mask and character sheets"
   - `TreeMotion.direction({required double fromX, required double baseX})`, `shakeAngle({required double elapsedMs, required double direction})`, `fallAngle({...})`, `fallOpacity(double elapsedMs)`, `hasFallen(double elapsedMs)`, `shakeMs`; ángulos en radianes
   - `PlayerFrame({required PlayerSheet sheet, required int column, required int row, required double cellSize, required double anchorY})`
   - `PlayerFrames.row(Facing)`, `walkColumn(double seconds)`, `idleColumn(double seconds)`, `workColumn(WorkTool, double swingProgress)`, `sheet(PlayerPose)`, `animationKey(PlayerRenderData)`, `frame(PlayerRenderData, double animationSeconds)`
-  - `CameraFraming.center({required Vector2 current, required Vector2 target, required Vector2 world, required Vector2 view, required double lerp}) → Vector2`, `CameraFraming.snap(Vector2 center, double zoom) → Vector2`
+  - `CameraFraming.center({required Offset current, required Offset target, required Size world, required Size view, required double lerp}) → Offset`, `CameraFraming.snap(Offset center, double zoom) → Offset` (`dart:ui`, sin Flame)
 
 - [ ] **Step 1: Escribir los tests que fallan**
 
@@ -922,68 +922,69 @@ void main() {
 `test/layers/presentation/features/forest/game/render/camera_framing_test.dart`:
 
 ```dart
-import 'package:flame/extensions.dart';
+import 'dart:ui';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/layers/presentation/features/forest/game/render/camera_framing.dart';
 
 void main() {
-  final world = Vector2(1600, 1200);
-  final view = Vector2(400, 300);
+  final world = Size(1600, 1200);
+  final view = Size(400, 300);
 
   test('testWhenFollowingWithFullLerpThenCentresOnThePlayer', () {
     // given
-    final player = Vector2(800, 600);
+    final player = Offset(800, 600);
 
     // when
-    final center = CameraFraming.center(current: Vector2.zero(), target: player, world: world, view: view, lerp: 1);
+    final center = CameraFraming.center(current: Offset.zero, target: player, world: world, view: view, lerp: 1);
 
     // then
-    expect(center, Vector2(800, 600));
+    expect(center, Offset(800, 600));
   });
 
   test('testWhenThePlayerIsNearACornerThenTheCameraStaysInsideTheWorld', () {
     // given
-    final player = Vector2(10, 1190);
+    final player = Offset(10, 1190);
 
     // when
     final center = CameraFraming.center(current: player, target: player, world: world, view: view, lerp: 1);
 
     // then
-    expect(center, Vector2(200, 1050));
+    expect(center, Offset(200, 1050));
   });
 
   test('testWhenTheWorldIsSmallerThanTheViewThenItIsCentred', () {
     // given
-    final small = Vector2(300, 200);
+    final small = Size(300, 200);
 
     // when
-    final center = CameraFraming.center(current: Vector2.zero(), target: Vector2(10, 10), world: small, view: view, lerp: 1);
+    final center = CameraFraming.center(current: Offset.zero, target: Offset(10, 10), world: small, view: view, lerp: 1);
 
     // then
-    expect(center, Vector2(150, 100));
+    expect(center, Offset(150, 100));
   });
 
   test('testWhenLerpingThenMovesATenthOfTheWayEachFrame', () {
     // given
-    final current = Vector2(800, 600);
+    final current = Offset(800, 600);
 
     // when
-    final center = CameraFraming.center(current: current, target: Vector2(900, 600), world: world, view: view, lerp: 0.1);
+    final center = CameraFraming.center(current: current, target: Offset(900, 600), world: world, view: view, lerp: 0.1);
 
     // then
-    expect(center.x, closeTo(810, 1e-9));
-    expect(center.y, closeTo(600, 1e-9));
+    expect(center.dx, closeTo(810, 1e-9));
+    expect(center.dy, closeTo(600, 1e-9));
   });
 
   test('testWhenSnappingThenRoundsToWholeScreenPixels', () {
     // given
-    final center = Vector2(10.3, 20.2);
+    final center = Offset(10.3, 20.2);
 
     // when
     final snapped = CameraFraming.snap(center, 2);
 
     // then
-    expect(snapped, Vector2(10.5, 20));
+    expect(snapped, Offset(10.5, 20));
   });
 }
 ```
@@ -1095,7 +1096,7 @@ import 'dart:math' as math;
 import '../../../../../../core/config/constants/enum/forest/facing.dart';
 import '../../../../../../core/config/constants/enum/forest/player_sheet.dart';
 import '../../../../../../core/config/constants/enum/forest/work_tool.dart';
-import '../../../../../../core/config/constants/render_constants.dart';
+import 'render_constants.dart';
 import '../../models/player_pose.dart';
 import '../../models/player_render_data.dart';
 import 'player_frame.dart';
@@ -1166,24 +1167,24 @@ abstract final class PlayerFrames {
 `game/render/camera_framing.dart`:
 
 ```dart
-import 'package:flame/extensions.dart';
+import 'dart:ui';
 
 abstract final class CameraFraming {
-  static Vector2 center({
-    required Vector2 current,
-    required Vector2 target,
-    required Vector2 world,
-    required Vector2 view,
+  static Offset center({
+    required Offset current,
+    required Offset target,
+    required Size world,
+    required Size view,
     required double lerp,
   }) {
-    return Vector2(
-      _axis(current: current.x, target: target.x, world: world.x, view: view.x, lerp: lerp),
-      _axis(current: current.y, target: target.y, world: world.y, view: view.y, lerp: lerp),
+    return Offset(
+      _axis(current: current.dx, target: target.dx, world: world.width, view: view.width, lerp: lerp),
+      _axis(current: current.dy, target: target.dy, world: world.height, view: view.height, lerp: lerp),
     );
   }
 
-  static Vector2 snap(Vector2 center, double zoom) {
-    return Vector2((center.x * zoom).roundToDouble() / zoom, (center.y * zoom).roundToDouble() / zoom);
+  static Offset snap(Offset center, double zoom) {
+    return Offset((center.dx * zoom).roundToDouble() / zoom, (center.dy * zoom).roundToDouble() / zoom);
   }
 
   static double _axis({
@@ -1411,7 +1412,7 @@ class Particle {
 import 'dart:math' as math;
 
 import '../../../../../../core/config/constants/enum/forest/particle_kind.dart';
-import '../../../../../../core/config/constants/render_constants.dart';
+import '../render/render_constants.dart';
 import '../../../../../domain/entities/geometry/position_entity.dart';
 import 'particle.dart';
 
@@ -1873,7 +1874,7 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 
-import '../../../../../../core/config/constants/render_constants.dart';
+import '../render/render_constants.dart';
 import '../render/render_depth.dart';
 
 class GroundComponent extends PositionComponent {
@@ -2398,7 +2399,7 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 
-import '../../../../../../core/config/constants/render_constants.dart';
+import '../render/render_constants.dart';
 import '../../../../../domain/entities/building/building_entity.dart';
 import '../../../../../domain/entities/geometry/position_entity.dart';
 import '../atlas/lpc_assets.dart';
@@ -2485,7 +2486,7 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 
-import '../../../../../../core/config/constants/render_constants.dart';
+import '../render/render_constants.dart';
 import '../../models/placement_data.dart';
 import '../atlas/lpc_assets.dart';
 import '../atlas/sprite_names.dart';
@@ -3441,16 +3442,16 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 
-import '../../../../../core/config/constants/render_constants.dart';
 import '../bloc/forest_bloc.dart';
 import 'atlas/lpc_assets_loader.dart';
 import 'forest_world.dart';
 import 'render/camera_framing.dart';
 import 'render/position_conversion.dart';
+import 'render/render_constants.dart';
 
 class ForestGame extends FlameGame<ForestWorld> {
   final ForestBloc _bloc;
-  Vector2? _cameraCenter;
+  Offset? _cameraCenter;
 
   ForestGame({required ForestBloc bloc, LpcAssetsLoader? assetsLoader, math.Random? random})
     : _bloc = bloc,
@@ -3491,17 +3492,18 @@ class ForestGame extends FlameGame<ForestWorld> {
     final snapshot = data.world;
     if (player == null || snapshot == null) return;
     final zoom = camera.viewfinder.zoom;
-    final target = player.position.toVector2();
+    final target = Offset(player.position.x, player.position.y);
     final previous = _cameraCenter;
     final center = CameraFraming.center(
       current: previous ?? target,
       target: target,
-      world: Vector2(snapshot.width, snapshot.height),
-      view: size / zoom,
+      world: Size(snapshot.width, snapshot.height),
+      view: Size(size.x / zoom, size.y / zoom),
       lerp: previous == null ? 1 : RenderConstants.cameraLerp,
     );
     _cameraCenter = center;
-    camera.viewfinder.position = CameraFraming.snap(center, zoom);
+    final snapped = CameraFraming.snap(center, zoom);
+    camera.viewfinder.position = Vector2(snapped.dx, snapped.dy);
   }
 }
 ```

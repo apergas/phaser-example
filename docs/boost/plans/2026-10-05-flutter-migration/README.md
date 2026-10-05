@@ -142,7 +142,7 @@ Se siguen estructura, nombres, DI, errores, BLoC, Page/View, i18n y tests del pl
 
 ### D6. Mismas constantes de render en todas partes
 
-Zoom 2; frames de personaje LPC de 64 px, filas `up, left, down, right`; andar columnas 1–8 a 10 fps; reposo 2 columnas a 2 fps; hojas de trabajo de 128 px con secuencias talar `[0,0,5,5,4,4,3,1]` y martillar `[0,0,5,5,4,4,1]`, fotograma elegido por `swingProgress` para que el impacto coincida con el golpe; casa dibujada 24 px por debajo del centro de su huella; toque de árbol con precisión de píxel (alfa de la textura). Todo en `lib/core/config/constants/render_constants.dart`.
+Zoom 2; frames de personaje LPC de 64 px, filas `up, left, down, right`; andar columnas 1–8 a 10 fps; reposo 2 columnas a 2 fps; hojas de trabajo de 128 px con secuencias talar `[0,0,5,5,4,4,3,1]` y martillar `[0,0,5,5,4,4,1]`, fotograma elegido por `swingProgress` para que el impacto coincida con el golpe; casa dibujada 24 px por debajo del centro de su huella; toque de árbol con precisión de píxel (alfa de la textura). Todo en `lib/layers/presentation/features/forest/game/render/render_constants.dart`.
 
 ### D7. Coordenadas
 

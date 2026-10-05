@@ -25,6 +25,10 @@ import 'package:rpg/layers/data/datasources/level/local/level_local_datasource_i
     as _i25;
 import 'package:rpg/layers/data/datasources/level/source/level_local_datasource.dart'
     as _i217;
+import 'package:rpg/layers/data/datasources/session/local/game_session_local_datasource_impl.dart'
+    as _i522;
+import 'package:rpg/layers/data/datasources/session/source/game_session_local_datasource.dart'
+    as _i684;
 import 'package:rpg/layers/data/repositories/level/level_repository_impl.dart'
     as _i22;
 import 'package:rpg/layers/data/repositories/level/mappers/decoration_mapper_dbo.dart'
@@ -37,8 +41,12 @@ import 'package:rpg/layers/data/repositories/level/mappers/position_mapper_dbo.d
     as _i16;
 import 'package:rpg/layers/data/repositories/level/mappers/tree_mapper_dbo.dart'
     as _i690;
+import 'package:rpg/layers/data/repositories/session/game_session_repository_impl.dart'
+    as _i332;
 import 'package:rpg/layers/domain/repositories/level/level_repository.dart'
     as _i38;
+import 'package:rpg/layers/domain/repositories/session/game_session_repository.dart'
+    as _i745;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -67,6 +75,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i100.NavigationService>(() => _i192.NavifyImpl());
     gh.singleton<_i685.BlocLogger>(
       () => _i685.BlocLogger(logger: gh<_i879.Logger>()),
+    );
+    gh.lazySingleton<_i684.GameSessionLocalDatasource>(
+      () => _i522.GameSessionLocalDatasourceImpl(),
+    );
+    gh.factory<_i745.GameSessionRepository>(
+      () => _i332.GameSessionRepositoryImpl(
+        localDatasource: gh<_i684.GameSessionLocalDatasource>(),
+        appExceptionHandler: gh<_i216.AppExceptionHandler>(),
+      ),
     );
     gh.factory<_i38.LevelRepository>(
       () => _i22.LevelRepositoryImpl(

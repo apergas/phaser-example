@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/forest/facing.dart';
 import 'package:rpg/core/error-handling/exceptions/app_exceptions.dart';
 import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
@@ -66,7 +67,7 @@ void main() {
         navigationService.showErrorPopUp(
           title: anyNamed('title'),
           message: anyNamed('message'),
-          buttonTitle: anyNamed('buttonTitle'),
+          buttonTitle: Internationalize.commonError,
         ),
       ).called(1);
     },

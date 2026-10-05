@@ -4,6 +4,10 @@ analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/di.config.dart"
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
   errors:
     todo: ignore
     fixme: ignore

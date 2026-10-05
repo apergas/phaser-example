@@ -21,3 +21,15 @@ xcuserdata/
 
 # Overrides the global gitignore: the shared Xcode scheme is part of the project
 !iosApp/iosApp.xcodeproj/xcshareddata/xcschemes/*.xcscheme
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/coverage/
+app.*.symbols
+app.*.map.json
+/android/app/debug
+/android/app/profile
+/android/app/release

@@ -45,7 +45,7 @@ enum CustomButtonColor {
       case CustomButtonColor.failure:
         return CustomColors.white;
       case CustomButtonColor.warning:
-        return CustomColors.white;
+        return CustomColors.black;
     }
   }
 
@@ -73,17 +73,12 @@ enum CustomButtonColor {
       case CustomButtonColor.dark:
         return CustomColors.black.withValues(alpha: 0.38);
       case CustomButtonColor.white:
-        return CustomColors.black.withValues(alpha: 0.20);
       case CustomButtonColor.light:
-        return CustomColors.gray4;
       case CustomButtonColor.lightTwo:
-        return CustomColors.gray2Background;
       case CustomButtonColor.success:
-        return CustomColors.success;
       case CustomButtonColor.failure:
-        return CustomColors.error;
       case CustomButtonColor.warning:
-        return CustomColors.warning;
+        return foreground.withValues(alpha: 0.5);
     }
   }
 }

@@ -1,10 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/data/datasources/level/local/dbo/item_dbo.dart';
-import 'package:rpg/layers/data/datasources/level/local/dbo/point_dbo.dart';
 import 'package:rpg/layers/data/datasources/level/local/dbo/tree_dbo.dart';
 import 'package:rpg/layers/data/datasources/level/local/level_local_datasource_impl.dart';
+
+import '../../../../../mocks/data/datasources/level/item_dbo_mock.dart';
+import '../../../../../mocks/data/datasources/level/point_dbo_mock.dart';
+import '../../../../../mocks/data/datasources/level/tree_dbo_mock.dart';
 
 void main() {
   late LevelLocalDatasourceImpl sut;
@@ -26,14 +28,9 @@ void main() {
 
   test('testWhenFetchingThenForestMatchesTheWebVersionExactly', () {
     // given
-    const expectedFirstTrees = [
-      TreeDBO(id: 'tree-1', kind: 'broad', x: 433.47085868008435, y: 155.17504904419184, wood: 6),
-      TreeDBO(id: 'tree-2', kind: 'old', x: 389.38031366094947, y: 465.71301287971437, wood: 5),
-      TreeDBO(id: 'tree-3', kind: 'pine', x: 721.9763031136245, y: 187.9368040524423, wood: 6),
-    ];
+    final level = sut.fetch();
 
     // when
-    final level = sut.fetch();
     final trees = level.trees ?? const <TreeDBO>[];
 
     // then
@@ -43,13 +40,10 @@ void main() {
     }
     expect(level.width, 1600.0);
     expect(level.height, 1200.0);
-    expect(level.playerStart, const PointDBO(x: 800.0, y: 600.0));
+    expect(level.playerStart, PointDBOMock.playerStart);
     expect(trees.length, 70);
-    expect(trees.take(3).toList(), expectedFirstTrees);
-    expect(
-      trees.last,
-      const TreeDBO(id: 'tree-70', kind: 'dense', x: 1487.0892029069364, y: 676.5116280969232, wood: 6),
-    );
+    expect(trees.take(3).toList(), TreeDBOMock.firstGeneratedTrees);
+    expect(trees.last, TreeDBOMock.lastGenerated);
     expect(kindCounts, {
       'broad': 3,
       'old': 6,
@@ -67,7 +61,7 @@ void main() {
       'dome': 2,
     });
     expect(trees.fold<int>(0, (sum, tree) => sum + (tree.wood ?? 0)), 388);
-    expect(level.items, const [ItemDBO(id: 'axe', kind: 'axe', x: 856.0, y: 608.0)]);
+    expect(level.items, [ItemDBOMock.axe]);
   });
 
   test('testWhenFetchingThenTreesKeepClearOfTheSpawnPoint', () {

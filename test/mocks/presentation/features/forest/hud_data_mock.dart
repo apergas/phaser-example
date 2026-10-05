@@ -1,8 +1,4 @@
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/forest/quest_item_status.dart';
-import 'package:rpg/layers/presentation/features/forest/models/build_item_data.dart';
 import 'package:rpg/layers/presentation/features/forest/models/hud_data.dart';
-import 'package:rpg/layers/presentation/features/forest/models/quest_item_data.dart';
 
 import 'build_item_data_mock.dart';
 import 'quest_item_data_mock.dart';
@@ -46,16 +42,8 @@ abstract final class HudDataMock {
       wood: wood,
       hasAxe: false,
       questBadge: '0/3',
-      quests: [QuestItemData(title: 'Recoge el hacha', progressText: '', status: QuestItemStatus.current)],
-      buildItems: [
-        BuildItemData(
-          blueprint: BlueprintId.house,
-          name: 'Casa',
-          costText: '15 de madera',
-          missingText: 'Faltan 15',
-          isEnabled: false,
-        ),
-      ],
+      quests: [QuestItemDataMock.pickUpAxeCurrent],
+      buildItems: [BuildItemDataMock.makeUnaffordable(missingWood: 15)],
       isBuildLocked: false,
     );
   }

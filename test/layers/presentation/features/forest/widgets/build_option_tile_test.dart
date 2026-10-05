@@ -23,12 +23,12 @@ void main() {
     );
 
     // when
-    await tester.tap(find.text('Casa'));
+    await tester.tap(find.text(BuildItemDataMock.affordable.name));
 
     // then
     expect(taps, 1);
-    expect(find.text('15 de madera'), findsOneWidget);
-    expect(find.text('Faltan 9'), findsNothing);
+    expect(find.text(BuildItemDataMock.affordable.costText), findsOneWidget);
+    expect(find.text(BuildItemDataMock.unaffordable.missingText!), findsNothing);
   });
 
   testWidgets('testWhenItemIsNotAffordableThenItShowsTheMissingTextMuted', (tester) async {
@@ -39,8 +39,8 @@ void main() {
     await tester.pumpHud(Center(child: SizedBox(width: 300, child: tile)));
 
     // then
-    expect(find.text('Faltan 9'), findsOneWidget);
-    expect(tester.widget<Text>(find.text('Casa')).style!.color, CustomColors.hudMuted);
-    expect(tester.widget<Text>(find.text('15 de madera')).style!.color, CustomColors.hudMuted);
+    expect(find.text(BuildItemDataMock.unaffordable.missingText!), findsOneWidget);
+    expect(tester.widget<Text>(find.text(BuildItemDataMock.affordable.name)).style!.color, CustomColors.hudMuted);
+    expect(tester.widget<Text>(find.text(BuildItemDataMock.affordable.costText)).style!.color, CustomColors.hudMuted);
   });
 }

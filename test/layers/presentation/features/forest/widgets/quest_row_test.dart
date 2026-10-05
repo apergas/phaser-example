@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/quest_row.dart';
 import 'package:rpg/layers/presentation/theme/colors/custom_colors.dart';
 
@@ -29,7 +30,7 @@ void main() {
     expect(style.color, CustomColors.hudMuted);
     final check = tester.widget<Container>(find.byKey(QuestRow.checkKey)).decoration as BoxDecoration;
     expect((check.border! as Border).top.color, CustomColors.questDone);
-    expect(find.text('Hecha'), findsOneWidget);
+    expect(find.text(Internationalize.forestQuestDone), findsOneWidget);
   });
 
   testWidgets('testWhenQuestIsCurrentThenRowIsHighlighted', (tester) async {

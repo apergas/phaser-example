@@ -1,20 +1,23 @@
+import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/layers/presentation/features/forest/models/build_item_data.dart';
 
 abstract final class BuildItemDataMock {
-  static final BuildItemData affordable = BuildItemData(
+  static BuildItemData get affordable => BuildItemData(
     blueprint: BlueprintId.house,
-    name: 'Casa',
-    costText: '15 de madera',
+    name: Internationalize.forestBlueprint(id: BlueprintId.house),
+    costText: Internationalize.forestCost(wood: 15),
     missingText: null,
     isEnabled: true,
   );
 
-  static final BuildItemData unaffordable = BuildItemData(
+  static BuildItemData get unaffordable => makeUnaffordable(missingWood: 9);
+
+  static BuildItemData makeUnaffordable({required int missingWood}) => BuildItemData(
     blueprint: BlueprintId.house,
-    name: 'Casa',
-    costText: '15 de madera',
-    missingText: 'Faltan 9',
+    name: Internationalize.forestBlueprint(id: BlueprintId.house),
+    costText: Internationalize.forestCost(wood: 15),
+    missingText: Internationalize.forestMissing(wood: missingWood),
     isEnabled: false,
   );
 }

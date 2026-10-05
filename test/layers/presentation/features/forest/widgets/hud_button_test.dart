@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_button.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
+import '../../../../../helpers/spanish_translations.dart';
+import '../../../../../mocks/presentation/widgets/widget_text_mock.dart';
 
 void main() {
+  setUpAll(loadSpanishTranslations);
+
   testWidgets('testWhenBadgeIsGivenThenItIsShownNextToTheLabel', (tester) async {
     // given
-    final button = HudButton(label: 'Misiones', badge: '1/3', onPressed: () {});
+    final button = HudButton(label: Internationalize.forestQuests, badge: WidgetTextMock.badge, onPressed: () {});
 
     // when
     await tester.pumpHud(Center(child: button));
 
     // then
-    expect(find.text('Misiones'), findsOneWidget);
-    expect(find.text('1/3'), findsOneWidget);
+    expect(find.text(Internationalize.forestQuests), findsOneWidget);
+    expect(find.text(WidgetTextMock.badge), findsOneWidget);
   });
 
   testWidgets('testWhenTappedThenOnPressedIsCalled', (tester) async {
@@ -22,12 +27,12 @@ void main() {
     var taps = 0;
     await tester.pumpHud(
       Center(
-        child: HudButton(label: 'Construir', onPressed: () => taps++),
+        child: HudButton(label: Internationalize.forestBuild, onPressed: () => taps++),
       ),
     );
 
     // when
-    await tester.tap(find.text('Construir'));
+    await tester.tap(find.text(Internationalize.forestBuild));
 
     // then
     expect(taps, 1);
@@ -35,25 +40,30 @@ void main() {
 
   testWidgets('testWhenOnPressedIsNullThenItIsDimmed', (tester) async {
     // given
-    const button = HudButton(label: 'Construir');
+    final button = HudButton(label: Internationalize.forestBuild);
 
     // when
-    await tester.pumpHud(const Center(child: button));
-    await tester.tap(find.text('Construir'));
+    await tester.pumpHud(Center(child: button));
+    await tester.tap(find.text(Internationalize.forestBuild));
 
     // then
-    final opacity = tester.widget<Opacity>(find.ancestor(of: find.text('Construir'), matching: find.byType(Opacity)));
+    final opacity = tester.widget<Opacity>(
+      find.ancestor(of: find.text(Internationalize.forestBuild), matching: find.byType(Opacity)),
+    );
     expect(opacity.opacity, 0.5);
   });
 
   testWidgets('testWhenBadgeIsGivenThenItUsesTabularFigures', (tester) async {
     // given
-    final button = HudButton(label: 'Misiones', badge: '1/3', onPressed: () {});
+    final button = HudButton(label: Internationalize.forestQuests, badge: WidgetTextMock.badge, onPressed: () {});
 
     // when
     await tester.pumpHud(Center(child: button));
 
     // then
-    expect(tester.widget<Text>(find.text('1/3')).style!.fontFeatures, contains(const FontFeature.tabularFigures()));
+    expect(
+      tester.widget<Text>(find.text(WidgetTextMock.badge)).style!.fontFeatures,
+      contains(const FontFeature.tabularFigures()),
+    );
   });
 }

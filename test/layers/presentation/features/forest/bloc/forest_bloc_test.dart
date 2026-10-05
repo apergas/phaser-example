@@ -1,22 +1,25 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/forest/facing.dart';
-import 'package:rpg/core/config/constants/enum/forest/quest_item_status.dart';
 import 'package:rpg/core/config/constants/enum/forest/work_tool.dart';
 import 'package:rpg/layers/domain/rules/rules.dart';
 import 'package:rpg/layers/domain/world/world.dart';
 import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
-import 'package:rpg/layers/presentation/features/forest/models/build_item_data.dart';
 import 'package:rpg/layers/presentation/features/forest/models/forest_effect.dart';
 import 'package:rpg/layers/presentation/features/forest/models/placement_data.dart';
 import 'package:rpg/layers/presentation/features/forest/models/player_pose.dart';
-import 'package:rpg/layers/presentation/features/forest/models/quest_item_data.dart';
 
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
 import '../../../../../mocks/presentation/features/forest/forest_bloc_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_scenario_mock.dart';
+import '../../../../../mocks/presentation/features/forest/build_item_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/forest_effect_mock.dart';
+import '../../../../../mocks/presentation/features/forest/placement_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/player_pose_mock.dart';
+import '../../../../../mocks/presentation/features/forest/quest_item_data_mock.dart';
 
 void main() {
   late MockNavigationService navigationService;
@@ -45,23 +48,10 @@ void main() {
     verify: (bloc) {
       // then
       final hud = bloc.state.data.hud!;
-      expect(
-        ForestBlocMock.shownMessages(navigationService),
-        contains('Hay un hacha en el suelo, cerca de ti. Recógela pasando por encima.'),
-      );
+      expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessageWelcome));
       expect(hud.questBadge, '0/3');
-      expect(
-        hud.quests[0],
-        const QuestItemData(title: 'Recoge el hacha', progressText: '', status: QuestItemStatus.current),
-      );
-      expect(
-        hud.quests[1],
-        const QuestItemData(
-          title: 'Consigue al menos 15 de madera',
-          progressText: '0/15',
-          status: QuestItemStatus.pending,
-        ),
-      );
+      expect(hud.quests[0], QuestItemDataMock.pickUpAxeCurrent);
+      expect(hud.quests[1], QuestItemDataMock.gatherWoodPending);
     },
   );
 
@@ -101,7 +91,7 @@ void main() {
     wait: Duration.zero,
     verify: (bloc) {
       // then
-      expect(ForestBlocMock.shownMessages(navigationService), contains('Necesitas un hacha para talar.'));
+      expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessageNeedAxe));
     },
   );
 
@@ -122,13 +112,10 @@ void main() {
     wait: Duration.zero,
     verify: (bloc) {
       // then
-      expect(effects, contains(const ItemPickedUpEffect(itemId: 'axe-1')));
-      expect(
-        ForestBlocMock.shownMessages(navigationService),
-        contains('¡Hacha recogida! Haz clic en un árbol para talarlo.'),
-      );
+      expect(effects, contains(ForestEffectMock.axePickedUp));
+      expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessagePickedUpAxe));
       expect(bloc.state.data.hud!.hasAxe, isTrue);
-      expect(bloc.state.data.player!.pose, const IdlePose(withAxe: true));
+      expect(bloc.state.data.player!.pose, PlayerPoseMock.idle);
     },
   );
 
@@ -161,7 +148,7 @@ void main() {
         expect(pose, isA<WorkPose>());
         expect((pose as WorkPose).tool, WorkTool.axe);
         expect(effects.whereType<TreeHitEffect>().length, 5);
-        expect(effects, contains(const TreeFelledEffect(treeId: 'tree-1', fromX: 180)));
+        expect(effects, contains(ForestEffectMock.treeFelled));
         expect(bloc.state.data.hud!.wood, 6);
       },
     );
@@ -183,17 +170,9 @@ void main() {
     wait: Duration.zero,
     verify: (bloc) {
       // then
-      expect(bloc.state.data.hud!.buildItems, const [
-        BuildItemData(
-          blueprint: BlueprintId.house,
-          name: 'Casa',
-          costText: '15 de madera',
-          missingText: 'Faltan 5',
-          isEnabled: false,
-        ),
-      ]);
+      expect(bloc.state.data.hud!.buildItems, [BuildItemDataMock.makeUnaffordable(missingWood: 5)]);
       expect(bloc.state.data.placement, isNull);
-      expect(ForestBlocMock.shownMessages(navigationService), contains('No tienes madera suficiente.'));
+      expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessageNotEnoughWood));
     },
   );
 
@@ -226,17 +205,10 @@ void main() {
       wait: Duration.zero,
       verify: (bloc) {
         // then
-        expect(
-          preview,
-          const PlacementData(
-            blueprint: BlueprintId.house,
-            position: ForestScenarioMock.siteNextToFarTree,
-            isValid: false,
-          ),
-        );
+        expect(preview, PlacementDataMock.blockedNextToFarTree);
         expect(isLockedWhilePlacing, isTrue);
         expect(stillPlacing, isNotNull);
-        expect(ForestBlocMock.shownMessages(navigationService), contains('Ahí no cabe. Busca un sitio despejado.'));
+        expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessageBlockedSite));
         final placed = effects.whereType<BuildingPlacedEffect>().single;
         expect(placed.building.id, 'building-1');
         expect(placed.building.position, ForestScenarioMock.freeSite);
@@ -297,7 +269,9 @@ void main() {
         expect(bloc.state.data.hud!.isBuildLocked, isFalse);
         expect(
           ForestBlocMock.shownMessages(navigationService),
-          contains('Elige dónde construir: Casa. Clic derecho o Esc para cancelar.'),
+          contains(
+            Internationalize.forestMessagePlacing(name: Internationalize.forestBlueprint(id: BlueprintId.house)),
+          ),
         );
       },
     );
@@ -329,9 +303,9 @@ void main() {
       verify: (bloc) {
         // then
         expect(badgeBefore, '2/3');
-        expect(effects, contains(const BuildingCompletedEffect(buildingId: 'building-1')));
+        expect(effects, contains(ForestEffectMock.buildingCompleted));
         expect(bloc.state.data.hud!.questBadge, '3/3');
-        expect(ForestBlocMock.shownMessages(navigationService).last, '¡Has completado todas las misiones!');
+        expect(ForestBlocMock.shownMessages(navigationService).last, Internationalize.forestMessageAllQuestsCompleted);
       },
     );
   });
@@ -376,9 +350,7 @@ void main() {
     expect: () => [
       isA<ForestInProgress>(),
       isA<ForestSuccess>(),
-      isA<ForestSuccess>().having((state) => state.data.effects, 'effects', const [
-        ItemPickedUpEffect(itemId: 'axe-1'),
-      ]),
+      isA<ForestSuccess>().having((state) => state.data.effects, 'effects', [ForestEffectMock.axePickedUp]),
       isA<ForestSuccess>().having((state) => state.data.effects, 'effects', isEmpty),
     ],
   );

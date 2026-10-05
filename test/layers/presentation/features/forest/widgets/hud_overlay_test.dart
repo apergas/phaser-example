@@ -89,7 +89,7 @@ void main() {
     await tester.pump();
 
     // when
-    await tester.tap(find.text('Casa'));
+    await tester.tap(find.text(Internationalize.forestBlueprint(id: BlueprintId.house)));
     await tester.pump();
 
     // then

@@ -1,8 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/presentation/features/forest/hud_data_mock.dart';
 
 void main() {
+  setUpAll(loadSpanishTranslations);
+
   test('testWhenComparingHudsWithEqualListsThenTheyAreEqual', () {
     // given
     final first = HudDataMock.mock;

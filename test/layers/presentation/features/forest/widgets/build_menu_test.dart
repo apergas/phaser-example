@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/build_menu.dart';
 
@@ -20,7 +21,7 @@ void main() {
     );
 
     // when
-    await tester.tap(find.text('Casa'));
+    await tester.tap(find.text(Internationalize.forestBlueprint(id: BlueprintId.house)));
 
     // then
     expect(selected, [BlueprintId.house]);
@@ -36,7 +37,7 @@ void main() {
     );
 
     // when
-    await tester.tap(find.text('Casa'));
+    await tester.tap(find.text(Internationalize.forestBlueprint(id: BlueprintId.house)));
 
     // then
     expect(selected, isEmpty);

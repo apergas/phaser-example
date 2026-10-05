@@ -47,6 +47,14 @@ import 'package:rpg/layers/domain/repositories/level/level_repository.dart'
     as _i38;
 import 'package:rpg/layers/domain/repositories/session/game_session_repository.dart'
     as _i745;
+import 'package:rpg/layers/domain/use-cases/game/can_place_building_use_case.dart'
+    as _i997;
+import 'package:rpg/layers/domain/use-cases/game/chop_tree_use_case.dart'
+    as _i763;
+import 'package:rpg/layers/domain/use-cases/game/construct_building_use_case.dart'
+    as _i382;
+import 'package:rpg/layers/domain/use-cases/game/move_player_use_case.dart'
+    as _i470;
 import 'package:rpg/layers/domain/use-cases/game/start_game_use_case.dart'
     as _i368;
 
@@ -97,6 +105,26 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i368.StartGameUseCase>(
       () => _i368.StartGameUseCase(
         levelRepository: gh<_i38.LevelRepository>(),
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i997.CanPlaceBuildingUseCase>(
+      () => _i997.CanPlaceBuildingUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i763.ChopTreeUseCase>(
+      () => _i763.ChopTreeUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i382.ConstructBuildingUseCase>(
+      () => _i382.ConstructBuildingUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i470.MovePlayerUseCase>(
+      () => _i470.MovePlayerUseCase(
         sessionRepository: gh<_i745.GameSessionRepository>(),
       ),
     );

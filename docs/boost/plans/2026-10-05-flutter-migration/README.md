@@ -437,3 +437,5 @@ Conocidas al escribir el plan (se confirman o corrigen al ejecutar):
 - `di.config.dart` y `*.mocks.dart` se versionan; la CI ejecuta `build_runner` igualmente. No hay `build.yaml`.
 
 Durante la ejecución: cada desviación nueva del plan, con su motivo y el commit.
+
+- Fase 1, tarea 1: `analysis_options.yaml` = el del plugin + `build/**`, `android/**`, `ios/**`, `web/**` en `analyzer.exclude`. Flutter 3.47 las vuelve a añadir en cada `flutter pub get` / `flutter analyze`; decidido aceptarlas (esas carpetas no tienen Dart).

@@ -19,7 +19,7 @@ void main() {
     }
   });
 
-  test('testWhenEasingHalfwayThenMatchesPhaserFormulas', () {
+  test('testWhenEasingHalfwayThenMatchesTheStandardFormulas', () {
     // given
     const half = 0.5;
 

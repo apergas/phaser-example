@@ -8,7 +8,7 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
                                    with and without the axe in hand
   hero-{chop,hammer}.png           128x128 work animations: body slash frames between the tool's
                                    back and front layers (same layout as the LPC generator)
-  forest.png + forest.json         Phaser JSON-hash atlas: trees (pivot = trunk base), decor, stump,
+  forest.png + forest.json         JSON-hash atlas (TexturePacker format): trees (pivot = trunk base), decor, stump,
                                    axe pickup and the house (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
 

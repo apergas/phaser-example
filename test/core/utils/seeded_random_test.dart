@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/utils/seeded_random.dart';
 
 void main() {
-  test('testWhenSeededWith42ThenProducesTheSameSequenceAsTheKotlinVersion', () {
+  test('testWhenSeededWith42ThenProducesTheGoldenSequence', () {
     // given
     final random = SeededRandom(42);
 

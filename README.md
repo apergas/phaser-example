@@ -53,9 +53,3 @@ commit together with any `pubspec.yaml`/`pubspec.lock` update it needs.
 
 LPC art is licensed CC-BY-SA 3.0 / GPL 3.0 / OGA-BY 3.0 and requires attribution:
 see [`lib/core/assets/images/lpc/CREDITS.md`](lib/core/assets/images/lpc/CREDITS.md).
-
-## History
-
-The project was first a Phaser + TypeScript game, then a Kotlin Multiplatform core with Compose, SwiftUI and Phaser
-front ends, and is now a single Flutter app. The migration plans are in `docs/boost/plans/`
-(`2026-10-04-kmp-migration/` is historical; `2026-10-05-flutter-migration/` describes the current code).

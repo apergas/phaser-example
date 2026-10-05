@@ -7,20 +7,20 @@ import 'package:flutter/gestures.dart' show PointerDeviceKind;
 
 import '../../../../domain/entities/geometry/position_entity.dart';
 import '../bloc/forest_bloc.dart';
-import 'atlas/lpc_assets_loader.dart';
+import 'forest_game.dart';
 import 'forest_scene_component.dart';
 import 'forest_state_listener.dart';
 import 'render/position_conversion.dart';
 
-class ForestWorld extends World with TapCallbacks, SecondaryTapCallbacks, PointerMoveCallbacks, DragCallbacks {
+class ForestWorld extends World
+    with HasGameReference<ForestGame>, TapCallbacks, SecondaryTapCallbacks, PointerMoveCallbacks, DragCallbacks {
   final ForestBloc _bloc;
-  final LpcAssetsLoader _assetsLoader;
   final math.Random? _random;
   ForestSceneComponent? _scene;
   Vector2? _mouseCanvasPosition;
   PointerDeviceKind _dragDeviceKind = PointerDeviceKind.unknown;
 
-  ForestWorld({required this._bloc, required this._assetsLoader, this._random});
+  ForestWorld({required this._bloc, this._random});
 
   ForestSceneComponent? get scene => _scene;
 
@@ -28,7 +28,7 @@ class ForestWorld extends World with TapCallbacks, SecondaryTapCallbacks, Pointe
 
   @override
   Future<void> onLoad() async {
-    final scene = ForestSceneComponent(assets: await _assetsLoader.load(), random: _random);
+    final scene = ForestSceneComponent(assets: game.lpcAssets, random: _random);
     await add(
       FlameBlocProvider<ForestBloc, ForestState>.value(
         value: _bloc,

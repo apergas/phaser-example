@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/assets/i18n/internationalize.dart';
 import '../../../../core/config/di/locator.dart';
+import '../../../../core/error-handling/exceptions/app_exceptions.dart';
 import '../../../../core/services/navigation/source/navigation_service.dart';
 import '../../../domain/use-cases/game/advance_game_use_case.dart';
 import '../../../domain/use-cases/game/can_place_building_use_case.dart';
@@ -20,6 +21,7 @@ import '../../../domain/use-cases/game/start_game_use_case.dart';
 import 'bloc/forest_bloc.dart';
 import '../../theme/colors/custom_colors.dart';
 import '../../theme/styles/custom_text_styles.dart';
+import 'game/atlas/lpc_assets_loader.dart';
 import 'game/forest_game.dart';
 import 'models/hud_data.dart';
 import 'models/placement_data.dart';
@@ -62,12 +64,22 @@ class _ForestView extends StatefulWidget {
 class _ForestViewState extends State<_ForestView> {
   ForestBloc get bloc => context.read<ForestBloc>();
 
-  late final ForestGame _game = ForestGame(bloc: bloc);
+  late ForestGame _game = _createGame();
 
   bool get _isTouchPlatform => switch (defaultTargetPlatform) {
     TargetPlatform.android || TargetPlatform.iOS => true,
     _ => false,
   };
+
+  ForestGame _createGame() => ForestGame(
+    bloc: bloc,
+    assetsLoader: LpcAssetsLoader(bundle: DefaultAssetBundle.of(context)),
+  );
+
+  void _restartGame() {
+    setState(() => _game = _createGame());
+    bloc.add(const ForestStarted());
+  }
 
   @override
   void initState() {
@@ -119,7 +131,11 @@ class _ForestViewState extends State<_ForestView> {
             Semantics(
               container: true,
               label: Internationalize.forestAccessibilityGameWorld,
-              child: GameWidget<ForestGame>(game: _game, autofocus: false),
+              child: GameWidget<ForestGame>(
+                game: _game,
+                autofocus: false,
+                errorBuilder: (context, error) => _gameErrorBody(),
+              ),
             ),
             SafeArea(child: _hud()),
           ],
@@ -159,6 +175,19 @@ class _ForestViewState extends State<_ForestView> {
   }
 
   Widget _errorBody(ForestFailure state) {
+    return _errorPanel(
+      title: state.exception.title,
+      message: state.exception.message,
+      onRetry: () => bloc.add(const ForestStarted()),
+    );
+  }
+
+  Widget _gameErrorBody() {
+    const exception = GenericException();
+    return _errorPanel(title: exception.title, message: exception.message, onRetry: _restartGame);
+  }
+
+  Widget _errorPanel({required String title, required String message, required VoidCallback onRetry}) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -169,16 +198,16 @@ class _ForestViewState extends State<_ForestView> {
             spacing: 12,
             children: [
               Text(
-                state.exception.title,
+                title,
                 textAlign: TextAlign.center,
                 style: CustomTextStyles.system18w600.copyWith(color: CustomColors.hudAccent),
               ),
               Text(
-                state.exception.message,
+                message,
                 textAlign: TextAlign.center,
                 style: CustomTextStyles.system15w600.copyWith(color: CustomColors.hudText),
               ),
-              HudButton(label: Internationalize.forestRetry, onPressed: () => bloc.add(const ForestStarted())),
+              HudButton(label: Internationalize.forestRetry, onPressed: onRetry),
             ],
           ),
         ),

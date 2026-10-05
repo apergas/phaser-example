@@ -5,6 +5,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 
 import '../bloc/forest_bloc.dart';
+import 'atlas/lpc_assets.dart';
 import 'atlas/lpc_assets_loader.dart';
 import 'forest_world.dart';
 import 'render/camera_framing.dart';
@@ -12,12 +13,15 @@ import 'render/render_constants.dart';
 
 class ForestGame extends FlameGame<ForestWorld> {
   final ForestBloc _bloc;
+  final LpcAssetsLoader _assetsLoader;
+  late final LpcAssets lpcAssets;
   Offset? _cameraCenter;
 
   ForestGame({required ForestBloc bloc, LpcAssetsLoader? assetsLoader, math.Random? random})
     : _bloc = bloc,
+      _assetsLoader = assetsLoader ?? LpcAssetsLoader(),
       super(
-        world: ForestWorld(bloc: bloc, assetsLoader: assetsLoader ?? LpcAssetsLoader(), random: random),
+        world: ForestWorld(bloc: bloc, random: random),
       );
 
   @override
@@ -25,6 +29,7 @@ class ForestGame extends FlameGame<ForestWorld> {
 
   @override
   Future<void> onLoad() async {
+    lpcAssets = await _assetsLoader.load();
     camera.viewfinder
       ..zoom = RenderConstants.cameraZoom
       ..anchor = Anchor.center;

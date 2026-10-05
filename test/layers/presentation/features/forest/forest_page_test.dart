@@ -13,6 +13,7 @@ import 'package:rpg/core/services/navigation/source/navigation_service.dart';
 import 'package:rpg/layers/domain/repositories/level/level_repository.dart';
 import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
 import 'package:rpg/layers/presentation/features/forest/forest_page.dart';
+import 'package:rpg/layers/presentation/features/forest/game/atlas/lpc_assets_loader.dart';
 import 'package:rpg/layers/presentation/features/forest/game/forest_game.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_overlay.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/placement_bar.dart';
@@ -23,6 +24,7 @@ import '../../../../mocks/core/error-handling/app_exception_mock.dart';
 import '../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
 import '../../../../mocks/presentation/features/forest/forest_scenario_mock.dart';
+import '../../../../mocks/presentation/features/forest/game/asset_bundle_fake.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -82,6 +84,53 @@ void main() {
     await tester.pump();
 
     // then
+    verify(levelRepository.load()).called(2);
+  });
+
+  Future<void> pumpPageWithArt(WidgetTester tester, AssetBundleFake bundle) async {
+    when(levelRepository.load()).thenReturn(ForestScenarioMock.empty());
+    await tester.pumpWidget(
+      MaterialApp(
+        home: DefaultAssetBundle(bundle: bundle, child: const ForestPage()),
+      ),
+    );
+  }
+
+  testWidgets('testWhenTheArtCannotBeLoadedThenTheErrorAndRetryAreShown', (tester) async {
+    // given
+    final bundle = AssetBundleFake(failingKey: LpcAssetsLoader.prefix + LpcAssetsLoader.atlasPath);
+
+    // when
+    await pumpPageWithArt(tester, bundle);
+    await pumpUntil(tester, () => find.text(Internationalize.errorGenericMessage).evaluate().isNotEmpty);
+
+    // then
+    expect(bundle.failedLoads, greaterThan(0));
+    expect(find.text(Internationalize.errorGenericTitle), findsOneWidget);
+    expect(find.text(Internationalize.errorGenericMessage), findsOneWidget);
+    expect(find.text(Internationalize.forestRetry), findsOneWidget);
+  });
+
+  testWidgets('testWhenRetryIsTappedAfterTheArtFailedThenANewGameLoadsTheWorld', (tester) async {
+    // given
+    final bundle = AssetBundleFake(failingKey: LpcAssetsLoader.prefix + LpcAssetsLoader.atlasPath);
+    await pumpPageWithArt(tester, bundle);
+    await pumpUntil(tester, () => find.text(Internationalize.forestRetry).evaluate().isNotEmpty);
+    final failedGame = tester.widget<GameWidget<ForestGame>>(find.byType(GameWidget<ForestGame>)).game!;
+    bundle.isFailing = false;
+
+    // when
+    await tester.tap(find.text(Internationalize.forestRetry));
+    await pumpUntil(tester, () {
+      final widgets = find.byType(GameWidget<ForestGame>).evaluate();
+      if (widgets.isEmpty) return false;
+      final game = (widgets.single.widget as GameWidget<ForestGame>).game!;
+      return game != failedGame && game.world.isReady;
+    });
+
+    // then
+    expect(find.text(Internationalize.errorGenericMessage), findsNothing);
+    expect(find.text(Internationalize.forestRetry), findsNothing);
     verify(levelRepository.load()).called(2);
   });
 

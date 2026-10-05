@@ -3528,7 +3528,7 @@ git commit -m "[PROJECT-X]: Drive the Flame world from the forest bloc with inpu
 
 **Files:**
 - Create: `lib/layers/presentation/features/forest/forest_page.dart` (mínima; la fase 7 la reescribe)
-- Modify: `lib/layers/presentation/app/container_app.dart` (fase 1: `_emptyBody()` de `ContainerAppView`)
+- Modify: `lib/layers/presentation/app/container_app_view.dart` (fase 1: `_emptyBody()` de `ContainerAppView`)
 
 **Interfaces:**
 - Consumes: `ForestGame`, `ForestBloc` y su constructor (README §3.7), los 10 casos de uso y `NavigationService` desde `locator`, `ForestStarted`.
@@ -3611,7 +3611,7 @@ class _ForestViewState extends State<_ForestView> {
 
 - [ ] **Step 2: Mostrar la página cuando arranca la app**
 
-En `lib/layers/presentation/app/container_app.dart`, sustituir el cuerpo de `_emptyBody()`:
+En `lib/layers/presentation/app/container_app_view.dart`, sustituir el cuerpo de `_emptyBody()`:
 
 ```dart
   Widget _emptyBody() {
@@ -3653,7 +3653,7 @@ Abrir ambas apps con la misma ventana (p. ej. 1280×800) y comparar capturas en 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add lib/layers/presentation/features/forest/forest_page.dart lib/layers/presentation/app/container_app.dart
+git add lib/layers/presentation/features/forest/forest_page.dart lib/layers/presentation/app/container_app_view.dart
 git commit -m "[PROJECT-X]: Show the Flame forest when the app starts"
 ```
 

@@ -8,6 +8,8 @@
 
 **Tech Stack:** Flutter 3.47 / Dart 3.13, flutter_bloc, flame (`GameWidget`), flutter_svg (nuevo, iconos del HUD), easy_localization (`Internationalize`), get_it (`locator`), flutter_test, mockito, bloc_test.
 
+> **Nota de ejecución (fase 1, commit `2340d8a`):** `ContainerAppView` (y su `_emptyBody()`) vive ahora en `lib/layers/presentation/app/container_app_view.dart`; `container_app.dart` solo contiene `ContainerApp`. Donde esta fase modifique la vista (`_emptyBody`, `_bodyByState`, la pantalla de carga), el fichero es `container_app_view.dart`; donde cree el BLoC, `container_app.dart`.
+
 ## Global Constraints
 
 Todas las de [`README.md`](README.md) § Global Constraints, en particular: sin comentarios en `lib/`; `dart format --line-length 120`; `flutter analyze` sin incidencias al cerrar cada tarea; textos visibles solo en `es.json` vía `Internationalize`; tests con `testWhen<Action>Then<Result>` y `// given` / `// when` / `// then`; datos de prueba en `test/mocks/**`, nunca declarados dentro del cuerpo de un test; commits `[PROJECT-X]: ...` sin ninguna atribución a una IA.

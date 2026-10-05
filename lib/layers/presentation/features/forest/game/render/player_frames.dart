@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import '../../../../../../core/config/constants/enum/forest/facing.dart';
 import '../../../../../../core/config/constants/enum/forest/player_sheet.dart';
 import '../../../../../../core/config/constants/enum/forest/work_tool.dart';
-import '../../../../../../core/config/constants/render_constants.dart';
+import 'render_constants.dart';
 import '../../models/player_pose.dart';
 import '../../models/player_render_data.dart';
 import 'player_frame.dart';

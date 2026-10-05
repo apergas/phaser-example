@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 
-import '../../../../../../core/config/constants/render_constants.dart';
+import '../render/render_constants.dart';
 import '../../models/placement_data.dart';
 import '../atlas/lpc_assets.dart';
 import '../atlas/sprite_names.dart';

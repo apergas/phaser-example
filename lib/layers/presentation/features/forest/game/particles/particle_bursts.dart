@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import '../../../../../../core/config/constants/enum/forest/particle_kind.dart';
-import '../../../../../../core/config/constants/render_constants.dart';
+import '../render/render_constants.dart';
 import '../../../../../domain/entities/geometry/position_entity.dart';
 import 'particle.dart';
 

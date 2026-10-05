@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 
-import '../../../../../../core/config/constants/render_constants.dart';
+import '../render/render_constants.dart';
 import '../render/render_depth.dart';
 
 class GroundComponent extends PositionComponent {

@@ -2,7 +2,7 @@ import 'package:flame/extensions.dart';
 import 'package:flame/sprite.dart';
 
 import '../../../../../../core/config/constants/enum/forest/player_sheet.dart';
-import '../../../../../../core/config/constants/render_constants.dart';
+import '../render/render_constants.dart';
 import 'alpha_mask.dart';
 import 'atlas_frame.dart';
 

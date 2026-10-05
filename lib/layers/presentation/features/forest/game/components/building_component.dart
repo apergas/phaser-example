@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 
-import '../../../../../../core/config/constants/render_constants.dart';
+import '../render/render_constants.dart';
 import '../../../../../domain/entities/building/building_entity.dart';
 import '../../../../../domain/entities/geometry/position_entity.dart';
 import '../atlas/lpc_assets.dart';

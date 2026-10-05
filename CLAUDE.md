@@ -4,59 +4,78 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Layout
 
-- `shared/` — Kotlin Multiplatform module (targets: Android, iOS arm64/simulator, JS) with **all** game logic: domain, data, the shared view model and the dependency container. Package root `com.apergas.rpg`.
-- `androidApp/` — Jetpack Compose + Hilt app. Only views.
-- `iosApp/` — SwiftUI + SpriteKit app (`iosApp.xcodeproj`, hand-written, Xcode file-system synchronized folders: new `.swift` files under `iosApp/iosApp` or `iosApp/iosAppTests` join their target automatically). Only views.
-- `webApp/` — Vite + Phaser 4 + TypeScript. Only views; consumes `shared` as the npm package `rpg-shared` (`file:../shared/build/dist/js/productionLibrary`).
-- `asset-packs/lpc/` — raw LPC art and `build_assets.py`, which generates `shared/assets/lpc/`, the only copy of the art: Android adds `shared/assets` as an assets folder (`androidApp/build.gradle.kts`), iOS has `../shared/assets/lpc` as a folder reference, and the web serves/copies it at `assets/lpc` with a small plugin in `webApp/vite.config.ts`.
-- `.github/workflows/deploy.yml` — on pushes to `main` that touch the web or `shared`: shared JVM + JS tests, the `rpg-shared` package, then `npm ci`, typecheck, test, build in `webApp/` and publish `webApp/dist` to GitHub Pages (https://apergas.github.io/phaser-example/). Android and iOS are tested locally only.
-- `docs/boost/plans/2026-10-04-kmp-migration/` — the migration plan; its README section 8 records every deviation found while executing it.
+- Single **Flutter** app at the repo root (Android, iOS, web), Dart package `rpg`. All game logic and all views live in `lib/`.
+- `lib/core/` — `assets/` (`images/lpc/`: the only copy of the art, with `CREDITS.md`; `images/icons/`: HUD SVG icons; `i18n/translations/es.json` + `i18n/internationalize.dart`), `config/` (`constants/enum/` with every enum, screen-only ones in `enum/forest/`; `di/` with `locator.dart`, `di.dart`, generated `di.config.dart`, `di_environment.dart`; `env/` with `EnvironmentConstants` and the dev/prod `--dart-define-from-file` JSON files), `error-handling/` (`CustomException`, `AppException` cases, `AppExceptionHandler`), `services/logging/` (`Logger`, `CustomLoggerImpl`, `BlocLogger`), `services/navigation/` (`NavigationService` + `NavifyImpl`: navigation, snackbars, error pop-ups), `utils/` (`seeded_random.dart`, `kebab_case.dart`).
+- `lib/layers/domain/`, `lib/layers/data/`, `lib/layers/presentation/` — see Architecture.
+- `test/` mirrors `lib/`; `test/mocks/` holds centralised mock data; `test/helpers/` has `loadSpanishTranslations` (`spanish_translations.dart`), `pumpUntil` (`pump_until.dart`) and `hud_test_app.dart`; `test/architecture_test.dart` enforces the layer rules.
+- `android/`, `ios/`, `web/` — Flutter runners (app name `RPG`, ids `com.apergas.rpg`, landscape only on mobile: Android `userLandscape`, iOS landscape left/right + full screen).
+- `asset-packs/lpc/` — raw LPC art and `build_assets.py`, which generates `lib/core/assets/images/lpc/`.
+- `.github/workflows/deploy.yml` — on pushes to `main` that touch the app: `build_runner` + `git diff --exit-code`, `flutter analyze`, `flutter test`, golden tests in Chrome, `flutter build web --base-href /phaser-example/` (production env file) and publish `build/web` to GitHub Pages (https://apergas.github.io/phaser-example/). Android and iOS are tested locally only.
+- `docs/boost/plans/2026-10-05-flutter-migration/` — the migration plan; its README section 2 lists the exceptions to the plugin (E1-E11) and section 7 records every decision and deviation found while executing it. `2026-10-04-kmp-migration/` is historical.
 
 ## Commands
 
 ```sh
-./gradlew :shared:allTests                                   # shared tests on JVM, JS (Chrome headless) and iOS simulator
-./gradlew :shared:testAndroidHostTest --tests "com.apergas.rpg.domain.world.*"   # JVM only, filtered
-./gradlew :shared:jsBrowserProductionLibraryDistribution     # npm package the web app depends on (run before npm install/ci)
-./gradlew :androidApp:testDebugUnitTest                      # Android unit tests
-./gradlew :androidApp:connectedDebugAndroidTest              # Android instrumented tests (running emulator)
-./gradlew :androidApp:installDebug                           # install on the emulator (AVD Medium_Phone_API_36.0)
-xcodebuild test -project iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 17'
-cd webApp && npm run dev | npm test | npm run typecheck | npm run build
+flutter pub get
+dart run build_runner build --delete-conflicting-outputs          # regenerate di.config.dart and *.mocks.dart (both committed) after DI/mock changes
+flutter analyze                                                   # lints (flutter_lints + prefer_relative_imports); must end with "No issues found!"
+flutter test                                                      # all tests on the Dart VM
+flutter test test/layers/domain/world                             # filtered
+flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart   # forest golden values on the web
+dart format --line-length 120 <the files you wrote>             # never on di.config.dart or *.mocks.dart
+flutter run -d chrome | flutter run -d emulator-5554 | flutter run -d "iPhone 17"
+flutter build web --release --base-href /phaser-example/ --dart-define-from-file=lib/core/config/env/production_environment.json
 ```
 
-`local.properties` (gitignored) must point `sdk.dir` at the Android SDK. The iOS build runs `./gradlew :shared:embedAndSignAppleFrameworkForXcode` from an Xcode run-script phase. Regenerate art after editing the asset script: `cd asset-packs/lpc && python3 build_assets.py` (needs Pillow). There is no linter.
+Regenerate art after editing the asset script: `cd asset-packs/lpc && python3 build_assets.py` (needs Pillow).
 
 ## Architecture
 
-Rules live once in `shared`, written with the team's Android conventions; the apps only draw. `Presentation ──▶ Domain ◀── Data`, enforced by `shared/src/androidHostTest/kotlin/com/apergas/rpg/ArchitectureTests.kt` (domain imports nothing from data/presentation/di or platform APIs, data never imports presentation, presentation never imports data, entities have no `var`) and, for the web, by `webApp/tests/architecture.test.ts` (no `domain/`, `data/` or `*ViewModel.ts`; presentation imports only `phaser`, `rpg-shared` and itself).
+Team conventions from the `flutter-arch-conventions` plugin: `PRESENTATION -> DOMAIN <- DATA`, `CORE` used by all. `test/architecture_test.dart` checks that domain imports nothing from data/presentation nor Flutter/Flame/`dart:ui`/`dart:io`, data never imports presentation, presentation never imports data, core imports nothing from `layers/` (except the NavigationService widgets), and entities have only `final` fields.
 
-- `shared/src/commonMain/kotlin/com/apergas/rpg/`
-  - `domain/entities/` — immutable `data class`es (operations return copies): geometry, player (`Inventory`, `Intent`, `Activity`), tree (`TreeKind`), decoration, item, building (`Blueprints`), game (`GameEvent`, results, read entities such as `PlayerStatus`, `WorldSnapshot`, `QuestProgress`, `BuildOption`, `GameSession`).
-  - `domain/world/` — `World`, the mutable aggregate and only entry point that changes the game. It owns a `WorldState` and delegates to `internal` systems: `Navigation`, `Woodcutting`, `Construction`, `pickUpItems`. Work mechanics are an `Intent` variant + a `Work` + one branch in `workFor()` (exhaustive `when`). `advance(deltaMs)` returns `GameEvent`s.
-  - `domain/quests/` (`QuestLog`, sticky completion), `domain/rules/Rules.kt` (tuning), `domain/errors/` (`AppError`, `ErrorHandler`), `domain/repositories/` (interfaces).
-  - `domain/usecases/game/` — a single `GameUseCase` / `GameUseCaseImpl` with every operation, synchronous (the simulation advances per frame, no I/O). It fetches the session from `GameSessionRepository` on each call.
-  - `data/` — `datasources/local/level` (`LevelLocalDataSourceImpl`: seeded procedural forest that also decides each tree's kind and the ground decoration; all-nullable `@Serializable` DTOs), `repositories/level` (`LevelRepositoryImpl` + `internal` `LevelMappers.kt`, errors through `ErrorHandler`), `repositories/session` (in-memory session).
-  - `presentation/forest/` — `ForestContract.kt` (`ForestState` / `ForestIntent` / `ForestEffect`), `ForestViewModel` (JetBrains multiplatform `ViewModel`; intents handled **synchronously** so `Tick` runs in frame order; effects via `tryEmit` on a buffered `SharedFlow`), `ForestLabels` (every player-facing Spanish text, including touch-bar and accessibility strings), `SpriteNames` (level kind → atlas frame name, used by all three apps).
-  - `di/GameContainer.kt` — iOS-style container: builds DataSource → Repository → UseCase; one session for the whole app; `makeForestViewModel()`.
-  - `util/SeededRandom.kt` — LCG identical to the old TypeScript one (golden-value tests keep the forest identical).
-- `shared/src/jsMain/.../web/` — `ForestWebController` (`@JsExport`), the only API the web sees, with plain exported `Web*` types; effects are pulled per frame with `takeEffects()`. Kotlin/JS types nullables as `T | null | undefined`.
-- `androidApp/` — `app/` (`@HiltAndroidApp`, `MainActivity`, `di/GameModule` providing `GameUseCase` from `GameContainer`), `presentation/navigation` (typed routes), `presentation/forest/ForestScreen.kt` (game loop with `withFrameNanos`, `ForestScaffold` with the snackbar and the placement bar as `bottomBar`), `components/HudOverlay.kt` (HUD and `PlacementBar`), `world/` (`WorldCanvas` Y-sorted drawing, `WorldSceneState` fed by effects, `AtlasParser` for `forest.json`, `LpcAssets`, `Particles` with closed-form trajectories). `ForestViewModel` is created with `viewModel(factory = ...)` (no `@HiltViewModel`: it lives in `commonMain`).
-- `iosApp/iosApp/Presentation/` — `ForestView` (SwiftUI, hosts the SpriteKit scene) + Swift `ForestViewModel` (`@Observable`, wraps the shared one) + `ForestBuilder`; `World/ForestScene.swift` (SKScene: nodes, camera, game loop, effects, touches), `ScenePoint` (the only Y-up conversion), `LpcAtlas`, `ParticleEmitters` (`SKEmitterNode`). SKIE exposes Flows as `AsyncSequence` and `onEnum(of:)`; sealed-interface members appear flattened in Swift (`ForestIntentTick(deltaMs:)`).
-- `webApp/src/` — `main.ts` (creates the controller, `Hud`, scenes; dev builds expose `window.__rpg = { game, controller }` for browser automation), `presentation/screens/forest/ForestScene.ts` (each frame: `tick`, play `takeEffects()`, render `state()`), `hud/Hud.ts`, `player/PlayerView.ts`, `world/*View.ts` (`GroundView` draws the level's decoration), `screens/preload/PreloadScene.ts`, `common/assets.ts` (texture registry), `common/depth.ts`.
+- `lib/layers/domain/`
+  - `entities/<feature>/` — immutable `*Entity` classes: `final` fields, `const` constructor, `copyWith`, computed getters, hand-written `==`/`hashCode`. Geometry, tree, item, decoration, building (`BlueprintEntity`, `BuildingEntity`), player (`InventoryEntity`, `PlayerEntity`, sealed `ActivityEntity`, sealed `IntentEntity`), game (sealed `GameEventEntity`, sealed `ConstructionResultEntity`, `PlayerStatusEntity`, `WorldSnapshotEntity`, `QuestProgressEntity`, `BuildOptionEntity`, `GameSessionEntity`).
+  - `world/` — `World`, the mutable aggregate and only entry point that changes the game. It owns a `WorldState` and delegates to systems: `Navigation`, `Woodcutting`, `Construction`, `pickUpItems`. Work mechanics are an `IntentEntity` subtype + a `Work` + one case in `workFor()` (exhaustive `switch`). `advance(deltaMs)` returns `GameEventEntity`s. `world/extensions/` holds the entity operations (`hit`, `hammer`, `addWood`, `spendWood`, `walkTo`, `distanceTo`...).
+  - `quests/` (`Quest`, `Quests`, `QuestLog` with sticky completion), `rules/` (`Rules` tuning, `Blueprints` catalogue), `repositories/{level,session}` (interfaces).
+  - `use-cases/game/` — one `@Injectable()` class per action with a synchronous `call()`: start game, move player, chop tree, can place / construct building, advance, player status, world snapshot, build options, quests. Each reads the session from `GameSessionRepository`.
+- `lib/layers/data/` — `datasources/level` (`LevelLocalDatasourceImpl`: seeded procedural forest that also decides each tree's kind and the ground decoration; all-nullable DBOs in `local/dbo/`), `datasources/session` (in-memory, `@LazySingleton`: one game per app), `repositories/level` (`LevelRepositoryImpl` + injected `*MapperDBO`s), `repositories/session`. Errors go through `AppExceptionHandler`.
+- `lib/layers/presentation/`
+  - `app/` — `ContainerApp` (`MaterialApp` with easy_localization and the navigator key of `NavigationService`) and `ContainerAppBloc`, which replaces the start screen with `ForestPage` through `NavigationService`.
+  - `features/forest/bloc/` — `ForestBloc` (single `on<ForestEvent>` with `await switch`; events `ForestStarted`, `ForestTicked`, `ForestMapClicked`, `ForestPointerMoved`, `ForestBuildRequested`, `ForestPlacementCancelled`; states `ForestInitial` / `ForestInProgress` / `ForestSuccess` / `ForestFailure` carrying `ForestData`). Handlers are synchronous so ticks keep frame order. Messages are snackbars through `NavigationService`.
+  - `features/forest/models/` — view models (`PlayerRenderData`, sealed `PlayerPose`, `HudData`, `QuestItemData`, `BuildItemData`, `PlacementData`) and sealed `ForestEffect` (played once per emitted state).
+  - `features/forest/game/` — Flame, the only place besides `forest_page.dart` that may import `package:flame` / `flame_bloc` (rule in `architecture_test.dart`): `ForestGame` + `ForestWorld` + `ForestSceneComponent` + `ForestStateListener` (`update` adds `ForestTicked` with `dt` capped at 100 ms; reconciles components with `ForestData.world` by id; plays effects), `components/` (ground, atlas sprites, shadows, trees with pixel-accurate taps, items, buildings by stage, placement ghost, animated player), `atlas/` (`LpcAtlas` for `forest.json`, `AlphaMask`, `LpcAssets` + loader, `SpriteNames`), `render/` (`RenderConstants`, depth, position conversion, easing, tree motion, player frames, `CameraFraming` working with `Offset`/`Size`, not Flame vectors), `particles/`.
+  - `features/forest/widgets/` — HUD, one class per file: `HudOverlay`, `ResourceBar` (wood, axe), `BuildMenu` + `BuildOptionTile`, `QuestPanel` + `QuestRow`, `PlacementBar` (touch), `HudPanel`, `HudButton`; rebuilt only when `HudData` changes. The page lives at `features/forest/forest_page.dart`: `ForestPage` (creates the BLoC in `BlocProvider.create` from `locator`, adds `ForestStarted`, toggles `BrowserContextMenu` on web in its lifecycle) + `_ForestView` (`_bodyByState` switch; `GameWidget(autofocus: false)` under the HUD; error view with *Reintentar*).
+  - `widgets/` — `CustomButton`, `CustomPopUp` (used by `NavifyImpl`). `theme/` — `colors/custom_colors.dart`, `styles/custom_text_styles.dart`, `images/custom_icons.dart`, `custom_theme.dart`.
+
+Documented exceptions to the plugin (keep them; do not "fix" them):
+
+- E1 — `domain/world/`, `domain/quests/`, `domain/rules/` exist besides entities/repositories/use-cases: the simulation is a mutable aggregate.
+- E2 — entity operations live in `domain/world/extensions/`; entities keep only computed getters.
+- E3 — use cases have a synchronous `call()`: the game advances per frame with no I/O.
+- E4 — entities use the enums in `core/config/constants/enum/` (`TreeKind`, `ToolKind`, ...).
+- E5 — `GameSessionLocalDatasource` stores the `GameSessionEntity` in memory (no DBO).
+- E6 — repositories read only the local datasource (no remote, no cache-first).
+- E7 — core has only `assets`, `config` (`constants`, `di`, `env`), `error-handling`, `services/{logging,navigation}`, `utils` (no network/storage/connection yet).
+- E8 — sealed hierarchies are declared in a single file.
+- E9 — `features/forest/` adds `models/` and `game/` (Flame) next to `bloc/`, `widgets/` and the page; Flame stays confined to `game/` and the page.
+- E10 — `BlocLogger` logs only `onError` (`ForestTicked` arrives 60 times per second).
+- E11 — BLoC and page tests use the real use cases over `MockLevelRepository` / `MockGameSessionRepository` and mock only `NavigationService`: use cases are `final class` and mockito cannot mock them.
 
 Key cross-cutting conventions:
 
-- **Positions are feet / trunk bases**, in world units = native art pixels; the domain is Y-down. The same point drives collision, sprite anchoring and draw order (sort by base `y`) on every platform; only `iosApp`'s `ScenePoint` flips Y.
-- **The map is level data:** tree positions, wood, kinds and ground decoration come from `shared`; apps never pick art or place decor themselves.
-- **Rendering constants are the same in the three apps:** camera zoom 2; LPC 64 px character frames, rows `up, left, down, right`, walk columns 1–8 at 10 fps, idle 2 columns at 2 fps; work sheets 128 px with sequences chop `[0,0,5,5,4,4,3,1]` and hammer `[0,0,5,5,4,4,1]`, frame chosen from `swingProgress` so the impact frame matches the hit; house drawn 24 px below its footprint centre.
-- Tree taps/clicks are pixel-accurate (texture alpha), so shadows and gaps between leaves fall through to movement.
+- **Positions are feet / trunk bases**, in world units = native art pixels; the domain and Flame are both Y-down (no conversion). The same point drives collision, sprite anchoring and draw order (component `priority` = base `y`).
+- **The map is level data:** tree positions, wood, kinds and ground decoration come from the data layer; the view never picks art or places decor itself (`SpriteNames` maps kind → atlas frame).
+- **Rendering constants** (`features/forest/game/render/render_constants.dart`, art-specific so not in `core`): camera zoom 2; LPC 64 px character frames, rows `up, left, down, right`, walk columns 1–8 at 10 fps, idle 2 columns at 2 fps; work sheets 128 px with sequences chop `[0,0,5,5,4,4,3,1]` and hammer `[0,0,5,5,4,4,1]`, frame chosen from `swingProgress` so the impact frame matches the hit; house drawn 24 px below its footprint centre; sprites drawn with `FilterQuality.none`.
+- `GameWidget(autofocus: false)` is deliberate: with autofocus Flame swallows every key and Esc never reaches the page's `CallbackShortcuts`.
+- Tree taps/clicks are pixel-accurate (texture alpha), so shadows and gaps between leaves fall through to movement. On the web, right click or Esc cancels placement; touch screens get the placement bar.
 
 ## Constraints
 
-- Versions only in `gradle/libs.versions.toml`. `compileSdk`/`targetSdk` 36 is a team rule; AndroidX libraries that need `minCompileSdk` 37 cannot be used (that is why lifecycle is 2.10.0). AGP 9: `shared` uses `com.android.kotlin.multiplatform.library`, the app has built-in Kotlin (no `org.jetbrains.kotlin.android`).
-- Tests (Kotlin and Swift): `// given`, `// when`, `// then`; names `testWhen<Action>Then<Result>`; mock data as `val <Entity>.Companion.mock` / `static let mock`; hand-written mocks with an `error` property and `<method>Called` flags.
-- Code, identifiers and comments in English; player-facing text in Spanish only in `ForestLabels` (the app name is the only per-platform text: `app_name`, `Info.plist`, `<title>`).
-- `webApp` tsconfig has `erasableSyntaxOnly`: no constructor parameter properties or enums. Vite `base: './'` keeps asset URLs relative for the Pages sub-path.
-- LPC art is CC-BY-SA 3.0 / GPL 3.0 / OGA-BY 3.0: any new LPC asset must be credited in `shared/assets/lpc/CREDITS.md`.
+- `analysis_options.yaml` is the plugin's plus four excludes Flutter re-adds on every `pub get`/`analyze` (`build/**`, `android/**`, `ios/**`, `web/**`); keep them.
+- Generated files (`di.config.dart`, `*.mocks.dart`) are committed exactly as `build_runner` writes them, never run through `dart format`; CI fails if they are stale.
+- Versions only in `pubspec.yaml` (caret constraints, `sdk: ^3.13.0`); bump a dependency in its own commit. Android `compileSdk`/`targetSdk` 36 is a team rule.
+- Plugin rules: folders kebab-case, files snake_case with type suffix, classes with type suffix (`TreeEntity`, `ChopTreeUseCase`, `LevelLocalDatasourceImpl`, `LevelDBO`, `LevelMapperDBO`, `ForestBloc`, `ForestPage`); `locator`, never `GetIt.instance`; no `@Injectable()` on BLoCs; no `Equatable`; nullable `copyWith` fields with `ValueGetter`; no comments in `lib/`; `dart format --line-length 120`; regenerate DI after any change outside `presentation/`.
+- Tests: mirror `lib/`; names `testWhen<Action>Then<Result>`; `// given`, `// when`, `// then`; mocks with mockito `@GenerateMocks`, BLoCs with `blocTest`; mock data as `static` fields in `test/mocks/**/<name>_mock.dart` (e.g. `TreeEntityMock.mock`), never declared inline in a test (no inline entities, view models or DBOs: add the variant to the mock file). Widget and page tests call `loadSpanishTranslations` and wait with `pumpUntil` from `test/helpers/`; page tests call `rootBundle.clear()` in `setUp`.
+- Code, identifiers and comments in English; player-facing text in Spanish only in `es.json`, read through `Internationalize` (the app name `RPG` is the only per-platform text: `AndroidManifest.xml`, `Info.plist`, `web/index.html`, `web/manifest.json`).
+- LPC art is CC-BY-SA 3.0 / GPL 3.0 / OGA-BY 3.0: any new LPC asset must be credited in `lib/core/assets/images/lpc/CREDITS.md`.
 - Git flow: `main` (published) / `develop` (default) / `feature/PROJECT-X-<description>` branches. A git hook enforces commit messages as `[PROJECT-123]: Imperative description` (or `[PROJECT-X]: ...` without a ticket), branches as `(feature|bugfix|hotfix)/PROJECT-123-description`, and rejects any AI attribution (no `Co-Authored-By` for an AI, no Claude/Anthropic mentions).

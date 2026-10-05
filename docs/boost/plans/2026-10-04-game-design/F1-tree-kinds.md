@@ -14,45 +14,42 @@ Que el tipo de árbol (`TreeKind`, que el generador ya decide) cambie cuánto cu
 
 ## Decisiones ya tomadas
 
-- **Tabla en `Rules`:** `TREE_KIND_STATS: Map<TreeKind, TreeStats(woodYield, hitsToFell)>`, donde `TreeStats` es una `data class` del dominio. Valores orientativos:
+- **Tabla en `Rules`:** `static const Map<TreeKind, TreeStatsEntity> treeKindStats`, donde `TreeStatsEntity(woodYield, hitsToFell)` es una entidad nueva en `domain/entities/tree/`. `Rules.hitsToFellTree` desaparece. Valores orientativos:
 
   | Tipos | Madera | Golpes |
   |---|---|---|
-  | `Oak`, `Old`, `Big` | 8–9 | 7–8 |
-  | `Pine`, `Slim` | 4 | 3 |
+  | `oak`, `old`, `big` | 8–9 | 7–8 |
+  | `pine`, `slim` | 4 | 3 |
   | Resto | 5–6 (como hoy) | 5 |
 
-  Los números finales se fijan en el plan y se apuntan como decisión.
-- **`TreeDto.wood` deja de usarse.**
-  - `LevelMappers` calcula la madera y los golpes con la tabla a partir de `kind`.
-  - El generador no cambia: el mapa y los tests dorados de posición y tipo (`LevelLocalDataSourceImplTests`) siguen iguales.
-  - Sí cambia el total de madera, hoy `388` en `LevelLocalDataSourceImplTests` y `GameContainerTests`. El nuevo total se calcula y se fija en el test.
+  Los números finales se fijan en el plan y se apuntan como decisión. El mapa tiene que cubrir todos los valores de `TreeKind` (un test lo comprueba).
+- **`TreeDBO.wood` deja de usarse para la jugabilidad.**
+  - `TreeMapperDBO` toma la madera y los golpes de la tabla a partir de `kind`.
+  - El generador (`LevelLocalDatasourceImpl`) **no cambia**: sigue sacando `wood` de la semilla, porque quitar esa llamada movería todos los números aleatorios siguientes y con ellos las posiciones. El mapa y los tests dorados de posición y tipo (`level_local_datasource_impl_test.dart`, también en Chrome) siguen iguales, incluido el total de `TreeDBO.wood` (388).
+  - Sí cambia el total de madera de las entidades, hoy `388` en `test/core/config/di/di_test.dart`. El nuevo total se calcula y se fija en el test.
 - **Feedback "+N":**
-  - `ForestEffect.TreeFelled` añade `wood: Int`.
-  - Las tres apps muestran un texto que sube y se desvanece sobre la base del tronco:
-    - web: un `Text` con tween;
-    - Android: una partícula de texto o un estado temporal;
-    - iOS: `SKLabelNode` + `SKAction`.
-  - El texto sale de `ForestLabels.Messages.woodGained(n)`.
+  - `TreeFelledEffect` (`models/forest_effect.dart`) añade `final int wood;`. `ForestBloc._react` lo rellena con el `wood` de `TreeFelledEventEntity`, que ya existe.
+  - Nuevo componente Flame `FloatingTextComponent` en `features/forest/game/components/`: un `TextComponent` que sube y se desvanece sobre la base del tronco; lo añade `ForestSceneComponent._onTreeFelled`.
+  - El texto sale de una clave nueva `forest.floating.woodGained: "+{wood}"` con `Internationalize.forestFloatingWoodGained(wood:)`. El mensaje del *snackbar* (`forestMessageWoodGained`, "+6 de madera") se mantiene.
 - **Persistencia:** no añade estado nuevo.
 
 ## Ficheros previstos
 
-**`shared`:**
-- `shared/.../domain/rules/Rules.kt`
-- `shared/.../domain/entities/tree/TreeStats.kt` (nuevo)
-- `shared/.../data/repositories/level/LevelMappers.kt`
-- `shared/.../presentation/forest/ForestContract.kt`
-- `shared/.../presentation/forest/ForestViewModel.kt`
-- `shared/src/jsMain/.../web/WebMappers.kt`: el efecto `tree-felled` lleva el texto en `text`.
+**Dominio:**
+- `lib/layers/domain/entities/tree/tree_stats_entity.dart` (nuevo)
+- `lib/layers/domain/rules/rules.dart`
 
-**Apps:**
-- Web: `webApp/src/presentation/screens/forest/world/TreeView.ts`, o un `FloatingText.ts` nuevo.
-- Android: `androidApp/.../world/WorldSceneState.kt` y `WorldCanvas.kt`.
-- iOS: `iosApp/.../World/ForestScene.swift`.
+**Datos:** `lib/layers/data/repositories/level/mappers/tree_mapper_dbo.dart`.
+
+**Presentación:**
+- `lib/layers/presentation/features/forest/models/forest_effect.dart`
+- `lib/layers/presentation/features/forest/bloc/forest_bloc.dart`
+- `lib/layers/presentation/features/forest/game/components/floating_text_component.dart` (nuevo)
+- `lib/layers/presentation/features/forest/game/forest_scene_component.dart`
+- `lib/core/assets/i18n/internationalize.dart` y `es.json`
 
 ## Cómo probarlo
 
 - Un roble pide más golpes y da más madera que un pino. Al caer sale "+8" en uno y "+4" en el otro.
 - La misión de 15 de madera se sigue completando.
-- Tests: `LevelRepositoryImplTests` y `World*Tests`, con un caso por cada tipo de árbol representativo.
+- Tests: `tree_mapper_dbo_test.dart`, `level_repository_impl_test.dart` y `world_chopping_test.dart`, con un caso por cada tipo de árbol representativo; `forest_bloc_test.dart` (el efecto lleva la madera) y un test de `FloatingTextComponent` con `testWithFlameGame`.

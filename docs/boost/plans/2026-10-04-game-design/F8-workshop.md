@@ -14,22 +14,23 @@ Dar uso a lo acumulado y una sensación clara de progreso. También comprueba qu
 
 ## Decisiones ya tomadas
 
-**Taller** (`BlueprintId.Workshop`): 20 de madera y 10 de piedra. Es el primer coste con varios recursos.
+**Taller** (`BlueprintId.workshop`): 20 de madera y 10 de piedra. Es el primer coste con varios recursos.
 
 **Mejoras:**
-- Las herramientas pasan a tener nivel: `Inventory.toolLevels: Map<ToolKind, Int>`, donde 1 es el nivel básico.
-- Nueva entidad `Upgrade(id, tool, level, cost)` en `domain/entities/upgrade/`, con la lista `Upgrades.all`:
+- Las herramientas pasan a tener nivel: `InventoryEntity.toolLevels: Map<ToolKind, int>`, donde 1 es el nivel básico.
+- Nueva entidad `UpgradeEntity(id: UpgradeId, tool, level, cost)` en `domain/entities/upgrade/`, con el catálogo `Upgrades.all` en `domain/rules/upgrades.dart` (como `Blueprints`) y el enum `UpgradeId` en core:
 
   | Mejora | Coste | Efecto |
   |---|---|---|
   | Hacha de hierro | 15 de madera y 15 de piedra | `hitsToFell` −40 % |
   | Pico de hierro | 10 de madera y 20 de piedra | `hitsToBreak` −40 % |
 
-- Se compran **en un taller terminado** y se pagan del stock de F6, con `GameUseCase.buyUpgrade(id): UpgradeResult`. Resultados posibles: `Ok`, `NotEnoughResources`, `NoWorkshop` y `AlreadyOwned`.
+- Redondeo: los golpes con mejora son `max(1, (golpes * 0.6).ceil())`. Con los pinos de F1 (3 golpes) quedan 2.
+- Se compran **en un taller terminado** y se pagan del stock de F6, con `BuyUpgradeUseCase.call({required UpgradeId id})`, que devuelve el enum de core `UpgradeResult { ok, notEnoughResources, noWorkshop, alreadyOwned }`.
 
 **UI:**
-- Nuevo panel "Mejoras" en el HUD, igual que "Construir", con un botón genérico por mejora: `HudState.upgradeItems: List<UpgradeItem>`.
-- Nuevo `ForestIntent.UpgradeRequested(id)` y un `ForestEffect` para el sonido y las partículas.
+- Nuevo panel "Mejoras" en el HUD, igual que "Construir": `HudMenu.upgrades`, widgets `UpgradeMenu` + `UpgradeOptionTile` (un fichero por clase) y `HudData.upgradeItems: List<UpgradeItemData>`.
+- Nuevo evento `ForestUpgradeRequested(id)` y un `UpgradePurchasedEffect` para las partículas.
 
 **Arte:**
 - Frame `workshop`, montado con piezas existentes.
@@ -45,22 +46,21 @@ Dar uso a lo acumulado y una sensación clara de progreso. También comprueba qu
 
 ## Ficheros previstos
 
-**Shared:**
-- `Inventory.kt`
-- `upgrade/*` (nuevo)
-- `Woodcutting.kt` y `Mining.kt`: los golpes dependen del nivel de la herramienta.
-- `GameUseCase(Impl).kt`
-- `Quest.kt` y `QuestId.kt`
-- `presentation/forest/*`
-- `jsMain/web/*`
+**Dominio:**
+- `entities/player/inventory_entity.dart`, `world/extensions/inventory_rules.dart`
+- `entities/upgrade/upgrade_entity.dart` (nuevo), `rules/upgrades.dart` (nuevo), `rules/blueprints.dart`
+- `world/woodcutting.dart` y `world/mining.dart`: los golpes dependen del nivel de la herramienta.
+- `use-cases/game/buy_upgrade_use_case.dart` (nuevo) y uno para listar las mejoras disponibles.
+- `quests/quests.dart`
+- Enums de core: `blueprint_id.dart`, `upgrade_id.dart` y `upgrade_result.dart` (nuevos), `quest_id.dart`, `forest/hud_menu.dart`.
+
+**Presentación:** `bloc/*`, `models/hud_data.dart`, `models/upgrade_item_data.dart` (nuevo), `models/forest_effect.dart`, `widgets/hud_overlay.dart`, `widgets/upgrade_menu.dart` y `widgets/upgrade_option_tile.dart` (nuevos), `game/forest_scene_component.dart`, `Internationalize`, `es.json`.
 
 **Arte:** `build_assets.py`.
 
-**Apps:** panel "Mejoras" en `Hud.ts` (web), `HudOverlay.kt` (Android) y `HudView.swift` (iOS).
-
 ## Cómo probarlo
 
-- Construir el taller: se descuentan madera **y** piedra, y el botón muestra lo que falta de cada una.
+- Construir el taller: se descuentan madera **y** piedra, y el botón muestra lo que falta de cada una ("Faltan 5 de madera, 3 de piedra").
 - Comprar el hacha de hierro: el siguiente árbol necesita menos golpes.
 - Sin un taller terminado, la mejora no está disponible.
 - Las misiones del capítulo 2 avanzan.

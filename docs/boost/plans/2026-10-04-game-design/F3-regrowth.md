@@ -15,23 +15,24 @@ Que el bosque deje de agotarse: un tocón brota y, con el tiempo, vuelve a ser u
 ## Decisiones ya tomadas
 
 **Dominio:**
-- El tocón pasa a ser **estado del dominio**: `Stump(id, kind: TreeKind, position, elapsedMs)` en `domain/entities/tree/`.
-- Hoy cada app crea sus tocones al recibir `TreeFelled`. Dejan de hacerlo y los dibujan desde `WorldSnapshot.stumps`.
+- El tocón pasa a ser **estado del dominio**: `StumpEntity(id, kind: TreeKind, position, elapsedMs)` en `domain/entities/tree/`.
+- Hoy el tocón sólo existe en la vista: `ForestSceneComponent._onTreeFelled` añade un sprite `SpriteNames.stump` como decoración al recibir `TreeFelledEffect`, y `_clearClutterUnder` lo borra al construir encima. Deja de hacerlo: los tocones y brotes se dibujan desde `WorldSnapshotEntity.stumps` y se reconcilian por id, como los árboles.
 - Fases, con las duraciones en `Rules`:
   1. Tocón.
-  2. Brote, a los `SPROUT_AFTER_MS` (≈ 60 s). No bloquea el paso.
-  3. Árbol, a los `REGROW_AFTER_MS` (≈ 180 s). Conserva `kind` y posición.
+  2. Brote, a los `Rules.sproutAfterMs` (≈ 60 s). No bloquea el paso.
+  3. Árbol, a los `Rules.regrowAfterMs` (≈ 180 s). Conserva `kind` y posición, con la madera y los golpes de `Rules.treeKindStats` (F1).
 - Si cuando toca crecer el jugador o un edificio ocupa el sitio, se espera.
-- Construir encima de un tocón o de un brote lo elimina, igual que ya se limpia la decoración.
+- Construir encima de un tocón o de un brote lo elimina.
+- Un sistema nuevo `Regrowth` en `domain/world/regrowth.dart`, interno como `Woodcutting`: se añade a la lista de piezas internas de `test/architecture_test.dart`.
 
 **Eventos:**
-- `GameEvent.TreeSprouted(stumpId)` y `GameEvent.TreeRegrown(tree)`.
-- Cada uno tiene su `ForestEffect`, para animar la aparición con una escala que crece.
+- `TreeSproutedEventEntity(stumpId)` y `TreeRegrownEventEntity(tree)` en `game_event_entity.dart`.
+- Cada uno tiene su `ForestEffect` (`TreeSproutedEffect`, `TreeRegrownEffect`), para animar la aparición con una escala que crece (`ScaleEffect` de Flame o la easing de `render/easing.dart`).
 
 **Arte:**
 - Brote: buscar en `terrain_atlas.png` una planta pequeña (hay matas y brotes).
 - Si no hay nada adecuado, se usa el frame del árbol escalado al 35 %.
-- Se añaden `SpriteNames.sapling()` y `SpriteNames.stump()`.
+- `SpriteNames.stump` ya existe; se añade `SpriteNames.sapling`.
 
 **Depuración:** para probar se pueden acortar las duraciones desde `Rules`, siempre como constantes y sin meter lógica de depuración en producción.
 
@@ -39,17 +40,21 @@ Que el bosque deje de agotarse: un tocón brota y, con el tiempo, vuelve a ser u
 
 ## Ficheros previstos
 
-**`shared`:**
-- `shared/.../domain/entities/tree/Stump.kt` (nuevo)
-- `World.kt`, `WorldState.kt`, `Rules.kt` y un sistema `internal` nuevo, `Regrowth.kt`
-- `WorldSnapshot.kt`, `GameEvent.kt`, `ForestContract.kt`, `ForestViewModel.kt` y `SpriteNames.kt`
+**Dominio:**
+- `lib/layers/domain/entities/tree/stump_entity.dart` (nuevo)
+- `lib/layers/domain/world/world.dart`, `world_state.dart`, `regrowth.dart` (nuevo) y `extensions/` si hace falta una operación del tocón
+- `lib/layers/domain/rules/rules.dart`
+- `lib/layers/domain/entities/game/world_snapshot_entity.dart` y `game_event_entity.dart`
+- `lib/layers/domain/use-cases/game/get_world_snapshot_use_case.dart`
+
+**Presentación:**
+- `models/forest_effect.dart`, `bloc/forest_bloc.dart`
+- `game/atlas/sprite_names.dart`
+- `game/forest_scene_component.dart` y un componente de tocón/brote en `game/components/`
 
 **Arte:** `asset-packs/lpc/build_assets.py` (frame `sapling`).
 
-**Apps:**
-- Web: `TreeView.ts` y `ForestScene.ts`.
-- Android: `WorldSceneState.kt` y `WorldCanvas.kt`.
-- iOS: `ForestScene.swift`.
+**Tests:** `test/architecture_test.dart` (nueva pieza interna).
 
 ## Cómo probarlo
 
@@ -59,4 +64,4 @@ Con las duraciones acortadas:
 - Se puede caminar por encima del brote.
 - Construir encima del tocón lo borra.
 
-Tests en `WorldRegrowthTests`: tiempos, sitio ocupado y que construir borra el tocón.
+Tests en `test/layers/domain/world/world_regrowth_test.dart`: tiempos, sitio ocupado y que construir borra el tocón. Componentes con `testWithFlameGame`.

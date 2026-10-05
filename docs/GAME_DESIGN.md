@@ -29,7 +29,7 @@ Recoger hacha ──▶ Talar árboles (+5–6 madera) ──▶ Construir casa 
 |---|---|
 | Mapa | Bosque de 1600×1200 generado con semillas fijas (mismo mapa en todas las plataformas): 70 árboles de 14 formas, decoración de suelo (hierba, hojas, setas, rocas). |
 | Personaje | Uno solo, controlado directamente. Camina (110 u/s), choca con troncos y edificios, se coloca solo junto al objetivo. |
-| Recursos | Sólo **madera**. Cada árbol: 5 hachazos, 5–6 de madera. Los árboles **no vuelven a crecer** (≈385 de madera en todo el mapa). |
+| Recursos | Sólo **madera**. Cada árbol: 5 hachazos, 5–6 de madera. Los árboles **no vuelven a crecer** (388 de madera en todo el mapa). |
 | Herramientas | Hacha (se recoge del suelo). El martillo aparece al construir pero no es un objeto del inventario. |
 | Edificios | Sólo **Casa**: 15 de madera, 8 martillazos. Se coloca con previsualización válida/no válida. Una vez terminada **no hace nada**. |
 | Misiones | 3, lineales y permanentes: recoger hacha, tener 15 de madera, construir una casa. Después, no hay más objetivos. |
@@ -41,10 +41,10 @@ Recoger hacha ──▶ Talar árboles (+5–6 madera) ──▶ Construir casa 
 - **Añadir un trabajo es barato**: una variante de `IntentEntity` + un `Work` + una rama en `workFor()`
   (`lib/layers/domain/world/work.dart`). Talar y construir ya siguen ese patrón, así que minar, pescar o cosechar
   cuestan poco.
-- **`GameEvent`** desacopla reglas y efectos: cada nueva mecánica emite eventos y las apps los animan.
+- **`GameEventEntity`** desacopla reglas y efectos: cada nueva mecánica emite eventos y las apps los animan.
 - **Misiones declarativas** (`Quests.all`): una misión es un `id`, un objetivo y una función que mide el mundo.
 - **`Blueprints`** ya modela coste, martillazos y huella: añadir edificios es casi sólo datos (y arte).
-- **`TreeKind`** ya existe en el dominio y su comentario anticipa usarlo en la jugabilidad.
+- **`TreeKind`** ya existe y el generador lo decide para cada árbol; hoy sólo cambia el sprite.
 - Arte LPC disponible sin usar: árboles en variantes `brown`, `orange`, `pale`, `dead` y un `terrain_atlas` con agua y
   cascada, caminos, cultivos en varias fases de crecimiento (trigo, maíz, tomates…), rocas grandes, tocones,
   vallas, puentes de madera y muros de piedra.
@@ -101,8 +101,8 @@ Otras ideas de construcción:
 
 ### 3.3 Aldeanos (el salto a "tipo AoE")
 
-- **Reclutar aldeanos** (L): con casas (población) y comida. Cada aldeano reutiliza el mismo motor de `Activity` /
-  `IntentEntity` que el jugador; habría que pasar de un `Player` a una lista de unidades.
+- **Reclutar aldeanos** (L): con casas (población) y comida. Cada aldeano reutiliza el mismo motor de `ActivityEntity` /
+  `IntentEntity` que el jugador; habría que pasar de un `PlayerEntity` a una lista de unidades.
 - **Asignar trabajos** (L): seleccionar un aldeano y tocar un árbol/roca/granja; después repite solo hasta que se
   agota el objetivo y busca el más cercano del mismo tipo.
 - **Automatización progresiva** (M, sobre lo anterior): el jugador empieza haciéndolo todo y poco a poco delega.

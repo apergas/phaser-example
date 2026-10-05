@@ -15,55 +15,58 @@ Añadir un segundo recurso. Así aparece la decisión de qué recoger primero, y
 ## Decisiones ya tomadas
 
 **Dominio:**
-- `Resource.Stone`.
-- `ToolKind.Pickaxe`: está en el suelo, como el hacha, a unos 300 u del spawn para obligar a explorar.
-- Entidad `Rock(id, position, radius, stoneYield, hitsToBreak, hitsTaken)` en `domain/entities/rock/`. Es un obstáculo: entra en `WorldState.obstacles()`.
+- `Resource.stone` y `ToolKind.pickaxe` (enums de core).
+- El pico está en el suelo, como el hacha, a unos 300 u del spawn para obligar a explorar.
+- Entidad `RockEntity(id, position, radius, stoneYield, hitsToBreak, hitsTaken)` en `domain/entities/rock/`, con `footprint` como `TreeEntity`. Es un obstáculo: entra en `WorldState.obstacles()`. Su operación `hit()` va en `domain/world/extensions/rock_rules.dart`.
 
 **Mecánica:**
-- `Intent.Mine(rockId)` y `internal object Mining : Work<Intent.Mine>`.
-- Una rama en `workFor()` y otra en `toPlayerActivity()` (`PlayerActivity.Mining`).
-- Eventos `RockHit` y `RockBroken`.
-- `MineResult { Ok, NoPickaxe, UnknownRock }` y `GameUseCase.mineRock(rockId)`.
+- `MineIntentEntity(rockId)` en `intent_entity.dart` y un sistema `Mining implements Work<MineIntentEntity>` en `domain/world/mining.dart` (pieza interna: se añade a la lista de `test/architecture_test.dart`).
+- Un caso en `workFor()` (`work.dart`) y otro en `activity_rules.dart`, con `PlayerActivity.mining` (core).
+- Eventos `RockHitEventEntity` y `RockBrokenEventEntity` en `game_event_entity.dart`.
+- Enum `MineResult { ok, noPickaxe, unknownRock }` en core (como `ChopResult`) y caso de uso `MineRockUseCase` con `call({required String rockId})`. `World.orderMine(rockId)`.
 
 **Nivel:**
-- 10–15 rocas grandes, generadas con su **propia semilla** después de los árboles.
+- 10–15 rocas grandes, generadas en `LevelLocalDatasourceImpl` con su **propia semilla** después de los árboles. `RockDBO` en `local/dbo/`, `LevelDBO.rocks`, `RockMapperDBO` en `repositories/level/mappers/`.
 - No pueden cambiar las posiciones de árboles ni de la decoración: los tests dorados no se tocan.
-- La decoración, que se genera después, también se separa de las rocas. Si eso la cambia, se acepta: se actualizan sus valores dorados y se apunta en las desviaciones.
+- La decoración, que se genera después, también se separa de las rocas. Si eso la cambia, se acepta: se actualizan sus valores dorados (en VM y en Chrome) y se apunta en las desviaciones.
 
 **Clic:**
-- `ForestIntent.MapClicked` pasa a llevar `targetId` + `targetKind` (árbol o roca), o bien un `rockId` aparte. Se decide en el plan.
-- Detección por píxel, igual que en los árboles.
+- `ForestMapClicked` lleva hoy `treeId`. Pasa a llevar el objetivo tocado: o bien `targetId` + un enum `MapTarget { tree, rock }` en `core/config/constants/enum/forest/`, o bien un `rockId` aparte. Se decide en el plan.
+- Detección por píxel con `AlphaMask`, igual que en los árboles (`TreeComponent`).
 
 **Arte** (sólo LPC ya disponible):
-- Roca grande: un bloque de rocas de `terrain_atlas.png`, frame `rock-large`.
+- Roca grande: un bloque de rocas de `terrain_atlas.png`, frame `rock-large` (`SpriteNames.rock`).
 - **En `asset-packs/lpc/sources/tools/` no hay pico.** Solución provisional:
-  - El ítem del suelo es el sprite del hacha recoloreado en gris con `recolour()`.
-  - La animación de picar reutiliza la **hoja del martillo** (`hero-hammer`) con su secuencia.
+  - El ítem del suelo es el sprite del hacha recoloreado en gris con `recolour()` en `build_assets.py`: frame `pickaxe-pickup`, en `SpriteNames.item(ToolKind.pickaxe)`.
+  - La animación de picar reutiliza la **hoja del martillo** (`hero-hammer.png`) con `RenderConstants.hammerSequence`: `WorkTool` (core/enum/forest) gana `pickaxe`, que `PlayerFrames` dibuja con la hoja del martillo.
   - Se apunta como desviación. Queda abierta la opción de traer el pico LPC, que necesitaría créditos.
-- Partículas: esquirlas grises, como variante de `WOOD_CHIP` / `woodChips` / `ParticleEmitters`.
-- HUD: iconos CSS `hud__icon--stone` y `hud__icon--pickaxe`. Android e iOS sólo muestran el texto que llega de `shared`.
+- Partículas: esquirlas grises. `ParticleKind.stoneChip` y `ParticleBursts.stoneChips(...)`, variante de `woodChips`, con su color en `ParticleBurstComponent`.
+- HUD: SVG nuevos `stone.svg` (22×14) y `pickaxe.svg` (22×22) en `lib/core/assets/images/icons/`, con sus casos en `CustomIcons.resource` / `CustomIcons.tool`. `ResourceBar` no cambia (F0).
 
-**Textos:**
-- `Resource.Stone → "Piedra"`, `ToolKind.Pickaxe → "Pico"`.
-- Mensajes `NEED_PICKAXE` y `PICKED_UP_PICKAXE`. El mensaje de `ItemPickedUp` pasa a depender del tipo de ítem.
+**Textos** (`es.json` + `Internationalize`):
+- `forest.resource.stone: "Piedra"`, `forest.tool.pickaxe: "Pico"`, `forest.amount.stone: "{amount} de piedra"`.
+- Mensajes `needPickaxe` y `pickedUpPickaxe`. El mensaje de `ItemPickedUpEventEntity` pasa a depender de su `kind` (el evento ya lo lleva).
 
 **Persistencia:** se guardan las rocas y el pico.
 
 ## Ficheros previstos
 
-**`shared`:**
-- Entidades: `shared/.../domain/entities/rock/Rock.kt` (nuevo), `Resource.kt`, `ToolKind.kt`.
-- Mundo: `world/Mining.kt` (nuevo), `Work.kt`, `World.kt`, `WorldState.kt`, `Navigation.kt`.
-- Juego: `GameEvent.kt`, `PlayerStatus.kt`, `GameUseCase(Impl).kt`.
-- Datos: `data/.../level/LevelLocalDataSourceImpl.kt`, `dto/LevelDto.kt` (`RockDto`), `LevelMappers.kt`.
-- Presentación: `presentation/forest/*`, `jsMain/web/*`.
+**Dominio:**
+- Entidades: `lib/layers/domain/entities/rock/rock_entity.dart` (nuevo), `intent_entity.dart`, `game_event_entity.dart`, `world_snapshot_entity.dart`.
+- Enums de core: `resource.dart`, `tool_kind.dart`, `player_activity.dart`, `mine_result.dart` (nuevo).
+- Mundo: `world/mining.dart` (nuevo), `work.dart`, `world.dart`, `world_state.dart`, `navigation.dart`, `extensions/rock_rules.dart` (nuevo), `extensions/activity_rules.dart`.
+- Casos de uso: `mine_rock_use_case.dart` (nuevo), `get_world_snapshot_use_case.dart`.
 
-**Arte:** `asset-packs/lpc/build_assets.py` y `shared/assets/lpc/CREDITS.md`.
+**Datos:** `level_local_datasource_impl.dart`, `dbo/rock_dbo.dart` (nuevo), `dbo/level_dbo.dart`, `mappers/rock_mapper_dbo.dart` (nuevo), `mappers/level_mapper_dbo.dart`.
 
-**Apps:**
-- Web: `RockView.ts` (nuevo) y `ForestScene.ts`.
-- Android: `WorldSceneState.kt`, `WorldCanvas.kt` y `Particles.kt`.
-- iOS: `ForestScene.swift` y `ParticleEmitters.swift`.
+**Presentación:**
+- `bloc/forest_bloc.dart`, `bloc/forest_event.dart`, `models/forest_effect.dart`, `models/player_pose.dart` si cambia la pose.
+- `game/components/rock_component.dart` (nuevo), `game/forest_scene_component.dart`, `game/forest_state_listener.dart`, `game/atlas/sprite_names.dart`, `game/render/player_frames.dart`, `game/particles/*`.
+- `theme/images/custom_icons.dart`, `Internationalize`, `es.json`.
+
+**Arte:** `asset-packs/lpc/build_assets.py` y `lib/core/assets/images/lpc/CREDITS.md`.
+
+**Tests:** `test/architecture_test.dart` (nueva pieza interna) y `di.config.dart` regenerado (caso de uso y *mapper* nuevos).
 
 ## Cómo probarlo
 

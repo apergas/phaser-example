@@ -18,7 +18,8 @@ Protocolo común para los dos desarrolladores (y sus IAs) de la hoja de ruta de 
    gh issue list --repo apergas/phaser-example --state open --assignee @me --json number,title,labels
    ```
 
-   Si `gh` no está instalado o autenticado, para y pide al usuario `! gh auth login`. No se puede asignar una tarea sin tracker.
+   - Si `gh` no está instalado o autenticado, para y pide al usuario `! gh auth login`. No se puede asignar una tarea sin tracker.
+   - Si el tracker todavía no existe (no hay labels `phase:*`), propón crearlo según la sección 4 del README y, con la confirmación del usuario, crea labels, milestones, issues de F0 (T0.1, T0.2) y uno por fase para F1–F8.
 
 No abras código todavía.
 
@@ -42,6 +43,7 @@ Confirma la elección con el usuario antes de asignarla.
 gh issue edit <n> --repo apergas/phaser-example --add-assignee @me
 gh issue comment <n> --repo apergas/phaser-example --body "En curso: rama feature/PROJECT-X-<fase>-<tarea>"
 git switch develop && git pull && git switch -c feature/PROJECT-X-<fase>-<tarea>
+flutter pub get
 ```
 
 Si existe el Project *Gameplay roadmap*, mueve la tarjeta a *In progress* con `gh project item-edit`.
@@ -53,8 +55,8 @@ Abre el fichero de la fase (`F<n>-*.md`):
 - **Plan detallado** (cabecera *For agentic workers*): lee **sólo la sección de tu tarea**. Sus *Files* e *Interfaces* son todo el contexto de código que necesitas.
 - **Ficha** (aviso "Plan detallado: pendiente"):
   1. Usa `boost:writing-plans` para convertir la ficha en un plan con tareas T<n>.x. Lee sólo los ficheros que lista la ficha.
-  2. Respeta las *Global Constraints* del README.
-  3. Haz un commit del plan en una rama `feature/PROJECT-X-f<n>-plan`. Con la confirmación del usuario, abre un PR de documentación y crea un issue por tarea (labels `phase:F<n>`, `stream:*`, `platform:*`; milestone de la fase; cuerpo con enlace a la sección del plan y `Depende de: #n`).
+  2. Respeta las *Global Constraints* del README y las convenciones del plugin `flutter-arch-conventions` (y sus skills de generación para entidades, DBOs, *mappers*, repositorios, casos de uso y BLoC).
+  3. Haz un commit del plan en una rama `feature/PROJECT-X-f<n>-plan`. Con la confirmación del usuario, abre un PR de documentación y crea un issue por tarea (labels `phase:F<n>`, `stream:*`; milestone de la fase; cuerpo con enlace a la sección del plan y `Depende de: #n`).
   4. Cierra el issue de la ficha, o conviértelo en el issue de la primera tarea.
   5. Vuelve al paso 2.
 
@@ -64,7 +66,8 @@ Usa `boost:subagent-driven-development` (recomendado) o `boost:executing-plans` 
 
 Reglas:
 - Marca los checkboxes del plan según avances.
-- Los ficheros calientes y el atlas siguen las reglas de la sección 3 del README.
+- Los ficheros calientes, los generados y el atlas siguen las reglas de la sección 3 del README.
+- Revisa la arquitectura con el agente `flutter-arch-conventions:flutter-arch-reviewer` antes de cerrar.
 - Commits `[PROJECT-X]: Imperative description`, **sin ninguna atribución a IA**.
 
 Al terminar, usa `/cerrar-tarea`.

@@ -15,59 +15,62 @@ Que la partida sobreviva a cerrar la app o la pestaña, y que se pueda empezar d
 ## Decisiones ya tomadas
 
 **Dominio:**
-- Interfaz `GameSaveRepository`, en `domain/repositories/save/`, con `load(): GameSession?`, `save(session: GameSession)` y `clear()`.
-- `World` tiene que poder reconstruirse a partir de su estado: árboles que quedan y golpes recibidos, ítems, edificios con su progreso, y posición e inventario del jugador.
-- Del `QuestLog` se expone y se restaura `completed`.
+- Interfaz `GameSaveRepository` en `domain/repositories/save/`, con `GameSessionEntity? load()`, `void save(GameSessionEntity session)` y `void clear()`. Síncrona, como el resto (E3).
+- `World` tiene que poder reconstruirse a partir de su estado: árboles que quedan y golpes recibidos, ítems, edificios con su progreso, contadores de ids de `WorldState`, y posición e inventario del jugador. Se añade un constructor o *factory* de restauración en `World`; `WorldState` no sale de `domain/world/`.
+- Del `QuestLog` se expone y se restaura el conjunto de misiones completadas.
+- Casos de uso nuevos: `SaveGameUseCase`, `NewGameUseCase`. `StartGameUseCase` carga la partida guardada y, si no hay, carga el nivel.
 
 **Data:**
-- En `data/datasources/local/save/`:
-  - `SaveDto`: `@Serializable`, todos los campos anulables, con `version: Int`.
-  - `SaveMappers.kt`, junto al repositorio.
-- `SAVE_VERSION` vive en `data`.
-- Si la versión es desconocida, se trata como "no hay partida" y se registra con `ErrorHandler`.
+- Dependencia nueva `shared_preferences` (funciona igual en Android, iOS y web), en su propio commit.
+- `SharedPreferencesWithCache` se crea una vez al arrancar, en un módulo de DI con `@preResolve`, para que las lecturas sean síncronas y los casos de uso sigan siendo síncronos. Las escrituras son *fire-and-forget*.
+- En `data/datasources/save/`:
+  - `local/dbo/`: `SaveDBO` y los DBOs que necesite (árbol, ítem, edificio, jugador), todos con campos anulables y `version`; se serializan a JSON con `dart:convert` y `fromJson`/`toJson` escritos a mano.
+  - `source/game_save_local_datasource.dart` + `local/game_save_local_datasource_impl.dart` (`@LazySingleton`).
+- En `data/repositories/save/`: `GameSaveRepositoryImpl` + `mappers/` con un `*MapperDBO` inyectado por pieza.
+- `SaveDBO.currentVersion` vive en `data`. Si la versión es desconocida o el JSON no se puede leer, se trata como "no hay partida" y se registra con `AppExceptionHandler` / `Logger`.
 
-**Almacenamiento por plataforma:**
-- Interfaz `KeyValueStorage { get(key): String?; set(key, value); remove(key) }`.
-- **Cada app inyecta su implementación** en `GameContainer`. No se usa `expect/actual`, para no tocar `commonMain` con APIs de plataforma.
-  - Web: `localStorage`. `ForestWebController` recibe un objeto que lo implementa.
-  - Android: `SharedPreferences`, que no añade dependencias. Si se prefiere DataStore, la versión va en `libs.versions.toml` y hay que comprobar que es compatible con SDK 36.
-  - iOS: `UserDefaults`.
+**Excepciones de `CLAUDE.md` que cambian:** E5 (la sesión sigue en memoria, pero ahora hay un guardado con DBO), E6 (un repositorio lee y escribe un segundo datasource local) y E7 (aparece almacenamiento). Se actualizan en la misma fase.
 
-**Cuándo se guarda:**
-- En el `advance` del caso de uso, cuando hay un evento importante: `TreeFelled`, `BuildingCompleted`, `ItemPickedUp` o `QuestCompleted`.
-- Cada 10 s de juego.
-- Al pasar la app a segundo plano: `onStop` en Android, `scenePhase` en iOS y `visibilitychange` en la web. Para ello se añade un `ForestIntent.Paused`.
+**Cuándo se guarda** (lo decide `ForestBloc`, que llama a `SaveGameUseCase`):
+- Cuando `AdvanceGameUseCase` devuelve un evento importante: `TreeFelledEventEntity`, `BuildingCompletedEventEntity`, `ItemPickedUpEventEntity` o `QuestCompletedEventEntity`.
+- Cada `Rules.autosaveIntervalMs` (10 s) de juego, contados con los `deltaMs` de `ForestTicked`.
+- Al pasar la app a segundo plano: `ForestPage` usa un `AppLifecycleListener` (`onPause` / `onHide`, que en la web corresponde a `visibilitychange`) y añade un evento nuevo `ForestPaused`.
 
-**Arranque:**
-- `startGame()` carga la partida guardada; si no hay, carga el nivel.
-- Se añade `newGame()`.
+**Arranque y nueva partida:**
+- `ForestStarted` sigue arrancando la partida; ahora puede ser una restaurada.
+- Nuevo evento `ForestNewGameRequested`: borra el guardado y vuelve a cargar el nivel.
 
 **UI:**
-- Botón "Nueva partida" en el HUD, con una confirmación propia (un panel de la app, no `alert`/`confirm`).
-- Los textos van en `ForestLabels`.
+- Botón "Nueva partida" en el HUD (`HudButton`), con una confirmación propia: un panel de la app (`HudPanel` o `CustomPopUp` a través de `NavigationService`), no un diálogo del sistema.
+- Los textos van en `es.json`.
 
 ## Ficheros previstos
 
-**`shared`:**
-- `shared/.../domain/repositories/save/GameSaveRepository.kt` (nuevo)
-- `shared/.../domain/world/World.kt` y `WorldState.kt`: restaurar el estado.
-- `shared/.../domain/quests/QuestLog.kt`
-- `shared/.../domain/usecases/game/GameUseCase(Impl).kt`
-- `shared/.../data/datasources/local/save/*` y `data/repositories/save/*` (nuevos)
-- `shared/.../di/GameContainer.kt`
-- `ForestContract.kt`, `ForestViewModel.kt` y `ForestLabels.kt`
-- `ForestWebController.kt`
+**Dominio:**
+- `lib/layers/domain/repositories/save/game_save_repository.dart` (nuevo)
+- `lib/layers/domain/world/world.dart` y `world_state.dart`: restaurar el estado.
+- `lib/layers/domain/quests/quest_log.dart`
+- `lib/layers/domain/use-cases/game/save_game_use_case.dart`, `new_game_use_case.dart` (nuevos) y `start_game_use_case.dart`
+- `lib/layers/domain/rules/rules.dart`
 
-**Apps:**
-- Web: `main.ts` y `Hud.ts`.
-- Android: `ForestScreen.kt`, `HudOverlay.kt` y `GameModule.kt`.
-- iOS: `ForestView.swift`, `HudView.swift` y `ForestBuilder.swift`.
+**Datos:** `lib/layers/data/datasources/save/**` y `lib/layers/data/repositories/save/**` (nuevos).
+
+**Core:** `lib/core/config/di/` (módulo con `@preResolve`, `di.config.dart` regenerado; `configureDependencies` en `di.dart` pasa a `await locator.init(...)`, porque con `@preResolve` el `init` generado devuelve un `Future`).
+
+**Presentación:**
+- `bloc/forest_bloc.dart`, `bloc/forest_event.dart`
+- `forest_page.dart` (`AppLifecycleListener`)
+- `widgets/hud_overlay.dart` y el panel de confirmación
+- `Internationalize` y `es.json`
+
+**Documentación:** `CLAUDE.md` (E5–E7, *Layout* de `data` y de `core`).
 
 ## Cómo probarlo
 
-- Recoger el hacha, talar 2 árboles y dejar una casa a medias. Cerrar y volver a abrir (en la web, recargar): todo sigue igual, incluidas las misiones completadas.
+- Recoger el hacha, talar 2 árboles y dejar una casa a medias. Cerrar y volver a abrir (en la web, recargar la pestaña): todo sigue igual, incluidas las misiones completadas.
 - Pulsar "Nueva partida" y confirmar: el bosque vuelve a su estado inicial.
 - Tests:
-  - ida y vuelta `GameSession` → `SaveDto` → `GameSession`;
-  - versión desconocida;
-  - `KeyValueStorageMock` con `error` y los flags `getCalled`/`setCalled`.
+  - ida y vuelta `GameSessionEntity` → `SaveDBO` → JSON → `SaveDBO` → `GameSessionEntity`;
+  - versión desconocida y JSON corrupto;
+  - el datasource con `SharedPreferences.setMockInitialValues`;
+  - `ForestBloc`: guarda tras un evento importante, a los 10 s y con `ForestPaused`; `MockGameSaveRepository` generado con `@GenerateMocks`.

@@ -5,1216 +5,1143 @@
 **Goal:** Que añadir un recurso, una herramienta o un edificio sea casi sólo añadir datos. Para ello se quitan las suposiciones "madera / hacha / casa" del dominio, del HUD y del dibujo, **sin cambiar la jugabilidad**.
 
 **Architecture:**
-- `Inventory` guarda un `Map<Resource, Int>`.
-- `Blueprint` tiene un `cost: Map<Resource, Int>`.
-- El view model expone listas genéricas de recursos y herramientas.
-- `SpriteNames` decide el frame y el desplazamiento de dibujo de cada edificio e ítem.
-- Las apps dejan de escribir a mano `"house"`, `"axe-pickup"`, `wood` y `hasAxe`.
-- Se aplica *expandir y contraer*:
-  - T0.1 añade la API nueva y deja la vieja `@Deprecated`, así las tres apps siguen compilando;
-  - T0.2–T0.4 migran cada app (en paralelo);
-  - T0.5 borra lo viejo.
+- Nuevo enum `Resource` en `core`. `InventoryEntity` guarda un `Map<Resource, int>`.
+- `BlueprintEntity` tiene un `cost: Map<Resource, int>`; `BuildOptionEntity` dice qué falta (`missing`).
+- `PlayerStatusEntity` expone el `InventoryEntity` entero en lugar de `wood` / `hasAxe`.
+- `HudData` expone listas genéricas de recursos y herramientas; `ResourceBar` pinta cualquiera de ellas con su icono de `CustomIcons`.
+- `SpriteNames` elige el frame de cada edificio e ítem; `RenderConstants.buildingFrontOffset` su desplazamiento de dibujo.
+- Nadie fuera de `SpriteNames`, `RenderConstants`, `CustomIcons` e `Internationalize` escribe a mano `'house'`, `'axe-pickup'`, `wood` ni `hasAxe`.
+- Dos tareas secuenciales. Cada una deja `develop` en verde:
+  - T0.1 cambia el dominio y adapta lo mínimo de `ForestBloc` para que todo compile;
+  - T0.2 generaliza el HUD y el dibujo.
 
-**Tech Stack:** Kotlin Multiplatform + kotlin.test, Phaser 4 + TypeScript, Jetpack Compose, SwiftUI + SpriteKit.
+**Tech Stack:** Flutter 3.47.6 / Dart 3.13, `flutter_bloc`, Flame, `easy_localization`, `flutter_test` + `mockito` + `bloc_test` + `flame_test`.
 
-**Cómo probar la fase entera:** en las tres apps el juego se comporta como hoy:
+**Cómo probar la fase entera:** en Chrome, en el emulador Android y en el simulador iOS el juego se comporta como hoy:
 - el HUD muestra "Madera N" y el hacha (atenuada hasta recogerla);
 - la casa cuesta 15;
-- la previsualización y el edificio se dibujan igual que ahora.
+- la previsualización y el edificio se dibujan igual que ahora; el polvo sale del muro frontal.
 
-Sólo cambian dos textos:
-- el que se muestra si faltan recursos;
-- el que se muestra al terminar un edificio.
+Sólo cambian tres textos:
+- lo que falta en el menú *Construir*: "Faltan 5" pasa a "Faltan 5 de madera";
+- el mensaje si faltan recursos: "No tienes madera suficiente." pasa a "No tienes recursos suficientes.";
+- el mensaje al terminar un edificio: "¡Casa construida!" pasa a "Construcción terminada: Casa", para que no dé por hecho un nombre femenino.
 
 ## Reparto
 
-| Tarea | Plataforma | Depende de | Paralelizable |
+| Tarea | Capa | Depende de | Paralelizable |
 |---|---|---|---|
-| T0.1 `shared` | shared | — | No (bloqueante) |
-| T0.2 Web | web | T0.1 | Sí, con T0.3 y T0.4 |
-| T0.3 Android | android | T0.1 | Sí |
-| T0.4 iOS | ios | T0.1 | Sí |
-| T0.5 Quitar API obsoleta | shared + apps | T0.2, T0.3, T0.4 | No |
+| T0.1 Dominio: recursos y costes | domain + data de tests + mínimo de `ForestBloc` | — | No |
+| T0.2 Presentación: HUD de recursos y sprites por tipo | presentation | T0.1 | No |
 
 ---
 
-### Task T0.1: `shared`: recursos, costes, HUD genérico y nombres de sprites
+### Task T0.1: Dominio: recursos, costes y estado del jugador
 
 **Files:**
 - Create:
-  - `shared/src/commonMain/kotlin/com/apergas/rpg/domain/entities/player/Resource.kt`
-  - `shared/src/commonTest/kotlin/com/apergas/rpg/domain/entities/building/BlueprintsTests.kt`
+  - `lib/core/config/constants/enum/resource.dart`
 - Modify:
-  - Dominio, en `shared/src/commonMain/kotlin/com/apergas/rpg/domain/`:
-    - `entities/player/Inventory.kt`
-    - `entities/building/Blueprint.kt`
-    - `entities/game/BuildOption.kt`
-    - `entities/game/ConstructionResult.kt`
-    - `entities/game/PlayerStatus.kt`
-    - `world/Construction.kt`
-    - `world/Woodcutting.kt`
-    - `quests/Quest.kt`
-    - `usecases/game/GameUseCaseImpl.kt`
-  - Presentación:
-    - `shared/src/commonMain/kotlin/com/apergas/rpg/presentation/forest/ForestContract.kt`
-    - `shared/src/commonMain/kotlin/com/apergas/rpg/presentation/forest/ForestLabels.kt`
-    - `shared/src/commonMain/kotlin/com/apergas/rpg/presentation/forest/ForestViewModel.kt`
-    - `shared/src/commonMain/kotlin/com/apergas/rpg/presentation/forest/SpriteNames.kt`
-  - Web:
-    - `shared/src/jsMain/kotlin/com/apergas/rpg/web/WebModels.kt`
-    - `shared/src/jsMain/kotlin/com/apergas/rpg/web/WebMappers.kt`
-- Test (todo en `shared/src/commonTest/kotlin/com/apergas/rpg/` salvo el último):
-  - `domain/entities/player/InventoryTests.kt`: se reescribe.
-  - `domain/entities/building/BlueprintsTests.kt`: nuevo.
-  - `domain/world/WorldConstructionTests.kt`
-  - `domain/world/WorldChoppingTests.kt`
-  - `domain/quests/QuestLogTests.kt`
-  - `domain/usecases/game/GameUseCaseImplTests.kt`
-  - `presentation/forest/ForestViewModelTests.kt`
-  - `presentation/forest/SpriteNamesTests.kt`
-  - `shared/src/jsTest/kotlin/com/apergas/rpg/web/ForestWebControllerTests.kt`
+  - `lib/core/config/constants/enum/construction_rejection.dart`
+  - `lib/layers/domain/entities/player/inventory_entity.dart`
+  - `lib/layers/domain/entities/building/blueprint_entity.dart`
+  - `lib/layers/domain/entities/game/build_option_entity.dart`
+  - `lib/layers/domain/entities/game/player_status_entity.dart`
+  - `lib/layers/domain/world/extensions/inventory_rules.dart`
+  - `lib/layers/domain/world/construction.dart`
+  - `lib/layers/domain/world/woodcutting.dart`
+  - `lib/layers/domain/rules/blueprints.dart`
+  - `lib/layers/domain/quests/quests.dart`
+  - `lib/layers/domain/use-cases/game/get_player_status_use_case.dart`
+  - `lib/layers/domain/use-cases/game/get_build_options_use_case.dart`
+  - `lib/layers/presentation/features/forest/bloc/forest_bloc.dart`
+  - `lib/core/assets/i18n/internationalize.dart`
+  - `lib/core/assets/i18n/translations/es.json`
+- Delete:
+  - `lib/layers/domain/world/extensions/blueprint_rules.dart` y `test/layers/domain/world/extensions/blueprint_rules_test.dart` (la asequibilidad pasa a `BuildOptionEntity.isAffordable`).
+- Test (en `test/`):
+  - `layers/domain/world/extensions/inventory_rules_test.dart`: se reescribe.
+  - `layers/domain/entities/player/inventory_entity_test.dart`
+  - `layers/domain/entities/building/blueprint_entity_test.dart`
+  - `layers/domain/entities/game/build_option_entity_test.dart`
+  - `layers/domain/entities/game/construction_result_entity_test.dart`
+  - `layers/domain/entities/game/player_status_entity_test.dart`
+  - `layers/domain/rules/blueprints_test.dart`
+  - `layers/domain/quests/quest_log_test.dart`
+  - `layers/domain/world/world_chopping_test.dart`
+  - `layers/domain/world/world_construction_test.dart`
+  - `layers/domain/use-cases/game/get_build_options_use_case_test.dart`
+  - `layers/domain/use-cases/game/get_player_status_use_case_test.dart`
+  - `layers/domain/use-cases/game/construct_building_use_case_test.dart`
+  - `layers/domain/use-cases/game/game_flow_test.dart`
+  - `layers/presentation/features/forest/bloc/forest_bloc_test.dart`
+  - `core/assets/i18n/internationalize_test.dart`
+  - Mocks: `mocks/domain/entities/player/inventory_entity_mock.dart`, `mocks/domain/entities/player/player_entity_mock.dart`, `mocks/domain/entities/building/blueprint_entity_mock.dart`, `mocks/domain/entities/game/build_option_entity_mock.dart`, `mocks/domain/entities/game/player_status_entity_mock.dart`, `mocks/domain/entities/game/construction_result_entity_mock.dart`, `mocks/domain/game/game_scenario_mock.dart`, `mocks/presentation/features/forest/forest_scenario_mock.dart`, `mocks/presentation/features/forest/build_item_data_mock.dart`.
 
 **Interfaces:**
 - Consumes: nada nuevo.
-- Produces (lo que usan T0.2–T0.5 y las fases siguientes):
-  ```kotlin
-  // domain/entities/player/Resource.kt
-  enum class Resource { Wood }
+- Produces (lo que usan T0.2 y las fases siguientes):
+  ```dart
+  // lib/core/config/constants/enum/resource.dart
+  enum Resource { wood }
 
-  // domain/entities/player/Inventory.kt
-  data class Inventory(val resources: Map<Resource, Int> = emptyMap(), val tools: Set<ToolKind> = emptySet()) {
-      fun amount(resource: Resource): Int
-      fun add(resource: Resource, quantity: Int): Inventory
-      fun missing(cost: Map<Resource, Int>): Map<Resource, Int>   // only resources still short, > 0
-      fun spend(cost: Map<Resource, Int>): Inventory?             // null when something is missing
-      fun addTool(tool: ToolKind): Inventory
-      fun hasTool(tool: ToolKind): Boolean
+  // lib/core/config/constants/enum/construction_rejection.dart
+  enum ConstructionRejection { notEnoughResources, blocked }
+
+  // lib/layers/domain/entities/player/inventory_entity.dart
+  class InventoryEntity {
+    final Map<Resource, int> resources;   // never holds zero amounts
+    final Set<ToolKind> tools;
+    const InventoryEntity({this.resources = const {}, this.tools = const {}});
   }
 
-  // domain/entities/building/Blueprint.kt
-  data class Blueprint(val id: BlueprintId, val cost: Map<Resource, Int>, val hitsToBuild: Int, val footprintRadius: Double)
+  // lib/layers/domain/world/extensions/inventory_rules.dart
+  extension InventoryRules on InventoryEntity {
+    int amount(Resource resource);
+    InventoryEntity add(Resource resource, int quantity);
+    Map<Resource, int> missing(Map<Resource, int> cost);   // only what is still short, > 0
+    InventoryEntity? spend(Map<Resource, int> cost);       // null when something is missing
+    InventoryEntity addTool(ToolKind tool);
+    bool hasTool(ToolKind tool);
+  }
 
-  // domain/entities/game/*
-  data class BuildOption(val blueprint: BlueprintId, val cost: Map<Resource, Int>, val missing: Map<Resource, Int>) { val isAffordable: Boolean }
-  enum class ConstructionRejection { NotEnoughResources, Blocked }
-  data class PlayerStatus(position, activity, target, swingProgress, val inventory: Inventory)
+  // lib/layers/domain/entities/building/blueprint_entity.dart
+  BlueprintEntity({required BlueprintId id, required Map<Resource, int> cost, required int hitsToBuild, required double footprintRadius})
 
-  // presentation/forest/ForestContract.kt
-  data class ResourceItem(val resource: Resource, val name: String, val amount: Int)
-  data class ToolItem(val tool: ToolKind, val name: String, val isOwned: Boolean)
-  data class HudState(
-      val resources: List<ResourceItem>, val tools: List<ToolItem>,
-      @Deprecated val wood: Int, @Deprecated val hasAxe: Boolean,         // removed in T0.5
-      val questBadge: String, val quests: List<QuestItem>, val buildItems: List<BuildItem>, val isBuildLocked: Boolean,
-  )
+  // lib/layers/domain/entities/game/*
+  BuildOptionEntity({required BlueprintId blueprint, required Map<Resource, int> cost, required Map<Resource, int> missing})
+    bool get isAffordable;   // missing.isEmpty
+  PlayerStatusEntity({position, activity, target, swingProgress, required InventoryEntity inventory})
 
-  // presentation/forest/ForestLabels.kt
-  fun resource(resource: Resource): String      // "Madera"
-  fun tool(tool: ToolKind): String              // "Hacha"
-  fun cost(cost: Map<Resource, Int>): String    // "15 de madera"
-  fun missing(missing: Map<Resource, Int>): String  // "Faltan 5 de madera"
-  Messages.NOT_ENOUGH_RESOURCES, Messages.buildingCompleted(name) = "Construcción terminada: $name"
-
-  // presentation/forest/SpriteNames.kt
-  fun building(id: BlueprintId): String          // House -> "house"
-  fun buildingFrontOffset(id: BlueprintId): Double  // House -> 24.0
-  fun item(kind: ToolKind): String               // Axe -> "axe-pickup"
-
-  // jsMain web/WebModels.kt (added; old fields kept until T0.5)
-  WebHud.resources: Array<WebResourceItem(id: String /* "wood" */, name: String, amount: Int)>
-  WebHud.tools: Array<WebToolItem(id: String /* "axe" */, name: String, isOwned: Boolean)>
-  WebItem.frame: String
-  WebBuilding.frame: String, WebBuilding.frontOffset: Double
-  WebPlacement.frame: String, WebPlacement.frontOffset: Double
+  // lib/core/assets/i18n/internationalize.dart
+  static String forestAmount({required Resource resource, required int amount});   // "15 de madera"
+  static String forestMissing({required String amounts});                         // "Faltan 15 de madera"
+  static String get forestMessageNotEnoughResources;                              // "No tienes recursos suficientes."
   ```
 
 - [ ] **Step 1: Crear la rama**
 
 ```bash
-git switch develop && git pull && git switch -c feature/PROJECT-X-f0-shared
+git switch develop && git pull && git switch -c feature/PROJECT-X-f0-domain
 ```
 
-- [ ] **Step 2: Escribir el test de `Inventory`, que debe fallar**
+- [ ] **Step 2: Escribir el test de `InventoryRules`, que debe fallar**
 
-Sustituir el contenido de `shared/src/commonTest/kotlin/com/apergas/rpg/domain/entities/player/InventoryTests.kt` por:
+Sustituir el contenido de `test/layers/domain/world/extensions/inventory_rules_test.dart` por:
 
-```kotlin
-package com.apergas.rpg.domain.entities.player
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:rpg/core/config/constants/enum/tool_kind.dart';
+import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
 
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import '../../../../mocks/domain/entities/player/inventory_entity_mock.dart';
 
-class InventoryTests {
-    @Test
-    fun testWhenAddingResourcesThenAmountAccumulates() {
-        // given
-        val inventory = Inventory()
+void main() {
+  test('testWhenAddingResourcesThenAmountAccumulates', () {
+    // given
+    const inventory = InventoryEntityMock.mock;
 
-        // when
-        val updated = inventory.add(Resource.Wood, 4).add(Resource.Wood, 2)
+    // when
+    final updated = inventory.add(Resource.wood, 4).add(Resource.wood, 2);
 
-        // then
-        assertEquals(0, inventory.amount(Resource.Wood))
-        assertEquals(6, updated.amount(Resource.Wood))
-    }
+    // then
+    expect(inventory.amount(Resource.wood), 0);
+    expect(updated.amount(Resource.wood), 6);
+  });
 
-    @Test
-    fun testWhenSpendingAnAffordableCostThenReturnsInventoryWithTheRest() {
-        // given
-        val inventory = Inventory().add(Resource.Wood, 6)
+  test('testWhenSpendingAnAffordableCostThenReturnsInventoryWithTheRest', () {
+    // given
+    const inventory = InventoryEntityMock.withWood;
 
-        // when
-        val afterSpending = inventory.spend(mapOf(Resource.Wood to 4))
+    // when
+    final afterSpending = inventory.spend(InventoryEntityMock.fourWood);
 
-        // then
-        assertEquals(2, afterSpending?.amount(Resource.Wood))
-    }
+    // then
+    expect(afterSpending?.amount(Resource.wood), 2);
+  });
 
-    @Test
-    fun testWhenSpendingMoreThanStoredThenReturnsNullAndReportsWhatIsMissing() {
-        // given
-        val inventory = Inventory().add(Resource.Wood, 3)
-        val cost = mapOf(Resource.Wood to 5)
+  test('testWhenSpendingMoreThanStoredThenReturnsNullAndReportsWhatIsMissing', () {
+    // given
+    final inventory = InventoryEntityMock.make(wood: 3);
 
-        // when
-        val afterSpending = inventory.spend(cost)
-        val missing = inventory.missing(cost)
+    // when
+    final afterSpending = inventory.spend(InventoryEntityMock.fiveWood);
+    final missing = inventory.missing(InventoryEntityMock.fiveWood);
 
-        // then
-        assertNull(afterSpending)
-        assertEquals(mapOf(Resource.Wood to 2), missing)
-        assertEquals(3, inventory.amount(Resource.Wood))
-    }
+    // then
+    expect(afterSpending, isNull);
+    expect(missing, InventoryEntityMock.twoWood);
+    expect(inventory.amount(Resource.wood), 3);
+  });
 
-    @Test
-    fun testWhenNothingIsMissingThenMissingIsEmpty() {
-        // given
-        val inventory = Inventory().add(Resource.Wood, 15)
+  test('testWhenNothingIsMissingThenMissingIsEmpty', () {
+    // given
+    final inventory = InventoryEntityMock.make(wood: 15);
 
-        // when
-        val missing = inventory.missing(mapOf(Resource.Wood to 15))
+    // when
+    final missing = inventory.missing(InventoryEntityMock.fifteenWood);
 
-        // then
-        assertTrue(missing.isEmpty())
-    }
+    // then
+    expect(missing, isEmpty);
+  });
 
-    @Test
-    fun testWhenAddingToolThenInventoryHasIt() {
-        // given
-        val inventory = Inventory()
+  test('testWhenSpendingEverythingThenTheResourceDisappearsFromTheMap', () {
+    // given
+    final inventory = InventoryEntityMock.make(wood: 15);
 
-        // when
-        val withAxe = inventory.addTool(ToolKind.Axe)
+    // when
+    final afterSpending = inventory.spend(InventoryEntityMock.fifteenWood);
 
-        // then
-        assertFalse(inventory.hasTool(ToolKind.Axe))
-        assertTrue(withAxe.hasTool(ToolKind.Axe))
-    }
+    // then
+    expect(afterSpending, InventoryEntityMock.mock);
+  });
+
+  test('testWhenAddingToolThenInventoryHasIt', () {
+    // given
+    const inventory = InventoryEntityMock.mock;
+
+    // when
+    final withAxe = inventory.addTool(ToolKind.axe);
+
+    // then
+    expect(inventory.hasTool(ToolKind.axe), isFalse);
+    expect(withAxe.hasTool(ToolKind.axe), isTrue);
+  });
+
+  test('testWhenAddingANegativeAmountThenFails', () {
+    // given
+    const inventory = InventoryEntityMock.mock;
+
+    // when
+    Object act() => inventory.add(Resource.wood, -1);
+
+    // then
+    expect(act, throwsArgumentError);
+  });
+}
+```
+
+Y en `test/mocks/domain/entities/player/inventory_entity_mock.dart`:
+
+```dart
+import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:rpg/core/config/constants/enum/tool_kind.dart';
+import 'package:rpg/layers/domain/entities/player/inventory_entity.dart';
+
+abstract final class InventoryEntityMock {
+  static const InventoryEntity mock = InventoryEntity();
+
+  static const InventoryEntity withWood = InventoryEntity(resources: {Resource.wood: 6});
+
+  static const InventoryEntity withAxe = InventoryEntity(tools: {ToolKind.axe});
+
+  static const Map<Resource, int> twoWood = {Resource.wood: 2};
+
+  static const Map<Resource, int> fourWood = {Resource.wood: 4};
+
+  static const Map<Resource, int> fiveWood = {Resource.wood: 5};
+
+  static const Map<Resource, int> fifteenWood = {Resource.wood: 15};
+
+  static InventoryEntity make({int wood = 0, Set<ToolKind> tools = const {}}) =>
+      InventoryEntity(resources: {if (wood > 0) Resource.wood: wood}, tools: tools);
 }
 ```
 
 - [ ] **Step 3: Comprobar que falla**
 
-Run: `./gradlew :shared:testAndroidHostTest --tests "com.apergas.rpg.domain.entities.player.InventoryTests"`
-Expected: FAIL de compilación (`Unresolved reference: Resource`, `add`, `amount`).
+Run: `flutter test test/layers/domain/world/extensions/inventory_rules_test.dart`
+Expected: FAIL de compilación (`Resource` no existe; `add`, `amount`, `spend`, `missing` no están definidos).
 
-- [ ] **Step 4: Implementar `Resource` e `Inventory`**
+- [ ] **Step 4: Implementar `Resource`, `InventoryEntity` e `InventoryRules`**
 
-`shared/src/commonMain/kotlin/com/apergas/rpg/domain/entities/player/Resource.kt`:
+`lib/core/config/constants/enum/resource.dart`:
 
-```kotlin
-package com.apergas.rpg.domain.entities.player
-
-/** Raw materials the player gathers and spends. New resources are added here. */
-enum class Resource { Wood }
+```dart
+enum Resource { wood }
 ```
 
-`shared/src/commonMain/kotlin/com/apergas/rpg/domain/entities/player/Inventory.kt`:
+`lib/layers/domain/entities/player/inventory_entity.dart`:
 
-```kotlin
-package com.apergas.rpg.domain.entities.player
+```dart
+import 'package:collection/collection.dart';
 
-/** What the player carries: stored resources and the tools it has picked up. */
-data class Inventory(val resources: Map<Resource, Int> = emptyMap(), val tools: Set<ToolKind> = emptySet()) {
-    fun amount(resource: Resource): Int = resources[resource] ?: 0
+import '../../../../core/config/constants/enum/resource.dart';
+import '../../../../core/config/constants/enum/tool_kind.dart';
 
-    fun add(resource: Resource, quantity: Int): Inventory {
-        require(quantity >= 0) { "Cannot add a negative amount of $resource" }
-        return copy(resources = resources + (resource to amount(resource) + quantity))
-    }
+class InventoryEntity {
+  final Map<Resource, int> resources;
+  final Set<ToolKind> tools;
 
-    /** What is still short to pay [cost]; empty when it is affordable. */
-    fun missing(cost: Map<Resource, Int>): Map<Resource, Int> =
-        cost.mapValues { (resource, quantity) -> quantity - amount(resource) }.filterValues { it > 0 }
+  const InventoryEntity({this.resources = const {}, this.tools = const {}});
 
-    /** The inventory after paying [cost], or null when something is missing. */
-    fun spend(cost: Map<Resource, Int>): Inventory? {
-        if (missing(cost).isNotEmpty()) return null
-        return copy(resources = resources + cost.map { (resource, quantity) -> resource to amount(resource) - quantity })
-    }
+  InventoryEntity copyWith({Map<Resource, int>? resources, Set<ToolKind>? tools}) {
+    return InventoryEntity(resources: resources ?? this.resources, tools: tools ?? this.tools);
+  }
 
-    fun addTool(tool: ToolKind): Inventory = copy(tools = tools + tool)
+  @override
+  bool operator ==(Object other) =>
+      other is InventoryEntity &&
+      const MapEquality<Resource, int>().equals(other.resources, resources) &&
+      const SetEquality<ToolKind>().equals(other.tools, tools);
 
-    fun hasTool(tool: ToolKind): Boolean = tool in tools
+  @override
+  int get hashCode =>
+      Object.hash(const MapEquality<Resource, int>().hash(resources), const SetEquality<ToolKind>().hash(tools));
 }
 ```
 
-- [ ] **Step 5: Adaptar `Blueprint`, `Construction`, `Woodcutting` y `Quests`**
+`lib/layers/domain/world/extensions/inventory_rules.dart`. El mapa nunca guarda cantidades a cero, para que dos inventarios con lo mismo sean iguales:
 
-`Blueprint.kt`: se sustituye `woodCost: Int` por `cost`.
+```dart
+import '../../../../core/config/constants/enum/resource.dart';
+import '../../../../core/config/constants/enum/tool_kind.dart';
+import '../../entities/player/inventory_entity.dart';
 
-```kotlin
-package com.apergas.rpg.domain.entities.building
+extension InventoryRules on InventoryEntity {
+  int amount(Resource resource) => resources[resource] ?? 0;
 
-import com.apergas.rpg.domain.entities.player.Resource
+  InventoryEntity add(Resource resource, int quantity) {
+    if (quantity < 0) throw ArgumentError.value(quantity, 'quantity', 'Cannot add a negative amount of ${resource.name}');
+    if (quantity == 0) return this;
+    return copyWith(resources: {...resources, resource: amount(resource) + quantity});
+  }
 
-/** What it takes to construct a kind of building. */
-data class Blueprint(
-    val id: BlueprintId,
-    /** Resources paid when the site is placed. */
-    val cost: Map<Resource, Int>,
-    /** Hammer hits needed to finish it. */
-    val hitsToBuild: Int,
-    /** Radius of the circular footprint that blocks movement. */
-    val footprintRadius: Double,
-)
+  Map<Resource, int> missing(Map<Resource, int> cost) => {
+    for (final MapEntry(key: resource, value: quantity) in cost.entries)
+      if (quantity > amount(resource)) resource: quantity - amount(resource),
+  };
 
-object Blueprints {
-    val house = Blueprint(id = BlueprintId.House, cost = mapOf(Resource.Wood to 15), hitsToBuild = 8, footprintRadius = 40.0)
-    val all: List<Blueprint> = listOf(house)
+  InventoryEntity? spend(Map<Resource, int> cost) {
+    if (missing(cost).isNotEmpty) return null;
+    final remaining = {
+      ...resources,
+      for (final MapEntry(key: resource, value: quantity) in cost.entries) resource: amount(resource) - quantity,
+    }..removeWhere((_, quantity) => quantity == 0);
+    return copyWith(resources: remaining);
+  }
 
-    fun of(id: BlueprintId): Blueprint = all.first { it.id == id }
+  InventoryEntity addTool(ToolKind tool) => copyWith(tools: {...tools, tool});
+
+  bool hasTool(ToolKind tool) => tools.contains(tool);
 }
 ```
 
-`ConstructionResult.kt`: `enum class ConstructionRejection { NotEnoughResources, Blocked }`.
-
-`Construction.place`:
-
-```kotlin
-val paid = state.player.inventory.spend(blueprint.cost)
-    ?: return ConstructionResult.Rejected(ConstructionRejection.NotEnoughResources)
-```
-
-`Woodcutting.impact`: cambia la línea que suma la madera.
-
-```kotlin
-state.player = state.player.withInventory(state.player.inventory.add(Resource.Wood, tree.woodYield))
-```
-
-`Quest.kt`:
-
-```kotlin
-quest(QuestId.GatherWood, target = 15) { it.player.inventory.amount(Resource.Wood) },
-```
-
-Hay que añadir los `import com.apergas.rpg.domain.entities.player.Resource` necesarios.
-
-- [ ] **Step 6: Adaptar los tests de dominio a la API nueva**
-
-Patrón de sustitución en `WorldConstructionTests.kt`, `WorldChoppingTests.kt` y `QuestLogTests.kt`. Se añade `import com.apergas.rpg.domain.entities.player.Resource`.
-
-| Antes | Después |
-|---|---|
-| `inventory.addWood(n)` | `inventory.add(Resource.Wood, n)` |
-| `inventory.spendWood(n)!!` | `inventory.spend(mapOf(Resource.Wood to n))!!` |
-| `inventory.wood` | `inventory.amount(Resource.Wood)` |
-| `ConstructionRejection.NotEnoughWood` | `ConstructionRejection.NotEnoughResources` |
-
-Además, `testWhenConstructingWithoutEnoughWoodThenIsRejected` pasa a llamarse `testWhenConstructingWithoutEnoughResourcesThenIsRejected`.
-
-Crear `shared/src/commonTest/kotlin/com/apergas/rpg/domain/entities/building/BlueprintsTests.kt`:
-
-```kotlin
-package com.apergas.rpg.domain.entities.building
-
-import com.apergas.rpg.domain.entities.player.Resource
-import kotlin.test.Test
-import kotlin.test.assertEquals
-
-class BlueprintsTests {
-    @Test
-    fun testWhenLookingUpTheHouseThenCostsFifteenWood() {
-        // given
-        val id = BlueprintId.House
-
-        // when
-        val blueprint = Blueprints.of(id)
-
-        // then
-        assertEquals(mapOf(Resource.Wood to 15), blueprint.cost)
-        assertEquals(8, blueprint.hitsToBuild)
-    }
-}
-```
-
-Run: `./gradlew :shared:testAndroidHostTest --tests "com.apergas.rpg.domain.*"`
-Expected: FAIL sólo en `GameUseCaseImplTests` (`wood`, `hasAxe`, `woodCost`). Lo resuelve el paso siguiente.
-
-- [ ] **Step 7: `PlayerStatus`, `BuildOption` y `GameUseCaseImpl`**
-
-`PlayerStatus.kt`: se sustituyen `wood` y `hasAxe` por el inventario completo.
-
-```kotlin
-data class PlayerStatus(
-    val position: Position,
-    val activity: PlayerActivity,
-    /** What the player is walking to or working on, if anything. */
-    val target: Position?,
-    /** Progress of the current swing, 0..1, while chopping or constructing. */
-    val swingProgress: Double,
-    val inventory: Inventory,
-)
-```
-
-`BuildOption.kt`:
-
-```kotlin
-package com.apergas.rpg.domain.entities.game
-
-import com.apergas.rpg.domain.entities.building.BlueprintId
-import com.apergas.rpg.domain.entities.player.Resource
-
-data class BuildOption(val blueprint: BlueprintId, val cost: Map<Resource, Int>, val missing: Map<Resource, Int>) {
-    val isAffordable: Boolean get() = missing.isEmpty()
-}
-```
-
-`GameUseCaseImpl`:
-
-```kotlin
-override fun playerStatus(): PlayerStatus {
-    val world = world
-    val player = world.player
-    return PlayerStatus(
-        position = player.position,
-        activity = player.activity.toPlayerActivity(),
-        target = world.playerTarget,
-        swingProgress = world.workProgress,
-        inventory = player.inventory,
-    )
-}
-
-override fun buildOptions(): List<BuildOption> {
-    val inventory = world.player.inventory
-    return Blueprints.all.map { BuildOption(it.id, it.cost, inventory.missing(it.cost)) }
-}
-```
-
-Se elimina el import de `ToolKind` si queda sin uso.
-
-En `GameUseCaseImplTests.kt`:
-
-| Antes | Después |
-|---|---|
-| `sut.playerStatus().wood` | `sut.playerStatus().inventory.amount(Resource.Wood)` |
-| `status.hasAxe` | `status.inventory.hasTool(ToolKind.Axe)` |
-| `Player.mock.inventory.addWood(10)` | `Player.mock.inventory.add(Resource.Wood, 10)` |
-
-La aserción de `testWhenWoodIsNotEnoughThenHouseIsNotAffordable` queda así:
-
-```kotlin
-assertEquals(
-    listOf(BuildOption(BlueprintId.House, cost = mapOf(Resource.Wood to 15), missing = mapOf(Resource.Wood to 5))),
-    options,
-)
-assertFalse(options.single().isAffordable)
-```
-
-Run: `./gradlew :shared:testAndroidHostTest --tests "com.apergas.rpg.domain.*"`
+Run: `flutter test test/layers/domain/world/extensions/inventory_rules_test.dart`
 Expected: PASS.
 
-- [ ] **Step 8: Test de `SpriteNames`, que debe fallar**
+- [ ] **Step 5: `BlueprintEntity`, `Blueprints`, `ConstructionRejection`, `Construction`, `Woodcutting` y `Quests`**
 
-Añadir a `SpriteNamesTests.kt`:
+`lib/layers/domain/entities/building/blueprint_entity.dart`: `woodCost` pasa a `cost`.
 
-```kotlin
-@Test
-fun testWhenNamingBuildingsAndItemsThenFollowsTheAtlasFrameNames() {
-    // given
-    val house = BlueprintId.House
-    val axe = ToolKind.Axe
+```dart
+import 'package:collection/collection.dart';
 
-    // when
-    val buildingName = SpriteNames.building(house)
-    val frontOffset = SpriteNames.buildingFrontOffset(house)
-    val itemName = SpriteNames.item(axe)
+import '../../../../core/config/constants/enum/blueprint_id.dart';
+import '../../../../core/config/constants/enum/resource.dart';
 
-    // then
-    assertEquals("house", buildingName)
-    assertEquals(24.0, frontOffset)
-    assertEquals("axe-pickup", itemName)
+class BlueprintEntity {
+  final BlueprintId id;
+  final Map<Resource, int> cost;
+  final int hitsToBuild;
+  final double footprintRadius;
+
+  const BlueprintEntity({
+    required this.id,
+    required this.cost,
+    required this.hitsToBuild,
+    required this.footprintRadius,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      other is BlueprintEntity &&
+      other.id == id &&
+      const MapEquality<Resource, int>().equals(other.cost, cost) &&
+      other.hitsToBuild == hitsToBuild &&
+      other.footprintRadius == footprintRadius;
+
+  @override
+  int get hashCode => Object.hash(id, const MapEquality<Resource, int>().hash(cost), hitsToBuild, footprintRadius);
 }
 ```
 
-Run: `./gradlew :shared:testAndroidHostTest --tests "com.apergas.rpg.presentation.forest.SpriteNamesTests"`
-Expected: FAIL (`Unresolved reference: building`).
+`lib/layers/domain/rules/blueprints.dart`:
 
-- [ ] **Step 9: Implementar `SpriteNames`**
+```dart
+static const BlueprintEntity house = BlueprintEntity(
+  id: BlueprintId.house,
+  cost: {Resource.wood: 15},
+  hitsToBuild: 8,
+  footprintRadius: 40,
+);
+```
 
-```kotlin
-package com.apergas.rpg.presentation.forest
+`lib/core/config/constants/enum/construction_rejection.dart`:
 
-import com.apergas.rpg.domain.entities.building.BlueprintId
-import com.apergas.rpg.domain.entities.decoration.DecorationKind
-import com.apergas.rpg.domain.entities.player.ToolKind
-import com.apergas.rpg.domain.entities.tree.TreeKind
+```dart
+enum ConstructionRejection { notEnoughResources, blocked }
+```
 
-/** Atlas frame names (forest.json) for what the level places. Shared so every app draws the same art. */
-object SpriteNames {
-    fun tree(kind: TreeKind): String = "tree-${kebab(kind.name)}"
-    fun decoration(kind: DecorationKind): String = "decor-${kebab(kind.name)}"
+`Construction.place` (`lib/layers/domain/world/construction.dart`):
 
-    fun building(id: BlueprintId): String = when (id) {
-        BlueprintId.House -> "house"
-    }
+```dart
+final paid = state.player.inventory.spend(blueprint.cost);
+if (paid == null) return const ConstructionRejectedEntity(reason: ConstructionRejection.notEnoughResources);
+```
 
-    /**
-     * Building sprites pivot on the bottom of their front wall. In the 3/4 view the ground footprint
-     * (centred on the domain position) lies behind that wall, so the sprite is drawn this much lower.
-     */
-    fun buildingFrontOffset(id: BlueprintId): Double = when (id) {
-        BlueprintId.House -> 24.0
-    }
+`Woodcutting.impact` (`lib/layers/domain/world/woodcutting.dart`):
 
-    fun item(kind: ToolKind): String = when (kind) {
-        ToolKind.Axe -> "axe-pickup"
-    }
+```dart
+state.player = state.player.withInventory(state.player.inventory.add(Resource.wood, tree.woodYield));
+```
 
-    private fun kebab(name: String): String = name.replace(Regex("(?<!^)([A-Z])"), "-$1").lowercase()
+`Quests.all` (`lib/layers/domain/quests/quests.dart`):
+
+```dart
+_MeasuredQuest(id: QuestId.gatherWood, target: 15, measure: (world) => world.player.inventory.amount(Resource.wood)),
+```
+
+Se añaden los `import '…/core/config/constants/enum/resource.dart';` necesarios.
+
+Se borran `lib/layers/domain/world/extensions/blueprint_rules.dart` y su test.
+
+- [ ] **Step 6: `BuildOptionEntity`, `PlayerStatusEntity` y sus casos de uso**
+
+`lib/layers/domain/entities/game/build_option_entity.dart`:
+
+```dart
+import 'package:collection/collection.dart';
+
+import '../../../../core/config/constants/enum/blueprint_id.dart';
+import '../../../../core/config/constants/enum/resource.dart';
+
+class BuildOptionEntity {
+  final BlueprintId blueprint;
+  final Map<Resource, int> cost;
+  final Map<Resource, int> missing;
+
+  const BuildOptionEntity({required this.blueprint, required this.cost, required this.missing});
+
+  bool get isAffordable => missing.isEmpty;
+
+  @override
+  bool operator ==(Object other) =>
+      other is BuildOptionEntity &&
+      other.blueprint == blueprint &&
+      const MapEquality<Resource, int>().equals(other.cost, cost) &&
+      const MapEquality<Resource, int>().equals(other.missing, missing);
+
+  @override
+  int get hashCode => Object.hash(
+    blueprint,
+    const MapEquality<Resource, int>().hash(cost),
+    const MapEquality<Resource, int>().hash(missing),
+  );
 }
 ```
 
-Run: el mismo comando del paso 8. Expected: PASS.
+`lib/layers/domain/entities/game/player_status_entity.dart`: `wood` y `hasAxe` se sustituyen por `final InventoryEntity inventory;` (constructor `required this.inventory`, en `==` y en `hashCode`).
 
-- [ ] **Step 10: Test del HUD genérico en el view model, que debe fallar**
+`GetPlayerStatusUseCase.call()`:
 
-En `ForestViewModelTests.kt`:
-- Se cambian `addWood(n)` por `add(Resource.Wood, n)` y `addTool(ToolKind.Axe).addWood(15)` por `addTool(ToolKind.Axe).add(Resource.Wood, 15)`.
-- `hud.wood` y `hud.hasAxe` siguen existiendo, como deprecados, hasta T0.5.
+```dart
+return PlayerStatusEntity(
+  position: player.position,
+  activity: player.activity.playerActivity,
+  target: world.playerTarget,
+  swingProgress: world.workProgress,
+  inventory: player.inventory,
+);
+```
 
-Sustituir `testWhenWoodIsNotEnoughThenBuildMenuShowsWhatIsMissingAndRefusesToPlace` por:
+Se quitan los imports de `tool_kind.dart` e `inventory_rules.dart` si quedan sin uso.
 
-```kotlin
-@Test
-fun testWhenResourcesAreNotEnoughThenBuildMenuShowsWhatIsMissingAndRefusesToPlace() = runTest {
-    // given
-    val world = World.mock()
-    world.updatePlayer { it.withInventory(it.inventory.add(Resource.Wood, 10)) }
-    val sut = forestViewModelFor(world)
-    val effects = sut.collectEffects(backgroundScope, UnconfinedTestDispatcher(testScheduler))
-    sut.onIntent(ForestIntent.Tick(16.0))
+`GetBuildOptionsUseCase.call()`:
 
-    // when
-    sut.onIntent(ForestIntent.BuildRequested(BlueprintId.House))
-
-    // then
-    assertEquals(
-        listOf(BuildItem(BlueprintId.House, "Casa", "15 de madera", "Faltan 5 de madera", isEnabled = false)),
-        sut.uiState.value.hud.buildItems,
-    )
-    assertNull(sut.uiState.value.placement)
-    assertContains(effects, ForestEffect.ShowMessage("No tienes recursos suficientes."))
-}
-
-@Test
-fun testWhenRenderingTheHudThenListsEveryResourceAndToolWithOwnership() {
-    // given
-    val world = World.mock()
-    world.updatePlayer { it.withInventory(it.inventory.add(Resource.Wood, 7)) }
-
-    // when
-    val sut = forestViewModelFor(world)
-
-    // then
-    assertEquals(listOf(ResourceItem(Resource.Wood, "Madera", 7)), sut.uiState.value.hud.resources)
-    assertEquals(listOf(ToolItem(ToolKind.Axe, "Hacha", isOwned = false)), sut.uiState.value.hud.tools)
+```dart
+List<BuildOptionEntity> call() {
+  final inventory = _sessionRepository.current().world.player.inventory;
+  return Blueprints.all
+      .map(
+        (blueprint) => BuildOptionEntity(
+          blueprint: blueprint.id,
+          cost: blueprint.cost,
+          missing: inventory.missing(blueprint.cost),
+        ),
+      )
+      .toList();
 }
 ```
 
-Si hay algún test que espera el mensaje de edificio terminado `"¡Casa construida!"`, pasa a esperar `"Construcción terminada: Casa"`.
+- [ ] **Step 7: Adaptar mocks y tests de dominio a la API nueva**
 
-Run: `./gradlew :shared:testAndroidHostTest --tests "com.apergas.rpg.presentation.forest.ForestViewModelTests"`
-Expected: FAIL (`Unresolved reference: ResourceItem`).
+Patrón de sustitución en todos los ficheros de test y mocks de la lista *Files* (se añade `import 'package:rpg/core/config/constants/enum/resource.dart';` donde haga falta):
 
-- [ ] **Step 11: Contrato, textos y view model**
+| Antes | Después |
+|---|---|
+| `inventory.addWood(n)` | `inventory.add(Resource.wood, n)` |
+| `inventory.spendWood(n)!` | `inventory.spend({Resource.wood: n})!` |
+| `inventory.wood` | `inventory.amount(Resource.wood)` |
+| `InventoryEntity(wood: n)` | `InventoryEntity(resources: {Resource.wood: n})` |
+| `InventoryEntity(wood: n, tools: {...})` | `InventoryEntity(resources: {Resource.wood: n}, tools: {...})` |
+| `BlueprintEntity(..., woodCost: n, ...)` | `BlueprintEntity(..., cost: {Resource.wood: n}, ...)` |
+| `BlueprintEntityMock.make(woodCost: n)` | `BlueprintEntityMock.make(cost: {Resource.wood: n})` |
+| `ConstructionRejection.notEnoughWood` | `ConstructionRejection.notEnoughResources` |
+| `ConstructionResultEntityMock.notEnoughWood` | `ConstructionResultEntityMock.notEnoughResources` |
+| `status.wood` / `getPlayerStatus().wood` | `status.inventory.amount(Resource.wood)` |
+| `status.hasAxe` | `status.inventory.hasTool(ToolKind.axe)` |
+| `PlayerStatusEntity(..., wood: 0, hasAxe: false)` | `PlayerStatusEntity(..., inventory: InventoryEntityMock.mock)` |
 
-`ForestContract.kt`: añadir los tipos y los campos nuevos y deprecar los viejos.
+`test/mocks/domain/entities/game/build_option_entity_mock.dart`:
 
-```kotlin
-/** Display-ready HUD content: texts already formatted. */
-data class HudState(
-    val resources: List<ResourceItem>,
-    val tools: List<ToolItem>,
-    @Deprecated("Use resources; removed in F0 T0.5") val wood: Int,
-    @Deprecated("Use tools; removed in F0 T0.5") val hasAxe: Boolean,
-    val questBadge: String,
-    val quests: List<QuestItem>,
-    val buildItems: List<BuildItem>,
-    /** The build menu is locked while a building is being placed. */
-    val isBuildLocked: Boolean,
-)
+```dart
+import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:rpg/layers/domain/entities/game/build_option_entity.dart';
 
-data class ResourceItem(val resource: Resource, val name: String, val amount: Int)
+abstract final class BuildOptionEntityMock {
+  static const BuildOptionEntity mock = BuildOptionEntity(
+    blueprint: BlueprintId.house,
+    cost: {Resource.wood: 15},
+    missing: {},
+  );
 
-data class ToolItem(val tool: ToolKind, val name: String, val isOwned: Boolean)
-```
+  static const BuildOptionEntity unaffordable = BuildOptionEntity(
+    blueprint: BlueprintId.house,
+    cost: {Resource.wood: 15},
+    missing: {Resource.wood: 5},
+  );
 
-`ForestLabels.kt`: cambiar las funciones de coste y añadir las nuevas. `WOOD` y `AXE` quedan deprecados.
-
-```kotlin
-@Deprecated("Use resource(Resource.Wood); removed in F0 T0.5") const val WOOD = "Madera"
-@Deprecated("Use tool(ToolKind.Axe); removed in F0 T0.5") const val AXE = "Hacha"
-
-fun resource(resource: Resource) = when (resource) {
-    Resource.Wood -> "Madera"
-}
-
-fun tool(tool: ToolKind) = when (tool) {
-    ToolKind.Axe -> "Hacha"
-}
-
-fun cost(cost: Map<Resource, Int>) = amounts(cost)
-fun missing(missing: Map<Resource, Int>) = "Faltan ${amounts(missing)}"
-
-private fun amounts(amounts: Map<Resource, Int>) =
-    amounts.entries.joinToString(", ") { (resource, quantity) -> "$quantity de ${resource(resource).lowercase()}" }
-```
-
-En `ForestLabels.Messages`:
-- `NOT_ENOUGH_WOOD` se renombra a `const val NOT_ENOUGH_RESOURCES = "No tienes recursos suficientes."`.
-- `buildingCompleted` queda como `fun buildingCompleted(name: String) = "Construcción terminada: $name"`, para que no dé por hecho un nombre femenino.
-
-`ForestViewModel.kt`:
-- Sustituir `NOT_ENOUGH_WOOD` por `NOT_ENOUGH_RESOURCES`, en `buildRequested` y en `place`.
-- En `place`, la rama `ConstructionRejection.NotEnoughWood` pasa a `ConstructionRejection.NotEnoughResources`.
-- En `playerRenderState` se cambia `status.hasAxe` por `status.inventory.hasTool(ToolKind.Axe)`.
-- `hudState` queda así:
-
-```kotlin
-private fun hudState(status: PlayerStatus, quests: List<QuestProgress>): HudState {
-    val inventory = status.inventory
-    return HudState(
-        resources = Resource.entries.map { ResourceItem(it, ForestLabels.resource(it), inventory.amount(it)) },
-        tools = ToolKind.entries.map { ToolItem(it, ForestLabels.tool(it), inventory.hasTool(it)) },
-        wood = inventory.amount(Resource.Wood),
-        hasAxe = inventory.hasTool(ToolKind.Axe),
-        questBadge = "${quests.count { it.isCompleted }}/${quests.size}",
-        quests = quests.map { quest ->
-            QuestItem(
-                title = ForestLabels.questTitle(quest.id),
-                progressText = when {
-                    quest.isCompleted -> ForestLabels.QUEST_DONE
-                    quest.target > 1 -> "${quest.progress}/${quest.target}"
-                    else -> ""
-                },
-                status = when {
-                    quest.isCompleted -> QuestItemStatus.Done
-                    quest.isCurrent -> QuestItemStatus.Current
-                    else -> QuestItemStatus.Pending
-                },
-            )
-        },
-        buildItems = gameUseCase.buildOptions().map { option ->
-            BuildItem(
-                blueprint = option.blueprint,
-                name = ForestLabels.blueprint(option.blueprint),
-                costText = ForestLabels.cost(option.cost),
-                missingText = if (option.isAffordable) null else ForestLabels.missing(option.missing),
-                isEnabled = option.isAffordable,
-            )
-        },
-        isBuildLocked = placement != null,
-    )
+  static BuildOptionEntity make({Map<Resource, int> missing = const {}}) =>
+      BuildOptionEntity(blueprint: BlueprintId.house, cost: const {Resource.wood: 15}, missing: missing);
 }
 ```
 
-Para que el uso interno de los campos deprecados no ensucie la compilación, la función lleva `@Suppress("DEPRECATION")`.
+`unaffordable` vale para `GameScenarioMock.tenWood()` (faltan 5). Si `build_option_entity_test.dart` usaba `make(isAffordable: false)`, pasa a `make(missing: InventoryEntityMock.fiveWood)` y comprueba `isAffordable`:
 
-Run: `./gradlew :shared:testAndroidHostTest`
-Expected: PASS (todos, incluido `ArchitectureTests`).
+```dart
+test('testWhenSomethingIsMissingThenIsNotAffordable', () {
+  // given
+  final option = BuildOptionEntityMock.make(missing: InventoryEntityMock.fiveWood);
 
-- [ ] **Step 12: Modelos web**
+  // when
+  final isAffordable = option.isAffordable;
 
-Test en `ForestWebControllerTests.kt`. Se añade al final de `testWhenAskingForTheWorldThenTreesAndAxeAreExposed`:
-
-```kotlin
-assertEquals("axe-pickup", world.items.single().frame)
+  // then
+  expect(isAffordable, isFalse);
+  expect(BuildOptionEntityMock.mock.isAffordable, isTrue);
+});
 ```
 
-Se añade también:
+Renombrados:
+- `testWhenWoodIsNotEnoughThenHouseIsNotAffordable` → `testWhenResourcesAreNotEnoughThenHouseIsNotAffordable` (`get_build_options_use_case_test.dart`).
+- En `world_construction_test.dart` y `construct_building_use_case_test.dart`, los tests que esperan el rechazo por madera pasan a llamarse `…WithoutEnoughResources…`.
 
-```kotlin
-@Test
-fun testWhenTickingThenHudListsResourcesAndToolsAsPlainValues() {
-    // given
-    val sut = ForestWebController()
+Run: `flutter test test/layers/domain test/layers/data test/core`
+Expected: PASS. La presentación todavía no compila (`ForestBloc` usa `status.wood`); lo resuelven los pasos 8 y 9.
 
-    // when
-    sut.tick(16.0)
-    val hud = sut.state().hud
+- [ ] **Step 8: Textos de coste y de rechazo**
 
-    // then
-    assertEquals("wood", hud.resources.single().id)
-    assertEquals("Madera", hud.resources.single().name)
-    assertEquals(0, hud.resources.single().amount)
-    assertEquals("axe", hud.tools.single().id)
-    assertEquals(false, hud.tools.single().isOwned)
+`es.json`, en `forest`:
+- `hud.cost` se borra.
+- `hud.missing` pasa a `"Faltan {amounts}"`.
+- Nuevo bloque `"amount": { "wood": "{amount} de madera" }`.
+- `message.notEnoughWood` se renombra a `"notEnoughResources": "No tienes recursos suficientes."`.
+- `message.buildingCompleted` pasa a `"Construcción terminada: {name}"`.
+
+`Internationalize`:
+
+```dart
+static String forestAmount({required Resource resource, required int amount}) => switch (resource) {
+  Resource.wood => '$_forest.amount.wood'.tr(namedArgs: {'amount': '$amount'}),
+};
+static String forestMissing({required String amounts}) =>
+    '$_forest.hud.missing'.tr(namedArgs: {'amounts': amounts});
+static String get forestMessageNotEnoughResources => '$_forest.message.notEnoughResources'.tr();
+```
+
+Se borran `forestCost` y `forestMessageNotEnoughWood`.
+
+`test/core/assets/i18n/internationalize_test.dart`:
+- `testWhenFormattingCostsThenInsertsTheWood` pasa a `testWhenFormattingAmountsThenNamesTheResource`:
+
+```dart
+test('testWhenFormattingAmountsThenNamesTheResource', () {
+  // given
+  const amount = 15;
+
+  // when
+  final cost = Internationalize.forestAmount(resource: Resource.wood, amount: amount);
+  final missing = Internationalize.forestMissing(amounts: Internationalize.forestAmount(resource: Resource.wood, amount: 5));
+  final gained = Internationalize.forestMessageWoodGained(wood: 6);
+
+  // then
+  expect(cost, '15 de madera');
+  expect(missing, 'Faltan 5 de madera');
+  expect(gained, '+6 de madera');
+});
+```
+
+- En `testWhenFormattingMessagesWithNamesThenInsertsThem`: `expect(completed, 'Construcción terminada: Casa');`.
+- En la lista de `testWhenReadingEveryForestTextThenNoneFallsBackToItsKey`, `forestMessageNotEnoughWood` pasa a `forestMessageNotEnoughResources`.
+
+- [ ] **Step 9: Adaptar `ForestBloc` (sin cambiar todavía `HudData`)**
+
+En `lib/layers/presentation/features/forest/bloc/forest_bloc.dart`:
+- `_openPlacement` y la rama de rechazo de `_place` usan `Internationalize.forestMessageNotEnoughResources`; el `case` pasa a `ConstructionRejectedEntity(reason: ConstructionRejection.notEnoughResources)`.
+- En `_playerRenderData`, `status.hasAxe` pasa a `status.inventory.hasTool(ToolKind.axe)` (import de `domain/world/extensions/inventory_rules.dart`).
+- `_hudData` sigue rellenando `wood` y `hasAxe` de `HudData`, ahora desde el inventario; los textos del menú salen del coste genérico:
+
+```dart
+HudData _hudData(PlayerStatusEntity status, List<QuestProgressEntity> quests) {
+  return HudData(
+    wood: status.inventory.amount(Resource.wood),
+    hasAxe: status.inventory.hasTool(ToolKind.axe),
+    questBadge: '${quests.where((quest) => quest.isCompleted).length}/${quests.length}',
+    quests: [for (final quest in quests) _questItem(quest)],
+    buildItems: [for (final option in _getBuildOptionsUseCase()) _buildItem(option)],
+    isBuildLocked: _placement != null,
+  );
+}
+
+BuildItemData _buildItem(BuildOptionEntity option) {
+  return BuildItemData(
+    blueprint: option.blueprint,
+    name: Internationalize.forestBlueprint(id: option.blueprint),
+    costText: _amounts(option.cost),
+    missingText: option.isAffordable ? null : Internationalize.forestMissing(amounts: _amounts(option.missing)),
+    isEnabled: option.isAffordable,
+  );
+}
+
+String _amounts(Map<Resource, int> amounts) {
+  return amounts.entries
+      .sortedBy<num>((entry) => entry.key.index)
+      .map((entry) => Internationalize.forestAmount(resource: entry.key, amount: entry.value))
+      .join(', ');
 }
 ```
 
-En `WebModels.kt` se añaden los tipos nuevos; los campos viejos se mantienen.
+`test/mocks/presentation/features/forest/build_item_data_mock.dart`:
 
-```kotlin
-@JsExport class WebHud(
-    val resources: Array<WebResourceItem>,
-    val tools: Array<WebToolItem>,
-    val wood: Int,          // deprecated: removed in T0.5
-    val hasAxe: Boolean,    // deprecated: removed in T0.5
-    val questBadge: String,
-    val quests: Array<WebQuestItem>,
-    val buildItems: Array<WebBuildItem>,
-    val isBuildLocked: Boolean,
-)
-
-@JsExport class WebResourceItem(val id: String, val name: String, val amount: Int)
-
-@JsExport class WebToolItem(val id: String, val name: String, val isOwned: Boolean)
-
-@JsExport class WebPlacement(val blueprint: String, val frame: String, val frontOffset: Double, val position: WebPoint, val isValid: Boolean)
-
-@JsExport class WebItem(val id: String, val kind: String, val frame: String, val position: WebPoint)
-
-@JsExport class WebBuilding(val id: String, val blueprint: String, val frame: String, val frontOffset: Double, val position: WebPoint, val progress: Double)
+```dart
+costText: Internationalize.forestAmount(resource: Resource.wood, amount: 15),
+// makeUnaffordable:
+missingText: Internationalize.forestMissing(
+  amounts: Internationalize.forestAmount(resource: Resource.wood, amount: missingWood),
+),
 ```
 
-`WebMappers.kt`:
+En `forest_bloc_test.dart`:
+- `testWhenWoodIsNotEnoughThenBuildMenuShowsWhatIsMissingAndRefusesToPlace` pasa a `testWhenResourcesAreNotEnoughThenBuildMenuShowsWhatIsMissingAndRefusesToPlace` y espera `Internationalize.forestMessageNotEnoughResources`.
 
-```kotlin
-internal fun Building.toWeb() = WebBuilding(
-    id, blueprint.id.name, SpriteNames.building(blueprint.id), SpriteNames.buildingFrontOffset(blueprint.id), position.toWeb(), progress,
-)
+Run: `flutter test`
+Expected: PASS (todos, incluido `architecture_test.dart`).
 
-// in WorldSnapshot.toWeb():
-items = items.map { WebItem(it.id, it.kind.name.lowercase(), SpriteNames.item(it.kind), it.position.toWeb()) }.toTypedArray(),
-
-// in ForestState.toWeb(), hud = WebHud(...):
-resources = hud.resources.map { WebResourceItem(it.resource.name.lowercase(), it.name, it.amount) }.toTypedArray(),
-tools = hud.tools.map { WebToolItem(it.tool.name.lowercase(), it.name, it.isOwned) }.toTypedArray(),
-
-// placement:
-placement = placement?.let {
-    WebPlacement(it.blueprint.name, SpriteNames.building(it.blueprint), SpriteNames.buildingFrontOffset(it.blueprint), it.position.toWeb(), it.isValid)
-},
-```
-
-Como en Kotlin/JS `@JsExport` usa los argumentos por posición, hay que revisar cualquier otra llamada a estos constructores con `grep -rn "WebPlacement(\|WebItem(\|WebBuilding(\|WebHud(" shared/src/jsMain`.
-
-`toWeb()` lleva `@Suppress("DEPRECATION")` porque sigue rellenando `wood` y `hasAxe`.
-
-**Compatibilidad de la web actual:**
-- `webApp` sigue compilando: sólo se han **añadido** campos.
-- Los constructores no se llaman desde TypeScript.
-
-- [ ] **Step 13: Verificación completa de `shared` y de que las apps siguen compilando**
+- [ ] **Step 10: Verificación completa**
 
 ```bash
-./gradlew :shared:allTests
-./gradlew :shared:jsBrowserProductionLibraryDistribution
-cd webApp && npm ci && npm run typecheck && npm test && npm run build && cd ..
-./gradlew :androidApp:assembleDebug :androidApp:testDebugUnitTest
-xcodebuild build -project iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 17'
+dart format --line-length 120 <ficheros escritos en esta tarea>
+dart run build_runner build --delete-conflicting-outputs && git diff --exit-code -- lib/core/config/di/di.config.dart test
+flutter analyze
+flutter test
+flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart
 ```
 
-Expected: todo en verde. Sólo aparecen *warnings* de deprecación en las apps (`WOOD`, `AXE`, `hud.wood`, `hud.hasAxe`).
+Expected: todo en verde; `build_runner` no cambia nada (no hay inyectables ni mocks nuevos).
 
-- [ ] **Step 14: Commit y PR**
+- [ ] **Step 11: Commit y PR**
 
 ```bash
-git add shared
-git commit -m "[PROJECT-X]: Generalize inventory, costs and HUD over resources and tools"
+git add lib test
+git commit -m "[PROJECT-X]: Generalize inventory and building costs over resources"
 ```
 
 Después, `/cerrar-tarea`: abre el PR con `Closes #<issue T0.1>`.
 
-**Cómo probarlo a mano:** `cd webApp && npm run dev`. El juego funciona igual que antes, salvo los textos "Faltan 5 de madera" y "Construcción terminada: Casa".
+**Cómo probarlo a mano:** `flutter run -d chrome`. El juego funciona igual que antes, salvo los textos "Faltan 5 de madera", "No tienes recursos suficientes." y "Construcción terminada: Casa".
 
 ---
 
-### Task T0.2: Web: HUD de recursos y sprites desde `shared`
+### Task T0.2: Presentación: HUD de recursos y sprites por tipo
 
 **Files:**
+- Create:
+  - `lib/layers/presentation/features/forest/models/resource_item_data.dart`
+  - `lib/layers/presentation/features/forest/models/tool_item_data.dart`
+  - `test/mocks/presentation/features/forest/resource_item_data_mock.dart`
+  - `test/mocks/presentation/features/forest/tool_item_data_mock.dart`
+  - `test/layers/presentation/features/forest/models/resource_item_data_test.dart`
+  - `test/layers/presentation/features/forest/models/tool_item_data_test.dart`
 - Modify:
-  - `webApp/src/presentation/screens/forest/hud/Hud.ts`
-  - `webApp/src/presentation/screens/forest/hud/hud.css`
-  - `webApp/src/presentation/screens/forest/world/BuildingView.ts`
-  - `webApp/src/presentation/screens/forest/world/ItemView.ts`
-  - `webApp/src/presentation/screens/forest/ForestScene.ts`
-  - `webApp/src/presentation/common/assets.ts`
+  - `lib/layers/presentation/features/forest/models/hud_data.dart`
+  - `lib/layers/presentation/features/forest/bloc/forest_bloc.dart`
+  - `lib/layers/presentation/features/forest/widgets/resource_bar.dart`
+  - `lib/layers/presentation/features/forest/widgets/hud_overlay.dart`
+  - `lib/layers/presentation/theme/images/custom_icons.dart`
+  - `lib/layers/presentation/features/forest/game/atlas/sprite_names.dart`
+  - `lib/layers/presentation/features/forest/game/render/render_constants.dart`
+  - `lib/layers/presentation/features/forest/game/components/building_component.dart`
+  - `lib/layers/presentation/features/forest/game/components/ground_item_component.dart`
+  - `lib/layers/presentation/features/forest/game/components/placement_ghost_component.dart`
+  - `lib/layers/presentation/features/forest/game/forest_scene_component.dart`
+  - `lib/layers/presentation/features/forest/game/particles/particle_bursts.dart`
+  - `lib/core/assets/i18n/internationalize.dart` y `lib/core/assets/i18n/translations/es.json`
+  - `CLAUDE.md` (constante del desplazamiento de los edificios)
+- Test (en `test/`):
+  - `layers/presentation/features/forest/widgets/resource_bar_test.dart`: se reescribe.
+  - `layers/presentation/features/forest/widgets/hud_overlay_test.dart`
+  - `layers/presentation/features/forest/models/hud_data_test.dart`
+  - `layers/presentation/features/forest/bloc/forest_bloc_test.dart`
+  - `layers/presentation/features/forest/game/atlas/sprite_names_test.dart`
+  - `layers/presentation/features/forest/game/atlas/lpc_atlas_test.dart` y `lpc_assets_test.dart`
+  - `layers/presentation/features/forest/game/components/building_component_test.dart`, `ground_item_component_test.dart`, `placement_ghost_component_test.dart`
+  - `layers/presentation/features/forest/game/forest_scene_component_test.dart`
+  - `layers/presentation/features/forest/game/particles/particle_bursts_test.dart`
+  - `core/assets/i18n/internationalize_test.dart`
+  - Mocks: `mocks/presentation/features/forest/hud_data_mock.dart`, `mocks/presentation/features/forest/game/lpc_assets_mock.dart`, `mocks/presentation/features/forest/game/particle_mock.dart`.
 
 **Interfaces:**
-- Consumes (de T0.1):
-  - `WebHud.resources: WebResourceItem[] {id, name, amount}`
-  - `WebHud.tools: WebToolItem[] {id, name, isOwned}`
-  - `WebItem.frame`
-  - `WebBuilding.frame` y `WebBuilding.frontOffset`
-  - `WebPlacement.frame` y `WebPlacement.frontOffset`
-- Produces: un HUD que pinta **cualquier** recurso o herramienta con el icono CSS `hud__icon--<id>`, y `BuildingView` / `ItemView` que dibujan el frame que reciben. Las fases F5–F8 sólo añaden un icono CSS y un frame del atlas.
+- Consumes (de T0.1): `Resource`, `InventoryRules.amount` / `hasTool`, `PlayerStatusEntity.inventory`.
+- Produces (lo que usan las fases siguientes):
+  ```dart
+  // models
+  ResourceItemData({required Resource resource, required String name, required int amount})
+  ToolItemData({required ToolKind tool, required String name, required bool isOwned})
+  HudData({required List<ResourceItemData> resources, required List<ToolItemData> tools, questBadge, quests, buildItems, isBuildLocked})
+
+  // Internationalize
+  static String forestResource({required Resource resource});   // "Madera"
+  static String forestTool({required ToolKind tool});            // "Hacha"
+
+  // CustomIcons
+  static String resource(Resource resource);   // wood.svg
+  static String tool(ToolKind tool);           // axe.svg
+
+  // ResourceBar
+  ResourceBar({required List<ResourceItemData> resources, required List<ToolItemData> tools, bool showLabels = true})
+  static Key toolKey(ToolKind tool);           // Key('resourceBarTool-axe')
+
+  // game/atlas/sprite_names.dart
+  static String building(BlueprintId id);      // house -> 'house'
+  static String item(ToolKind kind);           // axe -> 'axe-pickup'
+
+  // game/render/render_constants.dart
+  static double buildingFrontOffset(BlueprintId id);   // house -> 24
+
+  // BuildingComponent
+  PositionEntity get front;                    // footprint centre + buildingFrontOffset
+
+  // PlacementGhostComponent
+  PlacementGhostComponent({required LpcAssets assets, required BlueprintId blueprint})
+
+  // ParticleBursts
+  static List<Particle> dust({required PositionEntity front, required math.Random random});
+  static double dustSortY(PositionEntity front);
+  ```
+
+Una fase que añade un recurso o una herramienta sólo añade: el valor del enum, su caso en `Internationalize.forestResource`/`forestTool` (y `forestAmount`), su texto en `es.json`, su SVG y su caso en `CustomIcons`. Un edificio nuevo añade su caso en `SpriteNames.building` y `RenderConstants.buildingFrontOffset`.
 
 - [ ] **Step 1: Rama**
 
 ```bash
-git switch develop && git pull && git switch -c feature/PROJECT-X-f0-web
-./gradlew :shared:jsBrowserProductionLibraryDistribution && (cd webApp && npm ci)
+git switch develop && git pull && git switch -c feature/PROJECT-X-f0-presentation
 ```
 
-- [ ] **Step 2: Sprites de edificios e ítems.** En `BuildingView.ts` se sustituyen `addHouseImage` / `placeHouseImage` por funciones genéricas:
+- [ ] **Step 2: Test de `SpriteNames` y del desplazamiento, que debe fallar**
 
-```ts
-/** Draws a building where `position` is the centre of its ground footprint. */
-export function addBuildingImage(scene: Phaser.Scene, frame: string, frontOffset: number, position: WebPoint): Phaser.GameObjects.Image {
-  return placeBuildingImage(scene.add.image(0, 0, ForestAtlas.key, frame), frontOffset, position);
+En `test/layers/presentation/features/forest/game/atlas/sprite_names_test.dart` se añade:
+
+```dart
+test('testWhenNamingBuildingsAndItemsThenFollowsTheAtlasFrameNames', () {
+  // given
+  const house = BlueprintId.house;
+  const axe = ToolKind.axe;
+
+  // when
+  final buildingName = SpriteNames.building(house);
+  final frontOffset = RenderConstants.buildingFrontOffset(house);
+  final itemName = SpriteNames.item(axe);
+
+  // then
+  expect(buildingName, 'house');
+  expect(frontOffset, 24);
+  expect(itemName, 'axe-pickup');
+});
+```
+
+Run: `flutter test test/layers/presentation/features/forest/game/atlas/sprite_names_test.dart`
+Expected: FAIL de compilación (`building`, `item` y `buildingFrontOffset` no existen).
+
+- [ ] **Step 3: `SpriteNames` y `RenderConstants`**
+
+`lib/layers/presentation/features/forest/game/atlas/sprite_names.dart`:
+
+```dart
+import '../../../../../../core/config/constants/enum/blueprint_id.dart';
+import '../../../../../../core/config/constants/enum/decoration_kind.dart';
+import '../../../../../../core/config/constants/enum/tool_kind.dart';
+import '../../../../../../core/config/constants/enum/tree_kind.dart';
+import '../../../../../../core/utils/kebab_case.dart';
+
+abstract final class SpriteNames {
+  static const String stump = 'stump';
+
+  static String tree(TreeKind kind) => 'tree-${kind.name.toKebabCase()}';
+
+  static String decoration(DecorationKind kind) => 'decor-${kind.name.toKebabCase()}';
+
+  static String building(BlueprintId id) => switch (id) {
+    BlueprintId.house => 'house',
+  };
+
+  static String item(ToolKind kind) => switch (kind) {
+    ToolKind.axe => 'axe-pickup',
+  };
+}
+```
+
+`lib/layers/presentation/features/forest/game/render/render_constants.dart`: `static const double houseFrontOffset = 24;` se sustituye por
+
+```dart
+static double buildingFrontOffset(BlueprintId id) => switch (id) {
+  BlueprintId.house => 24,
+};
+```
+
+(con el import de `blueprint_id.dart`).
+
+Run: el comando del paso 2. Expected: PASS del test nuevo; el resto del proyecto aún no compila (siguiente paso).
+
+- [ ] **Step 4: Componentes que dibujan edificios e ítems**
+
+`BuildingComponent`:
+- El frame sale de `SpriteNames.building(building.blueprint.id)`.
+- Nuevo campo `final PositionEntity front;`, la base del muro frontal: `PositionEntity(x: building.position.x, y: building.position.y + RenderConstants.buildingFrontOffset(building.blueprint.id))`.
+- `position` y `priority` se calculan desde `front`:
+
+```dart
+BuildingComponent({required LpcAssets assets, required BuildingEntity building})
+  : this._(assets: assets, building: building, front: _frontOf(building));
+
+BuildingComponent._({required LpcAssets assets, required BuildingEntity building, required this.front})
+  : buildingId = building.id,
+    footprint = building.position,
+    super.fromFrame(
+      frame: assets.frame(SpriteNames.building(building.blueprint.id)),
+      sprite: assets.sprite(SpriteNames.building(building.blueprint.id)),
+      position: front.toVector2(),
+      priority: RenderDepth.bySortY(front.y),
+    ) {
+  progress = building.progress;
 }
 
-/** Anchors a building image to a footprint centre: the front wall sits below it, y-sorted by that wall. */
-export function placeBuildingImage(image: Phaser.GameObjects.Image, frontOffset: number, position: WebPoint): Phaser.GameObjects.Image {
-  const frontY = position.y + frontOffset;
-  return image.setPosition(position.x, frontY).setDepth(Depth.bySortY(frontY));
+static PositionEntity _frontOf(BuildingEntity building) => PositionEntity(
+  x: building.position.x,
+  y: building.position.y + RenderConstants.buildingFrontOffset(building.blueprint.id),
+);
+```
+
+`GroundItemComponent`: `SpriteNames.axePickup` pasa a `SpriteNames.item(item.kind)` en `frame` y `sprite`.
+
+`PlacementGhostComponent`:
+- El constructor recibe `required this.blueprint` (`final BlueprintId blueprint;`) y usa `SpriteNames.building(blueprint)`.
+- `show` usa `RenderConstants.buildingFrontOffset(blueprint)`:
+
+```dart
+void show(PlacementData placement) {
+  position.setValues(placement.position.x, placement.position.y + RenderConstants.buildingFrontOffset(blueprint));
+  _isValid = placement.isValid;
+  paint.colorFilter = ColorFilter.mode(placement.isValid ? validTint : invalidTint, BlendMode.modulate);
 }
 ```
 
-El constructor de `BuildingView` queda así:
+`ForestSceneComponent._showGhost`: si el fantasma existente es de otro *blueprint*, se sustituye.
 
-```ts
-constructor(scene: Phaser.Scene, building: WebBuilding) {
-  this.scene = scene;
-  this.image = addBuildingImage(scene, building.frame, building.frontOffset, building.position);
-  this.bar = scene.add.graphics().setDepth(Depth.bySortY(this.image.y) + 1);
-  this.setProgress(building.progress);
-}
-```
-
-`ItemView`:
-- El constructor pasa a ser `(scene: Phaser.Scene, item: WebItem)`.
-- La imagen usa `item.frame` en lugar de `ForestAtlas.AXE_PICKUP`.
-- `position` pasa a ser `item.position`.
-
-`assets.ts`:
-- Se borran `AXE_PICKUP`, `HOUSE` y `HOUSE_FRONT_OFFSET` (con su comentario).
-- `STUMP` se queda.
-
-- [ ] **Step 3: `ForestScene.ts`**
-
-```ts
-for (const item of world.items) this.items.set(item.id, new ItemView(this, item));
-for (const building of world.buildings) this.buildings.set(building.id, new BuildingView(this, building));
-// building-placed effect:
-const view = new BuildingView(this, effect.building);
-```
-
-`renderGhost`: si cambia de blueprint, se vuelve a crear el fantasma.
-
-```ts
-private renderGhost(placement: WebPlacement | null | undefined): void {
-  if (!placement) {
-    this.ghost?.destroy();
-    this.ghost = null;
+```dart
+void _showGhost(PlacementData? placement) {
+  final existing = _ghost;
+  if (placement == null || (existing != null && existing.blueprint != placement.blueprint)) {
+    existing?.removeFromParent();
+    _ghost = null;
+  }
+  if (placement == null) return;
+  final ghost = _ghost;
+  if (ghost != null) {
+    ghost.show(placement);
     return;
   }
-  if (this.ghost?.frame.name !== placement.frame) {
-    this.ghost?.destroy();
-    this.ghost = addBuildingImage(this, placement.frame, placement.frontOffset, placement.position).setAlpha(GHOST_ALPHA);
-  }
-  placeBuildingImage(this.ghost, placement.frontOffset, placement.position)
-    .setTint(placement.isValid ? GHOST_VALID_TINT : GHOST_INVALID_TINT)
-    .setDepth(Depth.OVERLAY);
+  final created = PlacementGhostComponent(assets: _assets, blueprint: placement.blueprint)..show(placement);
+  _ghost = created;
+  add(created);
 }
 ```
 
-Se actualizan los imports (`addBuildingImage`, `placeBuildingImage`).
+- [ ] **Step 5: Polvo desde el muro frontal**
 
-- [ ] **Step 4: HUD genérico.** En `Hud.ts`, el bloque `hud__resources` del `innerHTML` pasa a ser un contenedor vacío:
+`ParticleBursts` deja de conocer el desplazamiento de la casa:
 
-```html
-<div class="hud__panel hud__resources" data-ref="resources"></div>
-```
-
-Cambios en la clase:
-- Se sustituyen los campos `wood` y `axe` por `private readonly resources: HTMLElement;`, que se inicializa con `ref(root, 'resources')`.
-- En `render`, se cambian las dos líneas de `wood` / `hasAxe` por:
-
-```ts
-if (!previous || JSON.stringify([previous.resources, previous.tools]) !== JSON.stringify([state.resources, state.tools])) {
-  this.renderResources(state);
+```dart
+static List<Particle> dust({required PositionEntity front, required math.Random random}) {
+  return List.generate(dustPerHammer, (_) {
+    final speed = _between(random, dustSpeedMin, dustSpeedMax);
+    final angle = _between(random, dustAngleMin, dustAngleMax) * math.pi / 180;
+    return Particle(
+      kind: ParticleKind.dust,
+      origin: PositionEntity(x: front.x, y: front.y - dustLift),
+      velocityX: speed * math.cos(angle),
+      velocityY: speed * math.sin(angle),
+      gravity: 0,
+      rotationDegrees: 0,
+      lifespanSeconds: dustLifespanSeconds,
+      alphaStart: dustAlphaStart,
+      alphaEnd: dustAlphaEnd,
+      scaleStart: dustScaleStart,
+      scaleEnd: dustScaleEnd,
+    );
+  });
 }
+
+static double dustSortY(PositionEntity front) => front.y + sortYOffset;
 ```
 
-Método nuevo:
+Se quita el import de `render_constants.dart` si queda sin uso. En `ForestSceneComponent._onBuildingHammered`:
 
-```ts
-private renderResources(state: WebHud): void {
-  const resources = state.resources.map(
-    (resource) => `
-      <span class="hud__resource" title="${resource.name}">
-        <span class="hud__icon hud__icon--${resource.id}" aria-hidden="true"></span>
-        <span class="hud__label">${resource.name}</span>
-        <strong class="hud__value">${resource.amount}</strong>
-      </span>`,
-  );
-  const tools = state.tools.map(
-    (tool) => `
-      <span class="hud__resource hud__tool ${tool.isOwned ? 'hud__tool--owned' : ''}" title="${tool.name}">
-        <span class="hud__icon hud__icon--${tool.id}" aria-hidden="true"></span>
-        <span class="hud__label">${tool.name}</span>
-      </span>`,
-  );
-  this.resources.innerHTML = [...resources, ...tools].join('');
-}
+```dart
+particles: ParticleBursts.dust(front: building.front, random: _random),
+sortY: ParticleBursts.dustSortY(building.front),
 ```
 
-`hud.css` no cambia: `hud__icon--wood` y `hud__icon--axe` ya existen. Las fases siguientes añaden `hud__icon--<id>`.
+Tests:
+- `test/mocks/presentation/features/forest/game/particle_mock.dart`: `buildingCenter` (200, 180) se sustituye por `static const PositionEntity buildingFront = PositionEntity(x: 200, y: 204);`.
+- En `particle_bursts_test.dart`, `testWhenHammeringThenSixDustPuffsRiseFromTheFrontWall` usa `ParticleMock.buildingFront`: el origen sigue siendo `ParticleMock.dustOrigin` (200, 200) y `dustSortY` sigue siendo 205.
+- `lpc_assets_mock.dart` y `lpc_atlas_test.dart`: `SpriteNames.house` → `SpriteNames.building(BlueprintId.house)`, `SpriteNames.axePickup` → `SpriteNames.item(ToolKind.axe)`. `lpc_assets_test.dart`: igual.
+- `placement_ghost_component_test.dart`: `PlacementGhostComponent(assets: LpcAssetsMock.create(), blueprint: BlueprintId.house)`; la posición esperada no cambia (300, 224).
+- `building_component_test.dart`: se añade una aserción de `front` sobre el edificio que ya usa el test (`y` = `y` del edificio + 24).
 
-Los textos `labels.wood` / `labels.axe` dejan de usarse; `WebLabels` los pierde en T0.5.
-
-- [ ] **Step 5: Verificar**
-
-```bash
-cd webApp && npm run typecheck && npm test && npm run build
-```
-
+Run: `flutter test test/layers/presentation/features/forest/game`
 Expected: PASS.
 
-Prueba manual: `npm run dev`.
-- El HUD muestra la madera y el hacha (atenuada, y nítida al recogerla).
-- Talar sube la madera.
-- La previsualización de la casa sale verde o roja.
-- La casa construida se ve igual que antes.
+- [ ] **Step 6: Test del HUD genérico, que debe fallar**
 
-- [ ] **Step 6: Commit**
+`lib/layers/presentation/features/forest/models/resource_item_data.dart` y `tool_item_data.dart` se crean con el patrón de los demás modelos (campos `final`, constructor `const`, `==`/`hashCode` a mano). Sus tests de igualdad siguen el patrón de `hud_data_test.dart`.
 
-```bash
-git add webApp
-git commit -m "[PROJECT-X]: Draw HUD resources and building sprites from shared data on the web"
-```
+`test/mocks/presentation/features/forest/resource_item_data_mock.dart`:
 
-Después, `/cerrar-tarea`.
+```dart
+import 'package:rpg/core/assets/i18n/internationalize.dart';
+import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:rpg/layers/presentation/features/forest/models/resource_item_data.dart';
 
----
-
-### Task T0.3: Android: HUD de recursos y sprites desde `shared`
-
-**Files:**
-- Modify (en `androidApp/src/main/kotlin/com/apergas/rpg/android/presentation/forest/`):
-  - `components/HudOverlay.kt`
-  - `world/WorldSceneState.kt`
-  - `world/WorldCanvas.kt`
-  - `world/Particles.kt`
-- Test: `androidApp/src/test/kotlin/com/apergas/rpg/android/presentation/forest/world/ParticlesTests.kt`
-
-**Interfaces:**
-- Consumes (de T0.1):
-  - `HudState.resources: List<ResourceItem>` y `HudState.tools: List<ToolItem>`
-  - `SpriteNames.building(BlueprintId)`, `SpriteNames.buildingFrontOffset(BlueprintId)` y `SpriteNames.item(ToolKind)`
-- Produces:
-  - `SceneBuilding(id, center, progress, frame: String, frontOffset: Double, completedAtNanos)`
-  - `SceneItem(position: Position, frame: String)`
-  - `ParticleBursts.dust(front: Position, nowNanos, random)`
-
-- [ ] **Step 1: Rama**
-
-```bash
-git switch develop && git pull && git switch -c feature/PROJECT-X-f0-android
-```
-
-- [ ] **Step 2: Test del polvo, que debe fallar.** La firma pasa a recibir el punto del muro frontal. En `ParticlesTests.kt`:
-
-```kotlin
-@Test
-fun testWhenBuildingIsHammeredThenSixDustPuffsRiseFromItsFront() {
-    // given
-    val front = Position(400.0, 424.0)
-
-    // when
-    val dust = ParticleBursts.dust(front, nowNanos = 0, random = Random(1))
-
-    // then
-    assertEquals(6, dust.size)
-    dust.forEach { puff ->
-        assertEquals(Position(400.0, 420.0), puff.origin)
-        assertTrue(puff.velocityY <= 0.0)
-        assertEquals(0.2, puff.scale(nowNanos = 450_000_000), 1e-9)
-    }
+abstract final class ResourceItemDataMock {
+  static ResourceItemData wood(int amount) =>
+      ResourceItemData(resource: Resource.wood, name: Internationalize.forestResource(resource: Resource.wood), amount: amount);
 }
 ```
 
-Run: `./gradlew :androidApp:testDebugUnitTest --tests "*ParticlesTests"`
-Expected: FAIL: `origin` vale `(400, 444)` porque todavía se suma el offset.
+`test/mocks/presentation/features/forest/tool_item_data_mock.dart`:
 
-- [ ] **Step 3: `Particles.kt`**
-- Se borra `HOUSE_FRONT_OFFSET` y su comentario.
-- `fun dust(front: Position, nowNanos: Long, random: Random)` usa `origin = Position(front.x, front.y - DUST_LIFT)`.
+```dart
+import 'package:rpg/core/assets/i18n/internationalize.dart';
+import 'package:rpg/core/config/constants/enum/tool_kind.dart';
+import 'package:rpg/layers/presentation/features/forest/models/tool_item_data.dart';
 
-Run: el mismo comando del paso 2. Expected: PASS.
-
-- [ ] **Step 4: Estado de la escena.** En `WorldSceneState.kt`:
-
-```kotlin
-data class SceneBuilding(
-    val id: String,
-    val center: Position,
-    val progress: Double,
-    val frame: String,
-    val frontOffset: Double,
-    val completedAtNanos: Long? = null,
-) {
-    /** Bottom of the front wall: where the sprite is anchored, y-sorted and where dust rises. */
-    val front: Position get() = Position(center.x, center.y + frontOffset)
-}
-
-data class SceneItem(val position: Position, val frame: String)
-```
-
-Cambios:
-- `val items = mutableStateMapOf<String, SceneItem>()`
-- `snapshot.items.forEach { items[it.id] = SceneItem(it.position, SpriteNames.item(it.kind)) }`
-- `private fun Building.toScene() = SceneBuilding(id, position, progress, SpriteNames.building(blueprint.id), SpriteNames.buildingFrontOffset(blueprint.id))`
-- En `BuildingHammered`: `particles += ParticleBursts.dust(building.front, nowNanos, random)`
-
-- [ ] **Step 5: `WorldCanvas.kt`**
-- Se borra `HOUSE_FRONT_OFFSET`.
-- `drawHouse` se sustituye por:
-
-```kotlin
-private fun DrawScope.drawBuilding(assets: LpcAssets, frame: String, front: Position, alpha: Float, colorFilter: ColorFilter? = null) =
-    drawFrame(assets, frame, front, alpha, colorFilter)
-```
-
-Usos:
-
-```kotlin
-scene.items.values.forEach { item -> add(item.position.y to { drawFrame(assets, item.frame, Position(item.position.x, item.position.y - 8)) }) }
-scene.buildings.values.forEach { building ->
-    add(building.front.y to { drawBuilding(assets, building.frame, building.front, 0.35f + 0.65f * building.progress.toFloat()) })
-}
-// ghost:
-placement?.let { ghost ->
-    val tint = if (ghost.isValid) Color(0xFFB8FFB8) else Color(0xFFFF8080)
-    val front = Position(ghost.position.x, ghost.position.y + SpriteNames.buildingFrontOffset(ghost.blueprint))
-    drawBuilding(assets, SpriteNames.building(ghost.blueprint), front, 0.6f, ColorFilter.tint(tint, androidx.compose.ui.graphics.BlendMode.Modulate))
+abstract final class ToolItemDataMock {
+  static ToolItemData axe({required bool isOwned}) =>
+      ToolItemData(tool: ToolKind.axe, name: Internationalize.forestTool(tool: ToolKind.axe), isOwned: isOwned);
 }
 ```
 
-- [ ] **Step 6: `HudOverlay.kt`.** Las dos líneas de `WOOD` y `AXE` se sustituyen por:
+`test/layers/presentation/features/forest/widgets/resource_bar_test.dart` se reescribe con las mismas comprobaciones que hoy, sobre listas:
 
-```kotlin
-hud.resources.forEach { resource ->
-    Text("${resource.name} ${resource.amount}", color = MaterialTheme.colorScheme.primary)
-}
-hud.tools.forEach { tool ->
-    Text(tool.name, color = if (tool.isOwned) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant)
-}
+```dart
+double axeOpacity(WidgetTester tester) =>
+    tester.widget<Opacity>(find.byKey(ResourceBar.toolKey(ToolKind.axe))).opacity;
+
+testWidgets('testWhenRenderedThenItShowsEveryResourceAndTool', (tester) async {
+  // given
+  final bar = ResourceBar(resources: [ResourceItemDataMock.wood(23)], tools: [ToolItemDataMock.axe(isOwned: true)]);
+
+  // when
+  await tester.pumpHud(Center(child: bar));
+
+  // then
+  expect(find.text('23'), findsOneWidget);
+  expect(find.text(Internationalize.forestResource(resource: Resource.wood)), findsOneWidget);
+  expect(find.text(Internationalize.forestTool(tool: ToolKind.axe)), findsOneWidget);
+});
 ```
 
-- [ ] **Step 7: Verificar**
+Y del mismo modo `testWhenThePlayerHasNoAxeThenTheAxeIsDimmed` (0.35), `testWhenThePlayerHasTheAxeThenTheAxeIsOpaque` (1), `testWhenLabelsAreHiddenThenOnlyTheValueAndIconsAreShown` y `testWhenRenderedThenTheWoodAmountUsesTabularFigures`.
 
-```bash
-./gradlew :androidApp:testDebugUnitTest :androidApp:assembleDebug
-./gradlew :androidApp:connectedDebugAndroidTest   # emulator running
-./gradlew :androidApp:installDebug
-```
+`hud_data_mock.dart`: cada `wood: n, hasAxe: b` pasa a `resources: [ResourceItemDataMock.wood(n)], tools: [ToolItemDataMock.axe(isOwned: b)]`.
 
-Expected: PASS.
-
-Prueba manual en el AVD `Medium_Phone_API_36.0`:
-- se ve "Madera 0" y el hacha atenuada;
-- al recoger el hacha y talar, sube la madera;
-- la previsualización y la casa se ven igual;
-- el polvo sale del muro frontal.
-
-- [ ] **Step 8: Commit**
-
-```bash
-git add androidApp
-git commit -m "[PROJECT-X]: Draw HUD resources and building sprites from shared data on Android"
-```
-
-Después, `/cerrar-tarea`.
-
----
-
-### Task T0.4: iOS: HUD de recursos y sprites desde `shared`
-
-**Files:**
-- Modify:
-  - `iosApp/iosApp/Presentation/Screens/Forest/Components/HudView.swift`
-  - `iosApp/iosApp/Presentation/Screens/Forest/World/ForestScene.swift`
-
-**Interfaces:**
-- Consumes (de T0.1), con los nombres que les da SKIE:
-  - `hud.resources: [ResourceItem]`
-  - `hud.tools: [ToolItem]`
-  - `SpriteNames.shared.building(id:)`, `SpriteNames.shared.buildingFrontOffset(id:)` y `SpriteNames.shared.item(kind:)`
-- Produces: `ForestScene.addBuilding(id:center:progress:blueprint:)` y `addItem(id:position:kind:)`.
-
-- [ ] **Step 1: Rama**
-
-```bash
-git switch develop && git pull && git switch -c feature/PROJECT-X-f0-ios
-```
-
-- [ ] **Step 2: `HudView.swift`.** El bloque `resources` queda así:
-
-```swift
-private var resources: some View {
-    HStack(spacing: 16) {
-        ForEach(hud.resources, id: \.name) { resource in
-            Text("\(resource.name) \(resource.amount)").foregroundStyle(.yellow)
-        }
-        ForEach(hud.tools, id: \.name) { tool in
-            Text(tool.name).opacity(tool.isOwned ? 1 : 0.35)
-        }
-    }
-    .padding(.horizontal, 14).padding(.vertical, 8)
-    .background(.black.opacity(0.75), in: RoundedRectangle(cornerRadius: 8))
-    .foregroundStyle(.white)
-}
-```
-
-- [ ] **Step 3: `ForestScene.swift`**
-- Se borra `private let houseFrontOffset = 24.0`.
-- Se añade `private var buildingFronts: [String: Position] = [:]`, la base del muro de cada edificio, que se usa para el polvo.
-
-```swift
-func addItem(id: String, position: Position, kind: ToolKind) {
-    let node = SKSpriteNode(texture: atlas.textures[SpriteNames.shared.item(kind: kind)])
-    node.position = points.scene(Position(x: position.x, y: position.y - 8))
-    node.zPosition = position.y
-    node.run(.repeatForever(.sequence([.moveBy(x: 0, y: 3, duration: 0.7), .moveBy(x: 0, y: -3, duration: 0.7)])))
-    addChild(node)
-    items[id] = node
-}
-
-func addBuilding(id: String, center: Position, progress: Double, blueprint: BlueprintId) {
-    let frame = SpriteNames.shared.building(id: blueprint)
-    let front = Position(x: center.x, y: center.y + SpriteNames.shared.buildingFrontOffset(id: blueprint))
-    let node = SKSpriteNode(texture: atlas.textures[frame])
-    node.anchorPoint = atlas.anchor(of: frame)
-    node.position = points.scene(front)
-    node.zPosition = front.y
-    node.alpha = 0.35 + 0.65 * progress
-    addChild(node)
-    buildings[id] = node
-}
-```
-
-Llamadas:
-- `addItem(id: item.id, position: item.position, kind: item.kind)`
-- `addBuilding(id: building.id, center: building.position, progress: building.progress, blueprint: building.blueprint.id)`, en `didMove` y en `.buildingPlaced`.
-
-Fantasma:
-- La configuración inicial de textura y ancla sale de `didMove`.
-- En `renderGhost` se calcula a partir de `placement.blueprint`:
-
-```swift
-func renderGhost(_ placement: Placement?) {
-    guard let placement else { ghost.isHidden = true; return }
-    let frame = SpriteNames.shared.building(id: placement.blueprint)
-    if ghost.texture !== atlas.textures[frame] {
-        ghost.texture = atlas.textures[frame]
-        ghost.size = ghost.texture?.size() ?? .zero
-        ghost.anchorPoint = atlas.anchor(of: frame)
-    }
-    ghost.isHidden = false
-    let offset = SpriteNames.shared.buildingFrontOffset(id: placement.blueprint)
-    ghost.position = points.scene(Position(x: placement.position.x, y: placement.position.y + offset))
-    ghost.color = placement.isValid ? UIColor(red: 0.72, green: 1, blue: 0.72, alpha: 1) : UIColor(red: 1, green: 0.5, blue: 0.5, alpha: 1)
-    ghost.colorBlendFactor = 1
-}
-```
-
-En `didMove` se conservan `alpha`, `zPosition`, `isHidden` y `addChild(ghost)`.
-
-Si SKIE expone las firmas con otros nombres de argumento, se toman los que muestre el autocompletado de Xcode. La diferencia se apunta en la sección 5 del README.
-
-- [ ] **Step 4: Verificar**
-
-```bash
-./gradlew :shared:allTests
-xcodebuild test -project iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 17'
-```
-
-Expected: PASS.
-
-Prueba manual en el simulador:
-- el HUD muestra la madera y el hacha (atenuada y luego nítida);
-- la previsualización y la casa se ven igual que antes;
-- el polvo sale del muro.
-
-- [ ] **Step 5: Commit**
-
-```bash
-git add iosApp
-git commit -m "[PROJECT-X]: Draw HUD resources and building sprites from shared data on iOS"
-```
-
-Después, `/cerrar-tarea`.
-
----
-
-### Task T0.5: Quitar la API deprecada
-
-**Files:**
-- Modify:
-  - `shared/src/commonMain/kotlin/com/apergas/rpg/presentation/forest/ForestContract.kt`
-  - `shared/src/commonMain/kotlin/com/apergas/rpg/presentation/forest/ForestLabels.kt`
-  - `shared/src/commonMain/kotlin/com/apergas/rpg/presentation/forest/ForestViewModel.kt`
-  - `shared/src/jsMain/kotlin/com/apergas/rpg/web/WebModels.kt`
-  - `shared/src/jsMain/kotlin/com/apergas/rpg/web/WebMappers.kt`
-  - `shared/src/jsMain/kotlin/com/apergas/rpg/web/ForestWebController.kt`
-  - `webApp/src/presentation/screens/forest/hud/Hud.ts`, sólo si aún lee `labels.wood` / `labels.axe`
-- Test: `ForestViewModelTests.kt`, cambiando los asserts que usen `hud.wood` / `hud.hasAxe`.
-
-**Interfaces:**
-- Consumes: T0.2, T0.3 y T0.4 fusionadas (ninguna app usa ya lo deprecado).
-- Produces: `HudState` sin `wood` / `hasAxe`, `ForestLabels` sin `WOOD` / `AXE`, `WebHud` sin `wood` / `hasAxe` y `WebLabels(build, quests)`.
-
-- [ ] **Step 1: Rama:** `git switch develop && git pull && git switch -c feature/PROJECT-X-f0-cleanup`.
-- [ ] **Step 2: Comprobar que nadie usa la API vieja**
-
-```bash
-grep -rn "hud.wood\|hud.hasAxe\|\.WOOD\b\|\.AXE\b\|labels.wood\|labels.axe" androidApp/src iosApp webApp/src shared/src
-```
-
-Expected: sólo aparecen en `shared` (el view model, los mappers y los tests).
-
-- [ ] **Step 3: Cambiar los tests.** En `ForestViewModelTests.kt`:
+`forest_bloc_test.dart`:
 
 | Antes | Después |
 |---|---|
-| `assertEquals(6, sut.uiState.value.hud.wood)` | `assertEquals(6, sut.uiState.value.hud.resources.single { it.resource == Resource.Wood }.amount)` |
-| `assertTrue(sut.uiState.value.hud.hasAxe)` | `assertTrue(sut.uiState.value.hud.tools.single { it.tool == ToolKind.Axe }.isOwned)` |
+| `expect(bloc.state.data.hud!.hasAxe, isTrue)` | `expect(bloc.state.data.hud!.tools, [ToolItemDataMock.axe(isOwned: true)])` |
+| `expect(bloc.state.data.hud!.wood, 6)` | `expect(bloc.state.data.hud!.resources, [ResourceItemDataMock.wood(6)])` |
 
-Run: `./gradlew :shared:testAndroidHostTest --tests "*ForestViewModelTests"`
-Expected: PASS (todavía con la API vieja presente).
+`hud_overlay_test.dart` y `internationalize_test.dart`: `Internationalize.forestWood` → `Internationalize.forestResource(resource: Resource.wood)`, `Internationalize.forestAxe` → `Internationalize.forestTool(tool: ToolKind.axe)`.
 
-- [ ] **Step 4: Borrar lo deprecado**
-- Los campos `wood` y `hasAxe` de `HudState` y su relleno en `hudState`, con su `@Suppress`.
-- `ForestLabels.WOOD` y `ForestLabels.AXE`.
-- `WebHud.wood` / `hasAxe` y su relleno en `WebMappers`, con su `@Suppress`.
-- En `WebLabels`, sólo quedan `build` y `quests`. En `ForestWebController.labels()` queda `WebLabels(ForestLabels.BUILD, ForestLabels.QUESTS)`.
+Run: `flutter test test/layers/presentation/features/forest/widgets test/layers/presentation/features/forest/bloc`
+Expected: FAIL de compilación (`ResourceBar` no acepta `resources`, `HudData` no tiene `resources`).
 
-- [ ] **Step 5: Verificación completa** (los comandos del paso 13 de T0.1, más `xcodebuild test`)
+- [ ] **Step 7: `HudData`, `ForestBloc`, textos, iconos y `ResourceBar`**
 
-Expected: todo en verde y **sin** *warnings* de deprecación.
+`HudData`: `wood` y `hasAxe` se sustituyen por `final List<ResourceItemData> resources;` y `final List<ToolItemData> tools;`, comparadas con `ListEquality` y con `Object.hashAll` en `hashCode`, como `quests`.
 
-- [ ] **Step 6: Commit**
+`ForestBloc._hudData`:
+
+```dart
+resources: [
+  for (final resource in Resource.values)
+    ResourceItemData(
+      resource: resource,
+      name: Internationalize.forestResource(resource: resource),
+      amount: status.inventory.amount(resource),
+    ),
+],
+tools: [
+  for (final tool in ToolKind.values)
+    ToolItemData(
+      tool: tool,
+      name: Internationalize.forestTool(tool: tool),
+      isOwned: status.inventory.hasTool(tool),
+    ),
+],
+```
+
+`es.json`: `forest.hud.wood` y `forest.hud.axe` se mueven a `"resource": { "wood": "Madera" }` y `"tool": { "axe": "Hacha" }`, dentro de `forest`.
+
+`Internationalize`: `forestWood` y `forestAxe` se sustituyen por
+
+```dart
+static String forestResource({required Resource resource}) => switch (resource) {
+  Resource.wood => '$_forest.resource.wood'.tr(),
+};
+static String forestTool({required ToolKind tool}) => switch (tool) {
+  ToolKind.axe => '$_forest.tool.axe'.tr(),
+};
+```
+
+`CustomIcons`:
+
+```dart
+static String resource(Resource resource) => switch (resource) {
+  Resource.wood => wood,
+};
+
+static String tool(ToolKind tool) => switch (tool) {
+  ToolKind.axe => axe,
+};
+```
+
+`ResourceBar` (mismo aspecto que hoy; los iconos de recurso son de 22×14 y los de herramienta de 22×22, y las fases siguientes dibujan sus SVG a ese tamaño):
+
+```dart
+class ResourceBar extends StatelessWidget {
+  final List<ResourceItemData> resources;
+  final List<ToolItemData> tools;
+  final bool showLabels;
+
+  const ResourceBar({super.key, required this.resources, required this.tools, this.showLabels = true});
+
+  static Key toolKey(ToolKind tool) => Key('resourceBarTool-${tool.name}');
+
+  @override
+  Widget build(BuildContext context) {
+    return HudPanel(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 16,
+        children: [for (final resource in resources) _resource(resource), for (final tool in tools) _tool(tool)],
+      ),
+    );
+  }
+
+  Widget _resource(ResourceItemData resource) {
+    return Semantics(
+      label: resource.name,
+      value: '${resource.amount}',
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          SvgPicture.asset(CustomIcons.resource(resource.resource), width: 22, height: 14, excludeFromSemantics: true),
+          if (showLabels)
+            Text(resource.name, style: CustomTextStyles.system15w600.copyWith(color: CustomColors.hudText)),
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 20),
+            child: Text(
+              '${resource.amount}',
+              style: CustomTextStyles.system18w600.copyWith(
+                color: CustomColors.hudAccent,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _tool(ToolItemData tool) {
+    return Opacity(
+      key: toolKey(tool.tool),
+      opacity: tool.isOwned ? 1 : 0.35,
+      child: Semantics(
+        label: tool.name,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 8,
+          children: [
+            SvgPicture.asset(CustomIcons.tool(tool.tool), width: 22, height: 22, excludeFromSemantics: true),
+            if (showLabels) Text(tool.name, style: CustomTextStyles.system15w600.copyWith(color: CustomColors.hudText)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+`HudOverlay`: `ResourceBar(resources: widget.hud.resources, tools: widget.hud.tools, showLabels: width >= HudOverlay.narrowWidth)`.
+
+`CLAUDE.md`, en *Rendering constants*: "house drawn 24 px below its footprint centre" pasa a "buildings drawn `RenderConstants.buildingFrontOffset` below their footprint centre (house: 24 px)". Se añade en un `git add CLAUDE.md` aparte.
+
+Run: `flutter test`
+Expected: PASS (todos, incluido `architecture_test.dart`).
+
+- [ ] **Step 8: Verificación completa**
 
 ```bash
-git add shared webApp
-git commit -m "[PROJECT-X]: Remove wood and axe specific HUD fields"
+dart format --line-length 120 <ficheros escritos en esta tarea>
+dart run build_runner build --delete-conflicting-outputs && git diff --exit-code -- lib/core/config/di/di.config.dart test
+flutter analyze
+flutter test
+flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart
+grep -rn "houseFrontOffset\|axePickup\|SpriteNames.house\|forestWood\|forestAxe\|hasAxe" lib test
+```
+
+Expected: todo en verde y el `grep` sin resultados.
+
+Prueba manual en Chrome (`flutter run -d chrome`), en el emulador (`flutter run -d emulator-5554`) y en el simulador (`flutter run -d "iPhone 17"`):
+- el HUD muestra "Madera 0" y el hacha atenuada; en pantallas estrechas, sólo iconos y números;
+- al recoger el hacha se ve nítida y al talar sube la madera;
+- la previsualización de la casa sale verde o roja y la casa se ve igual que antes;
+- el polvo sale del muro frontal.
+
+- [ ] **Step 9: Commit**
+
+```bash
+git add lib test
+git add CLAUDE.md
+git commit -m "[PROJECT-X]: Draw HUD resources and building sprites by kind"
 ```
 
 Después, `/cerrar-tarea`. Con esto se cierra el milestone F0.

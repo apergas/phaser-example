@@ -67,7 +67,7 @@ void main() {
         navigationService.showErrorPopUp(
           title: anyNamed('title'),
           message: anyNamed('message'),
-          buttonTitle: Internationalize.commonError,
+          buttonTitle: Internationalize.commonAccept,
         ),
       ).called(1);
     },
@@ -88,6 +88,47 @@ void main() {
       // then
       expect(bloc.state, isA<ForestInitial>());
       verifyNever(navigationService.showSnackbar(message: anyNamed('message')));
+    },
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenStartedAgainAfterAFailureThenBehavesLikeTheFirstStart',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        ForestScenarioMock.treeEast(),
+        navigationService: navigationService,
+        loadError: const InvalidLevelException(data: 'missing width'),
+        failingLoads: {2},
+      );
+    },
+    act: (bloc) async {
+      // when
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestTicked(deltaMs: ForestBlocMock.frameMs))
+        ..add(const ForestStarted());
+      await ForestBlocMock.processEvents();
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestTicked(deltaMs: ForestBlocMock.frameMs));
+    },
+    wait: Duration.zero,
+    expect: () => [
+      isA<ForestInProgress>(),
+      isA<ForestSuccess>(),
+      isA<ForestSuccess>(),
+      isA<ForestInProgress>(),
+      isA<ForestFailure>(),
+      isA<ForestInProgress>(),
+      isA<ForestSuccess>(),
+      isA<ForestSuccess>(),
+    ],
+    verify: (bloc) {
+      // then
+      expect(bloc.state, isA<ForestSuccess>());
+      expect(bloc.state.data.player!.position, ForestScenarioMock.playerStart);
+      verify(navigationService.showSnackbar(message: Internationalize.forestMessageWelcome)).called(2);
     },
   );
 }

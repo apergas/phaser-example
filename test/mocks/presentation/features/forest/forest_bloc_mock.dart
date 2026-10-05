@@ -20,15 +20,21 @@ import '../../../domain/repositories/repository_mocks.mocks.dart';
 abstract final class ForestBlocMock {
   static const double frameMs = 16;
 
-  static ForestBloc make(World world, {required MockNavigationService navigationService, Object? loadError}) {
+  static ForestBloc make(
+    World world, {
+    required MockNavigationService navigationService,
+    Exception? loadError,
+    Set<int>? failingLoads,
+  }) {
     final levelRepository = MockLevelRepository();
     final sessionRepository = MockGameSessionRepository();
     GameSessionEntity? session;
-    if (loadError != null) {
-      when(levelRepository.load()).thenThrow(loadError);
-    } else {
-      when(levelRepository.load()).thenReturn(world);
-    }
+    var loads = 0;
+    when(levelRepository.load()).thenAnswer((_) {
+      loads++;
+      if (loadError != null && (failingLoads == null || failingLoads.contains(loads))) throw loadError;
+      return world;
+    });
     when(sessionRepository.save(any)).thenAnswer((invocation) {
       session = invocation.positionalArguments.first as GameSessionEntity;
     });

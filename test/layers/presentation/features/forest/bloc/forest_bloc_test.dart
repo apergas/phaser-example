@@ -373,9 +373,13 @@ void main() {
         ..add(const ForestTicked(deltaMs: ForestBlocMock.frameMs));
     },
     wait: Duration.zero,
-    verify: (bloc) {
-      // then
-      expect(bloc.state.data.effects, isEmpty);
-    },
+    expect: () => [
+      isA<ForestInProgress>(),
+      isA<ForestSuccess>(),
+      isA<ForestSuccess>().having((state) => state.data.effects, 'effects', const [
+        ItemPickedUpEffect(itemId: 'axe-1'),
+      ]),
+      isA<ForestSuccess>().having((state) => state.data.effects, 'effects', isEmpty),
+    ],
   );
 }

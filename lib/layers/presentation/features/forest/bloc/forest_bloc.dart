@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -88,13 +89,16 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
 
     try {
       _startGameUseCase();
+      _hasGreeted = false;
+      _placement = null;
+      _facing = Facing.down;
       _lastPosition = _getPlayerStatusUseCase().position;
       emit(ForestSuccess(data: _buildData(effects: const [])));
     } on AppException catch (exception) {
       _navigationService.showErrorPopUp(
         title: exception.title,
         message: exception.message,
-        buttonTitle: Internationalize.commonError,
+        buttonTitle: Internationalize.commonAccept,
       );
       emit(ForestFailure(data: state.data, exception: exception));
     }
@@ -168,8 +172,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   }
 
   void _openPlacement(BlueprintId blueprint) {
-    final options = _getBuildOptionsUseCase().where((option) => option.blueprint == blueprint);
-    if (options.isEmpty || !options.first.isAffordable) {
+    final option = _getBuildOptionsUseCase().firstWhereOrNull((option) => option.blueprint == blueprint);
+    if (option == null || !option.isAffordable) {
       _showMessage(Internationalize.forestMessageNotEnoughWood);
       return;
     }

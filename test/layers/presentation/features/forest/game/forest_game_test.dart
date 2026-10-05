@@ -11,6 +11,7 @@ import '../../../../../mocks/presentation/features/forest/forest_bloc_fake.dart'
 import '../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/game/lpc_assets_loader_fake.dart';
 import '../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
+import '../../../../../mocks/presentation/features/forest/game/update_probe_component_fake.dart';
 
 Future<void> _settle() => Future<void>.delayed(Duration.zero);
 
@@ -51,6 +52,23 @@ void main() {
     final ticks = bloc.events.whereType<ForestTicked>().map((event) => event.deltaMs);
     expect(ticks, contains(closeTo(16, 1e-9)));
     expect(ticks, contains(closeTo(100, 1e-9)));
+  });
+
+  testWithGame<ForestGame>('testWhenAFrameHitchesThenComponentsAdvanceByTheCappedFrameTime', createGame, (
+    game,
+  ) async {
+    // given
+    await game.ready();
+    final probe = UpdateProbeComponentFake();
+    await game.world.add(probe);
+    await game.ready();
+
+    // when
+    game.update(0.016);
+    game.update(0.5);
+
+    // then
+    expect(probe.updates, [closeTo(0.016, 1e-9), closeTo(0.1, 1e-9)]);
   });
 
   testWithGame<ForestGame>(

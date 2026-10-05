@@ -32,19 +32,20 @@ class ForestGame extends FlameGame<ForestWorld> {
 
   @override
   void update(double dt) {
-    _dispatchFrame(dt);
-    super.update(dt);
+    final frameSeconds = math.min(dt, RenderConstants.maxFrameSeconds);
+    _dispatchFrame(frameSeconds);
+    super.update(frameSeconds);
     _followPlayer();
   }
 
-  void _dispatchFrame(double dt) {
+  void _dispatchFrame(double frameSeconds) {
     final state = _bloc.state;
     if (state is! ForestSuccess || !world.isReady) return;
     if (state.data.placement != null) {
       final pointer = world.mousePosition(camera);
       if (pointer != null) _bloc.add(ForestPointerMoved(position: pointer));
     }
-    _bloc.add(ForestTicked(deltaMs: math.min(dt, RenderConstants.maxFrameSeconds) * 1000));
+    _bloc.add(ForestTicked(deltaMs: frameSeconds * 1000));
   }
 
   void _followPlayer() {

@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 class CustomColors {
+  static const Color transparent = Color(0x00000000);
+
   static const Color hudBackground = Color(0xD11C1610);
   static const Color hudBorder = Color(0xFF8A6A3F);
   static const Color hudText = Color(0xFFF3E7CF);

@@ -95,10 +95,10 @@ class _ForestViewState extends State<_ForestView> {
 
   Widget _bodyByState(ForestState state) {
     return switch (state) {
+      ForestInitial() => _loadingBody(),
       ForestInProgress() => _loadingBody(),
       ForestSuccess() => _gameBody(),
       ForestFailure() => _errorBody(state),
-      _ => _loadingBody(),
     };
   }
 

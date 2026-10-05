@@ -23,7 +23,7 @@ class QuestRow extends StatelessWidget {
       key: decorationKey,
       decoration: BoxDecoration(
         color: _isCurrent ? CustomColors.hudAccentSoft : null,
-        border: Border.all(color: _isCurrent ? CustomColors.hudAccent : Colors.transparent),
+        border: Border.all(color: _isCurrent ? CustomColors.hudAccent : CustomColors.transparent),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Padding(
@@ -38,6 +38,7 @@ class QuestRow extends StatelessWidget {
               softWrap: false,
               style: CustomTextStyles.system13w500.copyWith(
                 color: _isDone ? CustomColors.questDone : CustomColors.hudAccent,
+                fontFeatures: const [FontFeature.tabularFigures()],
               ),
             ),
           ],
@@ -66,13 +67,13 @@ class QuestRow extends StatelessWidget {
   }
 
   TextStyle _titleStyle() {
-    return switch (quest.status) {
-      QuestItemStatus.done => CustomTextStyles.system15w600.copyWith(
-        color: CustomColors.hudMuted,
-        decoration: TextDecoration.lineThrough,
-      ),
-      QuestItemStatus.current => CustomTextStyles.system15w600.copyWith(color: CustomColors.hudText),
-      QuestItemStatus.pending => CustomTextStyles.system15w600.copyWith(color: CustomColors.hudMuted),
+    final color = switch (quest.status) {
+      QuestItemStatus.done || QuestItemStatus.pending => CustomColors.hudMuted,
+      QuestItemStatus.current => CustomColors.hudText,
     };
+    return CustomTextStyles.system15w600.copyWith(
+      color: color,
+      decoration: _isDone ? TextDecoration.lineThrough : null,
+    );
   }
 }

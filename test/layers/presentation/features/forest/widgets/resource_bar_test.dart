@@ -58,4 +58,15 @@ void main() {
     expect(find.text(Internationalize.forestWood), findsNothing);
     expect(find.text(Internationalize.forestAxe), findsNothing);
   });
+
+  testWidgets('testWhenRenderedThenTheWoodAmountUsesTabularFigures', (tester) async {
+    // given
+    const bar = ResourceBar(wood: 23, hasAxe: true);
+
+    // when
+    await tester.pumpHud(const Center(child: bar));
+
+    // then
+    expect(tester.widget<Text>(find.text('23')).style!.fontFeatures, contains(const FontFeature.tabularFigures()));
+  });
 }

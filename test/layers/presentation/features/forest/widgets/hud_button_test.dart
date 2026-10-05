@@ -45,4 +45,15 @@ void main() {
     final opacity = tester.widget<Opacity>(find.ancestor(of: find.text('Construir'), matching: find.byType(Opacity)));
     expect(opacity.opacity, 0.5);
   });
+
+  testWidgets('testWhenBadgeIsGivenThenItUsesTabularFigures', (tester) async {
+    // given
+    final button = HudButton(label: 'Misiones', badge: '1/3', onPressed: () {});
+
+    // when
+    await tester.pumpHud(Center(child: button));
+
+    // then
+    expect(tester.widget<Text>(find.text('1/3')).style!.fontFeatures, contains(const FontFeature.tabularFigures()));
+  });
 }

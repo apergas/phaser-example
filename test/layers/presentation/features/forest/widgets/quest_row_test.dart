@@ -59,4 +59,16 @@ void main() {
     expect(style.decoration, isNot(TextDecoration.lineThrough));
     expect(rowDecorationOf(tester).color, isNull);
   });
+
+  testWidgets('testWhenRenderedThenTheProgressTextUsesTabularFigures', (tester) async {
+    // given
+    final row = QuestRow(quest: QuestItemDataMock.current);
+
+    // when
+    await tester.pumpHud(Center(child: row));
+
+    // then
+    final style = tester.widget<Text>(find.text(QuestItemDataMock.current.progressText)).style!;
+    expect(style.fontFeatures, contains(const FontFeature.tabularFigures()));
+  });
 }

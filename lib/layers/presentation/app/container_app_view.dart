@@ -27,7 +27,7 @@ class ContainerAppView extends StatelessWidget {
   }
 
   Widget _loadingBody() {
-    return const Center(child: CircularProgressIndicator());
+    return const Center(child: CircularProgressIndicator(color: CustomColors.hudAccent));
   }
 
   Widget _errorBody() {

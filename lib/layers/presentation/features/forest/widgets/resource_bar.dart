@@ -40,7 +40,13 @@ class ResourceBar extends StatelessWidget {
             ),
           ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 20),
-            child: Text('$wood', style: CustomTextStyles.system18w600.copyWith(color: CustomColors.hudAccent)),
+            child: Text(
+              '$wood',
+              style: CustomTextStyles.system18w600.copyWith(
+                color: CustomColors.hudAccent,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
           ),
         ],
       ),

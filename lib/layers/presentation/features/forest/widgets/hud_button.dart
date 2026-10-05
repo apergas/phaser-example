@@ -47,7 +47,13 @@ class HudButton extends StatelessWidget {
       decoration: BoxDecoration(color: CustomColors.hudAccent, borderRadius: BorderRadius.circular(999)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-        child: Text(text, style: CustomTextStyles.system12w600.copyWith(color: CustomColors.black)),
+        child: Text(
+          text,
+          style: CustomTextStyles.system12w600.copyWith(
+            color: CustomColors.black,
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
+        ),
       ),
     );
   }

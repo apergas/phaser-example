@@ -27,6 +27,13 @@ const List<String> _dataForbidden = [
 
 const List<String> _presentationForbidden = ['lib/layers/data/'];
 
+const List<String> _flameConfined = ['package:flame'];
+
+const List<String> _flameAllowedImporters = [
+  'lib/layers/presentation/features/forest/game/',
+  'lib/layers/presentation/features/forest/forest_page.dart',
+];
+
 const List<String> _coreForbidden = ['lib/layers/'];
 
 const Map<String, List<String>> _coreAllowed = {
@@ -70,6 +77,26 @@ List<File> dartFilesUnder(String folder) {
       .toList();
 }
 
+Map<String, String> sourcesUnder(String folder) => {
+  for (final file in dartFilesUnder(folder)) file.path: file.readAsStringSync(),
+};
+
+List<String> confinementViolations({
+  required Map<String, String> sources,
+  required List<String> confined,
+  required List<String> allowedImporters,
+}) {
+  final found = <String>[];
+  for (final entry in sources.entries) {
+    if (allowedImporters.any(entry.key.startsWith)) continue;
+    for (final import in importsOf(entry.value)) {
+      final target = resolveImport(importingFile: entry.key, import: import);
+      if (confined.any(target.startsWith)) found.add('${entry.key} -> $target');
+    }
+  }
+  return found;
+}
+
 List<String> violations({
   required String folder,
   required List<String> forbidden,
@@ -94,6 +121,21 @@ List<String> violations({
 
 void main() {
   group('rules', () {
+    test('testWhenCheckingLibThenFlameIsOnlyImportedByTheForestGameAndPage', () {
+      // given
+      final sources = sourcesUnder('lib');
+
+      // when
+      final found = confinementViolations(
+        sources: sources,
+        confined: _flameConfined,
+        allowedImporters: _flameAllowedImporters,
+      );
+
+      // then
+      expect(found, isEmpty);
+    });
+
     test('testWhenCheckingDomainThenItImportsNothingFromDataPresentationOrPlatforms', () {
       // given
       const folder = 'lib/layers/domain';
@@ -205,6 +247,30 @@ import 'package:rpg/layers/presentation/app/container_app.dart';
 
       // then
       expect(found, ['${file.path} -> lib/layers/presentation/app/container_app.dart']);
+    });
+
+    test('testWhenAWidgetOrBlocImportsFlameThenItIsReportedAndGameAndPageAreNot', () {
+      // given
+      final sources = {
+        'lib/layers/presentation/features/forest/widgets/hud.dart': "import 'package:flame/game.dart';\n",
+        'lib/layers/presentation/features/forest/bloc/forest_bloc.dart':
+            "import 'package:flame_bloc/flame_bloc.dart';\n",
+        'lib/layers/presentation/features/forest/game/forest_game.dart': "import 'package:flame/game.dart';\n",
+        'lib/layers/presentation/features/forest/forest_page.dart': "import 'package:flame/game.dart';\n",
+      };
+
+      // when
+      final found = confinementViolations(
+        sources: sources,
+        confined: _flameConfined,
+        allowedImporters: _flameAllowedImporters,
+      );
+
+      // then
+      expect(found, [
+        'lib/layers/presentation/features/forest/widgets/hud.dart -> package:flame/game.dart',
+        'lib/layers/presentation/features/forest/bloc/forest_bloc.dart -> package:flame_bloc/flame_bloc.dart',
+      ]);
     });
 
     test('testWhenAnEntityHasVarOrNonFinalFieldsThenTheyAreReported', () {

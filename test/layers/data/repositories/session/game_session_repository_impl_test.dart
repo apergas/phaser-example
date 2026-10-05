@@ -8,6 +8,7 @@ import 'package:rpg/layers/data/repositories/session/game_session_repository_imp
 
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import 'game_session_repository_impl_test.mocks.dart';
+import '../../../../mocks/core/error-handling/error_mock.dart';
 
 @GenerateMocks([GameSessionLocalDatasource])
 void main() {
@@ -48,7 +49,7 @@ void main() {
   test('testWhenDatasourceFailsThenErrorIsRoutedThroughTheHandler', () {
     // given
     final session = GameSessionEntityMock.make();
-    when(localDatasource.set(session)).thenThrow(StateError('storage unavailable'));
+    when(localDatasource.set(session)).thenThrow(ErrorMock.storageUnavailable);
 
     // when
     void save() => sut.save(session);

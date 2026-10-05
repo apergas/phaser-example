@@ -5,12 +5,13 @@ import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/forest/facing.dart';
 import 'package:rpg/core/error-handling/exceptions/app_exceptions.dart';
 import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
-import 'package:rpg/layers/presentation/features/forest/models/player_pose.dart';
 
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
 import '../../../../../mocks/presentation/features/forest/forest_bloc_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_scenario_mock.dart';
+import '../../../../../mocks/core/error-handling/app_exception_mock.dart';
+import '../../../../../mocks/presentation/features/forest/player_pose_mock.dart';
 
 void main() {
   late MockNavigationService navigationService;
@@ -38,7 +39,7 @@ void main() {
       expect(data.world!.trees.single.id, 'tree-1');
       expect(data.player!.position, ForestScenarioMock.playerStart);
       expect(data.player!.facing, Facing.down);
-      expect(data.player!.pose, const IdlePose(withAxe: false));
+      expect(data.player!.pose, PlayerPoseMock.idleWithoutAxe);
       expect(data.hud!.questBadge, '0/3');
       expect(data.placement, isNull);
       expect(data.effects, isEmpty);
@@ -52,7 +53,7 @@ void main() {
       return ForestBlocMock.make(
         ForestScenarioMock.empty(),
         navigationService: navigationService,
-        loadError: const InvalidLevelException(data: 'missing width'),
+        loadError: AppExceptionMock.invalidLevel,
       );
     },
     act: (bloc) {
@@ -98,7 +99,7 @@ void main() {
       return ForestBlocMock.make(
         ForestScenarioMock.treeEast(),
         navigationService: navigationService,
-        loadError: const InvalidLevelException(data: 'missing width'),
+        loadError: AppExceptionMock.invalidLevel,
         failingLoads: {2},
       );
     },

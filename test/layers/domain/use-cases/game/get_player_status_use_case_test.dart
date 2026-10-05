@@ -11,6 +11,7 @@ import '../../../../mocks/domain/game/game_scenario_mock.dart';
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
 import '../../../../mocks/domain/world/world_mock.dart';
+import '../../../../mocks/core/error-handling/app_exception_mock.dart';
 
 void main() {
   late MockGameSessionRepository sessionRepository;
@@ -23,7 +24,7 @@ void main() {
 
   test('testWhenNoGameInProgressThenFailsWithNoGameInProgress', () {
     // given
-    when(sessionRepository.current()).thenThrow(const NoGameInProgressException());
+    when(sessionRepository.current()).thenThrow(AppExceptionMock.noGameInProgress);
 
     // when
     void action() => sut();

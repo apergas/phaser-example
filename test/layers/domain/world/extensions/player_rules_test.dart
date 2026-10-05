@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/domain/entities/player/intent_entity.dart';
 import 'package:rpg/layers/domain/world/extensions/player_rules.dart';
 
 import '../../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../../mocks/domain/entities/player/activity_entity_mock.dart';
+import '../../../../mocks/domain/entities/player/intent_entity_mock.dart';
 
 void main() {
   test('testWhenCreatedThenIsIdleWithoutNextPosition', () {
@@ -47,7 +47,7 @@ void main() {
 
   test('testWhenContinuingWorkThenTracksElapsedTime', () {
     // given
-    final working = PlayerEntityMock.mock.startWork(const ChopIntentEntity(treeId: 'tree-1'));
+    final working = PlayerEntityMock.mock.startWork(IntentEntityMock.chop);
 
     // when
     final later = working.continueWork(300);

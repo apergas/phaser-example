@@ -8,6 +8,12 @@ abstract final class BuildOptionEntityMock {
     isAffordable: true,
   );
 
+  static const BuildOptionEntity unaffordable = BuildOptionEntity(
+    blueprint: BlueprintId.house,
+    woodCost: 15,
+    isAffordable: false,
+  );
+
   static BuildOptionEntity make({bool isAffordable = true}) =>
       BuildOptionEntity(blueprint: BlueprintId.house, woodCost: 15, isAffordable: isAffordable);
 }

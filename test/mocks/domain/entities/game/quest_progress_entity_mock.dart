@@ -26,6 +26,14 @@ abstract final class QuestProgressEntityMock {
     isCurrent: false,
   );
 
+  static const QuestProgressEntity gatherWoodCurrent = QuestProgressEntity(
+    id: QuestId.gatherWood,
+    progress: 0,
+    target: 15,
+    isCompleted: false,
+    isCurrent: true,
+  );
+
   static const QuestProgressEntity buildHousePending = QuestProgressEntity(
     id: QuestId.buildHouse,
     progress: 0,

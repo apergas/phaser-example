@@ -6,6 +6,7 @@ import 'package:rpg/layers/domain/use-cases/game/start_game_use_case.dart';
 
 import '../../../../mocks/domain/game/game_scenario_mock.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
+import '../../../../mocks/core/error-handling/app_exception_mock.dart';
 
 void main() {
   late MockLevelRepository levelRepository;
@@ -34,7 +35,7 @@ void main() {
 
   test('testWhenStartGameWithLevelErrorThenErrorPropagates', () {
     // given
-    when(levelRepository.load()).thenThrow(const InvalidLevelException(data: 'missing width'));
+    when(levelRepository.load()).thenThrow(AppExceptionMock.invalidLevel);
 
     // when
     void action() => sut();

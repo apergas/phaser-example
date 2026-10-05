@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/chop_result.dart';
-import 'package:rpg/core/config/constants/enum/quest_id.dart';
 import 'package:rpg/layers/domain/entities/game/construction_result_entity.dart';
 import 'package:rpg/layers/domain/entities/game/game_event_entity.dart';
 import 'package:rpg/layers/domain/rules/rules.dart';
@@ -16,6 +15,7 @@ import 'package:rpg/layers/domain/use-cases/game/move_player_use_case.dart';
 import '../../../../mocks/domain/game/game_scenario_mock.dart';
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
+import '../../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 
 void main() {
   late MockGameSessionRepository sessionRepository;
@@ -71,11 +71,8 @@ void main() {
     expect(chopResults, [ChopResult.ok, ChopResult.ok, ChopResult.ok]);
     expect(woodAfterChopping, 18);
     expect(construction, isA<ConstructionStartedEntity>());
-    expect(
-      events,
-      contains(const BuildingCompletedEventEntity(buildingId: 'building-1', blueprint: BlueprintId.house)),
-    );
-    expect(events, contains(const QuestCompletedEventEntity(questId: QuestId.buildHouse)));
+    expect(events, contains(GameEventEntityMock.buildingCompleted));
+    expect(events, contains(GameEventEntityMock.buildHouseCompleted));
     expect(getPlayerStatus().wood, 3);
     expect(getQuests().every((quest) => quest.isCompleted), isTrue);
   });

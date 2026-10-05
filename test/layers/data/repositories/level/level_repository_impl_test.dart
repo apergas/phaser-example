@@ -15,6 +15,7 @@ import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
 
 import '../../../../mocks/data/datasources/level/level_dbo_mock.dart';
 import 'level_repository_impl_test.mocks.dart';
+import '../../../../mocks/core/error-handling/error_mock.dart';
 
 @GenerateMocks([LevelLocalDatasource])
 void main() {
@@ -104,7 +105,7 @@ void main() {
 
   test('testWhenDatasourceFailsThenErrorIsRoutedThroughTheHandler', () {
     // given
-    when(localDatasource.fetch()).thenThrow(StateError('disk unavailable'));
+    when(localDatasource.fetch()).thenThrow(ErrorMock.diskUnavailable);
 
     // when
     void load() => sut.load();

@@ -1,0 +1,1 @@
+enum HudMenu { quests, build }

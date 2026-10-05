@@ -15,7 +15,7 @@ Pilares que se deducen de lo ya hecho:
    micro-gestión de animaciones o rutas.
 2. **Progreso visible**: el bosque se aclara, la madera sube, la casa aparece por fases.
 3. **Guía ligera**: misiones encadenadas que enseñan el bucle sin tutoriales largos.
-4. **Un solo núcleo de reglas**: toda la lógica en `shared` (Kotlin Multiplatform); las tres apps sólo dibujan.
+4. **Un solo núcleo de reglas**: toda la lógica en el dominio (Dart puro, sin Flutter ni Flame); la presentación sólo dibuja.
 
 ## 2. Qué hay hecho
 
@@ -38,8 +38,8 @@ Recoger hacha ──▶ Talar árboles (+5–6 madera) ──▶ Construir casa 
 
 ### Fortalezas técnicas que facilitan crecer
 
-- **Añadir un trabajo es barato**: una variante de `Intent` + un `Work` + una rama en `workFor()`
-  (`shared/.../domain/world/Work.kt`). Talar y construir ya siguen ese patrón, así que minar, pescar o cosechar
+- **Añadir un trabajo es barato**: una variante de `IntentEntity` + un `Work` + una rama en `workFor()`
+  (`lib/layers/domain/world/work.dart`). Talar y construir ya siguen ese patrón, así que minar, pescar o cosechar
   cuestan poco.
 - **`GameEvent`** desacopla reglas y efectos: cada nueva mecánica emite eventos y las apps los animan.
 - **Misiones declarativas** (`Quests.all`): una misión es un `id`, un objetivo y una función que mide el mundo.
@@ -63,7 +63,7 @@ Ideas agrupadas por tema. Cada una indica una **estimación de esfuerzo** (S/M/L
 
 ### 3.1 Más recursos y recolección
 
-- **Piedra** (S): rocas grandes en el mapa que se pican con un **pico**. Nuevo `Intent.Mine` + `Mining : Work`,
+- **Piedra** (S): rocas grandes en el mapa que se pican con un **pico**. Nuevo `MineIntentEntity` + un `Work` de minería,
   `Rock` como obstáculo. La roca decorativa ya existe: podría haber una versión grande y sólida.
 - **Comida** (M): arbustos de bayas (recolectar sin herramienta), pesca en un lago con **caña**, caza pasiva
   (ciervos que huyen, sin violencia explícita: "atraparlos" o simplemente recoger lo que dejan). La comida es el
@@ -102,7 +102,7 @@ Otras ideas de construcción:
 ### 3.3 Aldeanos (el salto a "tipo AoE")
 
 - **Reclutar aldeanos** (L): con casas (población) y comida. Cada aldeano reutiliza el mismo motor de `Activity` /
-  `Intent` que el jugador; habría que pasar de un `Player` a una lista de unidades.
+  `IntentEntity` que el jugador; habría que pasar de un `Player` a una lista de unidades.
 - **Asignar trabajos** (L): seleccionar un aldeano y tocar un árbol/roca/granja; después repite solo hasta que se
   agota el objetivo y busca el más cercano del mismo tipo.
 - **Automatización progresiva** (M, sobre lo anterior): el jugador empieza haciéndolo todo y poco a poco delega.
@@ -124,7 +124,7 @@ Otras ideas de construcción:
 ### 3.5 Progresión y metas
 
 - **Más misiones** (S): cadenas por capítulos ("El primer invierno", "Una aldea de 5 casas"). El sistema actual lo
-  soporta tal cual; sólo hay que añadir entradas y textos en `ForestLabels`.
+  soporta tal cual; sólo hay que añadir entradas y textos en `es.json` (`Internationalize`).
 - **Eras** (M): como las edades de AoE, pero pacíficas: Campamento → Aldea → Pueblo. Cada era desbloquea edificios y
   cambia el arte de los existentes.
 - **Árbol de mejoras** (M): investigar en el taller (talar +20 % más rápido, caminar más rápido, más carga).
@@ -141,8 +141,8 @@ Otras ideas de construcción:
 
 ### 3.7 Calidad de vida y presentación
 
-- **Guardado automático** (M): serializar la `GameSession` (los DTO ya son `@Serializable`) en `localStorage` /
-  `DataStore` / `UserDefaults` mediante un repositorio por plataforma. Prerrequisito para casi todo lo demás.
+- **Guardado automático** (M): serializar la `GameSessionEntity` a un DBO y guardarla con `shared_preferences`
+  (o Hive) en un datasource local; funciona igual en web, Android e iOS. Prerrequisito para casi todo lo demás.
 - **Cola de órdenes** (S): mantener pulsado/Shift+clic para encadenar árboles.
 - **Minimapa** (M) y **zoom** con pellizco/rueda (S).
 - **Sonido** (M): hachazos, martillazos, ambiente de bosque; refuerza mucho la sensación de "jugoso".

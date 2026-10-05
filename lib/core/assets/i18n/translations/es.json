@@ -58,6 +58,7 @@
     },
     "accessibility": {
       "gameWorld": "Mundo de juego: bosque con árboles, el personaje y los edificios"
-    }
+    },
+    "retry": "Reintentar"
   }
 }

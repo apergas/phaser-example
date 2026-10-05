@@ -64,4 +64,5 @@ class Internationalize {
   static String get forestPlacementConfirm => '$_forest.placement.confirm'.tr();
   static String get forestPlacementCancel => '$_forest.placement.cancel'.tr();
   static String get forestAccessibilityGameWorld => '$_forest.accessibility.gameWorld'.tr();
+  static String get forestRetry => '$_forest.retry'.tr();
 }

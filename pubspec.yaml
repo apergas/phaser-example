@@ -37,3 +37,4 @@ flutter:
   assets:
     - lib/core/assets/i18n/translations/
     - lib/core/assets/images/lpc/
+    - lib/core/assets/images/icons/

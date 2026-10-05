@@ -1,12 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
-import 'package:rpg/layers/domain/entities/player/inventory_entity.dart';
+
+import '../../../../mocks/domain/entities/player/inventory_entity_mock.dart';
+
 import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
 
 void main() {
   test('testWhenSpendingAffordableWoodThenReturnsInventoryWithTheRest', () {
     // given
-    final inventory = const InventoryEntity().addWood(6);
+    final inventory = InventoryEntityMock.mock.addWood(6);
 
     // when
     final afterSpending = inventory.spendWood(4);
@@ -17,7 +19,7 @@ void main() {
 
   test('testWhenSpendingMoreWoodThanStoredThenReturnsNull', () {
     // given
-    final inventory = const InventoryEntity().addWood(3);
+    final inventory = InventoryEntityMock.mock.addWood(3);
 
     // when
     final afterSpending = inventory.spendWood(5);
@@ -29,7 +31,7 @@ void main() {
 
   test('testWhenAddingToolThenInventoryHasIt', () {
     // given
-    const inventory = InventoryEntity();
+    const inventory = InventoryEntityMock.mock;
 
     // when
     final withAxe = inventory.addTool(ToolKind.axe);
@@ -41,9 +43,12 @@ void main() {
 
   test('testWhenAddingNegativeWoodThenFails', () {
     // given
-    const inventory = InventoryEntity();
+    const inventory = InventoryEntityMock.mock;
 
-    // when / then
-    expect(() => inventory.addWood(-1), throwsArgumentError);
+    // when
+    Object act() => inventory.addWood(-1);
+
+    // then
+    expect(act, throwsArgumentError);
   });
 }

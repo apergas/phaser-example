@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
-import 'package:rpg/layers/domain/entities/game/game_event_entity.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
 import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../mocks/domain/entities/item/ground_item_entity_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
+import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 
 void main() {
   test('testWhenPlayerWalksOverAToolThenPicksItUp', () {
@@ -17,7 +17,7 @@ void main() {
     final events = world.advanceFor(1000);
 
     // then
-    expect(events, contains(const ItemPickedUpEventEntity(itemId: 'axe-1', kind: ToolKind.axe)));
+    expect(events, contains(GameEventEntityMock.itemPickedUp));
     expect(world.player.inventory.hasTool(ToolKind.axe), isTrue);
     expect(world.items, isEmpty);
   });

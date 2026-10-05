@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/config/constants/enum/quest_id.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
-import 'package:rpg/layers/domain/entities/game/game_event_entity.dart';
-import 'package:rpg/layers/domain/entities/game/quest_progress_entity.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
 import 'package:rpg/layers/domain/quests/quest_log.dart';
 import 'package:rpg/layers/domain/rules/blueprints.dart';
 import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
 import 'package:rpg/layers/domain/world/extensions/player_rules.dart';
 
+import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
+import '../../../mocks/domain/entities/game/quest_progress_entity_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
 
 void main() {
@@ -21,9 +21,9 @@ void main() {
 
     // then
     expect(status, const [
-      QuestProgressEntity(id: QuestId.pickUpAxe, progress: 0, target: 1, isCompleted: false, isCurrent: true),
-      QuestProgressEntity(id: QuestId.gatherWood, progress: 0, target: 15, isCompleted: false, isCurrent: false),
-      QuestProgressEntity(id: QuestId.buildHouse, progress: 0, target: 1, isCompleted: false, isCurrent: false),
+      QuestProgressEntityMock.pickUpAxePending,
+      QuestProgressEntityMock.gatherWoodPending,
+      QuestProgressEntityMock.buildHousePending,
     ]);
   });
 
@@ -38,7 +38,7 @@ void main() {
     final second = questLog.update(world);
 
     // then
-    expect(first, const [QuestCompletedEventEntity(questId: QuestId.pickUpAxe)]);
+    expect(first, const [GameEventEntityMock.pickUpAxeCompleted]);
     expect(second, isEmpty);
   });
 
@@ -54,10 +54,7 @@ void main() {
 
     // then
     final woodQuest = questLog.status(world).firstWhere((quest) => quest.id == QuestId.gatherWood);
-    expect(
-      woodQuest,
-      const QuestProgressEntity(id: QuestId.gatherWood, progress: 15, target: 15, isCompleted: true, isCurrent: false),
-    );
+    expect(woodQuest, QuestProgressEntityMock.gatherWoodCompleted);
   });
 
   test('testWhenProgressExceedsTargetThenItIsCapped', () {
@@ -87,6 +84,6 @@ void main() {
 
     // then
     expect(whilePlaced, isEmpty);
-    expect(whenFinished, const [QuestCompletedEventEntity(questId: QuestId.buildHouse)]);
+    expect(whenFinished, const [GameEventEntityMock.buildHouseCompleted]);
   });
 }

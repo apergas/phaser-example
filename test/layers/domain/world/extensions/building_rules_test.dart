@@ -1,9 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/domain/entities/geometry/obstacle_entity.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
 import 'package:rpg/layers/domain/world/extensions/building_rules.dart';
 
 import '../../../../mocks/domain/entities/building/building_entity_mock.dart';
+import '../../../../mocks/domain/entities/geometry/obstacle_entity_mock.dart';
 
 void main() {
   test('testWhenHammeredThenProgressGrowsUntilComplete', () {
@@ -41,7 +40,7 @@ void main() {
     final footprint = building.footprint;
 
     // then
-    expect(footprint, const ObstacleEntity(position: PositionEntity(x: 0, y: 0), radius: 40));
+    expect(footprint, ObstacleEntityMock.houseFootprint);
     expect(building.progress, 0.0);
     expect(building.isComplete, isFalse);
   });

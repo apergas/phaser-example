@@ -1,24 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/domain/world/world_state.dart';
 
 import '../../../mocks/domain/entities/building/building_entity_mock.dart';
-import '../../../mocks/domain/entities/player/player_entity_mock.dart';
-import '../../../mocks/domain/entities/tree/tree_entity_mock.dart';
-
-WorldState _state({double width = 200, double height = 100}) => WorldState(
-  width: width,
-  height: height,
-  player: PlayerEntityMock.mock,
-  trees: [TreeEntityMock.mock],
-  items: [],
-  decorations: [],
-);
+import '../../../mocks/domain/world/world_state_mock.dart';
 
 void main() {
   test('testWhenClampingAPositionOutsideTheWorldThenKeepsTheMarginInside', () {
     // given
-    final state = _state();
+    final state = WorldStateMock.make();
 
     // when
     final clamped = state.clamp(const PositionEntity(x: -50, y: 500), 8);
@@ -29,7 +18,7 @@ void main() {
 
   test('testWhenAPositionIsTooCloseToTheEdgeThenItIsNotInside', () {
     // given
-    final state = _state();
+    final state = WorldStateMock.make();
 
     // when
     final inside = state.isInside(const PositionEntity(x: 50, y: 50), 8);
@@ -42,7 +31,7 @@ void main() {
 
   test('testWhenAskingForIdsThenTheyAreSequentialPerPrefix', () {
     // given
-    final state = _state();
+    final state = WorldStateMock.make();
 
     // when
     final ids = [state.nextId('building'), state.nextId('building'), state.nextId('other')];
@@ -53,10 +42,8 @@ void main() {
 
   test('testWhenTreesAndBuildingsStandThenTheyBlock', () {
     // given
-    final state = _state(width: 1000, height: 1000);
-    state.buildings[BuildingEntityMock.mock.id] = BuildingEntityMock.mock.copyWith(
-      position: const PositionEntity(x: 500, y: 500),
-    );
+    final state = WorldStateMock.make(width: 1000, height: 1000);
+    state.buildings[BuildingEntityMock.mock.id] = BuildingEntityMock.farCorner;
 
     // when
     final obstacles = state.obstacles();
@@ -75,7 +62,10 @@ void main() {
     // given
     final zero = 0.0;
 
-    // when / then
-    expect(() => _state(width: zero), throwsA(isA<AssertionError>()));
+    // when
+    Object act() => WorldStateMock.make(width: zero);
+
+    // then
+    expect(act, throwsA(isA<AssertionError>()));
   });
 }

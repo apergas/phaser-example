@@ -10,4 +10,23 @@ abstract final class PlayerStatusEntityMock {
     wood: 0,
     hasAxe: false,
   );
+
+  static const PlayerStatusEntity withTarget = PlayerStatusEntity(
+    position: PositionEntity(x: 100, y: 100),
+    activity: PlayerActivity.idle,
+    target: PositionEntity(x: 1, y: 1),
+    swingProgress: 0,
+    wood: 0,
+    hasAxe: false,
+  );
+
+  static PlayerStatusEntity make() {
+    return PlayerStatusEntity(
+      position: const PositionEntity(x: 100, y: 100),
+      activity: PlayerActivity.idle,
+      swingProgress: 0,
+      wood: 0,
+      hasAxe: false,
+    );
+  }
 }

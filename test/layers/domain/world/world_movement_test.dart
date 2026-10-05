@@ -1,9 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/domain/world/world.dart';
 
-import '../../../mocks/domain/entities/player/player_entity_mock.dart';
-import '../../../mocks/domain/entities/tree/tree_entity_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
 
 void main() {
@@ -21,7 +18,7 @@ void main() {
 
   test('testWhenNextStepHitsATrunkThenPlayerStops', () {
     // given
-    final world = WorldMock.make(trees: [TreeEntityMock.mock.copyWith(position: const PositionEntity(x: 130, y: 100))]);
+    final world = WorldMock.withTreeBlockingPath();
     world.movePlayerTo(const PositionEntity(x: 200, y: 100));
 
     // when
@@ -34,12 +31,7 @@ void main() {
 
   test('testWhenDestinationIsOutsideTheWorldThenItIsClampedToTheEdge', () {
     // given
-    final world = World(
-      width: 200,
-      height: 100,
-      player: PlayerEntityMock.mock.copyWith(position: const PositionEntity(x: 50, y: 50)),
-      trees: const [],
-    );
+    final world = WorldMock.small();
     world.movePlayerTo(const PositionEntity(x: -50, y: 500));
 
     // when

@@ -13,4 +13,24 @@ abstract final class WorldSnapshotEntityMock {
     decorations: [],
     buildings: [BuildingEntityMock.mock],
   );
+
+  static const WorldSnapshotEntity withoutTrees = WorldSnapshotEntity(
+    width: 1000,
+    height: 1000,
+    trees: [],
+    items: [GroundItemEntityMock.mock],
+    decorations: [],
+    buildings: [BuildingEntityMock.mock],
+  );
+
+  static WorldSnapshotEntity make() {
+    return WorldSnapshotEntity(
+      width: 1000,
+      height: 1000,
+      trees: [TreeEntityMock.mock],
+      items: [GroundItemEntityMock.mock],
+      decorations: [],
+      buildings: [BuildingEntityMock.mock],
+    );
+  }
 }

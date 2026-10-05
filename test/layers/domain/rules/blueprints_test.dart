@@ -1,7 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/layers/domain/entities/building/blueprint_entity.dart';
 import 'package:rpg/layers/domain/rules/blueprints.dart';
+
+import '../../../mocks/domain/entities/building/blueprint_entity_mock.dart';
 
 void main() {
   test('testWhenAskingForTheHouseThenReturnsItsCostHitsAndFootprint', () {
@@ -14,7 +15,7 @@ void main() {
     // then
     expect(
       blueprint,
-      const BlueprintEntity(id: BlueprintId.house, woodCost: 15, hitsToBuild: 8, footprintRadius: 40),
+      BlueprintEntityMock.mock,
     );
     expect(Blueprints.all, [Blueprints.house]);
   });

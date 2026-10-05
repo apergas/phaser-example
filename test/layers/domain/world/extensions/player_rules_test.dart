@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/domain/entities/player/activity_entity.dart';
 import 'package:rpg/layers/domain/entities/player/intent_entity.dart';
 import 'package:rpg/layers/domain/world/extensions/player_rules.dart';
 
 import '../../../../mocks/domain/entities/player/player_entity_mock.dart';
+import '../../../../mocks/domain/entities/player/activity_entity_mock.dart';
 
 void main() {
   test('testWhenCreatedThenIsIdleWithoutNextPosition', () {
@@ -15,7 +15,7 @@ void main() {
     final next = player.nextPosition(1000);
 
     // then
-    expect(player.activity, const IdleActivityEntity());
+    expect(player.activity, ActivityEntityMock.idle);
     expect(next, isNull);
   });
 
@@ -42,7 +42,7 @@ void main() {
 
     // then
     expect(stopped.isMoving, isFalse);
-    expect(stopped.activity, const IdleActivityEntity());
+    expect(stopped.activity, ActivityEntityMock.idle);
   });
 
   test('testWhenContinuingWorkThenTracksElapsedTime', () {
@@ -53,6 +53,6 @@ void main() {
     final later = working.continueWork(300);
 
     // then
-    expect(later.activity, const WorkingActivityEntity(intent: ChopIntentEntity(treeId: 'tree-1'), elapsedMs: 300));
+    expect(later.activity, ActivityEntityMock.makeWorking(elapsedMs: 300));
   });
 }

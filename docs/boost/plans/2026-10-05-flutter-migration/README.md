@@ -439,3 +439,4 @@ Conocidas al escribir el plan (se confirman o corrigen al ejecutar):
 Durante la ejecución: cada desviación nueva del plan, con su motivo y el commit.
 
 - Fase 1, tarea 1: `analysis_options.yaml` = el del plugin + `build/**`, `android/**`, `ios/**`, `web/**` en `analyzer.exclude`. Flutter 3.47 las vuelve a añadir en cada `flutter pub get` / `flutter analyze`; decidido aceptarlas (esas carpetas no tienen Dart).
+- Fase 1, tarea 5: contraste de `CustomButtonColor` corregido respecto al plugin (deshabilitado = `foreground` al 50 %, `warning` con texto negro) — decisión del usuario, commit `8eead64`. `CustomButtonColor`, `CustomButtonSize` y `ActionsDirection` siguen junto a sus widgets, como en el ejemplo del plugin (son enums con colores/tamaños, no valores planos).

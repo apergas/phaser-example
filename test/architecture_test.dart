@@ -30,7 +30,15 @@ const List<String> _presentationForbidden = ['lib/layers/data/'];
 const List<String> _coreForbidden = ['lib/layers/'];
 
 const Map<String, List<String>> _coreAllowed = {
-  'lib/core/services/navigation/': ['lib/layers/presentation/widgets/', 'lib/layers/presentation/theme/'],
+  'lib/core/services/navigation/source/navigation_service.dart': [
+    'lib/layers/presentation/widgets/custom-button/custom_button.dart',
+    'lib/layers/presentation/widgets/custom-popup/custom_pop_up.dart',
+  ],
+  'lib/core/services/navigation/navify/navify_impl.dart': [
+    'lib/layers/presentation/theme/colors/custom_colors.dart',
+    'lib/layers/presentation/widgets/custom-button/custom_button.dart',
+    'lib/layers/presentation/widgets/custom-popup/custom_pop_up.dart',
+  ],
 };
 
 final RegExp _importPattern = RegExp(r'''^\s*(?:import|export)\s+['"]([^'"]+)['"]''', multiLine: true);
@@ -177,6 +185,26 @@ void main() {
 
       // then
       expect(imports, ['package:flutter/material.dart', '../a.dart']);
+    });
+
+    test('testWhenCoreImportsAnUnlistedPresentationFileThenItIsReported', () {
+      // given
+      final directory = Directory.systemTemp.createTempSync('core_check');
+      addTearDown(() => directory.deleteSync(recursive: true));
+      final file = File('${directory.path}/navify_like.dart')
+        ..writeAsStringSync('''
+import 'package:rpg/layers/presentation/widgets/custom-popup/custom_pop_up.dart';
+import 'package:rpg/layers/presentation/app/container_app.dart';
+''');
+      final allowed = {
+        file.path: ['lib/layers/presentation/widgets/custom-popup/custom_pop_up.dart'],
+      };
+
+      // when
+      final found = violations(folder: directory.path, forbidden: _coreForbidden, allowed: allowed);
+
+      // then
+      expect(found, ['${file.path} -> lib/layers/presentation/app/container_app.dart']);
     });
 
     test('testWhenAnEntityHasVarOrNonFinalFieldsThenTheyAreReported', () {

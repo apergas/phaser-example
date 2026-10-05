@@ -27,7 +27,7 @@ final class ContainerAppSuccess extends ContainerAppState {
 }
 
 final class ContainerAppFailure extends ContainerAppState {
-  final CustomException exception;
+  final CustomException<Object?> exception;
 
   const ContainerAppFailure({required super.data, required this.exception});
 }

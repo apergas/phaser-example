@@ -4,7 +4,7 @@ import '../exceptions/app_exceptions.dart';
 
 @Injectable()
 class AppExceptionHandler {
-  AppException handle({required Object? exception, StackTrace? stackTrx}) {
+  AppException<Object?> handle({required Object? exception, StackTrace? stackTrx}) {
     if (exception is AppException) {
       return exception;
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../theme/colors/custom_colors.dart';
+import '../../theme/styles/custom_text_styles.dart';
 import '../custom-button/custom_button.dart';
 
 enum ActionsDirection { vertical, horizontal }
@@ -15,6 +16,8 @@ class CustomPopUp extends StatelessWidget {
   final String? icon;
   final String? image;
   final Color? textColor;
+
+  Color get _resolvedTextColor => textColor ?? CustomColors.hudText;
 
   bool get hasTopWidget => icon != null || image != null;
 
@@ -51,27 +54,27 @@ class CustomPopUp extends StatelessWidget {
       actionsAlignment: .center,
       contentPadding: const .symmetric(horizontal: 24, vertical: 16),
       insetPadding: const .all(32),
-      title: !hasTopWidget ? _plainTitle(context) : _titleWithTopWidget(context),
+      title: !hasTopWidget ? _plainTitle() : _titleWithTopWidget(),
       content: message != null
           ? Text(
               message!,
               textAlign: .left,
-              style: TextTheme.of(context).bodyLarge!.copyWith(color: textColor),
+              style: CustomTextStyles.system16w400.copyWith(color: _resolvedTextColor),
             )
           : content,
       actions: [_actions()],
     );
   }
 
-  Widget _plainTitle(BuildContext context) {
+  Widget _plainTitle() {
     return Text(
       title,
       textAlign: .left,
-      style: TextTheme.of(context).headlineSmall!.copyWith(color: textColor),
+      style: CustomTextStyles.system24w400.copyWith(color: _resolvedTextColor),
     );
   }
 
-  Widget _titleWithTopWidget(BuildContext context) {
+  Widget _titleWithTopWidget() {
     return Column(
       children: [
         if (icon != null)
@@ -87,7 +90,7 @@ class CustomPopUp extends StatelessWidget {
         Text(
           title,
           textAlign: .center,
-          style: TextTheme.of(context).headlineSmall!.copyWith(color: textColor),
+          style: CustomTextStyles.system24w400.copyWith(color: _resolvedTextColor),
         ),
       ],
     );

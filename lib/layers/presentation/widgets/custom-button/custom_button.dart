@@ -51,18 +51,18 @@ class CustomButton extends StatelessWidget {
           shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: .circular(16))),
           overlayColor: WidgetStateProperty.resolveWith((states) {
             if (color == CustomButtonColor.dark && states.contains(WidgetState.pressed)) {
-              return Colors.white.withAlpha(25);
+              return CustomColors.white.withAlpha(25);
             }
             return null;
           }),
         ),
         onPressed: isLoading || isDisabled ? null : onPressed,
-        child: isLoading ? _loader() : _content(isDisabled),
+        child: isLoading ? _loader() : _content(),
       ),
     );
   }
 
-  Widget _content(bool isDisabled) {
+  Widget _content() {
     return Row(
       mainAxisAlignment: .center,
       mainAxisSize: .min,

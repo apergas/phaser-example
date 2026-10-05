@@ -5,7 +5,7 @@ sealed class AppException<T extends Object?> extends CustomException<T> {
   const AppException({super.data});
 }
 
-final class GenericException extends AppException {
+final class GenericException extends AppException<Object?> {
   @override
   String get title => Internationalize.errorGenericTitle;
 
@@ -55,7 +55,7 @@ final class UnknownItemKindException extends AppException<String> {
   const UnknownItemKindException({required String super.data});
 }
 
-final class NoGameInProgressException extends AppException {
+final class NoGameInProgressException extends AppException<Object?> {
   @override
   String get title => Internationalize.errorNoGameInProgressTitle;
 

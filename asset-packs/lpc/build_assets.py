@@ -3,7 +3,8 @@ Builds the game's LPC textures from the raw sources in ./sources.
 
   python3 build_assets.py
 
-Outputs (into shared/assets/lpc/, the one copy the web, Android and iOS apps all read):
+Outputs (into lib/core/assets/images/lpc/, the copy the Flutter app bundles; mirrored into
+shared/assets/lpc/ while the Kotlin Multiplatform apps still exist):
   hero-{walk,idle}[-axe].png       64x64 character sheets composed from layers, clothes recoloured,
                                    with and without the axe in hand
   hero-{chop,hammer}.png           128x128 work animations: body slash frames between the tool's
@@ -17,12 +18,14 @@ Requires Pillow. Licences and authors: see CREDITS.md next to the outputs.
 
 from pathlib import Path
 import json
+import shutil
 
 from PIL import Image
 
 ROOT = Path(__file__).parent
 SOURCES = ROOT / "sources"
-OUT = ROOT.parent.parent / "shared" / "assets" / "lpc"
+OUT = ROOT.parent.parent / "lib" / "core" / "assets" / "images" / "lpc"
+LEGACY_OUT = ROOT.parent.parent / "shared" / "assets" / "lpc"
 
 # --- Character -------------------------------------------------------------------------------
 
@@ -271,3 +274,6 @@ if __name__ == "__main__":
     build_character()
     build_forest()
     print(f"Assets written to {OUT}")
+    if LEGACY_OUT.parent.exists():
+        shutil.copytree(OUT, LEGACY_OUT, dirs_exist_ok=True)
+        print(f"Assets mirrored to {LEGACY_OUT}")

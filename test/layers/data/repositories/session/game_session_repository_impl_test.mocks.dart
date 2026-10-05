@@ -5,8 +5,10 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:rpg/layers/data/datasources/session/source/game_session_local_datasource.dart' as _i2;
-import 'package:rpg/layers/domain/entities/game/game_session_entity.dart' as _i3;
+import 'package:rpg/layers/data/datasources/session/source/game_session_local_datasource.dart'
+    as _i2;
+import 'package:rpg/layers/domain/entities/game/game_session_entity.dart'
+    as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -27,7 +29,8 @@ import 'package:rpg/layers/domain/entities/game/game_session_entity.dart' as _i3
 /// A class which mocks [GameSessionLocalDatasource].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGameSessionLocalDatasource extends _i1.Mock implements _i2.GameSessionLocalDatasource {
+class MockGameSessionLocalDatasource extends _i1.Mock
+    implements _i2.GameSessionLocalDatasource {
   MockGameSessionLocalDatasource() {
     _i1.throwOnMissingStub(this);
   }

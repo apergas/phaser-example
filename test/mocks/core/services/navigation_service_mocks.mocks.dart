@@ -9,9 +9,12 @@ import 'dart:ui' as _i5;
 
 import 'package:flutter/material.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
-import 'package:rpg/core/services/navigation/source/navigation_service.dart' as _i3;
-import 'package:rpg/layers/presentation/widgets/custom-button/custom_button.dart' as _i6;
-import 'package:rpg/layers/presentation/widgets/custom-popup/custom_pop_up.dart' as _i7;
+import 'package:rpg/core/services/navigation/source/navigation_service.dart'
+    as _i3;
+import 'package:rpg/layers/presentation/widgets/custom-button/custom_button.dart'
+    as _i6;
+import 'package:rpg/layers/presentation/widgets/custom-popup/custom_pop_up.dart'
+    as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -29,8 +32,11 @@ import 'package:rpg/layers/presentation/widgets/custom-popup/custom_pop_up.dart'
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeGlobalKey_0<T extends _i1.State<_i1.StatefulWidget>> extends _i2.SmartFake implements _i1.GlobalKey<T> {
-  _FakeGlobalKey_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeGlobalKey_0<T extends _i1.State<_i1.StatefulWidget>>
+    extends _i2.SmartFake
+    implements _i1.GlobalKey<T> {
+  _FakeGlobalKey_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 /// A class which mocks [NavigationService].
@@ -105,7 +111,9 @@ class MockNavigationService extends _i2.Mock implements _i3.NavigationService {
   );
 
   @override
-  bool canPop() => (super.noSuchMethod(Invocation.method(#canPop, []), returnValue: false) as bool);
+  bool canPop() =>
+      (super.noSuchMethod(Invocation.method(#canPop, []), returnValue: false)
+          as bool);
 
   @override
   void showSheet(
@@ -122,14 +130,15 @@ class MockNavigationService extends _i2.Mock implements _i3.NavigationService {
   );
 
   @override
-  void showFullScreenSheet(_i1.Widget? sheet, {bool? isDismissible = true}) => super.noSuchMethod(
-    Invocation.method(
-      #showFullScreenSheet,
-      [sheet],
-      {#isDismissible: isDismissible},
-    ),
-    returnValueForMissingStub: null,
-  );
+  void showFullScreenSheet(_i1.Widget? sheet, {bool? isDismissible = true}) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #showFullScreenSheet,
+          [sheet],
+          {#isDismissible: isDismissible},
+        ),
+        returnValueForMissingStub: null,
+      );
 
   @override
   void showErrorPopUp({
@@ -177,13 +186,14 @@ class MockNavigationService extends _i2.Mock implements _i3.NavigationService {
   ) as _i4.Future<void>);
 
   @override
-  void showSnackbar({required String? message, double? bottomMargin}) => super.noSuchMethod(
-    Invocation.method(#showSnackbar, [], {
-      #message: message,
-      #bottomMargin: bottomMargin,
-    }),
-    returnValueForMissingStub: null,
-  );
+  void showSnackbar({required String? message, double? bottomMargin}) =>
+      super.noSuchMethod(
+        Invocation.method(#showSnackbar, [], {
+          #message: message,
+          #bottomMargin: bottomMargin,
+        }),
+        returnValueForMissingStub: null,
+      );
 
   @override
   void showLoader() => super.noSuchMethod(

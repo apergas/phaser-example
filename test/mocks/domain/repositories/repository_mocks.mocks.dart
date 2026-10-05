@@ -5,9 +5,12 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:rpg/layers/domain/entities/game/game_session_entity.dart' as _i3;
-import 'package:rpg/layers/domain/repositories/level/level_repository.dart' as _i4;
-import 'package:rpg/layers/domain/repositories/session/game_session_repository.dart' as _i5;
+import 'package:rpg/layers/domain/entities/game/game_session_entity.dart'
+    as _i3;
+import 'package:rpg/layers/domain/repositories/level/level_repository.dart'
+    as _i4;
+import 'package:rpg/layers/domain/repositories/session/game_session_repository.dart'
+    as _i5;
 import 'package:rpg/layers/domain/world/world.dart' as _i2;
 
 // ignore_for_file: type=lint
@@ -27,11 +30,14 @@ import 'package:rpg/layers/domain/world/world.dart' as _i2;
 // ignore_for_file: invalid_use_of_internal_member
 
 class _FakeWorld_0 extends _i1.SmartFake implements _i2.World {
-  _FakeWorld_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeWorld_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
-class _FakeGameSessionEntity_1 extends _i1.SmartFake implements _i3.GameSessionEntity {
-  _FakeGameSessionEntity_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeGameSessionEntity_1 extends _i1.SmartFake
+    implements _i3.GameSessionEntity {
+  _FakeGameSessionEntity_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 /// A class which mocks [LevelRepository].
@@ -52,7 +58,8 @@ class MockLevelRepository extends _i1.Mock implements _i4.LevelRepository {
 /// A class which mocks [GameSessionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGameSessionRepository extends _i1.Mock implements _i5.GameSessionRepository {
+class MockGameSessionRepository extends _i1.Mock
+    implements _i5.GameSessionRepository {
   MockGameSessionRepository() {
     _i1.throwOnMissingStub(this);
   }

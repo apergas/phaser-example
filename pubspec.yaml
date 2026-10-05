@@ -1,5 +1,5 @@
 name: rpg
-description: "A new Flutter project."
+description: "Top-down forest RPG: chop trees, gather wood and build a house."
 publish_to: 'none'
 version: 0.1.0+1
 

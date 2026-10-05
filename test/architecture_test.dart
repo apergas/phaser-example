@@ -34,6 +34,17 @@ const List<String> _flameAllowedImporters = [
   'lib/layers/presentation/features/forest/forest_page.dart',
 ];
 
+const String _worldFolder = 'lib/layers/domain/world/';
+
+const List<String> _worldInternals = [
+  'lib/layers/domain/world/world_state.dart',
+  'lib/layers/domain/world/work.dart',
+  'lib/layers/domain/world/navigation.dart',
+  'lib/layers/domain/world/woodcutting.dart',
+  'lib/layers/domain/world/construction.dart',
+  'lib/layers/domain/world/pick_up_items.dart',
+];
+
 const List<String> _coreForbidden = ['lib/layers/'];
 
 const Map<String, List<String>> _coreAllowed = {
@@ -51,7 +62,7 @@ const Map<String, List<String>> _coreAllowed = {
 final RegExp _importPattern = RegExp(r'''^\s*(?:import|export)\s+['"]([^'"]+)['"]''', multiLine: true);
 
 final RegExp _mutableFieldPattern = RegExp(
-  r'^  (?!final\b|static\b|const\b|factory\b|return\b|@|//)(?:late\s+)?(?:var\b[^;]*;|[A-Za-z_]\w*(?:<[^;{}()]*>)?\??\s+_?(?!get\b|set\b|operator\b)[a-z]\w*\s*(?:=(?![=>]).*)?;)',
+  r'^  (?![ })\]/@])(?!(?:final|static|const|factory|late\s+final)\b)(?!.*=>)(?![^=;]*\b(?:get|set|operator)\b)(?![^=;]*\().*;$',
   multiLine: true,
 );
 
@@ -130,6 +141,21 @@ void main() {
         sources: sources,
         confined: _flameConfined,
         allowedImporters: _flameAllowedImporters,
+      );
+
+      // then
+      expect(found, isEmpty);
+    });
+
+    test('testWhenCheckingLibThenNoFileOutsideTheWorldImportsItsInternals', () {
+      // given
+      final sources = sourcesUnder('lib');
+
+      // when
+      final found = confinementViolations(
+        sources: sources,
+        confined: _worldInternals,
+        allowedImporters: const [_worldFolder],
       );
 
       // then
@@ -293,6 +319,52 @@ class SampleEntity {
 
       // then
       expect(fields, ['double y;', 'var z = 0;']);
+    });
+
+    test('testWhenAnEntityHasLateOrComputedInitialFieldsThenTheyAreReportedAndDeclarationsAreNot', () {
+      // given
+      const source = '''
+sealed class SampleEntity {
+  late int counter;
+  int total = compute();
+  List<int> values;
+  late final int cached;
+  int get id;
+  int area(int side);
+  bool operator ==(Object other);
+  factory SampleEntity.empty() = EmptySampleEntity;
+}
+''';
+
+      // when
+      final fields = mutableFieldsIn(source);
+
+      // then
+      expect(fields, ['late int counter;', 'int total = compute();', 'List<int> values;']);
+    });
+
+    test('testWhenAFileOutsideTheWorldImportsAnInternalThenItIsReported', () {
+      // given
+      final sources = {
+        'lib/layers/data/level_repository_impl.dart': "import 'package:rpg/layers/domain/world/world_state.dart';\n",
+        'lib/layers/domain/quests/quests.dart': "import '../world/navigation.dart';\n",
+        'lib/layers/domain/usecases/use_case.dart': "import '../world/world.dart';\n",
+        'lib/layers/domain/world/world.dart': "import 'world_state.dart';\n",
+        'lib/layers/domain/world/extensions/player_rules.dart': "import '../navigation.dart';\n",
+      };
+
+      // when
+      final found = confinementViolations(
+        sources: sources,
+        confined: _worldInternals,
+        allowedImporters: const [_worldFolder],
+      );
+
+      // then
+      expect(found, [
+        'lib/layers/data/level_repository_impl.dart -> lib/layers/domain/world/world_state.dart',
+        'lib/layers/domain/quests/quests.dart -> lib/layers/domain/world/navigation.dart',
+      ]);
     });
   });
 }

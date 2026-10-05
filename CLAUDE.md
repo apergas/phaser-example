@@ -31,7 +31,7 @@ Regenerate art after editing the asset script: `cd asset-packs/lpc && python3 bu
 
 ## Architecture
 
-Team conventions from the `flutter-arch-conventions` plugin: `PRESENTATION -> DOMAIN <- DATA`, `CORE` used by all. `test/architecture_test.dart` checks that domain imports nothing from data/presentation nor Flutter/Flame/`dart:ui`/`dart:io`, data never imports presentation, presentation never imports data, core imports nothing from `layers/` (except the NavigationService widgets), and entities have only `final` fields.
+Team conventions from the `flutter-arch-conventions` plugin: `PRESENTATION -> DOMAIN <- DATA`, `CORE` used by all. `test/architecture_test.dart` checks that domain imports nothing from data/presentation nor Flutter/Flame/`dart:ui`/`dart:io`, data never imports presentation, presentation never imports data, core imports nothing from `layers/` (except the NavigationService widgets), nothing outside `domain/world/` imports its internals (`WorldState`, `Work`, the systems), Flame stays in `game/` and the page, and entities have only `final` fields.
 
 - `lib/layers/domain/`
   - `entities/<feature>/` — immutable `*Entity` classes: `final` fields, `const` constructor, `copyWith`, computed getters, hand-written `==`/`hashCode`. Geometry, tree, item, decoration, building (`BlueprintEntity`, `BuildingEntity`), player (`InventoryEntity`, `PlayerEntity`, sealed `ActivityEntity`, sealed `IntentEntity`), game (sealed `GameEventEntity`, sealed `ConstructionResultEntity`, `PlayerStatusEntity`, `WorldSnapshotEntity`, `QuestProgressEntity`, `BuildOptionEntity`, `GameSessionEntity`).

@@ -174,6 +174,12 @@ void main() {
       expect(dodges.map((turn) => turn.round), [11, 16, 18, 21, 22, 23]);
       expect(dodges.every((turn) => turn.actor == FightSide.enemy && turn.damage == 0), isTrue);
       expect(log.turns.lastWhere((turn) => turn.target == FightSide.hero).targetHealthAfter, 51);
+      for (final dodge in dodges) {
+        final index = log.turns.indexOf(dodge);
+        final earlier = log.turns.sublist(0, index).where((turn) => turn.target == FightSide.hero);
+        final healthBefore = earlier.isEmpty ? log.heroStats.health : earlier.last.targetHealthAfter;
+        expect(dodge.targetHealthAfter, healthBefore);
+      }
     });
 
     test('testWhenTheHeroHasSecondWindThenItHealsOnlyOnce', () {

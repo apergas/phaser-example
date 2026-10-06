@@ -6,6 +6,7 @@ import 'package:rpg/layers/domain/entities/combat/fight_result_entity.dart';
 import 'package:rpg/layers/domain/entities/game/game_session_entity.dart';
 import 'package:rpg/layers/domain/entities/hero/hero_entity.dart';
 import 'package:rpg/layers/domain/rules/arena_levels.dart';
+import 'package:rpg/layers/domain/rules/rules.dart';
 import 'package:rpg/layers/domain/use-cases/arena/get_arena_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/arena/start_fight_use_case.dart';
 import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
@@ -57,12 +58,15 @@ void main() {
     }
     final goldBefore = session.world.funds.amount(Resource.gold);
 
+    final expectedRepeatGold =
+        ArenaLevels.byId(ArenaLevelId.banditRookie).reward[Resource.gold]! ~/ Rules.repeatRewardDivisor;
+
     // when
     final result = startFight(levelId: ArenaLevelId.banditRookie);
 
     // then
     expect(result is FightPlayedEntity && result.log.isVictory, isTrue);
-    expect(session.world.funds.amount(Resource.gold), goldBefore + 3);
+    expect(session.world.funds.amount(Resource.gold), goldBefore + expectedRepeatGold);
   });
 
   test('testWhenANewHeroTriesTheLastLevelThenItIsLockedAndNothingChanges', () {

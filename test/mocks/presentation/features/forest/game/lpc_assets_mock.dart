@@ -48,6 +48,8 @@ abstract final class LpcAssetsMock {
     );
   }
 
+  static Image groundTile() => _image(32, 32);
+
   static Uint8List _rightHalfOpaque() {
     final bytes = Uint8List(frameSize * frameSize * 4);
     for (var y = 0; y < frameSize; y++) {

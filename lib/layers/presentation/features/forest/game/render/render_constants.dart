@@ -2,7 +2,6 @@ import '../../../../../../core/config/constants/enum/blueprint_id.dart';
 
 abstract final class RenderConstants {
   static const double cameraZoom = 2;
-  static const double tileSize = 32;
 
   static const double characterFrameSize = 64;
   static const double characterAnchorY = 62 / 64;

@@ -10,6 +10,8 @@ import '../../../../../core/config/constants/enum/forest/facing.dart';
 import '../../../../../core/config/constants/enum/forest/quest_item_status.dart';
 import '../../../../../core/config/constants/enum/forest/work_tool.dart';
 import '../../../../../core/config/constants/enum/player_activity.dart';
+import '../../../../../core/config/constants/enum/resource.dart';
+import '../../../../../core/config/constants/enum/tool_kind.dart';
 import '../../../../../core/error-handling/exceptions/app_exceptions.dart';
 import '../../../../../core/error-handling/exceptions/custom_exception.dart';
 import '../../../../../core/services/navigation/source/navigation_service.dart';
@@ -28,6 +30,7 @@ import '../../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_player_status_use_case.dart';
 import '../../../../domain/use-cases/game/get_quests_use_case.dart';
 import '../../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
+import '../../../../domain/world/extensions/inventory_rules.dart';
 import '../../../../domain/use-cases/game/move_player_use_case.dart';
 import '../../../../domain/use-cases/game/start_game_use_case.dart';
 import '../models/build_item_data.dart';
@@ -174,7 +177,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   void _openPlacement(BlueprintId blueprint) {
     final option = _getBuildOptionsUseCase().firstWhereOrNull((option) => option.blueprint == blueprint);
     if (option == null || !option.isAffordable) {
-      _showMessage(Internationalize.forestMessageNotEnoughWood);
+      _showMessage(Internationalize.forestMessageNotEnoughResources);
       return;
     }
     final position = _lastPosition ?? _getPlayerStatusUseCase().position;
@@ -191,9 +194,9 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         effects.add(BuildingPlacedEffect(building: building));
       case ConstructionRejectedEntity(reason: ConstructionRejection.blocked):
         _showMessage(Internationalize.forestMessageBlockedSite);
-      case ConstructionRejectedEntity(reason: ConstructionRejection.notEnoughWood):
+      case ConstructionRejectedEntity(reason: ConstructionRejection.notEnoughResources):
         _placement = null;
-        _showMessage(Internationalize.forestMessageNotEnoughWood);
+        _showMessage(Internationalize.forestMessageNotEnoughResources);
     }
   }
 
@@ -267,8 +270,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         tool: status.activity == PlayerActivity.chopping ? WorkTool.axe : WorkTool.hammer,
         swingProgress: status.swingProgress,
       ),
-      (false, true) => WalkPose(withAxe: status.hasAxe),
-      (false, false) => IdlePose(withAxe: status.hasAxe),
+      (false, true) => WalkPose(withAxe: status.inventory.hasTool(ToolKind.axe)),
+      (false, false) => IdlePose(withAxe: status.inventory.hasTool(ToolKind.axe)),
     };
     return PlayerRenderData(position: status.position, facing: facing, pose: pose);
   }
@@ -280,11 +283,11 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
 
   HudData _hudData(PlayerStatusEntity status, List<QuestProgressEntity> quests) {
     return HudData(
-      wood: status.wood,
-      hasAxe: status.hasAxe,
+      wood: status.inventory.amount(Resource.wood),
+      hasAxe: status.inventory.hasTool(ToolKind.axe),
       questBadge: '${quests.where((quest) => quest.isCompleted).length}/${quests.length}',
       quests: [for (final quest in quests) _questItem(quest)],
-      buildItems: [for (final option in _getBuildOptionsUseCase()) _buildItem(option, wood: status.wood)],
+      buildItems: [for (final option in _getBuildOptionsUseCase()) _buildItem(option)],
       isBuildLocked: _placement != null,
     );
   }
@@ -305,13 +308,20 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     );
   }
 
-  BuildItemData _buildItem(BuildOptionEntity option, {required int wood}) {
+  BuildItemData _buildItem(BuildOptionEntity option) {
     return BuildItemData(
       blueprint: option.blueprint,
       name: Internationalize.forestBlueprint(id: option.blueprint),
-      costText: Internationalize.forestCost(wood: option.woodCost),
-      missingText: option.isAffordable ? null : Internationalize.forestMissing(wood: option.woodCost - wood),
+      costText: _amounts(option.cost),
+      missingText: option.isAffordable ? null : Internationalize.forestMissing(amounts: _amounts(option.missing)),
       isEnabled: option.isAffordable,
     );
+  }
+
+  String _amounts(Map<Resource, int> amounts) {
+    return amounts.entries
+        .sortedBy<num>((entry) => entry.key.index)
+        .map((entry) => Internationalize.forestAmount(resource: entry.key, amount: entry.value))
+        .join(', ');
   }
 }

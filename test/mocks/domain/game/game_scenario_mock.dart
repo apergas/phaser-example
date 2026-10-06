@@ -1,3 +1,4 @@
+import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
 import 'package:rpg/layers/domain/entities/player/inventory_entity.dart';
@@ -37,8 +38,9 @@ abstract final class GameScenarioMock {
     trees: [TreeEntityMock.mock.copyWith(position: const PositionEntity(x: 120, y: 100))],
   );
 
-  static World tenWood() =>
-      WorldMock.make(player: PlayerEntityMock.mock.copyWith(inventory: const InventoryEntity(wood: 10)));
+  static World tenWood() => WorldMock.make(
+    player: PlayerEntityMock.mock.copyWith(inventory: const InventoryEntity(resources: {Resource.wood: 10})),
+  );
 
   static World treeOnBuildingSite() =>
       WorldMock.make(trees: [TreeEntityMock.mock.copyWith(position: const PositionEntity(x: 400, y: 400))]);

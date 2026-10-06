@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/config/constants/enum/quest_id.dart';
+import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
 import 'package:rpg/layers/domain/quests/quest_log.dart';
@@ -46,11 +47,11 @@ void main() {
     // given
     final world = WorldMock.make();
     final questLog = QuestLog();
-    world.updatePlayer((player) => player.withInventory(player.inventory.addWood(16)));
+    world.updatePlayer((player) => player.withInventory(player.inventory.add(Resource.wood, 16)));
     questLog.update(world);
 
     // when
-    world.updatePlayer((player) => player.withInventory(player.inventory.spendWood(16)!));
+    world.updatePlayer((player) => player.withInventory(player.inventory.spend({Resource.wood: 16})!));
 
     // then
     final woodQuest = questLog.status(world).firstWhere((quest) => quest.id == QuestId.gatherWood);
@@ -60,7 +61,7 @@ void main() {
   test('testWhenProgressExceedsTargetThenItIsCapped', () {
     // given
     final world = WorldMock.make();
-    world.updatePlayer((player) => player.withInventory(player.inventory.addWood(40)));
+    world.updatePlayer((player) => player.withInventory(player.inventory.add(Resource.wood, 40)));
 
     // when
     final woodQuest = QuestLog().status(world).firstWhere((quest) => quest.id == QuestId.gatherWood);
@@ -73,7 +74,7 @@ void main() {
     // given
     final world = WorldMock.make();
     final questLog = QuestLog();
-    world.updatePlayer((player) => player.withInventory(player.inventory.addWood(15)));
+    world.updatePlayer((player) => player.withInventory(player.inventory.add(Resource.wood, 15)));
     questLog.update(world);
     world.orderConstruction(Blueprints.house, const PositionEntity(x: 300, y: 100));
 

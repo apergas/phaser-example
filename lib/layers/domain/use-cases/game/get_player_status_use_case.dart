@@ -1,10 +1,8 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/config/constants/enum/tool_kind.dart';
 import '../../entities/game/player_status_entity.dart';
 import '../../repositories/session/game_session_repository.dart';
 import '../../world/extensions/activity_rules.dart';
-import '../../world/extensions/inventory_rules.dart';
 
 @Injectable()
 final class GetPlayerStatusUseCase {
@@ -20,8 +18,7 @@ final class GetPlayerStatusUseCase {
       activity: player.activity.playerActivity,
       target: world.playerTarget,
       swingProgress: world.workProgress,
-      wood: player.inventory.wood,
-      hasAxe: player.inventory.hasTool(ToolKind.axe),
+      inventory: player.inventory,
     );
   }
 }

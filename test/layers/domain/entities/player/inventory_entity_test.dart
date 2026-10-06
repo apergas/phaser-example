@@ -34,7 +34,7 @@ void main() {
     const inventory = InventoryEntityMock.withAxe;
 
     // when
-    final copy = inventory.copyWith(wood: 6);
+    final copy = inventory.copyWith(resources: InventoryEntityMock.withWood.resources);
 
     // then
     expect(copy, InventoryEntityMock.make(wood: 6, tools: {ToolKind.axe}));

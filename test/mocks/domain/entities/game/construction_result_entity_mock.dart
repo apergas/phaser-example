@@ -8,8 +8,8 @@ abstract final class ConstructionResultEntityMock {
 
   static const ConstructionRejectedEntity blocked = ConstructionRejectedEntity(reason: ConstructionRejection.blocked);
 
-  static const ConstructionRejectedEntity notEnoughWood = ConstructionRejectedEntity(
-    reason: ConstructionRejection.notEnoughWood,
+  static const ConstructionRejectedEntity notEnoughResources = ConstructionRejectedEntity(
+    reason: ConstructionRejection.notEnoughResources,
   );
 
   static ConstructionStartedEntity makeStarted() =>

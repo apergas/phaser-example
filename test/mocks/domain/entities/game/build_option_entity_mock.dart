@@ -1,19 +1,20 @@
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/layers/domain/entities/game/build_option_entity.dart';
 
 abstract final class BuildOptionEntityMock {
   static const BuildOptionEntity mock = BuildOptionEntity(
     blueprint: BlueprintId.house,
-    woodCost: 15,
-    isAffordable: true,
+    cost: {Resource.wood: 15},
+    missing: {},
   );
 
   static const BuildOptionEntity unaffordable = BuildOptionEntity(
     blueprint: BlueprintId.house,
-    woodCost: 15,
-    isAffordable: false,
+    cost: {Resource.wood: 15},
+    missing: {Resource.wood: 5},
   );
 
-  static BuildOptionEntity make({bool isAffordable = true}) =>
-      BuildOptionEntity(blueprint: BlueprintId.house, woodCost: 15, isAffordable: isAffordable);
+  static BuildOptionEntity make({Map<Resource, int> missing = const {}}) =>
+      BuildOptionEntity(blueprint: BlueprintId.house, cost: const {Resource.wood: 15}, missing: missing);
 }

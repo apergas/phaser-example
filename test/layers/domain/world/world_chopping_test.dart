@@ -1,9 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/config/constants/enum/chop_result.dart';
+import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/layers/domain/entities/game/game_event_entity.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
 import 'package:rpg/layers/domain/entities/player/activity_entity.dart';
 import 'package:rpg/layers/domain/rules/rules.dart';
+import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/tree/tree_entity_mock.dart';
@@ -74,7 +76,7 @@ void main() {
     // then
     expect(events.whereType<TreeHitEventEntity>().length, 5);
     expect(events, contains(GameEventEntityMock.treeFelled));
-    expect(world.player.inventory.wood, 6);
+    expect(world.player.inventory.amount(Resource.wood), 6);
     expect(world.trees, isEmpty);
     expect(world.player.activity, ActivityEntityMock.idle);
   });

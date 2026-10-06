@@ -26,8 +26,8 @@ final class Construction implements Work<ConstructIntentEntity> {
   }
 
   static ConstructionResultEntity place(WorldState state, BlueprintEntity blueprint, PositionEntity position) {
-    final paid = state.player.inventory.spendWood(blueprint.woodCost);
-    if (paid == null) return const ConstructionRejectedEntity(reason: ConstructionRejection.notEnoughWood);
+    final paid = state.player.inventory.spend(blueprint.cost);
+    if (paid == null) return const ConstructionRejectedEntity(reason: ConstructionRejection.notEnoughResources);
     if (!canPlace(state, blueprint, position)) {
       return const ConstructionRejectedEntity(reason: ConstructionRejection.blocked);
     }

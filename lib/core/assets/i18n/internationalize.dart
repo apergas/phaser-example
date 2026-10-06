@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import '../../config/constants/enum/blueprint_id.dart';
 import '../../config/constants/enum/quest_id.dart';
+import '../../config/constants/enum/resource.dart';
 
 class Internationalize {
   static const String _app = 'app';
@@ -35,8 +36,10 @@ class Internationalize {
   static String get forestBuild => '$_forest.hud.build'.tr();
   static String get forestQuests => '$_forest.hud.quests'.tr();
   static String get forestQuestDone => '$_forest.hud.questDone'.tr();
-  static String forestCost({required int wood}) => '$_forest.hud.cost'.tr(namedArgs: {'wood': '$wood'});
-  static String forestMissing({required int wood}) => '$_forest.hud.missing'.tr(namedArgs: {'wood': '$wood'});
+  static String forestAmount({required Resource resource, required int amount}) => switch (resource) {
+    Resource.wood => '$_forest.amount.wood'.tr(namedArgs: {'amount': '$amount'}),
+  };
+  static String forestMissing({required String amounts}) => '$_forest.hud.missing'.tr(namedArgs: {'amounts': amounts});
   static String forestBlueprint({required BlueprintId id}) => switch (id) {
     BlueprintId.house => '$_forest.blueprint.house'.tr(),
   };
@@ -50,7 +53,7 @@ class Internationalize {
   static String get forestMessageBlockedPath => '$_forest.message.blockedPath'.tr();
   static String get forestMessagePickedUpAxe => '$_forest.message.pickedUpAxe'.tr();
   static String get forestMessageBlockedSite => '$_forest.message.blockedSite'.tr();
-  static String get forestMessageNotEnoughWood => '$_forest.message.notEnoughWood'.tr();
+  static String get forestMessageNotEnoughResources => '$_forest.message.notEnoughResources'.tr();
   static String get forestMessageBuildingStarted => '$_forest.message.buildingStarted'.tr();
   static String get forestMessageAllQuestsCompleted => '$_forest.message.allQuestsCompleted'.tr();
   static String forestMessageWoodGained({required int wood}) =>

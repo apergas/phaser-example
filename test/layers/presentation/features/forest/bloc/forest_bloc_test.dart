@@ -155,7 +155,7 @@ void main() {
   });
 
   blocTest<ForestBloc, ForestState>(
-    'testWhenWoodIsNotEnoughThenBuildMenuShowsWhatIsMissingAndRefusesToPlace',
+    'testWhenResourcesAreNotEnoughThenBuildMenuShowsWhatIsMissingAndRefusesToPlace',
     build: () {
       // given
       return ForestBlocMock.make(ForestScenarioMock.tenWood(), navigationService: navigationService);
@@ -172,7 +172,10 @@ void main() {
       // then
       expect(bloc.state.data.hud!.buildItems, [BuildItemDataMock.makeUnaffordable(missingWood: 5)]);
       expect(bloc.state.data.placement, isNull);
-      expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessageNotEnoughWood));
+      expect(
+        ForestBlocMock.shownMessages(navigationService),
+        contains(Internationalize.forestMessageNotEnoughResources),
+      );
     },
   );
 

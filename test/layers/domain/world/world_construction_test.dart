@@ -1,10 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/layers/domain/entities/game/construction_result_entity.dart';
 import 'package:rpg/layers/domain/entities/game/game_event_entity.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
 import 'package:rpg/layers/domain/entities/player/activity_entity.dart';
 import 'package:rpg/layers/domain/rules/blueprints.dart';
 import 'package:rpg/layers/domain/rules/rules.dart';
+import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../mocks/domain/entities/game/construction_result_entity_mock.dart';
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
@@ -14,7 +16,7 @@ import '../../../mocks/domain/entities/player/activity_entity_mock.dart';
 
 const _house = Blueprints.house;
 void main() {
-  test('testWhenConstructingWithoutEnoughWoodThenIsRejected', () {
+  test('testWhenConstructingWithoutEnoughResourcesThenIsRejected', () {
     // given
     final world = WorldMock.make();
 
@@ -22,7 +24,7 @@ void main() {
     final result = world.orderConstruction(_house, const PositionEntity(x: 400, y: 400));
 
     // then
-    expect(result, ConstructionResultEntityMock.notEnoughWood);
+    expect(result, ConstructionResultEntityMock.notEnoughResources);
     expect(world.buildings, isEmpty);
   });
 
@@ -40,7 +42,7 @@ void main() {
     expect(overTree, blocked);
     expect(overPlayer, blocked);
     expect(overEdge, blocked);
-    expect(world.player.inventory.wood, 15);
+    expect(world.player.inventory.amount(Resource.wood), 15);
   });
 
   test('testWhenConstructingThenChargesWoodPlacesSiteAndWalksThere', () {
@@ -52,7 +54,7 @@ void main() {
 
     // then
     expect(result, isA<ConstructionStartedEntity>());
-    expect(world.player.inventory.wood, 2);
+    expect(world.player.inventory.amount(Resource.wood), 2);
     expect(world.buildings.length, 1);
     expect(world.player.isMoving, isTrue);
   });

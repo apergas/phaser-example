@@ -27,8 +27,10 @@
       "build": "Construir",
       "quests": "Misiones",
       "questDone": "Hecha",
-      "cost": "{wood} de madera",
-      "missing": "Faltan {wood}"
+      "missing": "Faltan {amounts}"
+    },
+    "amount": {
+      "wood": "{amount} de madera"
     },
     "blueprint": {
       "house": "Casa"
@@ -44,12 +46,12 @@
       "blockedPath": "Hay algo en medio. Acércate por otro lado.",
       "pickedUpAxe": "¡Hacha recogida! Haz clic en un árbol para talarlo.",
       "blockedSite": "Ahí no cabe. Busca un sitio despejado.",
-      "notEnoughWood": "No tienes madera suficiente.",
+      "notEnoughResources": "No tienes recursos suficientes.",
       "buildingStarted": "Manos a la obra…",
       "allQuestsCompleted": "¡Has completado todas las misiones!",
       "woodGained": "+{wood} de madera",
       "placing": "Elige dónde construir: {name}. Clic derecho o Esc para cancelar.",
-      "buildingCompleted": "¡{name} construida!",
+      "buildingCompleted": "Construcción terminada: {name}",
       "questCompleted": "Misión completada: {title}"
     },
     "placement": {

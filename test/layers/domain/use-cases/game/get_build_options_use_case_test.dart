@@ -17,7 +17,7 @@ void main() {
     sut = GetBuildOptionsUseCase(sessionRepository: sessionRepository);
   });
 
-  test('testWhenWoodIsNotEnoughThenHouseIsNotAffordable', () {
+  test('testWhenResourcesAreNotEnoughThenHouseIsNotAffordable', () {
     // given
     when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.tenWood()));
 

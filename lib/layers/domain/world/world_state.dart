@@ -4,6 +4,7 @@ import '../entities/building/building_entity.dart';
 import '../entities/decoration/decoration_entity.dart';
 import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
+import '../entities/hero/hero_entity.dart';
 import '../entities/item/ground_item_entity.dart';
 import '../entities/player/player_entity.dart';
 import '../entities/tree/tree_entity.dart';
@@ -17,6 +18,7 @@ class WorldState {
     required List<TreeEntity> trees,
     required List<GroundItemEntity> items,
     required List<DecorationEntity> decorations,
+    this.hero = const HeroEntity(),
   }) : assert(width > 0 && height > 0),
        trees = {for (final tree in trees) tree.id: tree},
        items = {for (final item in items) item.id: item},
@@ -25,6 +27,7 @@ class WorldState {
   final double width;
   final double height;
   PlayerEntity player;
+  HeroEntity hero;
   final List<DecorationEntity> decorations;
   final Map<String, TreeEntity> trees;
   final Map<String, GroundItemEntity> items;

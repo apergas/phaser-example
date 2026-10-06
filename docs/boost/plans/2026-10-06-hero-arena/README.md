@@ -65,7 +65,7 @@ Para trabajar en una tarea **no hace falta leer el proyecto**. Lee sólo esto:
 | Fase | Plan | Flujo | Depende de | Qué añade |
 |---|---|---|---|---|
 | **C0** Contrato común: oro y héroe | ✅ [C0-contract.md](C0-contract.md) | Común | F0 | `Resource.gold` en el HUD; `World.funds` / `earn` / `spend`; `HeroEntity` dentro del `World`; entidades de combate (`CombatStatsEntity`, `EnemyEntity`, `ArenaLevelEntity`, `FightLogEntity`); catálogo `Gear`; `HeroRules.stats` / `power`; `GetHeroStatusUseCase`. **Sin jugabilidad nueva** salvo el oro (a 0) en el HUD. |
-| **C1** Motor de combate y niveles | 🟢 [C1-combat-engine.md](C1-combat-engine.md) | C | C0 | `Combat.resolve`, `ArenaLevels` con los niveles de humanos, `GetArenaUseCase`, `StartFightUseCase`: pelear, cobrar y desbloquear. Sólo dominio. |
+| **C1** Motor de combate y niveles | ✅ [C1-combat-engine.md](C1-combat-engine.md) | C | C0 | `Combat.resolve`, `ArenaLevels` con los niveles de humanos, `GetArenaUseCase`, `StartFightUseCase`: pelear, cobrar y desbloquear. Sólo dominio. |
 | **C2** Pantalla de la arena | 📝 [C2-arena-screen.md](C2-arena-screen.md) | C | C0 (C1 para pelear de verdad) | `ArenaPage` + `ArenaBloc` + escena Flame que reproduce el `FightLogEntity`; botón *Arena* en el HUD del bosque; bandidos con el arte del héroe recoloreado. |
 | **C3** Herrería y Armería | 📝 [C3-forge-armory.md](C3-forge-armory.md) | D | C0 | Dos edificios nuevos; comprar armas y armaduras (`BuyGearUseCase`); panel *Héroe* en el HUD del bosque con Poder, atributos y equipo. |
 | **C4** Lobos y oso | 📝 [C4-beasts.md](C4-beasts.md) | C | C2 | Arte LPC nuevo de animales; `EnemyKind.wolf` / `bear`; niveles 2, 4, 5 y 8. |
@@ -154,3 +154,10 @@ Aquí se apunta todo lo que se haga distinto de lo que dicen los planes: qué, p
     - `FightTurnEntity` comprueba `round >= 1` y que los índices no sean negativos;
     - tests para el Poder con habilidades en `GetHeroStatusUseCase`, para el pago atómico (un recurso basta y otro no) y para que `earn` ignore cantidades negativas;
     - `CLAUDE.md` aclara que `earn` / `spend` son la vía de pago del héroe y de la arena, y que la aldea sigue usando el inventario hasta F6.
+- **C1 (2026-10-07):**
+  - **Ramas:** una rama de fase, `feature/PROJECT-X-c1-combat-engine`, que sale de la de C0 porque C0 aún no estaba en `develop`. TC1.1 y TC1.2 se hicieron a la vez, cada una en su propio worktree y su propia rama, y luego se unieron en la de la fase. Al unirlas solo hubo conflictos aditivos (constantes al final de `rules.dart` y entradas nuevas en `arena_level_entity_mock.dart`). TC1.3 se hizo encima.
+  - **Añadidos de la revisión final:**
+    - el test de la esquiva comprueba que el turno conserva la vida del héroe;
+    - el test de flujo calcula la recompensa repetida a partir del catálogo;
+    - `CLAUDE.md` aclara que la semilla la pasa `StartFightUseCase`.
+  - **Aviso para C7 (y C4, si toca el primer nivel):** tres tests de casos de uso comparan el primer nivel del catálogo con mocks (`ArenaLevelEntityMock.banditRookie`, `FightResultEntityMock.victoryOverBandit`, `ArenaLevelStatusEntityMock.rookieForNewHero`). Si se cambia ese nivel, hay que actualizar esos mocks. Los tests del motor usan sus propios mocks y no dependen del catálogo.

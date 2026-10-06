@@ -36,6 +36,12 @@ Que se pueda entrar en la arena desde el bosque, elegir un nivel, pulsar **"Empe
 - `widgets/`: `ArenaHud` con `LevelList` + `LevelTile` (nombre, Poder del nivel frente al tuyo con color verde / ámbar / rojo, recompensa, candado o "Ganado"), `FightButton` (*Empezar pelea*), `ResultPanel` (victoria con el oro ganado; derrota con el consejo de `FightPlayedEntity.advice`, por ejemplo "Te falta Ataque: visita la Herrería", y *Reintentar*). Un fichero por clase.
 - `arena_page.dart`: `ArenaPage` + `_ArenaView`, con su `GameWidget(autofocus: false)`.
 
+**API de C1 que usa la pantalla:**
+- `GetArenaUseCase` devuelve, para cada nivel, su Poder, si está desbloqueado o ganado y la próxima recompensa, además de `heroPower`.
+- `StartFightUseCase` devuelve `FightPlayedEntity(log, advice)` o `FightLockedEntity`. El `log` trae `heroStats` y `enemies` (para la vida máxima de las barras), los turnos y la recompensa cobrada.
+- Tras cada pelea, el BLoC vuelve a llamar a `GetArenaUseCase` para refrescar la lista.
+- En los tests del BLoC no se usan los mocks `ArenaLevelEntityMock.duel`, `wall` ni `brute` como niveles del catálogo: tienen ids reales (`banditVeteran`, `barbarian`) y se confundirían con ellos.
+
 **Reproducción:**
 - `ArenaFightRequested` llama a `StartFightUseCase`: el resultado ya está aplicado en el `World`.
 - Después, `ArenaReplayTicked` avanza `FightReplayData`. Cada turno nuevo emite su efecto, y la escena anima:

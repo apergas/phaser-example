@@ -62,13 +62,13 @@ Mientras se hace C0, el otro desarrollador escribe los planes detallados de C1 y
   static String forestResource({required Resource resource});   // Resource.gold -> "Oro"
   ```
 
-- [ ] **Step 1: Crear la rama**
+- [x] **Step 1: Crear la rama**
 
 ```bash
 git switch develop && git pull && git switch -c feature/PROJECT-X-c0-gold
 ```
 
-- [ ] **Step 2: Escribir los datos de prueba**
+- [x] **Step 2: Escribir los datos de prueba**
 
 `test/mocks/domain/world/funds_mock.dart`:
 
@@ -88,7 +88,7 @@ abstract final class FundsMock {
 }
 ```
 
-- [ ] **Step 3: Escribir los tests que fallan**
+- [x] **Step 3: Escribir los tests que fallan**
 
 `test/layers/domain/world/world_funds_test.dart`:
 
@@ -165,19 +165,19 @@ void main() {
 
 El último test fija que, **antes de F6**, la caja es el inventario del jugador. F6 lo cambia por `world.stock` en el mismo PR que mueve la caja.
 
-- [ ] **Step 4: Ver que fallan**
+- [x] **Step 4: Ver que fallan**
 
 Run: `flutter test test/layers/domain/world/world_funds_test.dart`
 Expected: FAIL al compilar (`Resource.gold`, `earn`, `spend` y `funds` no existen).
 
-- [ ] **Step 5: Añadir `Resource.gold`**
+- [x] **Step 5: Añadir `Resource.gold`**
 
 En `lib/core/config/constants/enum/resource.dart`, añadir `gold` como **último** valor del enum.
 
 Run: `flutter analyze`
 Expected: errores de `switch` no exhaustivo en `Internationalize` y `CustomIcons`. Es la lista de sitios del Step 6.
 
-- [ ] **Step 6: Textos e icono**
+- [x] **Step 6: Textos e icono**
 
 Para cada `switch` sobre `Resource` que señale `flutter analyze`, añade el caso `Resource.gold` **al final**:
 
@@ -210,7 +210,7 @@ En `es.json`, dentro de `forest.resource` y (si existe) `forest.amount`, al fina
 
 Ampliar `internationalize_test.dart` con el nombre "Oro" (es el único test que escribe textos en español), siguiendo el patrón que dejó F0 para "Madera".
 
-- [ ] **Step 7: Implementar la caja en `World`**
+- [x] **Step 7: Implementar la caja en `World`**
 
 En `lib/layers/domain/world/world.dart`, después de `canPlace`:
 
@@ -237,12 +237,12 @@ con los imports de `../../../core/config/constants/enum/resource.dart`, `../enti
 
 Si F6 ya está fusionada, los tres métodos usan `_state.stock` en lugar de `_state.player.inventory`, y el último test del Step 3 compara con `world.stock`.
 
-- [ ] **Step 8: Ver que pasan**
+- [x] **Step 8: Ver que pasan**
 
 Run: `flutter test test/layers/domain/world/world_funds_test.dart test/core/assets/i18n/internationalize_test.dart`
 Expected: PASS.
 
-- [ ] **Step 9: Verificación completa**
+- [x] **Step 9: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/layers/domain/world/world.dart lib/core/config/constants/enum/resource.dart lib/core/assets/i18n/internationalize.dart lib/layers/presentation/theme/images/custom_icons.dart test/layers/domain/world/world_funds_test.dart test/mocks/domain/world/funds_mock.dart
@@ -252,7 +252,7 @@ flutter test
 
 Expected: `No issues found!` y todos los tests en verde. En Chrome (`flutter run -d chrome`), el HUD muestra el oro con su icono y el juego funciona como antes.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add lib/core/config/constants/enum/resource.dart lib/layers/domain/world/world.dart lib/core/assets/i18n lib/core/assets/images/icons/gold.svg lib/layers/presentation/theme/images/custom_icons.dart test/layers/domain/world/world_funds_test.dart test/mocks/domain/world/funds_mock.dart test/core
@@ -357,13 +357,13 @@ git commit -m "[PROJECT-X]: Add gold and a single place to earn and spend resour
   WorldMock.withHero(HeroEntity hero)
   ```
 
-- [ ] **Step 1: Crear la rama**
+- [x] **Step 1: Crear la rama**
 
 ```bash
 git switch develop && git pull && git switch -c feature/PROJECT-X-c0-hero
 ```
 
-- [ ] **Step 2: Enums de core**
+- [x] **Step 2: Enums de core**
 
 Un fichero por enum en `lib/core/config/constants/enum/`, sin nada más que la declaración:
 
@@ -399,7 +399,7 @@ Significado de `FightAction` (lo implementa el motor de C1; aquí sólo se docum
 - `dodge`: el héroe esquiva; `damage` es 0 y `actor` es el enemigo que falla.
 - `secondWind`: el héroe se cura; `actor` y `target` son el héroe, `damage` es 0 y `targetHealthAfter` es la vida tras curarse.
 
-- [ ] **Step 3: Escribir los mocks de entidades**
+- [x] **Step 3: Escribir los mocks de entidades**
 
 Las entidades todavía no existen, así que estos ficheros no compilan: es lo esperado en TDD.
 
@@ -646,7 +646,7 @@ En `test/mocks/domain/world/world_mock.dart`, añadir el parámetro `HeroEntity 
   static World withHero(HeroEntity hero) => make(hero: hero);
 ```
 
-- [ ] **Step 4: Escribir los tests de entidades que fallan**
+- [x] **Step 4: Escribir los tests de entidades que fallan**
 
 `test/layers/domain/entities/hero/combat_stats_entity_test.dart`:
 
@@ -793,12 +793,12 @@ void main() {
 }
 ```
 
-- [ ] **Step 5: Ver que fallan**
+- [x] **Step 5: Ver que fallan**
 
 Run: `flutter test test/layers/domain/entities/hero test/layers/domain/entities/combat`
 Expected: FAIL al compilar (las entidades no existen).
 
-- [ ] **Step 6: Implementar las entidades**
+- [x] **Step 6: Implementar las entidades**
 
 Todas siguen el patrón de `PlayerEntity`: campos `final`, constructor `const`, `copyWith`, `==`/`hashCode` escritos a mano (colecciones con `ListEquality` / `SetEquality` / `MapEquality` de `package:collection`, como `InventoryEntity`). Sin comentarios.
 
@@ -984,8 +984,7 @@ class ArenaLevelEntity {
   final List<EnemyEntity> enemies;
   final Map<Resource, int> reward;
 
-  const ArenaLevelEntity({required this.id, required this.enemies, required this.reward})
-    : assert(enemies.length >= 1 && enemies.length <= 3);
+  const ArenaLevelEntity({required this.id, required this.enemies, required this.reward});
 
   int get power => enemies.fold(0, (sum, enemy) => sum + enemy.stats.power);
 
@@ -1021,19 +1020,21 @@ class ArenaLevelEntity {
 
 con `copyWith`, `==` y `hashCode` (`ListEquality` en `enemies` y `turns`, `MapEquality` en `reward`).
 
-- [ ] **Step 7: Ver que pasan**
+Sin `assert` de 1 a 3 enemigos: en un constructor `const`, Dart sólo deja usar `.length` sobre `String`, y los mocks `const` no compilarían. La regla la comprueba `arena_levels_test.dart` (C1) sobre el catálogo (desviación de C0).
+
+- [x] **Step 7: Ver que pasan**
 
 Run: `flutter test test/layers/domain/entities/hero test/layers/domain/entities/combat`
 Expected: PASS.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add lib/core/config/constants/enum lib/layers/domain/entities/hero lib/layers/domain/entities/gear lib/layers/domain/entities/combat test/layers/domain/entities/hero test/layers/domain/entities/combat test/mocks/domain/entities/hero test/mocks/domain/entities/combat
 git commit -m "[PROJECT-X]: Add the hero and combat entities"
 ```
 
-- [ ] **Step 9: Tests del catálogo `Gear` y de `HeroRules` que fallan**
+- [x] **Step 9: Tests del catálogo `Gear` y de `HeroRules` que fallan**
 
 `test/layers/domain/rules/gear_test.dart`:
 
@@ -1185,7 +1186,7 @@ Cálculos: 7 × 3 + 3 × 4 + 40 / 2 = 53 → × 1,2 = 63,6 → 64. Equipo comple
 Run: `flutter test test/layers/domain/rules/gear_test.dart test/layers/domain/world/extensions/hero_rules_test.dart`
 Expected: FAIL al compilar.
 
-- [ ] **Step 10: Implementar `Gear`, `Rules.powerPerSkill` y `HeroRules`**
+- [x] **Step 10: Implementar `Gear`, `Rules.powerPerSkill` y `HeroRules`**
 
 `lib/layers/domain/rules/gear.dart` (valores orientativos; C7 los equilibra):
 
@@ -1306,7 +1307,7 @@ extension HeroRules on HeroEntity {
 Run: `flutter test test/layers/domain/rules/gear_test.dart test/layers/domain/world/extensions/hero_rules_test.dart`
 Expected: PASS.
 
-- [ ] **Step 11: El héroe dentro del `World`**
+- [x] **Step 11: El héroe dentro del `World`**
 
 Test que falla, `test/layers/domain/world/world_hero_test.dart`:
 
@@ -1377,7 +1378,7 @@ Implementación:
 Run: `flutter test test/layers/domain/world`
 Expected: PASS (los tests de mundo que ya había siguen igual).
 
-- [ ] **Step 12: `GetHeroStatusUseCase`**
+- [x] **Step 12: `GetHeroStatusUseCase`**
 
 Test que falla, `test/layers/domain/use-cases/hero/get_hero_status_use_case_test.dart`:
 
@@ -1456,7 +1457,7 @@ flutter test test/layers/domain/use-cases/hero test/core/config/di/di_test.dart
 
 Expected: PASS; `di.config.dart` registra `GetHeroStatusUseCase`.
 
-- [ ] **Step 13: Documentar en `CLAUDE.md`**
+- [x] **Step 13: Documentar en `CLAUDE.md`**
 
 En *Architecture* → `lib/layers/domain/`:
 - `entities/<feature>/`: añadir hero (`CombatStatsEntity`, `HeroEntity`, `HeroStatusEntity`), gear (`GearEntity`) y combat (`EnemyEntity`, `ArenaLevelEntity`, `FightTurnEntity`, `FightLogEntity`).
@@ -1467,7 +1468,7 @@ En *Architecture* → `lib/layers/domain/`:
 
 Commit de `CLAUDE.md` **en un comando aparte** del resto (regla del hook de git).
 
-- [ ] **Step 14: Verificación completa y commit**
+- [x] **Step 14: Verificación completa y commit**
 
 ```bash
 dart format --line-length 120 $(git diff --name-only --diff-filter=AM develop -- 'lib/**/*.dart' 'test/**/*.dart' | grep -v -e 'di.config.dart' -e '.mocks.dart')

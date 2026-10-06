@@ -58,12 +58,13 @@ Para trabajar en una tarea **no hace falta leer el proyecto**. Lee sólo esto:
 ## 2. Fases
 
 **Leyenda:**
+- ✅ fase terminada.
 - 🟢 plan detallado listo para ejecutar.
 - 📝 ficha: hay que escribir su plan detallado con `boost:writing-plans` al empezar la fase.
 
 | Fase | Plan | Flujo | Depende de | Qué añade |
 |---|---|---|---|---|
-| **C0** Contrato común: oro y héroe | 🟢 [C0-contract.md](C0-contract.md) | Común | F0 | `Resource.gold` en el HUD; `World.funds` / `earn` / `spend`; `HeroEntity` dentro del `World`; entidades de combate (`CombatStatsEntity`, `EnemyEntity`, `ArenaLevelEntity`, `FightLogEntity`); catálogo `Gear`; `HeroRules.stats` / `power`; `GetHeroStatusUseCase`. **Sin jugabilidad nueva** salvo el oro (a 0) en el HUD. |
+| **C0** Contrato común: oro y héroe | ✅ [C0-contract.md](C0-contract.md) | Común | F0 | `Resource.gold` en el HUD; `World.funds` / `earn` / `spend`; `HeroEntity` dentro del `World`; entidades de combate (`CombatStatsEntity`, `EnemyEntity`, `ArenaLevelEntity`, `FightLogEntity`); catálogo `Gear`; `HeroRules.stats` / `power`; `GetHeroStatusUseCase`. **Sin jugabilidad nueva** salvo el oro (a 0) en el HUD. |
 | **C1** Motor de combate y niveles | 🟢 [C1-combat-engine.md](C1-combat-engine.md) | C | C0 | `Combat.resolve`, `ArenaLevels` con los niveles de humanos, `GetArenaUseCase`, `StartFightUseCase`: pelear, cobrar y desbloquear. Sólo dominio. |
 | **C2** Pantalla de la arena | 📝 [C2-arena-screen.md](C2-arena-screen.md) | C | C0 (C1 para pelear de verdad) | `ArenaPage` + `ArenaBloc` + escena Flame que reproduce el `FightLogEntity`; botón *Arena* en el HUD del bosque; bandidos con el arte del héroe recoloreado. |
 | **C3** Herrería y Armería | 📝 [C3-forge-armory.md](C3-forge-armory.md) | D | C0 | Dos edificios nuevos; comprar armas y armaduras (`BuyGearUseCase`); panel *Héroe* en el HUD del bosque con Poder, atributos y equipo. |
@@ -144,4 +145,12 @@ Quien empiece C0 crea estas labels, milestones e issues si todavía no existen.
 
 Aquí se apunta todo lo que se haga distinto de lo que dicen los planes: qué, por qué y en qué fase/tarea.
 
-- *(ninguna todavía)*
+- **C0 (2026-10-06):**
+  - **Ramas:** las dos tareas se hicieron en una sola rama de fase, `feature/PROJECT-X-c0-contract`, sin ramas ni PR por tarea (como F0). El tracker de GitHub todavía no existe.
+  - **`ArenaLevelEntity` sin `assert` de 1 a 3 enemigos:** Dart no permite `List.length` en un constructor `const`. Lo cubre el test del catálogo de C1 (`arena_levels_test.dart`).
+  - **El HUD ya lista el oro ("Oro 0"):** `forest_bloc_test.dart` espera madera y oro, y hay un `ResourceItemDataMock.gold` nuevo.
+  - **Añadidos de la revisión final:**
+    - `Gear.of` lanza `StateError` si el nivel no existe, en lugar de un `!`;
+    - `FightTurnEntity` comprueba `round >= 1` y que los índices no sean negativos;
+    - tests para el Poder con habilidades en `GetHeroStatusUseCase`, para el pago atómico (un recurso basta y otro no) y para que `earn` ignore cantidades negativas;
+    - `CLAUDE.md` aclara que `earn` / `spend` son la vía de pago del héroe y de la arena, y que la aldea sigue usando el inventario hasta F6.

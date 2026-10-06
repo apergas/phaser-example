@@ -58,7 +58,7 @@ Para trabajar en una tarea **no hace falta leer el proyecto**. Lee sólo esto:
 ## 2. Fases
 
 **Leyenda:**
-- ✅ fase terminada.
+- ✅ fase terminada (en `feature/PROJECT-X-arena`; ver la sección 3.0).
 - 🟢 plan detallado listo para ejecutar.
 - 📝 ficha: hay que escribir su plan detallado con `boost:writing-plans` al empezar la fase.
 
@@ -93,6 +93,18 @@ C1 ─▶ C2 ─▶ C4 ─▶ C6                      C3 ─▶ C5 ──┬─�
 - **C1 puede empezar mientras se hace F0:** el motor (`Combat.resolve`) sólo usa entidades nuevas. Si C0 todavía no está, se hace en una rama que sale de la de C0.
 
 ## 3. Convivencia con el plan de la aldea
+
+### 3.0 Rama de integración de la arena (decidido el 2026-10-07)
+
+La arena no entra en `develop` fase a fase. Se acumula en una rama de integración, **`feature/PROJECT-X-arena`**, que se fusiona en `develop` **una sola vez**, cuando el modo esté completo. Así `develop`, `main` y la web publicada nunca tienen la arena a medias.
+
+- **Ramas de fase:** cada fase (C2, C3…) sale de `feature/PROJECT-X-arena` (ya con las anteriores fusionadas) y su PR va hacia esa rama, no hacia `develop`.
+- **Traer `develop` a menudo:** cada vez que se fusiona en `develop` una fase de la aldea, se ejecuta `git merge develop` en `feature/PROJECT-X-arena`.
+  - Los conflictos y los cruces de la sección 3.2 se resuelven en ese momento, en un commit propio.
+  - La arena siempre "llega segunda", así que **todos los cruces los resuelve el flujo de la arena**.
+- **Tests a mano:** el CI (`deploy.yml`) sólo se lanza con `main`. Tras cada unión en `feature/PROJECT-X-arena` hay que ejecutar la batería de cierre de fase (`build_runner` + `git diff`, `flutter analyze`, `flutter test`, tests en Chrome).
+- **La documentación sí va a `develop`:** los cambios en `docs/` (planes, desviaciones, casillas) van en PR propias a `develop`, para que la aldea vea el estado de la arena.
+- **Final:** una PR de `feature/PROJECT-X-arena` a `develop`, con la prueba manual completa en web, Android e iOS.
 
 Los dos planes se pueden hacer **uno detrás de otro o a la vez**. La única dependencia dura es **F0 → C0**: el oro es un `Resource` y los costes son `Map<Resource, int>`. Ninguna fase de la aldea depende de una fase de la arena.
 
@@ -146,7 +158,7 @@ Quien empiece C0 crea estas labels, milestones e issues si todavía no existen.
 Aquí se apunta todo lo que se haga distinto de lo que dicen los planes: qué, por qué y en qué fase/tarea.
 
 - **C0 (2026-10-06):**
-  - **Ramas:** las dos tareas se hicieron en una sola rama de fase, `feature/PROJECT-X-c0-contract`, sin ramas ni PR por tarea (como F0). El tracker de GitHub todavía no existe.
+  - **Ramas:** las dos tareas se hicieron en una sola rama de fase, `feature/PROJECT-X-c0-contract`, sin ramas ni PR por tarea (como F0). Su PR va a `feature/PROJECT-X-arena`, no a `develop` (sección 3.0). El tracker de GitHub todavía no existe.
   - **`ArenaLevelEntity` sin `assert` de 1 a 3 enemigos:** Dart no permite `List.length` en un constructor `const`. Lo cubre el test del catálogo de C1 (`arena_levels_test.dart`).
   - **El HUD ya lista el oro ("Oro 0"):** `forest_bloc_test.dart` espera madera y oro, y hay un `ResourceItemDataMock.gold` nuevo.
   - **Añadidos de la revisión final:**
@@ -155,7 +167,7 @@ Aquí se apunta todo lo que se haga distinto de lo que dicen los planes: qué, p
     - tests para el Poder con habilidades en `GetHeroStatusUseCase`, para el pago atómico (un recurso basta y otro no) y para que `earn` ignore cantidades negativas;
     - `CLAUDE.md` aclara que `earn` / `spend` son la vía de pago del héroe y de la arena, y que la aldea sigue usando el inventario hasta F6.
 - **C1 (2026-10-07):**
-  - **Ramas:** una rama de fase, `feature/PROJECT-X-c1-combat-engine`, que sale de la de C0 porque C0 aún no estaba en `develop`. TC1.1 y TC1.2 se hicieron a la vez, cada una en su propio worktree y su propia rama, y luego se unieron en la de la fase. Al unirlas solo hubo conflictos aditivos (constantes al final de `rules.dart` y entradas nuevas en `arena_level_entity_mock.dart`). TC1.3 se hizo encima.
+  - **Ramas:** una rama de fase, `feature/PROJECT-X-c1-combat-engine`, apilada sobre la de C0 (las dos van hacia `feature/PROJECT-X-arena`, sección 3.0). TC1.1 y TC1.2 se hicieron a la vez, cada una en su propio worktree y su propia rama, y luego se unieron en la de la fase. Al unirlas solo hubo conflictos aditivos (constantes al final de `rules.dart` y entradas nuevas en `arena_level_entity_mock.dart`). TC1.3 se hizo encima.
   - **Añadidos de la revisión final:**
     - el test de la esquiva comprueba que el turno conserva la vida del héroe;
     - el test de flujo calcula la recompensa repetida a partir del catálogo;

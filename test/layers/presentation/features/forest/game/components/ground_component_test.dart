@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flame/extensions.dart';
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,20 +9,6 @@ import 'package:rpg/layers/presentation/features/forest/game/render/render_depth
 import '../../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
 
 void main() {
-  test('testWhenTilingTheForestThenCoversItWithWholeTiles', () {
-    // given
-    const width = 1600.0;
-    const height = 1200.0;
-
-    // when
-    final columns = GroundComponent.columnsFor(width);
-    final rows = GroundComponent.rowsFor(height);
-
-    // then
-    expect(columns, 50);
-    expect(rows, 38);
-  });
-
   testWithFlameGame('testWhenMountingTheGroundThenItSitsUnderEverything', (game) async {
     // given
     final ground = GroundComponent(tile: LpcAssetsMock.create().ground, worldWidth: 400, worldHeight: 300);
@@ -31,5 +19,28 @@ void main() {
     // then
     expect(ground.size, Vector2(400, 300));
     expect(ground.priority, RenderDepth.ground);
+  });
+
+  test('testWhenDrawingTheGroundZoomedAtAFractionalOffsetThenNoSeamsBetweenTilesShow', () async {
+    // given
+    final ground = GroundComponent(tile: LpcAssetsMock.groundTile(), worldWidth: 40, worldHeight: 40);
+    final recorder = PictureRecorder();
+    final canvas = Canvas(recorder)..drawColor(const Color(0xFF000000), BlendMode.src);
+    canvas
+      ..scale(2)
+      ..translate(0.37, 0.53);
+
+    // when
+    ground.render(canvas);
+    final image = await recorder.endRecording().toImage(80, 80);
+    final pixels = (await image.toByteData())!;
+
+    // then
+    final seams = [
+      for (var y = 2; y < 78; y++)
+        for (var x = 2; x < 78; x++)
+          if (pixels.getUint8((y * 80 + x) * 4) < 255) (x, y),
+    ];
+    expect(seams, isEmpty);
   });
 }

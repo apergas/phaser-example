@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/chop_result.dart';
+import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/layers/domain/entities/game/construction_result_entity.dart';
 import 'package:rpg/layers/domain/entities/game/game_event_entity.dart';
 import 'package:rpg/layers/domain/rules/rules.dart';
@@ -11,6 +12,7 @@ import 'package:rpg/layers/domain/use-cases/game/construct_building_use_case.dar
 import 'package:rpg/layers/domain/use-cases/game/get_player_status_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/get_quests_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/move_player_use_case.dart';
+import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../../mocks/domain/game/game_scenario_mock.dart';
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
@@ -62,7 +64,7 @@ void main() {
       advanceFor(chopTime);
       return result;
     }).toList();
-    final woodAfterChopping = getPlayerStatus().wood;
+    final woodAfterChopping = getPlayerStatus().inventory.amount(Resource.wood);
     final construction = constructBuilding(blueprint: BlueprintId.house, x: site.x, y: site.y);
     final events = advanceFor(6000 + Rules.hammerIntervalMs * 8);
 
@@ -73,7 +75,7 @@ void main() {
     expect(construction, isA<ConstructionStartedEntity>());
     expect(events, contains(GameEventEntityMock.buildingCompleted));
     expect(events, contains(GameEventEntityMock.buildHouseCompleted));
-    expect(getPlayerStatus().wood, 3);
+    expect(getPlayerStatus().inventory.amount(Resource.wood), 3);
     expect(getQuests().every((quest) => quest.isCompleted), isTrue);
   });
 }

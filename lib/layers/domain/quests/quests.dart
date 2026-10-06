@@ -1,5 +1,6 @@
 import '../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../core/config/constants/enum/quest_id.dart';
+import '../../../core/config/constants/enum/resource.dart';
 import '../../../core/config/constants/enum/tool_kind.dart';
 import '../world/extensions/inventory_rules.dart';
 import '../world/world.dart';
@@ -12,7 +13,11 @@ abstract final class Quests {
       target: 1,
       measure: (world) => world.player.inventory.hasTool(ToolKind.axe) ? 1 : 0,
     ),
-    _MeasuredQuest(id: QuestId.gatherWood, target: 15, measure: (world) => world.player.inventory.wood),
+    _MeasuredQuest(
+      id: QuestId.gatherWood,
+      target: 15,
+      measure: (world) => world.player.inventory.amount(Resource.wood),
+    ),
     _MeasuredQuest(
       id: QuestId.buildHouse,
       target: 1,

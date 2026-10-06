@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 
+import '../../../../../../core/config/constants/enum/blueprint_id.dart';
 import '../render/render_constants.dart';
 import '../../models/placement_data.dart';
 import '../atlas/lpc_assets.dart';
@@ -16,10 +17,12 @@ class PlacementGhostComponent extends AtlasSpriteComponent {
 
   bool _isValid = false;
 
-  PlacementGhostComponent({required LpcAssets assets})
+  final BlueprintId blueprint;
+
+  PlacementGhostComponent({required LpcAssets assets, required this.blueprint})
     : super.fromFrame(
-        frame: assets.frame(SpriteNames.house),
-        sprite: assets.sprite(SpriteNames.house),
+        frame: assets.frame(SpriteNames.building(blueprint)),
+        sprite: assets.sprite(SpriteNames.building(blueprint)),
         position: Vector2.zero(),
         priority: RenderDepth.overlay,
       ) {
@@ -29,7 +32,7 @@ class PlacementGhostComponent extends AtlasSpriteComponent {
   bool get isValid => _isValid;
 
   void show(PlacementData placement) {
-    position.setValues(placement.position.x, placement.position.y + RenderConstants.houseFrontOffset);
+    position.setValues(placement.position.x, placement.position.y + RenderConstants.buildingFrontOffset(blueprint));
     _isValid = placement.isValid;
     paint.colorFilter = ColorFilter.mode(placement.isValid ? validTint : invalidTint, BlendMode.modulate);
   }

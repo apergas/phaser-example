@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flame/extensions.dart';
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/layers/presentation/features/forest/game/components/placement_ghost_component.dart';
 import 'package:rpg/layers/presentation/features/forest/game/render/render_depth.dart';
 
@@ -12,7 +13,7 @@ import '../../../../../../mocks/presentation/features/forest/game/lpc_assets_moc
 void main() {
   testWithFlameGame('testWhenPlacingOnAFreeSpotThenTheGhostIsGreen', (game) async {
     // given
-    final ghost = PlacementGhostComponent(assets: LpcAssetsMock.create());
+    final ghost = PlacementGhostComponent(assets: LpcAssetsMock.create(), blueprint: BlueprintId.house);
     await game.ensureAdd(ghost);
 
     // when
@@ -27,7 +28,7 @@ void main() {
 
   testWithFlameGame('testWhenPlacingOnABlockedSpotThenTheGhostIsRed', (game) async {
     // given
-    final ghost = PlacementGhostComponent(assets: LpcAssetsMock.create());
+    final ghost = PlacementGhostComponent(assets: LpcAssetsMock.create(), blueprint: BlueprintId.house);
     await game.ensureAdd(ghost);
 
     // when

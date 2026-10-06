@@ -127,8 +127,8 @@ class ForestSceneComponent extends Component {
     building.hammered(progress);
     add(
       ParticleBurstComponent(
-        particles: ParticleBursts.dust(buildingCenter: building.footprint, random: _random),
-        sortY: ParticleBursts.dustSortY(building.footprint),
+        particles: ParticleBursts.dust(front: building.front, random: _random),
+        sortY: ParticleBursts.dustSortY(building.front),
       ),
     );
   }
@@ -186,19 +186,20 @@ class ForestSceneComponent extends Component {
   }
 
   void _showGhost(PlacementData? placement) {
-    if (placement == null) {
-      _ghost?.removeFromParent();
-      _ghost = null;
-      return;
-    }
     final existing = _ghost;
-    if (existing != null) {
-      existing.show(placement);
+    if (placement == null || (existing != null && existing.blueprint != placement.blueprint)) {
+      existing?.removeFromParent();
+      _ghost = null;
+    }
+    if (placement == null) return;
+    final ghost = _ghost;
+    if (ghost != null) {
+      ghost.show(placement);
       return;
     }
-    final ghost = PlacementGhostComponent(assets: _assets)..show(placement);
-    _ghost = ghost;
-    add(ghost);
+    final created = PlacementGhostComponent(assets: _assets, blueprint: placement.blueprint)..show(placement);
+    _ghost = created;
+    add(created);
   }
 
   void _addClutter(String frameName, PositionEntity at, double sortY) {

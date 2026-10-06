@@ -11,7 +11,7 @@ void main() {
     // when
     final sameStarted = started == ConstructionResultEntityMock.makeStarted();
     final sameRejected = rejected == ConstructionResultEntityMock.makeBlocked();
-    final otherReason = rejected == ConstructionResultEntityMock.notEnoughWood;
+    final otherReason = rejected == ConstructionResultEntityMock.notEnoughResources;
 
     // then
     expect(sameStarted, isTrue);

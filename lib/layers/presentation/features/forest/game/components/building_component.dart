@@ -21,6 +21,7 @@ class BuildingComponent extends AtlasSpriteComponent {
 
   final String buildingId;
   final PositionEntity footprint;
+  final PositionEntity front;
   final Paint _barBackground = Paint()..color = const Color(0x99000000);
   final Paint _barFill = Paint()..color = const Color(0xFFE8C05A);
   double _progress = 0;
@@ -28,16 +29,24 @@ class BuildingComponent extends AtlasSpriteComponent {
   double? _bounceElapsedMs;
 
   BuildingComponent({required LpcAssets assets, required BuildingEntity building})
+    : this._(assets: assets, building: building, front: _frontOf(building));
+
+  BuildingComponent._({required LpcAssets assets, required BuildingEntity building, required this.front})
     : buildingId = building.id,
       footprint = building.position,
       super.fromFrame(
-        frame: assets.frame(SpriteNames.house),
-        sprite: assets.sprite(SpriteNames.house),
-        position: building.position.toVector2()..y += RenderConstants.houseFrontOffset,
-        priority: RenderDepth.bySortY(building.position.y + RenderConstants.houseFrontOffset),
+        frame: assets.frame(SpriteNames.building(building.blueprint.id)),
+        sprite: assets.sprite(SpriteNames.building(building.blueprint.id)),
+        position: front.toVector2(),
+        priority: RenderDepth.bySortY(front.y),
       ) {
     progress = building.progress;
   }
+
+  static PositionEntity _frontOf(BuildingEntity building) => PositionEntity(
+    x: building.position.x,
+    y: building.position.y + RenderConstants.buildingFrontOffset(building.blueprint.id),
+  );
 
   double get progress => _progress;
 

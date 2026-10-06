@@ -1,4 +1,5 @@
 import '../../../core/config/constants/enum/chop_result.dart';
+import '../../../core/config/constants/enum/resource.dart';
 import '../../../core/config/constants/enum/tool_kind.dart';
 import '../entities/game/game_event_entity.dart';
 import '../entities/geometry/obstacle_entity.dart';
@@ -45,7 +46,7 @@ final class Woodcutting implements Work<ChopIntentEntity> {
       return false;
     }
     state.trees.remove(tree.id);
-    state.player = state.player.withInventory(state.player.inventory.addWood(tree.woodYield));
+    state.player = state.player.withInventory(state.player.inventory.add(Resource.wood, tree.woodYield));
     events.add(TreeFelledEventEntity(treeId: tree.id, wood: tree.woodYield));
     return true;
   }

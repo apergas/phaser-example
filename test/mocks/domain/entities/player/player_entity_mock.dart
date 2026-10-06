@@ -1,3 +1,4 @@
+import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
 import 'package:rpg/layers/domain/entities/player/inventory_entity.dart';
@@ -24,14 +25,14 @@ abstract final class PlayerEntityMock {
     position: PositionEntity(x: 100, y: 100),
     speed: 100,
     radius: 8,
-    inventory: InventoryEntity(wood: 15),
+    inventory: InventoryEntity(resources: {Resource.wood: 15}),
   );
 
   static const PlayerEntity withSeventeenWood = PlayerEntity(
     position: PositionEntity(x: 100, y: 100),
     speed: 100,
     radius: 8,
-    inventory: InventoryEntity(wood: 17),
+    inventory: InventoryEntity(resources: {Resource.wood: 17}),
   );
 
   static const PlayerEntity centered = PlayerEntity(position: PositionEntity(x: 50, y: 50), speed: 100, radius: 8);

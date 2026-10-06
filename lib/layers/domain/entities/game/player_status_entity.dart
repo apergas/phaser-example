@@ -1,21 +1,20 @@
 import '../../../../core/config/constants/enum/player_activity.dart';
 import '../geometry/position_entity.dart';
+import '../player/inventory_entity.dart';
 
 class PlayerStatusEntity {
   final PositionEntity position;
   final PlayerActivity activity;
   final PositionEntity? target;
   final double swingProgress;
-  final int wood;
-  final bool hasAxe;
+  final InventoryEntity inventory;
 
   const PlayerStatusEntity({
     required this.position,
     required this.activity,
     this.target,
     required this.swingProgress,
-    required this.wood,
-    required this.hasAxe,
+    required this.inventory,
   });
 
   @override
@@ -25,9 +24,8 @@ class PlayerStatusEntity {
       other.activity == activity &&
       other.target == target &&
       other.swingProgress == swingProgress &&
-      other.wood == wood &&
-      other.hasAxe == hasAxe;
+      other.inventory == inventory;
 
   @override
-  int get hashCode => Object.hash(position, activity, target, swingProgress, wood, hasAxe);
+  int get hashCode => Object.hash(position, activity, target, swingProgress, inventory);
 }

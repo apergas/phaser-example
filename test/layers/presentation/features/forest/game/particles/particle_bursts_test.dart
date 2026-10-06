@@ -47,16 +47,16 @@ void main() {
 
   test('testWhenHammeringThenSixDustPuffsRiseFromTheFrontWall', () {
     // given
-    const center = ParticleMock.buildingCenter;
+    const front = ParticleMock.buildingFront;
 
     // when
-    final dust = ParticleBursts.dust(buildingCenter: center, random: ParticleMock.dustRandom);
+    final dust = ParticleBursts.dust(front: front, random: ParticleMock.dustRandom);
 
     // then
     expect(dust, hasLength(6));
     expect(dust.first.origin, ParticleMock.dustOrigin);
     expect(dust.first.lifespanSeconds, 0.45);
-    expect(ParticleBursts.dustSortY(center), 205);
+    expect(ParticleBursts.dustSortY(front), 205);
     expect(ParticleBursts.chipsSortY(ParticleMock.trunkBase), 121);
   });
 

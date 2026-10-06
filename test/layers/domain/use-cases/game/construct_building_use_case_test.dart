@@ -17,7 +17,7 @@ void main() {
     sut = ConstructBuildingUseCase(sessionRepository: sessionRepository);
   });
 
-  test('testWhenWoodIsNotEnoughThenConstructionIsRejected', () {
+  test('testWhenConstructingWithoutEnoughResourcesThenConstructionIsRejected', () {
     // given
     when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.tenWood()));
 
@@ -25,6 +25,6 @@ void main() {
     final result = sut(blueprint: BlueprintId.house, x: 400, y: 400);
 
     // then
-    expect(result, ConstructionResultEntityMock.notEnoughWood);
+    expect(result, ConstructionResultEntityMock.notEnoughResources);
   });
 }

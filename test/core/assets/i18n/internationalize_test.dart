@@ -2,24 +2,28 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/quest_id.dart';
+import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 
 import '../../../helpers/spanish_translations.dart';
 
 void main() {
   setUpAll(loadSpanishTranslations);
 
-  test('testWhenFormattingCostsThenInsertsTheWood', () {
+  test('testWhenFormattingAmountsThenNamesTheResource', () {
     // given
-    const wood = 15;
+    const amount = 15;
 
     // when
-    final cost = Internationalize.forestCost(wood: wood);
-    final missing = Internationalize.forestMissing(wood: 5);
+    final cost = Internationalize.forestAmount(resource: Resource.wood, amount: amount);
+    final missing = Internationalize.forestMissing(
+      amounts: Internationalize.forestAmount(resource: Resource.wood, amount: 5),
+    );
     final gained = Internationalize.forestMessageWoodGained(wood: 6);
 
     // then
     expect(cost, '15 de madera');
-    expect(missing, 'Faltan 5');
+    expect(missing, 'Faltan 5 de madera');
     expect(gained, '+6 de madera');
   });
 
@@ -47,15 +51,30 @@ void main() {
 
     // then
     expect(placing, 'Elige dónde construir: Casa. Clic derecho o Esc para cancelar.');
-    expect(completed, '¡Casa construida!');
+    expect(completed, 'Construcción terminada: Casa');
     expect(quest, 'Misión completada: Recoge el hacha');
+  });
+
+  test('testWhenNamingEveryResourceAndToolThenNoneFallsBackToItsKey', () {
+    // given
+    final texts = [
+      for (final resource in Resource.values) Internationalize.forestResource(resource: resource),
+      for (final resource in Resource.values) Internationalize.forestAmount(resource: resource, amount: 3),
+      for (final tool in ToolKind.values) Internationalize.forestTool(tool: tool),
+    ];
+
+    // when
+    final untranslated = texts.where((text) => text.contains('forest.')).toList();
+
+    // then
+    expect(untranslated, isEmpty);
   });
 
   test('testWhenReadingEveryForestTextThenNoneFallsBackToItsKey', () {
     // given
     final texts = [
-      Internationalize.forestWood,
-      Internationalize.forestAxe,
+      Internationalize.forestResource(resource: Resource.wood),
+      Internationalize.forestTool(tool: ToolKind.axe),
       Internationalize.forestBuild,
       Internationalize.forestQuests,
       Internationalize.forestQuestDone,
@@ -64,7 +83,7 @@ void main() {
       Internationalize.forestMessageBlockedPath,
       Internationalize.forestMessagePickedUpAxe,
       Internationalize.forestMessageBlockedSite,
-      Internationalize.forestMessageNotEnoughWood,
+      Internationalize.forestMessageNotEnoughResources,
       Internationalize.forestMessageBuildingStarted,
       Internationalize.forestMessageAllQuestsCompleted,
       Internationalize.forestPlacementConfirm,
@@ -88,7 +107,7 @@ void main() {
       'Hay algo en medio. Acércate por otro lado.',
       '¡Hacha recogida! Haz clic en un árbol para talarlo.',
       'Ahí no cabe. Busca un sitio despejado.',
-      'No tienes madera suficiente.',
+      'No tienes recursos suficientes.',
       'Manos a la obra…',
       '¡Has completado todas las misiones!',
       'Construir aquí',

@@ -17,6 +17,7 @@ void main() {
 
     // then
     expect(building.position, Vector2(200, 204));
+    expect(building.front.y, ForestDataMock.house.position.y + 24);
     expect(building.priority, RenderDepth.bySortY(204));
     expect(building.opacity, closeTo(0.35, 0.01));
   });

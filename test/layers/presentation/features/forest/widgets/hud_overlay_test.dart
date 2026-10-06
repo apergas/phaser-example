@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/layers/presentation/features/forest/models/hud_data.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/build_menu.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_button.dart';
@@ -133,7 +134,7 @@ void main() {
     await pumpOverlay(tester, HudDataMock.start);
 
     // then
-    expect(find.text(Internationalize.forestWood), findsNothing);
+    expect(find.text(Internationalize.forestResource(resource: Resource.wood)), findsNothing);
     expect(find.text('0'), findsOneWidget);
   });
 

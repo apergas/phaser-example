@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/forest/player_sheet.dart';
 import 'package:rpg/layers/presentation/features/forest/game/atlas/sprite_names.dart';
 
@@ -10,7 +11,7 @@ void main() {
   test('testWhenCheckingAFramePixelThenUsesTheSolidAlphaThreshold', () {
     // given
     final assets = LpcAssetsMock.create();
-    final frame = assets.frame(SpriteNames.house);
+    final frame = assets.frame(SpriteNames.building(BlueprintId.house));
 
     // when
     final left = assets.isOpaque(frame, 1, 3);

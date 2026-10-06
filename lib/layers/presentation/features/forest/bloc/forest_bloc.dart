@@ -40,6 +40,8 @@ import '../models/placement_data.dart';
 import '../models/player_pose.dart';
 import '../models/player_render_data.dart';
 import '../models/quest_item_data.dart';
+import '../models/resource_item_data.dart';
+import '../models/tool_item_data.dart';
 
 part 'forest_event.dart';
 part 'forest_state.dart';
@@ -283,8 +285,22 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
 
   HudData _hudData(PlayerStatusEntity status, List<QuestProgressEntity> quests) {
     return HudData(
-      wood: status.inventory.amount(Resource.wood),
-      hasAxe: status.inventory.hasTool(ToolKind.axe),
+      resources: [
+        for (final resource in Resource.values)
+          ResourceItemData(
+            resource: resource,
+            name: Internationalize.forestResource(resource: resource),
+            amount: status.inventory.amount(resource),
+          ),
+      ],
+      tools: [
+        for (final tool in ToolKind.values)
+          ToolItemData(
+            tool: tool,
+            name: Internationalize.forestTool(tool: tool),
+            isOwned: status.inventory.hasTool(tool),
+          ),
+      ],
       questBadge: '${quests.where((quest) => quest.isCompleted).length}/${quests.length}',
       quests: [for (final quest in quests) _questItem(quest)],
       buildItems: [for (final option in _getBuildOptionsUseCase()) _buildItem(option)],

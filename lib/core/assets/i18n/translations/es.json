@@ -22,12 +22,16 @@
   },
   "forest": {
     "hud": {
-      "wood": "Madera",
-      "axe": "Hacha",
       "build": "Construir",
       "quests": "Misiones",
       "questDone": "Hecha",
       "missing": "Faltan {amounts}"
+    },
+    "resource": {
+      "wood": "Madera"
+    },
+    "tool": {
+      "axe": "Hacha"
     },
     "amount": {
       "wood": "{amount} de madera"

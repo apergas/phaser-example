@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/decoration_kind.dart';
+import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 import 'package:rpg/core/config/constants/enum/tree_kind.dart';
 import 'package:rpg/layers/presentation/features/forest/game/atlas/alpha_mask.dart';
 import 'package:rpg/layers/presentation/features/forest/game/atlas/atlas_frame.dart';
@@ -12,9 +14,9 @@ abstract final class LpcAssetsMock {
   static const int frameSize = 8;
 
   static final List<String> frameNames = [
-    SpriteNames.house,
+    SpriteNames.building(BlueprintId.house),
     SpriteNames.stump,
-    SpriteNames.axePickup,
+    SpriteNames.item(ToolKind.axe),
     for (final kind in TreeKind.values) SpriteNames.tree(kind),
     for (final kind in DecorationKind.values) SpriteNames.decoration(kind),
   ];
@@ -32,7 +34,7 @@ abstract final class LpcAssetsMock {
             width: frameSize,
             height: frameSize,
             pivotX: 0.5,
-            pivotY: name == SpriteNames.axePickup ? 0.5 : 1,
+            pivotY: name == SpriteNames.item(ToolKind.axe) ? 0.5 : 1,
           ),
       },
       forestMask: AlphaMask(width: frameSize, height: frameSize, rgba: _rightHalfOpaque()),

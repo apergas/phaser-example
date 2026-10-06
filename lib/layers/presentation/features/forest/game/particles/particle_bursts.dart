@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import '../../../../../../core/config/constants/enum/forest/particle_kind.dart';
-import '../render/render_constants.dart';
 import '../../../../../domain/entities/geometry/position_entity.dart';
 import 'particle.dart';
 
@@ -59,14 +58,13 @@ abstract final class ParticleBursts {
     });
   }
 
-  static List<Particle> dust({required PositionEntity buildingCenter, required math.Random random}) {
-    final front = buildingCenter.y + RenderConstants.houseFrontOffset;
+  static List<Particle> dust({required PositionEntity front, required math.Random random}) {
     return List.generate(dustPerHammer, (_) {
       final speed = _between(random, dustSpeedMin, dustSpeedMax);
       final angle = _between(random, dustAngleMin, dustAngleMax) * math.pi / 180;
       return Particle(
         kind: ParticleKind.dust,
-        origin: PositionEntity(x: buildingCenter.x, y: front - dustLift),
+        origin: PositionEntity(x: front.x, y: front.y - dustLift),
         velocityX: speed * math.cos(angle),
         velocityY: speed * math.sin(angle),
         gravity: 0,
@@ -82,8 +80,7 @@ abstract final class ParticleBursts {
 
   static double chipsSortY(PositionEntity trunkBase) => trunkBase.y + sortYOffset;
 
-  static double dustSortY(PositionEntity buildingCenter) =>
-      buildingCenter.y + RenderConstants.houseFrontOffset + sortYOffset;
+  static double dustSortY(PositionEntity front) => front.y + sortYOffset;
 
   static double _between(math.Random random, double min, double max) => min + random.nextDouble() * (max - min);
 }

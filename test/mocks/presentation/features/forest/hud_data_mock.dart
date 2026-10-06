@@ -2,6 +2,8 @@ import 'package:rpg/layers/presentation/features/forest/models/hud_data.dart';
 
 import 'build_item_data_mock.dart';
 import 'quest_item_data_mock.dart';
+import 'resource_item_data_mock.dart';
+import 'tool_item_data_mock.dart';
 
 abstract final class HudDataMock {
   static HudData get mock => _make(wood: 0);
@@ -11,8 +13,8 @@ abstract final class HudDataMock {
   static HudData get withWood => _make(wood: 6);
 
   static HudData get start => HudData(
-    wood: 0,
-    hasAxe: false,
+    resources: [ResourceItemDataMock.wood(0)],
+    tools: [ToolItemDataMock.axe(isOwned: false)],
     questBadge: '0/3',
     quests: [QuestItemDataMock.current, QuestItemDataMock.pending],
     buildItems: [BuildItemDataMock.unaffordable],
@@ -20,8 +22,8 @@ abstract final class HudDataMock {
   );
 
   static HudData get gathering => HudData(
-    wood: 23,
-    hasAxe: true,
+    resources: [ResourceItemDataMock.wood(23)],
+    tools: [ToolItemDataMock.axe(isOwned: true)],
     questBadge: '1/3',
     quests: QuestItemDataMock.all,
     buildItems: [BuildItemDataMock.affordable],
@@ -29,8 +31,8 @@ abstract final class HudDataMock {
   );
 
   static HudData get placing => HudData(
-    wood: 23,
-    hasAxe: true,
+    resources: [ResourceItemDataMock.wood(23)],
+    tools: [ToolItemDataMock.axe(isOwned: true)],
     questBadge: '1/3',
     quests: QuestItemDataMock.all,
     buildItems: [BuildItemDataMock.affordable],
@@ -39,8 +41,8 @@ abstract final class HudDataMock {
 
   static HudData _make({required int wood}) {
     return HudData(
-      wood: wood,
-      hasAxe: false,
+      resources: [ResourceItemDataMock.wood(wood)],
+      tools: [ToolItemDataMock.axe(isOwned: false)],
       questBadge: '0/3',
       quests: [QuestItemDataMock.pickUpAxeCurrent],
       buildItems: [BuildItemDataMock.makeUnaffordable(missingWood: 15)],

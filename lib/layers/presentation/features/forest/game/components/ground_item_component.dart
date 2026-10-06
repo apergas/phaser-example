@@ -33,8 +33,8 @@ class GroundItemComponent extends AtlasSpriteComponent {
       ground = item.position,
       shadow = ShadowComponent(center: item.position.toVector2(), size: Vector2(shadowWidth, shadowHeight)),
       super.fromFrame(
-        frame: assets.frame(SpriteNames.axePickup),
-        sprite: assets.sprite(SpriteNames.axePickup),
+        frame: assets.frame(SpriteNames.item(item.kind)),
+        sprite: assets.sprite(SpriteNames.item(item.kind)),
         position: item.position.toVector2()..y -= floatHeight,
         priority: RenderDepth.bySortY(item.position.y),
       );

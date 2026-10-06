@@ -20,6 +20,8 @@ import '../../../../../mocks/presentation/features/forest/forest_effect_mock.dar
 import '../../../../../mocks/presentation/features/forest/placement_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/player_pose_mock.dart';
 import '../../../../../mocks/presentation/features/forest/quest_item_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/resource_item_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/tool_item_data_mock.dart';
 
 void main() {
   late MockNavigationService navigationService;
@@ -114,7 +116,7 @@ void main() {
       // then
       expect(effects, contains(ForestEffectMock.axePickedUp));
       expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessagePickedUpAxe));
-      expect(bloc.state.data.hud!.hasAxe, isTrue);
+      expect(bloc.state.data.hud!.tools, [ToolItemDataMock.axe(isOwned: true)]);
       expect(bloc.state.data.player!.pose, PlayerPoseMock.idle);
     },
   );
@@ -149,7 +151,7 @@ void main() {
         expect((pose as WorkPose).tool, WorkTool.axe);
         expect(effects.whereType<TreeHitEffect>().length, 5);
         expect(effects, contains(ForestEffectMock.treeFelled));
-        expect(bloc.state.data.hud!.wood, 6);
+        expect(bloc.state.data.hud!.resources, [ResourceItemDataMock.wood(6)]);
       },
     );
   });

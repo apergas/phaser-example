@@ -3,6 +3,7 @@ import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/quest_id.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 
 import '../../../helpers/spanish_translations.dart';
 
@@ -57,8 +58,8 @@ void main() {
   test('testWhenReadingEveryForestTextThenNoneFallsBackToItsKey', () {
     // given
     final texts = [
-      Internationalize.forestWood,
-      Internationalize.forestAxe,
+      Internationalize.forestResource(resource: Resource.wood),
+      Internationalize.forestTool(tool: ToolKind.axe),
       Internationalize.forestBuild,
       Internationalize.forestQuests,
       Internationalize.forestQuestDone,

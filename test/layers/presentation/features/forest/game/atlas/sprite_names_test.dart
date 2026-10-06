@@ -1,7 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/decoration_kind.dart';
+import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 import 'package:rpg/core/config/constants/enum/tree_kind.dart';
 import 'package:rpg/layers/presentation/features/forest/game/atlas/sprite_names.dart';
+import 'package:rpg/layers/presentation/features/forest/game/render/render_constants.dart';
 
 void main() {
   test('testWhenNamingSpritesThenFollowsTheAtlasFrameNames', () {
@@ -16,5 +19,21 @@ void main() {
     // then
     expect(treeName, 'tree-broad');
     expect(decorationName, 'decor-tall-grass');
+  });
+
+  test('testWhenNamingBuildingsAndItemsThenFollowsTheAtlasFrameNames', () {
+    // given
+    const house = BlueprintId.house;
+    const axe = ToolKind.axe;
+
+    // when
+    final buildingName = SpriteNames.building(house);
+    final frontOffset = RenderConstants.buildingFrontOffset(house);
+    final itemName = SpriteNames.item(axe);
+
+    // then
+    expect(buildingName, 'house');
+    expect(frontOffset, 24);
+    expect(itemName, 'axe-pickup');
   });
 }

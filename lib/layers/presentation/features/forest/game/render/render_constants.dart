@@ -1,3 +1,5 @@
+import '../../../../../../core/config/constants/enum/blueprint_id.dart';
+
 abstract final class RenderConstants {
   static const double cameraZoom = 2;
   static const double tileSize = 32;
@@ -23,7 +25,9 @@ abstract final class RenderConstants {
   static const List<int> chopSequence = [0, 0, 5, 5, 4, 4, 3, 1];
   static const List<int> hammerSequence = [0, 0, 5, 5, 4, 4, 1];
 
-  static const double houseFrontOffset = 24;
+  static double buildingFrontOffset(BlueprintId id) => switch (id) {
+    BlueprintId.house => 24,
+  };
 
   static const double cameraLerp = 0.1;
   static const double maxFrameSeconds = 0.1;

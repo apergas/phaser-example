@@ -2,18 +2,20 @@ import 'package:collection/collection.dart';
 
 import 'build_item_data.dart';
 import 'quest_item_data.dart';
+import 'resource_item_data.dart';
+import 'tool_item_data.dart';
 
 class HudData {
-  final int wood;
-  final bool hasAxe;
+  final List<ResourceItemData> resources;
+  final List<ToolItemData> tools;
   final String questBadge;
   final List<QuestItemData> quests;
   final List<BuildItemData> buildItems;
   final bool isBuildLocked;
 
   const HudData({
-    required this.wood,
-    required this.hasAxe,
+    required this.resources,
+    required this.tools,
     required this.questBadge,
     required this.quests,
     required this.buildItems,
@@ -24,14 +26,20 @@ class HudData {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is HudData &&
-          other.wood == wood &&
-          other.hasAxe == hasAxe &&
+          const ListEquality<ResourceItemData>().equals(other.resources, resources) &&
+          const ListEquality<ToolItemData>().equals(other.tools, tools) &&
           other.questBadge == questBadge &&
           const ListEquality<QuestItemData>().equals(other.quests, quests) &&
           const ListEquality<BuildItemData>().equals(other.buildItems, buildItems) &&
           other.isBuildLocked == isBuildLocked;
 
   @override
-  int get hashCode =>
-      Object.hash(wood, hasAxe, questBadge, Object.hashAll(quests), Object.hashAll(buildItems), isBuildLocked);
+  int get hashCode => Object.hash(
+    Object.hashAll(resources),
+    Object.hashAll(tools),
+    questBadge,
+    Object.hashAll(quests),
+    Object.hashAll(buildItems),
+    isBuildLocked,
+  );
 }

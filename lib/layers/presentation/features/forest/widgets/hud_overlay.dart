@@ -42,8 +42,8 @@ class _HudOverlayState extends State<HudOverlay> {
           top: HudOverlay._margin,
           left: HudOverlay._margin,
           child: ResourceBar(
-            wood: widget.hud.wood,
-            hasAxe: widget.hud.hasAxe,
+            resources: widget.hud.resources,
+            tools: widget.hud.tools,
             showLabels: width >= HudOverlay.narrowWidth,
           ),
         ),

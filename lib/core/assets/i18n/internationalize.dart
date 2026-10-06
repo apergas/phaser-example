@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../config/constants/enum/blueprint_id.dart';
 import '../../config/constants/enum/quest_id.dart';
 import '../../config/constants/enum/resource.dart';
+import '../../config/constants/enum/tool_kind.dart';
 
 class Internationalize {
   static const String _app = 'app';
@@ -31,8 +32,12 @@ class Internationalize {
   static String get errorNoGameInProgressMessage => '$_error.noGameInProgressMessage'.tr();
 
   static const String _forest = 'forest';
-  static String get forestWood => '$_forest.hud.wood'.tr();
-  static String get forestAxe => '$_forest.hud.axe'.tr();
+  static String forestResource({required Resource resource}) => switch (resource) {
+    Resource.wood => '$_forest.resource.wood'.tr(),
+  };
+  static String forestTool({required ToolKind tool}) => switch (tool) {
+    ToolKind.axe => '$_forest.tool.axe'.tr(),
+  };
   static String get forestBuild => '$_forest.hud.build'.tr();
   static String get forestQuests => '$_forest.hud.quests'.tr();
   static String get forestQuestDone => '$_forest.hud.questDone'.tr();

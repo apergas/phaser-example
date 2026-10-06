@@ -92,7 +92,7 @@ El **"qué y cómo"** está en estos Markdown. El **"quién y por dónde va"** e
 | Fase | Plan | Flujo | Depende de | Qué añade |
 |---|---|---|---|---|
 | **F0** Generalizar recursos, herramientas y edificios | ✅ [F0-generalize.md](F0-generalize.md) | A + B | — | Inventario por `Resource`, coste por recursos, HUD de recursos genérico, sprites de edificios e ítems elegidos por tipo. **Sin cambios de jugabilidad.** |
-| **F1** Árboles con personalidad | 📝 [F1-tree-kinds.md](F1-tree-kinds.md) | A | F0 | Cada `TreeKind` da distinta madera y pide distintos golpes. Texto "+N" flotante. |
+| **F1** Árboles con personalidad | 🟢 [F1-tree-kinds.md](F1-tree-kinds.md) | A | F0 | Cada `TreeKind` da distinta madera y pide distintos golpes. Texto "+N" flotante. |
 | **F2** Guardado automático | 📝 [F2-autosave.md](F2-autosave.md) | B | F0 | La partida sobrevive a cerrar la app. Botón "Nueva partida". |
 | **F3** Rebrote de árboles | 📝 [F3-regrowth.md](F3-regrowth.md) | A | F1 | Tocón → brote → árbol: la madera es sostenible. |
 | **F4** Misiones, capítulo 1 | 📝 [F4-quests-chapter-1.md](F4-quests-chapter-1.md) | A | F3 | `StatsEntity` y 5 misiones nuevas. |

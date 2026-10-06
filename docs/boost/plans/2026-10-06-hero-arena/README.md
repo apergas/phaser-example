@@ -64,7 +64,7 @@ Para trabajar en una tarea **no hace falta leer el proyecto**. Lee sólo esto:
 | Fase | Plan | Flujo | Depende de | Qué añade |
 |---|---|---|---|---|
 | **C0** Contrato común: oro y héroe | 🟢 [C0-contract.md](C0-contract.md) | Común | F0 | `Resource.gold` en el HUD; `World.funds` / `earn` / `spend`; `HeroEntity` dentro del `World`; entidades de combate (`CombatStatsEntity`, `EnemyEntity`, `ArenaLevelEntity`, `FightLogEntity`); catálogo `Gear`; `HeroRules.stats` / `power`; `GetHeroStatusUseCase`. **Sin jugabilidad nueva** salvo el oro (a 0) en el HUD. |
-| **C1** Motor de combate y niveles | 📝 [C1-combat-engine.md](C1-combat-engine.md) | C | C0 | `Combat.resolve`, `ArenaLevels` con los niveles de humanos, `GetArenaUseCase`, `StartFightUseCase`: pelear, cobrar y desbloquear. Sólo dominio. |
+| **C1** Motor de combate y niveles | 🟢 [C1-combat-engine.md](C1-combat-engine.md) | C | C0 | `Combat.resolve`, `ArenaLevels` con los niveles de humanos, `GetArenaUseCase`, `StartFightUseCase`: pelear, cobrar y desbloquear. Sólo dominio. |
 | **C2** Pantalla de la arena | 📝 [C2-arena-screen.md](C2-arena-screen.md) | C | C0 (C1 para pelear de verdad) | `ArenaPage` + `ArenaBloc` + escena Flame que reproduce el `FightLogEntity`; botón *Arena* en el HUD del bosque; bandidos con el arte del héroe recoloreado. |
 | **C3** Herrería y Armería | 📝 [C3-forge-armory.md](C3-forge-armory.md) | D | C0 | Dos edificios nuevos; comprar armas y armaduras (`BuyGearUseCase`); panel *Héroe* en el HUD del bosque con Poder, atributos y equipo. |
 | **C4** Lobos y oso | 📝 [C4-beasts.md](C4-beasts.md) | C | C2 | Arte LPC nuevo de animales; `EnemyKind.wolf` / `bear`; niveles 2, 4, 5 y 8. |

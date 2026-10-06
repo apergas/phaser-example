@@ -74,6 +74,7 @@ void main() {
     // given
     final texts = [
       Internationalize.forestResource(resource: Resource.wood),
+      Internationalize.forestResource(resource: Resource.gold),
       Internationalize.forestTool(tool: ToolKind.axe),
       Internationalize.forestBuild,
       Internationalize.forestQuests,
@@ -98,6 +99,7 @@ void main() {
     expect(untranslated, isEmpty);
     expect(texts, [
       'Madera',
+      'Oro',
       'Hacha',
       'Construir',
       'Misiones',

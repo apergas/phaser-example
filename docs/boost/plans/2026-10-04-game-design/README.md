@@ -212,6 +212,7 @@ Resumen; el detalle está en la sección 3 del [README del plan de la arena](../
 
 - **Dependencia dura:** sólo **F0 → C0** (el oro es un `Resource`). Ninguna fase F depende de una fase C.
 - **Regla de los cruces:** lo resuelve **la fase que se fusiona segunda**, en el mismo PR. Así cada plan se puede implementar sin el otro.
+- **La arena vive en `feature/PROJECT-X-arena` hasta estar completa** (sección 3.0 del README de la arena). Para este plan, eso significa que en `develop` **la arena todavía no está**: las notas *Si la arena ya está* no se aplican y las fases de la aldea se hacen como si la arena no existiera. Los cruces los resuelve el flujo de la arena al traer `develop` a su rama.
 - **Lo que este plan debe respetar si C0 ya está en `develop`:**
   - El `World` tiene `hero` / `updateHero` y la caja `funds` / `earn` / `spend`. Las fases que tocan el inventario o el stock mantienen esos métodos funcionando y sus tests (`world_funds_test.dart`, `world_hero_test.dart`) en verde.
   - `Resource.gold` existe. Los recursos nuevos (`stone`, `food`) se añaden al final del enum, después de `gold`.

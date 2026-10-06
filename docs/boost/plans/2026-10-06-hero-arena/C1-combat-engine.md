@@ -135,13 +135,13 @@ Cada tarea sale de `develop` en su rama y deja `develop` en verde al fusionarse.
   FightLogEntityMock.victoryOverBanditBeforeReward() / .almostBeatDuelist() / .defeatByBruteFullyGeared()
   ```
 
-- [ ] **Step 1: Crear la rama**
+- [x] **Step 1: Crear la rama**
 
 ```bash
 git switch develop && git pull && git switch -c feature/PROJECT-X-c1-engine
 ```
 
-- [ ] **Step 2: Ampliar los datos de prueba**
+- [x] **Step 2: Ampliar los datos de prueba**
 
 En `test/mocks/domain/entities/hero/combat_stats_entity_mock.dart`, al final de la clase:
 
@@ -266,7 +266,7 @@ En `test/mocks/domain/entities/combat/fight_log_entity_mock.dart`, al final de l
   );
 ```
 
-- [ ] **Step 3: Escribir los tests del motor que fallan**
+- [x] **Step 3: Escribir los tests del motor que fallan**
 
 `test/layers/domain/combat/combat_test.dart`:
 
@@ -574,12 +574,12 @@ void main() {
 }
 ```
 
-- [ ] **Step 4: Ver que fallan**
+- [x] **Step 4: Ver que fallan**
 
 Run: `flutter test test/layers/domain/combat/combat_test.dart`
 Expected: FAIL al compilar (`combat.dart`, `fight_advice.dart` y las constantes de `Rules` no existen).
 
-- [ ] **Step 5: `FightAdvice` y las constantes de `Rules`**
+- [x] **Step 5: `FightAdvice` y las constantes de `Rules`**
 
 `lib/core/config/constants/enum/fight_advice.dart`:
 
@@ -600,7 +600,7 @@ En `lib/layers/domain/rules/rules.dart`, al final de la clase (después de `powe
   static const double weakHitDamage = 2;
 ```
 
-- [ ] **Step 6: Implementar el motor**
+- [x] **Step 6: Implementar el motor**
 
 `lib/layers/domain/combat/combat.dart`. `_Fight` es el estado mutable de una sola pelea; vive y muere dentro de `resolve`. El orden de las llamadas a `random.next()` es el del contrato: una por golpe (en `_damage`) y, si el héroe sabe esquivar, una por ataque enemigo antes del daño.
 
@@ -772,19 +772,19 @@ final class _Fight {
 }
 ```
 
-- [ ] **Step 7: Ver que pasan**
+- [x] **Step 7: Ver que pasan**
 
 Run: `flutter test test/layers/domain/combat/combat_test.dart`
 Expected: PASS (17 tests). Si falla un dorado, **no se cambia el valor esperado**: se compara el motor con el Step 6 (orden de `random.next()`, `round()`, condición de fin) hasta encontrar la diferencia.
 
-- [ ] **Step 8: Comprobar que la regla de arquitectura cubre `domain/combat/`**
+- [x] **Step 8: Comprobar que la regla de arquitectura cubre `domain/combat/`**
 
 `violations(folder: 'lib/layers/domain', …)` recorre la carpeta de forma recursiva, así que `combat/` ya está cubierta. Para verlo:
 1. añade temporalmente `import 'package:flutter/foundation.dart';` al principio de `combat.dart`;
 2. `flutter test test/architecture_test.dart` → Expected: FAIL en `testWhenCheckingDomainThenItImportsNothingFromDataPresentationOrPlatforms`, con `lib/layers/domain/combat/combat.dart -> package:flutter/foundation.dart`;
 3. quita el import y repite → Expected: PASS.
 
-- [ ] **Step 9: Verificación completa**
+- [x] **Step 9: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/config/constants/enum/fight_advice.dart lib/layers/domain/combat/combat.dart lib/layers/domain/rules/rules.dart test/layers/domain/combat/combat_test.dart test/mocks/domain/entities/hero/combat_stats_entity_mock.dart test/mocks/domain/entities/combat
@@ -794,7 +794,7 @@ flutter test
 
 Expected: `No issues found!` y todos los tests en verde.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add lib/core/config/constants/enum/fight_advice.dart lib/layers/domain/combat lib/layers/domain/rules/rules.dart test/layers/domain/combat test/mocks/domain/entities/hero/combat_stats_entity_mock.dart test/mocks/domain/entities/combat
@@ -842,13 +842,13 @@ git commit -m "[PROJECT-X]: Resolve arena fights with a seeded combat engine"
   FundsMock.threeGold
   ```
 
-- [ ] **Step 1: Crear la rama**
+- [x] **Step 1: Crear la rama**
 
 ```bash
 git switch develop && git pull && git switch -c feature/PROJECT-X-c1-levels
 ```
 
-- [ ] **Step 2: Ampliar los datos de prueba**
+- [x] **Step 2: Ampliar los datos de prueba**
 
 En `test/mocks/domain/entities/hero/hero_entity_mock.dart`, al final de la clase:
 
@@ -879,7 +879,7 @@ En `test/mocks/domain/world/funds_mock.dart`, al final de la clase:
   static const Map<Resource, int> threeGold = {Resource.gold: 3};
 ```
 
-- [ ] **Step 3: Escribir los tests que fallan**
+- [x] **Step 3: Escribir los tests que fallan**
 
 `test/layers/domain/rules/arena_levels_test.dart`:
 
@@ -1075,12 +1075,12 @@ void main() {
 }
 ```
 
-- [ ] **Step 4: Ver que fallan**
+- [x] **Step 4: Ver que fallan**
 
 Run: `flutter test test/layers/domain/rules/arena_levels_test.dart test/layers/domain/world/extensions/arena_rules_test.dart`
 Expected: FAIL al compilar (`ArenaLevels`, `ArenaRules` y los mocks nuevos no existen).
 
-- [ ] **Step 5: Implementar `ArenaLevels`, `Rules.repeatRewardDivisor` y `ArenaRules`**
+- [x] **Step 5: Implementar `ArenaLevels`, `Rules.repeatRewardDivisor` y `ArenaRules`**
 
 En `lib/layers/domain/rules/rules.dart`, al final de la clase:
 
@@ -1188,12 +1188,12 @@ extension ArenaRules on HeroEntity {
 }
 ```
 
-- [ ] **Step 6: Ver que pasan**
+- [x] **Step 6: Ver que pasan**
 
 Run: `flutter test test/layers/domain/rules/arena_levels_test.dart test/layers/domain/world/extensions/arena_rules_test.dart`
 Expected: PASS (14 tests).
 
-- [ ] **Step 7: Verificación completa**
+- [x] **Step 7: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/layers/domain/rules/arena_levels.dart lib/layers/domain/rules/rules.dart lib/layers/domain/world/extensions/arena_rules.dart test/layers/domain/rules/arena_levels_test.dart test/layers/domain/world/extensions/arena_rules_test.dart test/mocks/domain/entities/hero/hero_entity_mock.dart test/mocks/domain/entities/combat/arena_level_entity_mock.dart test/mocks/domain/world/funds_mock.dart
@@ -1203,7 +1203,7 @@ flutter test
 
 Expected: `No issues found!` y todos los tests en verde. Si TC1.1 se fusionó antes, `rules.dart` tiene sus ocho constantes y `repeatRewardDivisor` va después; si hay conflicto al fusionar, se conservan las dos tandas.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add lib/layers/domain/rules/arena_levels.dart lib/layers/domain/rules/rules.dart lib/layers/domain/world/extensions/arena_rules.dart test/layers/domain/rules/arena_levels_test.dart test/layers/domain/world/extensions/arena_rules_test.dart test/mocks/domain/entities/hero/hero_entity_mock.dart test/mocks/domain/entities/combat/arena_level_entity_mock.dart test/mocks/domain/world/funds_mock.dart
@@ -1249,13 +1249,13 @@ git commit -m "[PROJECT-X]: Add the arena levels and their unlock and reward rul
   FightResultEntityMock.locked / .victoryOverBandit() / .almostBeatDuelist()
   ```
 
-- [ ] **Step 1: Crear la rama**
+- [x] **Step 1: Crear la rama**
 
 ```bash
 git switch develop && git pull && git switch -c feature/PROJECT-X-c1-fights
 ```
 
-- [ ] **Step 2: Escribir los mocks de las entidades nuevas**
+- [x] **Step 2: Escribir los mocks de las entidades nuevas**
 
 `test/mocks/domain/entities/combat/arena_level_status_entity_mock.dart`. `ArenaLevelEntityMock.banditRookie` es igual al primer nivel de `ArenaLevels.all`:
 
@@ -1315,7 +1315,7 @@ abstract final class FightResultEntityMock {
 }
 ```
 
-- [ ] **Step 3: Escribir los tests de entidades que fallan**
+- [x] **Step 3: Escribir los tests de entidades que fallan**
 
 `test/layers/domain/entities/combat/arena_level_status_entity_test.dart`:
 
@@ -1423,7 +1423,7 @@ void main() {
 Run: `flutter test test/layers/domain/entities/combat`
 Expected: FAIL al compilar (las tres entidades no existen).
 
-- [ ] **Step 4: Implementar las entidades**
+- [x] **Step 4: Implementar las entidades**
 
 `lib/layers/domain/entities/combat/arena_level_status_entity.dart`:
 
@@ -1539,7 +1539,7 @@ final class FightLockedEntity extends FightResultEntity {
 Run: `flutter test test/layers/domain/entities/combat test/architecture_test.dart`
 Expected: PASS (las entidades no tienen campos mutables).
 
-- [ ] **Step 5: Tests de los casos de uso que fallan**
+- [x] **Step 5: Tests de los casos de uso que fallan**
 
 `test/layers/domain/use-cases/arena/get_arena_use_case_test.dart`:
 
@@ -1807,7 +1807,7 @@ void main() {
 Run: `flutter test test/layers/domain/use-cases/arena`
 Expected: FAIL al compilar (los casos de uso no existen).
 
-- [ ] **Step 6: Implementar los casos de uso**
+- [x] **Step 6: Implementar los casos de uso**
 
 `lib/layers/domain/use-cases/arena/get_arena_use_case.dart`:
 
@@ -1885,7 +1885,7 @@ flutter test test/layers/domain/use-cases/arena
 
 Expected: PASS (11 tests); `di.config.dart` registra `GetArenaUseCase` y `StartFightUseCase`.
 
-- [ ] **Step 7: Registrar los casos de uso en el test de DI**
+- [x] **Step 7: Registrar los casos de uso en el test de DI**
 
 En `test/core/config/di/di_test.dart`, añadir los imports
 
@@ -1904,7 +1904,7 @@ y, en `testWhenConfiguringDependenciesThenEveryGameDependencyIsRegistered`, desp
 Run: `flutter test test/core/config/di/di_test.dart`
 Expected: PASS.
 
-- [ ] **Step 8: Comprobar la persistencia del héroe**
+- [x] **Step 8: Comprobar la persistencia del héroe**
 
 ```bash
 grep -rn "fightsFought\|clearedLevels" lib/layers/data
@@ -1914,7 +1914,7 @@ grep -rn "fightsFought\|clearedLevels" lib/layers/data
 - Con `HeroDBO` que ya tiene los dos campos: nada que hacer.
 - Con `HeroDBO` al que le falta alguno: es una desviación de C0/F2. Se para la tarea, se avisa al otro flujo y se apunta en la sección 5 del README antes de seguir.
 
-- [ ] **Step 9: Documentar en `CLAUDE.md`**
+- [x] **Step 9: Documentar en `CLAUDE.md`**
 
 En *Architecture* → `lib/layers/domain/`:
 - `entities/<feature>/`: en combat, añadir `ArenaEntity`, `ArenaLevelStatusEntity` y sealed `FightResultEntity` (`FightPlayedEntity` with an optional `FightAdvice`, `FightLockedEntity`).
@@ -1925,7 +1925,7 @@ En *Architecture* → `lib/layers/domain/`:
 - E1: comprobar que ya nombra `domain/combat/` (lo hizo C0); si no, añadirlo.
 - En *Key cross-cutting conventions*, añadir: "Arena fights are deterministic: same hero and seed, same log; golden tests in `test/layers/domain/combat/combat_test.dart`."
 
-- [ ] **Step 10: Verificación completa**
+- [x] **Step 10: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/layers/domain/entities/combat/arena_level_status_entity.dart lib/layers/domain/entities/combat/arena_entity.dart lib/layers/domain/entities/combat/fight_result_entity.dart lib/layers/domain/use-cases/arena test/layers/domain/entities/combat test/layers/domain/use-cases/arena test/mocks/domain/entities/combat test/core/config/di/di_test.dart
@@ -1938,7 +1938,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: el diff de `di.config.dart` sólo registra `GetArenaUseCase` y `StartFightUseCase`; `No issues found!` y todo en verde.
 
-- [ ] **Step 11: Commit**
+- [x] **Step 11: Commit**
 
 ```bash
 git add lib/layers/domain/entities/combat lib/layers/domain/use-cases/arena lib/core/config/di/di.config.dart test/layers/domain/entities/combat test/layers/domain/use-cases/arena test/mocks/domain/entities/combat test/core/config/di/di_test.dart

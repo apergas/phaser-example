@@ -50,6 +50,8 @@ Confirma la elección con el usuario antes de asignarla.
 gh issue edit <n> --repo apergas/phaser-example --add-assignee @me
 gh issue comment <n> --repo apergas/phaser-example --body "En curso: rama feature/PROJECT-X-<fase>-<tarea>"
 git switch develop && git pull && git switch -c feature/PROJECT-X-<fase>-<tarea>
+# Arena (fases C*): sale de la rama de integración, no de develop
+# git switch feature/PROJECT-X-arena && git pull && git switch -c feature/PROJECT-X-<fase>-<tarea>
 flutter pub get
 ```
 

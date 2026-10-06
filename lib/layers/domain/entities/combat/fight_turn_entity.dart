@@ -20,7 +20,10 @@ class FightTurnEntity {
     required this.action,
     required this.damage,
     required this.targetHealthAfter,
-  }) : assert(damage >= 0),
+  }) : assert(round >= 1),
+       assert(actorIndex >= 0),
+       assert(targetIndex >= 0),
+       assert(damage >= 0),
        assert(targetHealthAfter >= 0);
 
   FightTurnEntity copyWith({

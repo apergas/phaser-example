@@ -41,4 +41,16 @@ void main() {
     // then
     expect(status, HeroStatusEntityMock.base);
   });
+
+  test('testWhenTheHeroKnowsSkillsThenStatusPowerIncludesThem', () {
+    // given
+    when(sessionRepository.current())
+        .thenReturn(GameSessionEntityMock.playing(WorldMock.withHero(HeroEntityMock.withTwoSkills)));
+
+    // when
+    final status = sut();
+
+    // then
+    expect(status, HeroStatusEntityMock.withTwoSkills);
+  });
 }

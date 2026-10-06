@@ -34,6 +34,7 @@ class Internationalize {
   static const String _forest = 'forest';
   static String forestResource({required Resource resource}) => switch (resource) {
     Resource.wood => '$_forest.resource.wood'.tr(),
+    Resource.gold => '$_forest.resource.gold'.tr(),
   };
   static String forestTool({required ToolKind tool}) => switch (tool) {
     ToolKind.axe => '$_forest.tool.axe'.tr(),
@@ -43,6 +44,7 @@ class Internationalize {
   static String get forestQuestDone => '$_forest.hud.questDone'.tr();
   static String forestAmount({required Resource resource, required int amount}) => switch (resource) {
     Resource.wood => '$_forest.amount.wood'.tr(namedArgs: {'amount': '$amount'}),
+    Resource.gold => '$_forest.amount.gold'.tr(namedArgs: {'amount': '$amount'}),
   };
   static String forestMissing({required String amounts}) => '$_forest.hud.missing'.tr(namedArgs: {'amounts': amounts});
   static String forestBlueprint({required BlueprintId id}) => switch (id) {

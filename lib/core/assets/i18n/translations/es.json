@@ -28,13 +28,15 @@
       "missing": "Faltan {amounts}"
     },
     "resource": {
-      "wood": "Madera"
+      "wood": "Madera",
+      "gold": "Oro"
     },
     "tool": {
       "axe": "Hacha"
     },
     "amount": {
-      "wood": "{amount} de madera"
+      "wood": "{amount} de madera",
+      "gold": "{amount} de oro"
     },
     "blueprint": {
       "house": "Casa"

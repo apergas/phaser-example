@@ -34,4 +34,24 @@ abstract final class FightLogEntityMock {
     outcome: FightOutcome.victory,
     reward: const {Resource.gold: 10},
   );
+
+  static FightLogEntity victoryOverBanditBeforeReward() => victoryOverBandit().copyWith(reward: const {});
+
+  static FightLogEntity almostBeatDuelist() => FightLogEntity(
+    levelId: ArenaLevelId.banditVeteran,
+    heroStats: CombatStatsEntityMock.heroBase,
+    enemies: const [EnemyEntityMock.duelist],
+    turns: FightTurnEntityMock.almostBeatDuelist(),
+    outcome: FightOutcome.defeat,
+    reward: const {},
+  );
+
+  static FightLogEntity defeatByBruteFullyGeared() => FightLogEntity(
+    levelId: ArenaLevelId.barbarian,
+    heroStats: CombatStatsEntityMock.heroFullyGeared,
+    enemies: const [EnemyEntityMock.brute],
+    turns: FightTurnEntityMock.defeatByBruteFullyGeared(),
+    outcome: FightOutcome.defeat,
+    reward: const {},
+  );
 }

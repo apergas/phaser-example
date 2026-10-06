@@ -16,4 +16,34 @@ abstract final class ArenaLevelEntityMock {
     enemies: [EnemyEntityMock.bandit, EnemyEntityMock.bandit, EnemyEntityMock.bandit],
     reward: {Resource.gold: 40},
   );
+
+  static const ArenaLevelEntity banditVeteran = ArenaLevelEntity(
+    id: ArenaLevelId.banditVeteran,
+    enemies: [EnemyEntityMock.veteranBandit],
+    reward: {Resource.gold: 20},
+  );
+
+  static const ArenaLevelEntity barbarianChief = ArenaLevelEntity(
+    id: ArenaLevelId.barbarianChief,
+    enemies: [EnemyEntityMock.barbarianChief, EnemyEntityMock.barbarianGuard, EnemyEntityMock.barbarianGuard],
+    reward: {Resource.gold: 100},
+  );
+
+  static const ArenaLevelEntity duel = ArenaLevelEntity(
+    id: ArenaLevelId.banditVeteran,
+    enemies: [EnemyEntityMock.duelist],
+    reward: {Resource.gold: 20},
+  );
+
+  static const ArenaLevelEntity wall = ArenaLevelEntity(
+    id: ArenaLevelId.barbarian,
+    enemies: [EnemyEntityMock.wall],
+    reward: {Resource.gold: 50},
+  );
+
+  static const ArenaLevelEntity brute = ArenaLevelEntity(
+    id: ArenaLevelId.barbarian,
+    enemies: [EnemyEntityMock.brute],
+    reward: {Resource.gold: 50},
+  );
 }

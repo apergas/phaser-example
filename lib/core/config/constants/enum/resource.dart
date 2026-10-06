@@ -1,1 +1,1 @@
-enum Resource { wood }
+enum Resource { wood, gold }

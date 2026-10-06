@@ -48,6 +48,11 @@ El bucle de Age of Empires: recoger, llevarlo al almacén y volver. Así importa
 
 **Persistencia:** se guardan el stock y la carga.
 
+**Si la arena ya está** (plan *Héroe y arena*):
+- `World.funds` / `earn` / `spend` (C0) pasan de `player.inventory` al stock (`_state.stock`) en esta fase, y el último test de `world_funds_test.dart` compara con `world.stock`. Ni las compras del héroe ni las recompensas de la arena cambian.
+- **El oro no cuenta para la carga**: `earn` lo pone directamente en el stock, y `Rules.carryCapacity` sólo suma lo que el jugador recoge en el mapa.
+- `Construction.place` (sistema interno, que no puede llamar al `World`) y `World.spend` usan la misma operación de cobro sobre el stock, para que sólo haya una regla de pago.
+
 ## Ficheros previstos
 
 **Dominio:**

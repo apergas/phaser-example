@@ -1,6 +1,6 @@
 ---
 name: cerrar-tarea
-description: Use when a task of the gameplay roadmap (docs/boost/plans/2026-10-04-game-design) is implemented, to verify it, update the plan, open the PR and update the GitHub tracker. Triggers on "cerrar tarea", "he terminado", "abre el PR", "finish task".
+description: Use when a task of the gameplay roadmaps (docs/boost/plans/2026-10-04-game-design or docs/boost/plans/2026-10-06-hero-arena) is implemented, to verify it, update the plan, open the PR and update the GitHub tracker. Triggers on "cerrar tarea", "he terminado", "abre el PR", "finish task".
 ---
 
 # Cerrar tarea
@@ -31,7 +31,8 @@ Lee el apartado *Cómo probarlo* de la tarea, o de la fase si es la última tare
 
 ## 3. Actualizar el plan
 
-- Marca los checkboxes de la tarea en `docs/boost/plans/2026-10-04-game-design/F<n>-*.md`.
+- Marca los checkboxes de la tarea en `docs/boost/plans/2026-10-04-game-design/F<n>-*.md` o `docs/boost/plans/2026-10-06-hero-arena/C<n>-*.md`.
+- Si la tarea resolvió un cruce entre los dos planes (sección 6 del README de la aldea, sección 3.2 del de la arena), dilo en el PR.
 - Si algo se hizo distinto de lo planeado (firmas, nombres, arte, números), añade una línea en la sección 5 *Desviaciones registradas* del README. Indica fase y tarea, qué cambió y por qué.
 - Si es la última tarea de la fase, cambia su icono en la tabla de fases del README a ✅.
 - Si la tarea cambia una excepción documentada (E1–E11) o la estructura descrita en `CLAUDE.md`, actualízalo y añádelo con un `git add CLAUDE.md` aparte.
@@ -54,7 +55,7 @@ Closes #<n>"
 gh issue comment <n> --repo apergas/phaser-example --body "PR abierto: <url>. Verificado: <comandos en verde y plataformas probadas>. Pendiente: <si algo quedó sin verificar>"
 ```
 
-- **Conflicto de rebase en `lib/core/assets/images/lpc/forest.{png,json}`:** toma la versión de `develop`, ejecuta `cd asset-packs/lpc && python3 build_assets.py` y añade el resultado.
+- **Conflicto de rebase en `lib/core/assets/images/lpc/forest.{png,json}` o `arena.{png,json}`:** toma la versión de `develop`, ejecuta `cd asset-packs/lpc && python3 build_assets.py` y añade el resultado.
 - **Conflicto en `di.config.dart` o en un `*.mocks.dart`:** toma cualquiera de las dos versiones, ejecuta `dart run build_runner build --delete-conflicting-outputs` y añade el resultado.
 - Tras resolver un conflicto, vuelve a ejecutar la batería del paso 1.
 - Si existe el Project, mueve la tarjeta a *Review*.

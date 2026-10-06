@@ -37,6 +37,10 @@ Que haya metas después de la primera casa, usando sólo mecánicas que ya exist
 
 **Persistencia:** `StatsEntity` se guarda.
 
+**Si la arena ya está** (plan *Héroe y arena*):
+- Si C7 ya creó `QuestLine`, las misiones de esta fase son `QuestLine.village`, y el recorte del panel se hace por línea, en `ForestBloc._hudData`.
+- Si C7 llega después, es C7 quien separa las líneas y adapta el recorte.
+
 ## Ficheros previstos
 
 - **Nuevo:** `lib/layers/domain/entities/game/stats_entity.dart`.

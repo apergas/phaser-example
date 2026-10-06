@@ -4,6 +4,8 @@
 
 **Goal:** Llevar el prototipo (una madera, un hacha, una casa que no hace nada) hacia un juego de gestión pacífico tipo *Age of Empires*. Cada fase añade algo **jugable y probable por separado** en web, Android e iOS.
 
+**Plan hermano:** el modo *Héroe y arena* ([`../2026-10-06-hero-arena/README.md`](../2026-10-06-hero-arena/README.md), fases C0–C7) se puede hacer después de este plan o a la vez. Sólo depende de F0. Ninguna fase de este plan depende de él. Los cruces entre los dos están en la sección 6.
+
 **Architecture:**
 - Una sola app Flutter. Las reglas nuevas van en `lib/layers/domain/` (Dart puro, sin Flutter ni Flame); `presentation` sólo dibuja.
 - Una mecánica de trabajo nueva se compone de una subclase de `IntentEntity`, un `Work` y un caso en `workFor()` (`lib/layers/domain/world/work.dart`).
@@ -105,6 +107,8 @@ El **"qué y cómo"** está en estos Markdown. El **"quién y por dónde va"** e
 | **F14** Eras y monumento | 💭 | — | F13 | Campamento → Aldea → Pueblo; maravilla pacífica. |
 | **F15** Mercader y pedidos | 💭 | — | F14 | Comercio y encargos con recompensa. |
 
+La columna *Si la arena ya está* de la sección 6 dice qué añade cada fase cuando alguna fase del plan *Héroe y arena* ya se ha fusionado. Si no hay ninguna, se ignora.
+
 F9–F15 dan por hecho que el juego evoluciona hacia **gestión** (aldeanos). Es la primera pregunta abierta de `docs/GAME_DESIGN.md` (sección 5): se confirma con el equipo antes de planificar F9.
 
 ### Flujos de trabajo (dos desarrolladores)
@@ -120,7 +124,11 @@ F1 ─▶ F3 ─▶ F4 ─▶ F5 ──────┐                F2 ─▶ 
 ```
 
 - **F0** la hace un único desarrollador: T0.1 y T0.2 son secuenciales y tocan los mismos ficheros calientes. Mientras tanto, el otro puede escribir el plan detallado de F1 o de F2.
-- **Flujo A** desarrollador 1; **flujo B** desarrollador 2. Si un flujo se queda bloqueado esperando una dependencia (F7 espera a F6, F8 espera a F5), ese desarrollador escribe el plan detallado de su siguiente fase o ayuda en la otra.
+- **Flujo A** desarrollador 1; **flujo B** desarrollador 2. Si un flujo se queda bloqueado esperando una dependencia (F7 espera a F6, F8 espera a F5), ese desarrollador:
+  - escribe el plan detallado de su siguiente fase,
+  - ayuda en la otra, o
+  - coge la siguiente fase libre del plan *Héroe y arena* (escenario *mixto*; ver la sección 3.1 de su README).
+- Si el equipo elige el escenario **paralelo** del plan *Héroe y arena*, tras F0 un desarrollador hace todo este plan en el orden F1, F2, F5, F3, F6, F4, F7, F8 (respeta las dependencias de la tabla) y el otro hace el plan de la arena.
 
 ## 3. Reglas de trabajo en paralelo
 
@@ -130,7 +138,7 @@ F1 ─▶ F3 ─▶ F4 ─▶ F5 ──────┐                F2 ─▶ 
   - Cada fase que añade estado lo añade también al guardado y sube `SaveDBO.currentVersion`.
   - Si una fase de un flujo se fusiona antes que F2, quien hace F2 incluye ese estado.
   - Si se fusiona después, lo añade la propia fase.
-- **Ficheros calientes:** `rules.dart`, `blueprints.dart`, `world.dart`, `world_state.dart`, `work.dart`, `game_event_entity.dart`, `quests.dart`, `forest_bloc.dart`, `forest_event.dart`, `forest_effect.dart`, `hud_data.dart`, `forest_scene_component.dart`, `internationalize.dart`, `es.json` y los enums de `lib/core/config/constants/enum/`.
+- **Ficheros calientes:** `rules.dart`, `blueprints.dart`, `world.dart`, `world_state.dart`, `work.dart`, `game_event_entity.dart`, `quests.dart`, `forest_bloc.dart`, `forest_event.dart`, `forest_effect.dart`, `hud_data.dart`, `hud_overlay.dart`, `forest_scene_component.dart`, `internationalize.dart`, `es.json`, `build_assets.py` y los enums de `lib/core/config/constants/enum/`. El plan *Héroe y arena* añade los suyos (sección 3.3 de su README).
   - Cambios **aditivos**: se añaden entradas nuevas al final de su bloque, sin reordenar ni reformatear lo existente.
   - Los casos de los `switch` exhaustivos van en el orden de declaración del `enum` o de la jerarquía `sealed`.
 - **Ficheros generados** (`lib/core/config/di/di.config.dart`, `test/**/*.mocks.dart`):
@@ -164,7 +172,7 @@ F1 ─▶ F3 ─▶ F4 ─▶ F5 ──────┐                F2 ─▶ 
   2. `/cerrar-tarea` abre el PR con `Closes #n` y la mueve a *Review*.
   3. Al fusionar, pasa a *Done*.
 
-El tracker todavía no existe: quien empiece F0 crea labels, milestones, issues y el Project con estas reglas.
+El tracker todavía no existe: quien empiece F0 crea labels, milestones, issues y el Project con estas reglas. El plan *Héroe y arena* usa el mismo Project con sus propias labels (`phase:C*`, `stream:C`, `stream:D`; sección 4 de su README).
 
 ## 5. Desviaciones registradas
 
@@ -175,3 +183,34 @@ Aquí se apunta todo lo que se haga distinto de lo que dicen los planes: qué, p
   - Desaparecen las etiquetas `platform:*`.
   - F2 guarda con `shared_preferences` en un único datasource, en lugar de que cada app inyecte su almacenamiento.
   - Los textos del jugador pasan de `ForestLabels` a `es.json` + `Internationalize`, y los del contrato MVI (`ForestState`/`ForestIntent`/`ForestEffect`, `HudState`) a `ForestBloc`, `ForestEvent`, `ForestEffect` y `HudData`.
+- **Plan hermano *Héroe y arena* (2026-10-06):** se añade un segundo modo de juego con su propio plan (`../2026-10-06-hero-arena/`). Cambios en este plan:
+  - nueva sección 6;
+  - notas *Si la arena ya está* en las fichas F2, F4, F5, F6 y F8, y en la tabla de la sección 6 (también F1, F7, F10 y F14);
+  - más ficheros calientes (`hud_overlay.dart`, `build_assets.py`);
+  - el escenario paralelo para dos desarrolladores.
+
+  `docs/GAME_DESIGN.md` deja de decir "sin combate": la aldea sigue sin combate y las peleas sólo ocurren en la arena.
+
+## 6. Convivencia con el plan *Héroe y arena*
+
+Resumen; el detalle está en la sección 3 del [README del plan de la arena](../2026-10-06-hero-arena/README.md).
+
+- **Dependencia dura:** sólo **F0 → C0** (el oro es un `Resource`). Ninguna fase F depende de una fase C.
+- **Regla de los cruces:** lo resuelve **la fase que se fusiona segunda**, en el mismo PR. Así cada plan se puede implementar sin el otro.
+- **Lo que este plan debe respetar si C0 ya está en `develop`:**
+  - El `World` tiene `hero` / `updateHero` y la caja `funds` / `earn` / `spend`. Las fases que tocan el inventario o el stock mantienen esos métodos funcionando y sus tests (`world_funds_test.dart`, `world_hero_test.dart`) en verde.
+  - `Resource.gold` existe. Los recursos nuevos (`stone`, `food`) se añaden al final del enum, después de `gold`.
+  - El HUD tiene el oro, y puede tener los botones *Arena* (C2) y *Héroe* (C3).
+
+| Fase | Si la arena ya está |
+|---|---|
+| F1 | Nada. Si C2 ya creó un componente de texto flotante, F1 lo reutiliza (o al revés). |
+| F2 | Guardar y restaurar `World.hero` con un `HeroDBO` (todos los campos de `HeroEntity` que existan), y el oro con el resto de recursos. |
+| F4 | Si C7 creó las líneas de misiones (`QuestLine`), las misiones nuevas son `QuestLine.village` y el recorte del panel se aplica por línea. |
+| F5 | Añadir 15 de piedra al coste de `steelSword` y `plateArmor` en `Gear.all`, y 10 de piedra a la Herrería, la Armería y la Torre de magia si existen. |
+| F6 | `World.funds` / `earn` / `spend` pasan a usar el stock. El oro **no cuenta** para la carga y se cobra directamente en el stock. `world_funds_test.dart` compara con `world.stock`. |
+| F7 | Nada. |
+| F8 | El *Taller* (herramientas) y la *Herrería* (armas) son edificios distintos. Las mejoras de herramientas no cambian el Ataque. Si hay botones *Arena* / *Héroe*, comprobar el ancho del HUD en móvil (sección 3.2 del README de la arena). |
+| F10 | `HeroEntity` no está en `PlayerEntity`: al pasar a una lista de unidades, el héroe sigue siendo el jugador y `World.hero` no cambia. |
+| F14 | Idea (no decidida): que una era pida haber ganado cierto nivel de la arena. |
+

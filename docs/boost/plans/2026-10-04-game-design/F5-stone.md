@@ -49,6 +49,11 @@ Añadir un segundo recurso. Así aparece la decisión de qué recoger primero, y
 
 **Persistencia:** se guardan las rocas y el pico.
 
+**Si la arena ya está** (plan *Héroe y arena*):
+- Si C3 está: 15 de piedra en el coste de `steelSword` y `plateArmor` (`Gear.all`), y 10 de piedra en la Herrería y la Armería (`Blueprints.all`). Si C5 está, también 10 en la Torre de magia.
+- Se actualizan sus tests (`gear_test.dart`, `blueprints_test.dart`).
+- `Resource.stone` va al final del enum, después de `gold`.
+
 ## Ficheros previstos
 
 **Dominio:**

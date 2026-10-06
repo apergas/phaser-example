@@ -44,6 +44,12 @@ Dar uso a lo acumulado y una sensación clara de progreso. También comprueba qu
 
 **Persistencia:** se guardan los niveles de las herramientas.
 
+**Si la arena ya está** (plan *Héroe y arena*):
+- El *Taller* (`BlueprintId.workshop`, herramientas) y la *Herrería* (`BlueprintId.forge`, armas, C3) son edificios distintos.
+- `InventoryEntity.toolLevels` (herramientas) y `HeroEntity.weaponTier` / `armorTier` (equipo) son independientes: el hacha de hierro tala más rápido pero no cambia el Ataque del héroe.
+- Las compras pagan con `World.spend` (C0) en lugar de llamar a `spend` sobre el stock directamente.
+- Si con el botón *Mejoras* el HUD tiene cuatro botones (*Construir*, *Mejoras*, *Arena*, *Héroe*), se comprueba la barra a 640 px de ancho en horizontal. Si no cabe, *Arena* y *Héroe* se agrupan (sección 3.2 del README de la arena).
+
 ## Ficheros previstos
 
 **Dominio:**

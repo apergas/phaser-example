@@ -44,6 +44,11 @@ Que la partida sobreviva a cerrar la app o la pestaña, y que se pueda empezar d
 - Botón "Nueva partida" en el HUD (`HudButton`), con una confirmación propia: un panel de la app (`HudPanel` o `CustomPopUp` a través de `NavigationService`), no un diálogo del sistema.
 - Los textos van en `es.json`.
 
+**Si la arena ya está** (plan *Héroe y arena*, sección 6 del README):
+- `HeroDBO` en `data/datasources/save/local/dbo/`, con todos los campos de `HeroEntity` que existan (`weaponTier`, `armorTier`, `skills`, `clearedLevels`, `fightsFought`), y su `HeroMapperDBO`. La restauración de `World` recibe el héroe.
+- El oro se guarda con el resto de recursos, sin nada especial.
+- Si alguna fase C se fusiona **después** de F2, es esa fase la que añade su estado al `HeroDBO` y sube `SaveDBO.currentVersion`.
+
 ## Ficheros previstos
 
 **Dominio:**

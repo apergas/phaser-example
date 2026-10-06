@@ -1,13 +1,22 @@
 # Análisis del juego y brainstorming de mecánicas
 
-> Documento de trabajo (2026-10-04). Resume el estado actual del prototipo y recoge ideas para ampliar la
-> jugabilidad. Las ideas son propuestas, no decisiones.
+> Documento de trabajo (2026-10-04, ampliado el 2026-10-06 con el modo de combate). Resume el estado actual del
+> prototipo y recoge ideas para ampliar la jugabilidad. Las ideas son propuestas, no decisiones.
+>
+> Planes de implementación:
+> - Ciudad y recursos: [`docs/boost/plans/2026-10-04-game-design/`](boost/plans/2026-10-04-game-design/README.md) (fases F0–F15).
+> - Héroe y arena: [`docs/boost/plans/2026-10-06-hero-arena/`](boost/plans/2026-10-06-hero-arena/README.md) (fases C0–C7).
 
 ## 1. La idea
 
-Un juego de **recolección y construcción** en vista cenital 3/4, inspirado en la parte económica de *Age of Empires*
-pero **sin combate**: el placer está en explorar, recoger recursos, levantar edificios y ver cómo un asentamiento
-crece. Ritmo tranquilo, sesiones cortas, controles de un solo toque/clic, jugable igual en web, Android e iOS.
+Un juego de **recolección y construcción** en vista cenital 3/4, inspirado en la parte económica de *Age of Empires*:
+el placer está en explorar, recoger recursos, levantar edificios y ver cómo un asentamiento crece. Ritmo tranquilo,
+sesiones cortas, controles de un solo toque/clic, jugable igual en web, Android e iOS.
+
+Junto a la aldea hay un **segundo modo, la arena** (sección 3.8): el héroe mejora su equipo y sus habilidades en
+edificios de la ciudad y se enfrenta a enemigos cada vez más fuertes en peleas automáticas. La aldea sigue sin
+combate: las peleas sólo ocurren en la arena, y perder no castiga. Al golpear saltan unas gotas de sangre para que se
+note el impacto, sin ir más allá (nada de charcos ni restos).
 
 Pilares que se deducen de lo ya hecho:
 
@@ -16,6 +25,8 @@ Pilares que se deducen de lo ya hecho:
 2. **Progreso visible**: el bosque se aclara, la madera sube, la casa aparece por fases.
 3. **Guía ligera**: misiones encadenadas que enseñan el bucle sin tutoriales largos.
 4. **Un solo núcleo de reglas**: toda la lógica en el dominio (Dart puro, sin Flutter ni Flame); la presentación sólo dibuja.
+5. **Dos modos que se necesitan**: la aldea da recursos y edificios para mejorar al héroe; la arena da oro y trofeos
+   que la aldea gasta. Ninguno de los dos es obligatorio para disfrutar del otro.
 
 ## 2. Qué hay hecho
 
@@ -56,6 +67,8 @@ Recoger hacha ──▶ Talar árboles (+5–6 madera) ──▶ Construir casa 
 3. **El mapa se agota** y no cambia con el tiempo.
 4. **Sin guardado**: cualquier progreso se pierde.
 5. **Un solo personaje**: falta el "sentimiento AoE" de ver a tu gente trabajar sola.
+6. **Un solo modo y un personaje que no crece**: todo es talar y construir; el héroe no gana nada que se note
+   (ni equipo, ni habilidades, ni retos que antes no podía superar).
 
 ## 3. Brainstorming de mecánicas
 
@@ -149,6 +162,123 @@ Otras ideas de construcción:
 - **Feedback de números** (S): "+6" flotando sobre el árbol, contador de madera que "late".
 - **Tutorial contextual** (S): resaltar el árbol más cercano mientras la primera misión está activa.
 
+### 3.8 Héroe y arena: un segundo modo de juego
+
+La aldea por sí sola acaba siendo "talar y construir". Se propone un segundo modo, corto y fácil de entender, en el que
+**el héroe se hace más fuerte gracias a la aldea** y lo demuestra en peleas por niveles. Plan de implementación en
+[`docs/boost/plans/2026-10-06-hero-arena/`](boost/plans/2026-10-06-hero-arena/README.md).
+
+#### Propuesta elegida: arena por niveles con combate automático (M–L)
+
+**El bucle que une los dos modos.** Es la clave para que no sean dos juegos pegados:
+
+```
+Aldea: madera / piedra ──▶ Herrería, Armería, Torre de magia ──▶ equipo y habilidades ──▶ más Poder
+  ▲                                                                                        │
+  └──────────────── oro (y más adelante trofeos) ◀──────────── Arena: ganar niveles ◀──────┘
+```
+
+- El **oro** sólo se gana en la arena; el equipo y las habilidades sólo se compran en la aldea.
+- Ningún modo bloquea al otro: la aldea se juega igual sin pisar la arena, y la arena se puede repetir para conseguir
+  oro aunque no se avance.
+
+**El héroe.** Es el mismo personaje que tala y construye. Tiene sólo tres atributos y un número resumen:
+
+| Atributo | Para qué sirve |
+|---|---|
+| **Ataque** | Daño de cada golpe. |
+| **Defensa** | Se resta al daño recibido (cada golpe hace al menos 1). |
+| **Vida** | Golpes que aguanta. Se recupera entera al terminar cada pelea. |
+| **Poder** | Resumen que se ve en el HUD y junto a cada nivel: `ataque × 3 + defensa × 4 + vida / 2`, +10 % por habilidad. Sirve para orientarse; quien decide la pelea es la simulación. |
+
+Valores de partida orientativos: Ataque 4, Defensa 1, Vida 30 (Poder ≈ 31). Con todo el equipo y las tres habilidades
+el Poder ronda 150. Las cifras finales se fijan al equilibrar (fase C7 del plan).
+
+**Edificios de mejora** (de la aldea; cuestan madera, y oro a partir del segundo nivel de mejora):
+
+| Edificio | Qué vende | Niveles |
+|---|---|---|
+| **Herrería** | Armas (+Ataque) | Hacha de leñador (la de talar, nivel inicial) → Espada corta → Espada de hierro → Espada de acero |
+| **Armería** | Armaduras (+Defensa, +Vida) | Ropa de trabajo (inicial) → Cuero → Cota de malla → Placas |
+| **Torre de magia** | Habilidades pasivas | *Golpe doble* (cada tercer ataque golpea dos veces), *Segundo aliento* (una vez por pelea, al bajar del 30 % de vida recupera el 40 %), *Esquiva* (20 % de evitar un golpe) |
+
+Se llama *Torre de magia* y no "taller mágico" para no confundirla con el *Taller* de herramientas (sección 3.2).
+Si existe la piedra, el equipo de nivel alto también pide piedra.
+
+**Niveles de la arena** (orientativo; empieza con enemigos humanos porque reutilizan el arte del héroe):
+
+| Nivel | Enemigos | Poder aprox. | Recompensa (primera vez) |
+|---|---|---|---|
+| 1 | Bandido novato | 20 | 10 de oro |
+| 2 | Lobo | 30 | 15 de oro |
+| 3 | Bandido veterano | 40 | 20 de oro |
+| 4 | Dos lobos | 60 | 25 de oro |
+| 5 | Oso | 70 | 35 de oro |
+| 6 | Tres bandidos | 90 | 40 de oro |
+| 7 | Bárbaro | 100 | 50 de oro |
+| 8 | Manada de tres lobos | 110 | 55 de oro |
+| 9 | Dos bárbaros | 130 | 65 de oro |
+| 10 | Jefe bárbaro y su guardia | 150 | 100 de oro |
+
+- Un nivel se desbloquea al ganar el anterior. Repetir un nivel ganado da un tercio del oro.
+- Perder no quita nada: se vuelve a la aldea con un consejo ("Te falta Defensa", "Prueba con la Cota de malla").
+
+**La pelea.**
+1. En la pantalla de la arena se elige un nivel desbloqueado y se pulsa **"Empezar pelea"**.
+2. El dominio simula la pelea entera **de golpe** y devuelve un registro: quién golpea a quién, daño, esquivas,
+   habilidades y resultado. Es una simulación por turnos con semilla:
+   - el héroe golpea primero, siempre al primer enemigo que queda en pie;
+   - después golpea cada enemigo vivo;
+   - daño = `max(1, ataque − defensa)`, ±15 % de azar;
+   - como mucho 30 rondas; si nadie cae, cuenta como derrota.
+3. La pantalla **reproduce** ese registro en 5–8 segundos: el héroe y los enemigos frente a frente, la animación
+   `slash` que ya existe, unas gotas de sangre en cada impacto, barras de vida, números de daño flotando, y al final
+   victoria o derrota con la recompensa.
+
+Con el azar, una pelea igualada no se sabe de antemano, pero con un Poder claramente mayor casi siempre se gana.
+Como la semilla sale del número de peleas jugadas, la misma partida guardada da siempre el mismo resultado y los tests
+son deterministas.
+
+**Arte.**
+- **Héroe**: el que ya existe, con la hoja `slash` (la de talar) y el hacha como primera arma. Las espadas y armaduras
+  pueden empezar como recoloreados (`recolour()` en `build_assets.py`) y cambiarse por piezas LPC reales más adelante.
+- **Bandidos**: las mismas capas LPC del héroe con otra ropa y otro color. No hace falta arte nuevo.
+- **Lobos y oso**: hace falta arte nuevo. Hay animales de estilo LPC en OpenGameArt; hay que confirmar la licencia y
+  acreditarlos en `CREDITS.md`. Por eso los niveles con animales van en una fase propia.
+- **Bárbaros**: capas LPC con pieles, barba y hacha grande, si se encuentran; si no, bandidos recoloreados.
+- **Escenario**: un claro de hierba con vallas o muros de piedra del `terrain_atlas` (ya disponible).
+
+**Cómo encaja en la arquitectura.**
+- Dominio:
+  - `HeroEntity` (equipo, habilidades, niveles ganados, peleas jugadas) vive dentro del `World`, que sigue siendo el
+    único agregado mutable, así que el guardado y las misiones lo ven sin hacer nada especial.
+  - El motor de combate es una función pura en `domain/combat/`, fuera de `world/`.
+  - Catálogos `Gear`, `Skills`, `Enemies` y `ArenaLevels` en `domain/rules/`, como `Blueprints`.
+- Pagos y cobros: pasan por dos métodos del `World` (`earn` / `spend`). Así, cuando la aldea pase a tener almacén
+  (stock común), el combate no se entera.
+- Presentación: una pantalla nueva `features/arena/` con su BLoC y su escena Flame. Se entra desde un botón del HUD del
+  bosque y se navega con `NavigationService`.
+
+#### Alternativas que también encajan
+
+| Idea | Esfuerzo | Cómo sería | Pros / contras |
+|---|---|---|---|
+| **Expediciones** | S | Un *Puesto de guardia* en la aldea manda al héroe a una expedición de 30–60 s; el Poder decide la probabilidad de éxito y el botín. | Lo más barato: sólo un panel y un temporizador. Sin espectáculo. Buen primer paso o "modo idle" complementario de la arena. |
+| **Caza en el bosque** | M | Lobos que deambulan por el mapa actual; al tocarlos, el héroe va y ataca como si fuera un árbol. | Reutiliza el patrón `IntentEntity` + `Work` + `workFor()` (un lobo es "un árbol que se mueve y devuelve golpes"). No hay otra pantalla, pero mete peligro en la aldea, que debía ser tranquila. |
+| **Defensa de la aldea** | L | De noche llegan oleadas de lobos y luego de bandidos; se construyen vallas y torres. | La más "AoE". Necesita IA de enemigos, rutas y daño a edificios. Encaja tras los aldeanos (que podrían hacer de guardias). |
+| **Torre / mazmorra por pisos** | M | Igual que la arena, pero en una secuencia de pisos sin volver a la aldea entre medias (la vida no se recupera). | Variante de la arena con más tensión; reutiliza el mismo motor. |
+
+#### Ideas para más adelante
+
+- **Trofeos** (S): pieles de lobo y garras de oso como recurso que piden las armaduras de nivel alto. Une aún más los
+  dos modos.
+- **Postura antes de pelear** (S): *Agresiva* (+Ataque, −Defensa) o *Prudente*. Es una sola decisión, sin
+  micro-gestión.
+- **Equipo visible en el bosque** (S–M): el héroe tala con la espada o la armadura que lleva puestas.
+- **Misiones de héroe** (S): "Gana el nivel 3", "Compra la Cota de malla", "Aprende una habilidad".
+- **Torneo / jefe del día** (M): un nivel con semilla diaria, como el "mapa del día" de la sección 3.5.
+- **Guardias** (L): con aldeanos (sección 3.3), reclutar guardias que suman Poder en la arena o defienden la aldea.
+
 ## 4. Propuesta de hoja de ruta
 
 Orden pensado para que cada paso aporte jugabilidad visible y prepare el siguiente.
@@ -171,6 +301,17 @@ Orden pensado para que cada paso aporte jugabilidad visible y prepare el siguien
    - Eras y monumento final.
    - Mercader / pedidos.
 
+**En paralelo, el héroe y la arena** (sección 3.8). Sólo depende de que existan los recursos genéricos (fase F0 del plan
+de la aldea), así que puede ir a la vez que las etapas 1–4 o después:
+
+- **Contrato común**: el héroe dentro del `World`, el oro y los métodos `earn` / `spend`. Lo hace un único desarrollador.
+- **Flujo "arena"**: el motor de combate, la pantalla de la arena, los animales y los bárbaros.
+- **Flujo "héroe"**: Herrería y Armería, Torre de magia y habilidades, misiones y equilibrado.
+
+Cómo se combinan los dos planes y qué pasa en cada cruce (guardado, almacén, piedra, misiones, HUD): sección 3 del
+[README del plan de la arena](boost/plans/2026-10-06-hero-arena/README.md) y sección 6 del
+[README del plan de la aldea](boost/plans/2026-10-04-game-design/README.md).
+
 ## 5. Preguntas abiertas para el equipo
 
 - ¿Queremos que el juego evolucione hacia **gestión** (aldeanos, automatización) o mantenerlo como **un solo
@@ -180,3 +321,12 @@ Orden pensado para que cada paso aporte jugabilidad visible y prepare el siguien
 - ¿Mapa fijo con semilla (igual para todos, comparables) o mapas aleatorios por partida?
 - ¿Cuánto arte nuevo estamos dispuestos a buscar/generar? Las mecánicas con arte LPC ya disponible
   (estaciones, piedra, agua, cultivos) son las más baratas.
+
+**Decidido para la arena (2026-10-06):**
+- **Derrota sin castigo:** se vuelve a la aldea con un consejo y no se pierde nada.
+- **La arena tiene final:** 10 niveles hasta el jefe bárbaro; ganarlo convierte al héroe en *Campeón*. Los niveles
+  infinitos con semilla quedan como idea futura.
+- **Pelea 100 % automática.** La postura antes de pelear queda como idea futura.
+- **Sangre, sólo unas gotas:** cada golpe que acierta hace saltar unas pocas gotas (partículas) para que se note el
+  impacto. Nada de charcos, restos ni cuerpos ensangrentados.
+- **Se permite arte LPC nuevo** (animales, bárbaros, armas) con licencia compatible, acreditado en `CREDITS.md`.

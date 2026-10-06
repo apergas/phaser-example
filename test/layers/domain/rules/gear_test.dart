@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/config/constants/enum/gear_id.dart';
 import 'package:rpg/core/config/constants/enum/gear_slot.dart';
+import 'package:rpg/layers/domain/entities/gear/gear_entity.dart';
 import 'package:rpg/layers/domain/rules/gear.dart';
 
 void main() {
@@ -51,6 +52,18 @@ void main() {
 
     // then
     expect(gear, isNull);
+  });
+
+  test('testWhenGettingATierOutOfRangeThenItThrowsStateError', () {
+    // given
+    const slot = GearSlot.armor;
+    final tier = Gear.maxTier(slot) + 1;
+
+    // when
+    GearEntity action() => Gear.of(slot, tier);
+
+    // then
+    expect(action, throwsStateError);
   });
 
   test('testWhenFindingByIdThenItReturnsThatGear', () {

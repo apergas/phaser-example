@@ -9,4 +9,10 @@ abstract final class HeroStatusEntityMock {
     stats: CombatStatsEntityMock.heroBase,
     power: 31,
   );
+
+  static const HeroStatusEntity withTwoSkills = HeroStatusEntity(
+    hero: HeroEntityMock.withTwoSkills,
+    stats: CombatStatsEntityMock.heroWithShortSwordAndLeather,
+    power: 64,
+  );
 }

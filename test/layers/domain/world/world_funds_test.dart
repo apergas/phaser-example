@@ -65,4 +65,28 @@ void main() {
     // then
     expect(world.funds, world.player.inventory);
   });
+
+  test('testWhenSpendingWithOnlyPartOfTheCostThenNothingIsTakenAndReturnsFalse', () {
+    // given
+    final world = WorldMock.withSeventeenWood();
+
+    // when
+    final paid = world.spend(FundsMock.fiveWoodAndFourGold);
+
+    // then
+    expect(paid, isFalse);
+    expect(world.funds.amount(Resource.wood), 17);
+    expect(world.funds.amount(Resource.gold), 0);
+  });
+
+  test('testWhenEarningANegativeQuantityThenFundsDoNotChange', () {
+    // given
+    final world = WorldMock.make();
+
+    // when
+    world.earn(FundsMock.minusThreeGold);
+
+    // then
+    expect(world.funds.amount(Resource.gold), 0);
+  });
 }

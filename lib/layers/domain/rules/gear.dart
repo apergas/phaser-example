@@ -56,7 +56,8 @@ abstract final class Gear {
 
   static GearEntity byId(GearId id) => all.firstWhere((gear) => gear.id == id);
 
-  static GearEntity of(GearSlot slot, int tier) => find(slot, tier)!;
+  static GearEntity of(GearSlot slot, int tier) =>
+      find(slot, tier) ?? (throw StateError('No ${slot.name} gear at tier $tier'));
 
   static GearEntity? find(GearSlot slot, int tier) =>
       all.where((gear) => gear.slot == slot && gear.tier == tier).firstOrNull;

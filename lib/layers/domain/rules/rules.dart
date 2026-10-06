@@ -17,4 +17,5 @@ abstract final class Rules {
   static const int doubleStrikeEvery = 3;
   static const double almostThereShare = 0.25;
   static const double weakHitDamage = 2;
+  static const int repeatRewardDivisor = 3;
 }

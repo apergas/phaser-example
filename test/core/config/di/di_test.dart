@@ -4,6 +4,8 @@ import 'package:rpg/layers/data/datasources/level/source/level_local_datasource.
 import 'package:rpg/layers/data/datasources/session/source/game_session_local_datasource.dart';
 import 'package:rpg/layers/domain/repositories/level/level_repository.dart';
 import 'package:rpg/layers/domain/repositories/session/game_session_repository.dart';
+import 'package:rpg/layers/domain/use-cases/arena/get_arena_use_case.dart';
+import 'package:rpg/layers/domain/use-cases/arena/start_fight_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/advance_game_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/can_place_building_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/chop_tree_use_case.dart';
@@ -69,6 +71,8 @@ void main() {
       locator.isRegistered<GetWorldSnapshotUseCase>(),
       locator.isRegistered<GetBuildOptionsUseCase>(),
       locator.isRegistered<GetQuestsUseCase>(),
+      locator.isRegistered<GetArenaUseCase>(),
+      locator.isRegistered<StartFightUseCase>(),
       locator.isRegistered<LevelRepository>(),
       locator.isRegistered<GameSessionRepository>(),
       locator.isRegistered<LevelLocalDatasource>(),

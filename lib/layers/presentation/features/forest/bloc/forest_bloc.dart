@@ -30,9 +30,9 @@ import '../../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_player_status_use_case.dart';
 import '../../../../domain/use-cases/game/get_quests_use_case.dart';
 import '../../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
-import '../../../../domain/world/extensions/inventory_rules.dart';
 import '../../../../domain/use-cases/game/move_player_use_case.dart';
 import '../../../../domain/use-cases/game/start_game_use_case.dart';
+import '../../../../domain/world/extensions/inventory_rules.dart';
 import '../models/build_item_data.dart';
 import '../models/forest_effect.dart';
 import '../models/hud_data.dart';
@@ -204,8 +204,10 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
 
   void _react(GameEventEntity gameEvent, {required double fromX, required List<ForestEffect> effects}) {
     switch (gameEvent) {
-      case ItemPickedUpEventEntity(:final itemId):
-        _showMessage(Internationalize.forestMessagePickedUpAxe);
+      case ItemPickedUpEventEntity(:final itemId, :final kind):
+        _showMessage(switch (kind) {
+          ToolKind.axe => Internationalize.forestMessagePickedUpAxe,
+        });
         effects.add(ItemPickedUpEffect(itemId: itemId));
       case PlayerBlockedEventEntity():
         _showMessage(Internationalize.forestMessageBlockedPath);

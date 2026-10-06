@@ -12,6 +12,8 @@ abstract final class HudDataMock {
 
   static HudData get withWood => _make(wood: 6);
 
+  static HudData get withAxeOwned => _make(wood: 0, isAxeOwned: true);
+
   static HudData get start => HudData(
     resources: [ResourceItemDataMock.wood(0)],
     tools: [ToolItemDataMock.axe(isOwned: false)],
@@ -39,10 +41,10 @@ abstract final class HudDataMock {
     isBuildLocked: true,
   );
 
-  static HudData _make({required int wood}) {
+  static HudData _make({required int wood, bool isAxeOwned = false}) {
     return HudData(
       resources: [ResourceItemDataMock.wood(wood)],
-      tools: [ToolItemDataMock.axe(isOwned: false)],
+      tools: [ToolItemDataMock.axe(isOwned: isAxeOwned)],
       questBadge: '0/3',
       quests: [QuestItemDataMock.pickUpAxeCurrent],
       buildItems: [BuildItemDataMock.makeUnaffordable(missingWood: 15)],

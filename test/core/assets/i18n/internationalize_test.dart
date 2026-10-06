@@ -55,6 +55,21 @@ void main() {
     expect(quest, 'Misión completada: Recoge el hacha');
   });
 
+  test('testWhenNamingEveryResourceAndToolThenNoneFallsBackToItsKey', () {
+    // given
+    final texts = [
+      for (final resource in Resource.values) Internationalize.forestResource(resource: resource),
+      for (final resource in Resource.values) Internationalize.forestAmount(resource: resource, amount: 3),
+      for (final tool in ToolKind.values) Internationalize.forestTool(tool: tool),
+    ];
+
+    // when
+    final untranslated = texts.where((text) => text.contains('forest.')).toList();
+
+    // then
+    expect(untranslated, isEmpty);
+  });
+
   test('testWhenReadingEveryForestTextThenNoneFallsBackToItsKey', () {
     // given
     final texts = [

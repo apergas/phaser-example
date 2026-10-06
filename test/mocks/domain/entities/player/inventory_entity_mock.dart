@@ -9,6 +9,14 @@ abstract final class InventoryEntityMock {
 
   static const InventoryEntity withAxe = InventoryEntity(tools: {ToolKind.axe});
 
+  static const Map<Resource, int> tenWood = {Resource.wood: 10};
+
+  static const Map<Resource, int> zeroWood = {Resource.wood: 0};
+
+  static const Map<Resource, int> negativeWood = {Resource.wood: -1};
+
+  static const Map<Resource, int> sixteenWood = {Resource.wood: 16};
+
   static const Map<Resource, int> twoWood = {Resource.wood: 2};
 
   static const Map<Resource, int> fourWood = {Resource.wood: 4};

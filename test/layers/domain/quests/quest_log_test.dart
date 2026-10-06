@@ -10,6 +10,7 @@ import 'package:rpg/layers/domain/world/extensions/player_rules.dart';
 
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/game/quest_progress_entity_mock.dart';
+import '../../../mocks/domain/entities/player/inventory_entity_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
 
 void main() {
@@ -51,7 +52,7 @@ void main() {
     questLog.update(world);
 
     // when
-    world.updatePlayer((player) => player.withInventory(player.inventory.spend({Resource.wood: 16})!));
+    world.updatePlayer((player) => player.withInventory(player.inventory.spend(InventoryEntityMock.sixteenWood)!));
 
     // then
     final woodQuest = questLog.status(world).firstWhere((quest) => quest.id == QuestId.gatherWood);

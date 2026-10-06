@@ -45,9 +45,9 @@ void main() {
     // given
     final source = File('lib/core/assets/images/lpc/forest.json').readAsStringSync();
     final expected = [
-      SpriteNames.building(BlueprintId.house),
+      for (final id in BlueprintId.values) SpriteNames.building(id),
       SpriteNames.stump,
-      SpriteNames.item(ToolKind.axe),
+      for (final kind in ToolKind.values) SpriteNames.item(kind),
       for (final kind in TreeKind.values) SpriteNames.tree(kind),
       for (final kind in DecorationKind.values) SpriteNames.decoration(kind),
     ];

@@ -13,10 +13,17 @@ extension InventoryRules on InventoryEntity {
     return copyWith(resources: {...resources, resource: amount(resource) + quantity});
   }
 
-  Map<Resource, int> missing(Map<Resource, int> cost) => {
-    for (final MapEntry(key: resource, value: quantity) in cost.entries)
-      if (quantity > amount(resource)) resource: quantity - amount(resource),
-  };
+  Map<Resource, int> missing(Map<Resource, int> cost) {
+    for (final MapEntry(key: resource, value: quantity) in cost.entries) {
+      if (quantity < 0) {
+        throw ArgumentError.value(quantity, 'cost', 'Cannot require a negative amount of ${resource.name}');
+      }
+    }
+    return {
+      for (final MapEntry(key: resource, value: quantity) in cost.entries)
+        if (quantity > amount(resource)) resource: quantity - amount(resource),
+    };
+  }
 
   InventoryEntity? spend(Map<Resource, int> cost) {
     if (missing(cost).isNotEmpty) return null;

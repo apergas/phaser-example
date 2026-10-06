@@ -77,6 +77,41 @@ void main() {
     expect(withAxe.hasTool(ToolKind.axe), isTrue);
   });
 
+  test('testWhenAddingZeroThenReturnsTheSameInventory', () {
+    // given
+    const inventory = InventoryEntityMock.withWood;
+
+    // when
+    final updated = inventory.add(Resource.wood, 0);
+
+    // then
+    expect(identical(updated, inventory), isTrue);
+  });
+
+  test('testWhenSpendingAZeroQuantityCostThenInventoryIsUnchanged', () {
+    // given
+    const inventory = InventoryEntityMock.withWood;
+
+    // when
+    final afterSpending = inventory.spend(InventoryEntityMock.zeroWood);
+
+    // then
+    expect(afterSpending, inventory);
+  });
+
+  test('testWhenACostHasANegativeQuantityThenMissingAndSpendFail', () {
+    // given
+    const inventory = InventoryEntityMock.withWood;
+
+    // when
+    Object missing() => inventory.missing(InventoryEntityMock.negativeWood);
+    Object spend() => inventory.spend(InventoryEntityMock.negativeWood)!;
+
+    // then
+    expect(missing, throwsArgumentError);
+    expect(spend, throwsArgumentError);
+  });
+
   test('testWhenAddingANegativeAmountThenFails', () {
     // given
     const inventory = InventoryEntityMock.mock;

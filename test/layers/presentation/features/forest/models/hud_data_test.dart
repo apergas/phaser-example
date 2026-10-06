@@ -30,4 +30,16 @@ void main() {
     // then
     expect(isEqual, isFalse);
   });
+
+  test('testWhenAToolOwnershipChangesThenTheHudsAreNotEqual', () {
+    // given
+    final first = HudDataMock.mock;
+    final second = HudDataMock.withAxeOwned;
+
+    // when
+    final isEqual = first == second;
+
+    // then
+    expect(isEqual, isFalse);
+  });
 }

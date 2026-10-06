@@ -82,4 +82,28 @@ abstract final class FightTurnEntityMock {
     enemyHits(round: 3, damage: 2, heroHealthAfter: 18),
     heroHits(round: 4, damage: 4, enemyHealthAfter: 0),
   ];
+
+  static List<FightTurnEntity> almostBeatDuelist() => [
+    heroHits(round: 1, damage: 4, enemyHealthAfter: 20),
+    enemyHits(round: 1, damage: 7, heroHealthAfter: 23),
+    heroHits(round: 2, damage: 4, enemyHealthAfter: 16),
+    enemyHits(round: 2, damage: 7, heroHealthAfter: 16),
+    heroHits(round: 3, damage: 4, enemyHealthAfter: 12),
+    enemyHits(round: 3, damage: 7, heroHealthAfter: 9),
+    heroHits(round: 4, damage: 4, enemyHealthAfter: 8),
+    enemyHits(round: 4, damage: 7, heroHealthAfter: 2),
+    heroHits(round: 5, damage: 4, enemyHealthAfter: 4),
+    enemyHits(round: 5, damage: 2, heroHealthAfter: 0),
+  ];
+
+  static List<FightTurnEntity> defeatByBruteFullyGeared() => [
+    heroHits(round: 1, damage: 7, enemyHealthAfter: 48),
+    enemyHits(round: 1, damage: 21, heroHealthAfter: 54),
+    heroHits(round: 2, damage: 9, enemyHealthAfter: 39),
+    enemyHits(round: 2, damage: 24, heroHealthAfter: 30),
+    heroHits(round: 3, damage: 8, enemyHealthAfter: 31),
+    enemyHits(round: 3, damage: 24, heroHealthAfter: 6),
+    heroHits(round: 4, damage: 8, enemyHealthAfter: 23),
+    enemyHits(round: 4, damage: 6, heroHealthAfter: 0),
+  ];
 }

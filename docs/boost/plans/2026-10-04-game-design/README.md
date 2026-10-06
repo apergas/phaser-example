@@ -84,13 +84,14 @@ El **"qué y cómo"** está en estos Markdown. El **"quién y por dónde va"** e
 ## 2. Fases
 
 **Leyenda:**
+- ✅ fase terminada.
 - 🟢 plan detallado listo para ejecutar.
 - 📝 ficha: hay que escribir su plan detallado con `boost:writing-plans` al empezar la fase.
 - 💭 esbozo: se replanifica al terminar la etapa anterior.
 
 | Fase | Plan | Flujo | Depende de | Qué añade |
 |---|---|---|---|---|
-| **F0** Generalizar recursos, herramientas y edificios | 🟢 [F0-generalize.md](F0-generalize.md) | A + B | — | Inventario por `Resource`, coste por recursos, HUD de recursos genérico, sprites de edificios e ítems elegidos por tipo. **Sin cambios de jugabilidad.** |
+| **F0** Generalizar recursos, herramientas y edificios | ✅ [F0-generalize.md](F0-generalize.md) | A + B | — | Inventario por `Resource`, coste por recursos, HUD de recursos genérico, sprites de edificios e ítems elegidos por tipo. **Sin cambios de jugabilidad.** |
 | **F1** Árboles con personalidad | 📝 [F1-tree-kinds.md](F1-tree-kinds.md) | A | F0 | Cada `TreeKind` da distinta madera y pide distintos golpes. Texto "+N" flotante. |
 | **F2** Guardado automático | 📝 [F2-autosave.md](F2-autosave.md) | B | F0 | La partida sobrevive a cerrar la app. Botón "Nueva partida". |
 | **F3** Rebrote de árboles | 📝 [F3-regrowth.md](F3-regrowth.md) | A | F1 | Tocón → brote → árbol: la madera es sostenible. |
@@ -190,6 +191,20 @@ Aquí se apunta todo lo que se haga distinto de lo que dicen los planes: qué, p
   - el escenario paralelo para dos desarrolladores.
 
   `docs/GAME_DESIGN.md` deja de decir "sin combate": la aldea sigue sin combate y las peleas sólo ocurren en la arena.
+
+- **F0 (2026-10-06):**
+  - **Ramas:** las dos tareas se hicieron en una sola rama, `feature/PROJECT-X-f0-generalize`, apilada sobre la del plan (`feature/PROJECT-X-new-plan`). Van a `develop` en dos PR: primero el plan (sólo documentación) y después F0 (sólo código). No hay ramas ni PR por tarea, y el tracker de GitHub todavía no se ha creado.
+  - **Revisión final:** se añadió un commit más con guardas para que "añadir un recurso, una herramienta o un edificio" no pueda quedar a medias sin que falle un test:
+    - `lpc_atlas_test.dart` recorre todos los `BlueprintId` y `ToolKind`;
+    - `internationalize_test.dart` comprueba que ningún `Resource` / `ToolKind` devuelve la clave sin traducir;
+    - `custom_icons_test.dart` comprueba que existe el SVG de cada uno.
+
+    En el mismo commit:
+    - el mensaje de recoger un ítem pasa a depender de su `kind` (un `switch` exhaustivo);
+    - un coste con cantidades negativas lanza `ArgumentError`;
+    - `CLAUDE.md` explica cómo se añade cada pieza.
+  - **El HUD muestra todos los recursos y herramientas** de los enums, aunque estén a 0 o no se tengan. Por eso, al añadir `stone` o `gold`, aparecen como "Piedra 0" / "Oro 0" desde el principio (es lo que espera C0).
+  - **Sin test todavía:** la rama de `ForestSceneComponent._showGhost` que cambia de fantasma al cambiar de edificio no se puede probar con un solo `BlueprintId`. Lo prueba la primera fase que añada un edificio construible (F6, almacén, o C3, Herrería).
 
 ## 6. Convivencia con el plan *Héroe y arena*
 

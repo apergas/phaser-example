@@ -89,4 +89,5 @@ Que la aldea sirva para hacer más fuerte al héroe: se construyen la Herrería 
   - `get_gear_options_use_case_test.dart`;
   - `forest_bloc_test.dart` (compra y efecto);
   - `hero_panel_test.dart`;
-  - `blueprints_test.dart` (los edificios nuevos).
+  - `blueprints_test.dart` (los edificios nuevos);
+  - si la Herrería es el primer edificio construible después de la casa (F6 no está fusionada): un test de `ForestSceneComponent` que cambia la previsualización de casa a Herrería y comprueba que el fantasma se sustituye (desviación de F0).

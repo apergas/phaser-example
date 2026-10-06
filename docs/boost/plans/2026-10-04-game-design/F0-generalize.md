@@ -119,13 +119,13 @@ Sólo cambian tres textos:
   static String get forestMessageNotEnoughResources;                              // "No tienes recursos suficientes."
   ```
 
-- [ ] **Step 1: Crear la rama**
+- [x] **Step 1: Crear la rama**
 
 ```bash
 git switch develop && git pull && git switch -c feature/PROJECT-X-f0-domain
 ```
 
-- [ ] **Step 2: Escribir el test de `InventoryRules`, que debe fallar**
+- [x] **Step 2: Escribir el test de `InventoryRules`, que debe fallar**
 
 Sustituir el contenido de `test/layers/domain/world/extensions/inventory_rules_test.dart` por:
 
@@ -249,12 +249,12 @@ abstract final class InventoryEntityMock {
 }
 ```
 
-- [ ] **Step 3: Comprobar que falla**
+- [x] **Step 3: Comprobar que falla**
 
 Run: `flutter test test/layers/domain/world/extensions/inventory_rules_test.dart`
 Expected: FAIL de compilación (`Resource` no existe; `add`, `amount`, `spend`, `missing` no están definidos).
 
-- [ ] **Step 4: Implementar `Resource`, `InventoryEntity` e `InventoryRules`**
+- [x] **Step 4: Implementar `Resource`, `InventoryEntity` e `InventoryRules`**
 
 `lib/core/config/constants/enum/resource.dart`:
 
@@ -331,7 +331,7 @@ extension InventoryRules on InventoryEntity {
 Run: `flutter test test/layers/domain/world/extensions/inventory_rules_test.dart`
 Expected: PASS.
 
-- [ ] **Step 5: `BlueprintEntity`, `Blueprints`, `ConstructionRejection`, `Construction`, `Woodcutting` y `Quests`**
+- [x] **Step 5: `BlueprintEntity`, `Blueprints`, `ConstructionRejection`, `Construction`, `Woodcutting` y `Quests`**
 
 `lib/layers/domain/entities/building/blueprint_entity.dart`: `woodCost` pasa a `cost`.
 
@@ -407,7 +407,7 @@ Se añaden los `import '…/core/config/constants/enum/resource.dart';` necesari
 
 Se borran `lib/layers/domain/world/extensions/blueprint_rules.dart` y su test.
 
-- [ ] **Step 6: `BuildOptionEntity`, `PlayerStatusEntity` y sus casos de uso**
+- [x] **Step 6: `BuildOptionEntity`, `PlayerStatusEntity` y sus casos de uso**
 
 `lib/layers/domain/entities/game/build_option_entity.dart`:
 
@@ -475,7 +475,7 @@ List<BuildOptionEntity> call() {
 }
 ```
 
-- [ ] **Step 7: Adaptar mocks y tests de dominio a la API nueva**
+- [x] **Step 7: Adaptar mocks y tests de dominio a la API nueva**
 
 Patrón de sustitución en todos los ficheros de test y mocks de la lista *Files* (se añade `import 'package:rpg/core/config/constants/enum/resource.dart';` donde haga falta):
 
@@ -542,7 +542,7 @@ Renombrados:
 Run: `flutter test test/layers/domain test/layers/data test/core`
 Expected: PASS. La presentación todavía no compila (`ForestBloc` usa `status.wood`); lo resuelven los pasos 8 y 9.
 
-- [ ] **Step 8: Textos de coste y de rechazo**
+- [x] **Step 8: Textos de coste y de rechazo**
 
 `es.json`, en `forest`:
 - `hud.cost` se borra.
@@ -587,7 +587,7 @@ test('testWhenFormattingAmountsThenNamesTheResource', () {
 - En `testWhenFormattingMessagesWithNamesThenInsertsThem`: `expect(completed, 'Construcción terminada: Casa');`.
 - En la lista de `testWhenReadingEveryForestTextThenNoneFallsBackToItsKey`, `forestMessageNotEnoughWood` pasa a `forestMessageNotEnoughResources`.
 
-- [ ] **Step 9: Adaptar `ForestBloc` (sin cambiar todavía `HudData`)**
+- [x] **Step 9: Adaptar `ForestBloc` (sin cambiar todavía `HudData`)**
 
 En `lib/layers/presentation/features/forest/bloc/forest_bloc.dart`:
 - `_openPlacement` y la rama de rechazo de `_place` usan `Internationalize.forestMessageNotEnoughResources`; el `case` pasa a `ConstructionRejectedEntity(reason: ConstructionRejection.notEnoughResources)`.
@@ -640,7 +640,7 @@ En `forest_bloc_test.dart`:
 Run: `flutter test`
 Expected: PASS (todos, incluido `architecture_test.dart`).
 
-- [ ] **Step 10: Verificación completa**
+- [x] **Step 10: Verificación completa**
 
 ```bash
 dart format --line-length 120 <ficheros escritos en esta tarea>
@@ -652,7 +652,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: todo en verde; `build_runner` no cambia nada (no hay inyectables ni mocks nuevos).
 
-- [ ] **Step 11: Commit y PR**
+- [x] **Step 11: Commit y PR**
 
 ```bash
 git add lib test
@@ -744,13 +744,13 @@ Después, `/cerrar-tarea`: abre el PR con `Closes #<issue T0.1>`.
 
 Una fase que añade un recurso o una herramienta sólo añade: el valor del enum, su caso en `Internationalize.forestResource`/`forestTool` (y `forestAmount`), su texto en `es.json`, su SVG y su caso en `CustomIcons`. Un edificio nuevo añade su caso en `SpriteNames.building` y `RenderConstants.buildingFrontOffset`.
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 ```bash
 git switch develop && git pull && git switch -c feature/PROJECT-X-f0-presentation
 ```
 
-- [ ] **Step 2: Test de `SpriteNames` y del desplazamiento, que debe fallar**
+- [x] **Step 2: Test de `SpriteNames` y del desplazamiento, que debe fallar**
 
 En `test/layers/presentation/features/forest/game/atlas/sprite_names_test.dart` se añade:
 
@@ -775,7 +775,7 @@ test('testWhenNamingBuildingsAndItemsThenFollowsTheAtlasFrameNames', () {
 Run: `flutter test test/layers/presentation/features/forest/game/atlas/sprite_names_test.dart`
 Expected: FAIL de compilación (`building`, `item` y `buildingFrontOffset` no existen).
 
-- [ ] **Step 3: `SpriteNames` y `RenderConstants`**
+- [x] **Step 3: `SpriteNames` y `RenderConstants`**
 
 `lib/layers/presentation/features/forest/game/atlas/sprite_names.dart`:
 
@@ -815,7 +815,7 @@ static double buildingFrontOffset(BlueprintId id) => switch (id) {
 
 Run: el comando del paso 2. Expected: PASS del test nuevo; el resto del proyecto aún no compila (siguiente paso).
 
-- [ ] **Step 4: Componentes que dibujan edificios e ítems**
+- [x] **Step 4: Componentes que dibujan edificios e ítems**
 
 `BuildingComponent`:
 - El frame sale de `SpriteNames.building(building.blueprint.id)`.
@@ -879,7 +879,7 @@ void _showGhost(PlacementData? placement) {
 }
 ```
 
-- [ ] **Step 5: Polvo desde el muro frontal**
+- [x] **Step 5: Polvo desde el muro frontal**
 
 `ParticleBursts` deja de conocer el desplazamiento de la casa:
 
@@ -924,7 +924,7 @@ Tests:
 Run: `flutter test test/layers/presentation/features/forest/game`
 Expected: PASS.
 
-- [ ] **Step 6: Test del HUD genérico, que debe fallar**
+- [x] **Step 6: Test del HUD genérico, que debe fallar**
 
 `lib/layers/presentation/features/forest/models/resource_item_data.dart` y `tool_item_data.dart` se crean con el patrón de los demás modelos (campos `final`, constructor `const`, `==`/`hashCode` a mano). Sus tests de igualdad siguen el patrón de `hud_data_test.dart`.
 
@@ -990,7 +990,7 @@ Y del mismo modo `testWhenThePlayerHasNoAxeThenTheAxeIsDimmed` (0.35), `testWhen
 Run: `flutter test test/layers/presentation/features/forest/widgets test/layers/presentation/features/forest/bloc`
 Expected: FAIL de compilación (`ResourceBar` no acepta `resources`, `HudData` no tiene `resources`).
 
-- [ ] **Step 7: `HudData`, `ForestBloc`, textos, iconos y `ResourceBar`**
+- [x] **Step 7: `HudData`, `ForestBloc`, textos, iconos y `ResourceBar`**
 
 `HudData`: `wood` y `hasAxe` se sustituyen por `final List<ResourceItemData> resources;` y `final List<ToolItemData> tools;`, comparadas con `ListEquality` y con `Object.hashAll` en `hashCode`, como `quests`.
 
@@ -1117,7 +1117,7 @@ class ResourceBar extends StatelessWidget {
 Run: `flutter test`
 Expected: PASS (todos, incluido `architecture_test.dart`).
 
-- [ ] **Step 8: Verificación completa**
+- [x] **Step 8: Verificación completa**
 
 ```bash
 dart format --line-length 120 <ficheros escritos en esta tarea>
@@ -1136,7 +1136,7 @@ Prueba manual en Chrome (`flutter run -d chrome`), en el emulador (`flutter run 
 - la previsualización de la casa sale verde o roja y la casa se ve igual que antes;
 - el polvo sale del muro frontal.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add lib test

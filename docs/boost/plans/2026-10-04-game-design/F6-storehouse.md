@@ -68,7 +68,9 @@ El bucle de Age of Empires: recoger, llevarlo al almacén y volver. Así importa
 
 **Arte:** `build_assets.py`.
 
-**Tests:** `test/architecture_test.dart` (nueva pieza interna).
+**Tests:**
+- `test/architecture_test.dart` (nueva pieza interna).
+- Si es el primer edificio construible después de la casa (C3 no está fusionada): un test de `ForestSceneComponent` que cambia la previsualización de casa a almacén y comprueba que el fantasma se sustituye (desviación de F0).
 
 ## Cómo probarlo
 

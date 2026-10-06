@@ -27,6 +27,7 @@ Que la partida sobreviva a cerrar la app o la pestaña, y que se pueda empezar d
   - `local/dbo/`: `SaveDBO` y los DBOs que necesite (árbol, ítem, edificio, jugador), todos con campos anulables y `version`; se serializan a JSON con `dart:convert` y `fromJson`/`toJson` escritos a mano.
   - `source/game_save_local_datasource.dart` + `local/game_save_local_datasource_impl.dart` (`@LazySingleton`).
 - En `data/repositories/save/`: `GameSaveRepositoryImpl` + `mappers/` con un `*MapperDBO` inyectado por pieza.
+- Los *mappers* nunca crean cantidades a 0 en `InventoryEntity.resources`: se construyen con `InventoryRules.add` o se filtran los ceros. `InventoryEntity` da por hecho que no hay ceros (F0), y un 0 rompería la igualdad.
 - `SaveDBO.currentVersion` vive en `data`. Si la versión es desconocida o el JSON no se puede leer, se trata como "no hay partida" y se registra con `AppExceptionHandler` / `Logger`.
 
 **Excepciones de `CLAUDE.md` que cambian:** E5 (la sesión sigue en memoria, pero ahora hay un guardado con DBO), E6 (un repositorio lee y escribe un segundo datasource local) y E7 (aparece almacenamiento). Se actualizan en la misma fase.

@@ -9,4 +9,5 @@ abstract final class Rules {
   static const double playerRadius = 8;
   static const double treeTrunkRadius = 12;
   static const double powerPerSkill = 0.1;
+  static const int repeatRewardDivisor = 3;
 }

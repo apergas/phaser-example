@@ -16,4 +16,10 @@ abstract final class ArenaLevelEntityMock {
     enemies: [EnemyEntityMock.bandit, EnemyEntityMock.bandit, EnemyEntityMock.bandit],
     reward: {Resource.gold: 40},
   );
+
+  static const ArenaLevelEntity banditRookieWithWood = ArenaLevelEntity(
+    id: ArenaLevelId.banditRookie,
+    enemies: [EnemyEntityMock.bandit],
+    reward: {Resource.wood: 2, Resource.gold: 10},
+  );
 }

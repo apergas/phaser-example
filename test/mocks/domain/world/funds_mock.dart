@@ -12,4 +12,6 @@ abstract final class FundsMock {
   static const Map<Resource, int> zeroGold = {Resource.gold: 0};
 
   static const Map<Resource, int> minusThreeGold = {Resource.gold: -3};
+
+  static const Map<Resource, int> threeGold = {Resource.gold: 3};
 }

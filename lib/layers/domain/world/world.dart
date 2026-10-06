@@ -9,6 +9,7 @@ import '../entities/game/construction_result_entity.dart';
 import '../entities/game/game_event_entity.dart';
 import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
+import '../entities/hero/hero_entity.dart';
 import '../entities/item/ground_item_entity.dart';
 import '../entities/player/activity_entity.dart';
 import '../entities/player/intent_entity.dart';
@@ -32,6 +33,7 @@ class World {
     required List<TreeEntity> trees,
     List<GroundItemEntity> items = const [],
     List<DecorationEntity> decorations = const [],
+    HeroEntity hero = const HeroEntity(),
   }) : this._(
          WorldState(
            width: width,
@@ -40,6 +42,7 @@ class World {
            trees: trees,
            items: items,
            decorations: decorations,
+           hero: hero,
          ),
        );
 
@@ -61,6 +64,8 @@ class World {
   List<DecorationEntity> get decorations => _state.decorations;
 
   List<BuildingEntity> get buildings => _state.buildings.values.toList();
+
+  HeroEntity get hero => _state.hero;
 
   List<ObstacleEntity> get obstacles => _state.obstacles();
 
@@ -110,6 +115,10 @@ class World {
     if (remaining == null) return false;
     _state.player = _state.player.copyWith(inventory: remaining);
     return true;
+  }
+
+  void updateHero(HeroEntity Function(HeroEntity hero) transform) {
+    _state.hero = transform(_state.hero);
   }
 
   List<GameEventEntity> advance(double deltaMs) {

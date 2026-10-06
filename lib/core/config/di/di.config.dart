@@ -67,6 +67,8 @@ import 'package:rpg/layers/domain/use-cases/game/move_player_use_case.dart'
     as _i470;
 import 'package:rpg/layers/domain/use-cases/game/start_game_use_case.dart'
     as _i368;
+import 'package:rpg/layers/domain/use-cases/hero/get_hero_status_use_case.dart'
+    as _i108;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -160,6 +162,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i470.MovePlayerUseCase>(
       () => _i470.MovePlayerUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i108.GetHeroStatusUseCase>(
+      () => _i108.GetHeroStatusUseCase(
         sessionRepository: gh<_i745.GameSessionRepository>(),
       ),
     );

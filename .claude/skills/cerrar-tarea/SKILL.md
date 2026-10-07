@@ -34,7 +34,7 @@ Lee el apartado *Cómo probarlo* de la tarea, o de la fase si es la última tare
 - Marca los checkboxes de la tarea en `docs/boost/plans/2026-10-04-game-design/F<n>-*.md` o `docs/boost/plans/2026-10-06-hero-arena/C<n>-*.md`.
 - Si la tarea resolvió un cruce entre los dos planes (sección 6 del README de la aldea, sección 3.2 del de la arena), dilo en el PR.
 - Si algo se hizo distinto de lo planeado (firmas, nombres, arte, números), añade una línea en la sección 5 *Desviaciones registradas* del README. Indica fase y tarea, qué cambió y por qué.
-- Si es la última tarea de la fase, cambia su icono en la tabla de fases del README a ✅.
+- Si es la última tarea de la fase, cambia su icono en la tabla de fases del README a ✅ y actualiza su fila en `docs/boost/plans/PROGRESS.md` (estado, dónde está, PR y fecha de última actualización).
 - Si la tarea cambia una excepción documentada (E1–E11) o la estructura descrita en `CLAUDE.md`, actualízalo y añádelo con un `git add CLAUDE.md` aparte.
 
 Haz el commit junto al código: `[PROJECT-X]: <imperative description>`, en un comando `git commit` independiente. **Sin ninguna atribución a IA**: el hook lo rechaza. Comprueba con `git log -1` que el commit existe.

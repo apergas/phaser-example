@@ -90,14 +90,15 @@ Por eso en la prueba el bandido quitaba siempre "−2".
 
 ### Qué hacer
 
-Que el daño sea un **rango "de tanto a tanto"** que crezca con el ataque, también con números bajos. Propuesta, a decidir al planificar:
-- **Rango con un mínimo absoluto:** `base ± max(1, redondeo(base × 0,25))`. Con base 2 da 1–3; con base 4, 3–5; con base 6, 4–8; con base 10, 7–13.
-- **O un rango por arma:** cada `GearEntity` de arma lleva `attackMin` / `attackMax` (hacha 3–5, espada corta 5–9, espada de hierro 8–12…), y los enemigos igual. El daño es un valor del rango menos la defensa. Es más legible para el jugador ("Ataque 5–9" en el panel *Héroe*), pero toca entidades, catálogo, panel y tests.
+**Decidido (2026-10-07):** el ataque pasa a ser un **rango "de tanto a tanto"**, que sube con cada arma: hacha 3–5, espada corta 5–7, y así sucesivamente.
+- Cada arma (`GearEntity`) lleva `attackMin` / `attackMax` en lugar de un `attack` fijo. Los enemigos (`CombatStatsEntity`), lo mismo. Los números exactos de cada pieza y enemigo se fijan al planificar, con el test de equilibrado de C7.
+- En cada golpe se elige un valor del rango con la semilla y se le resta la defensa: `daño = max(1, valor − defensa)`. Desaparece el ±15 % (`Rules.damageSpread`).
+- El panel *Héroe* y la lista de equipo muestran el rango ("Ataque 3–5"), y cada opción de compra (`GearOptionTile`) el rango de la pieza nueva.
 
-En los dos casos:
+Además:
 - se mantiene la semilla (`SeededRandom(hero.fightsFought)`) y el orden de las llamadas a `next()`, que es parte del contrato del motor;
 - hay que recalcular los resultados exactos de `combat_test.dart` y de los mocks de peleas, y el test de equilibrado de C7;
-- el Poder (`HeroRules.power`) tendría que usar el ataque medio.
+- el Poder (`HeroRules.power`) usa el ataque medio del rango.
 
 ## 5. Pendientes que ya estaban apuntados
 

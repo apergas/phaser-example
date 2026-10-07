@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/layers/domain/world/extensions/building_rules.dart';
 
 import '../../../../mocks/domain/entities/building/building_entity_mock.dart';
@@ -43,5 +44,21 @@ void main() {
     expect(footprint, ObstacleEntityMock.houseFootprint);
     expect(building.progress, 0.0);
     expect(building.isComplete, isFalse);
+  });
+
+  test('testWhenLookingForACompleteBuildingThenOnlyFinishedOnesOfThatBlueprintCount', () {
+    // given
+    const finished = [BuildingEntityMock.complete];
+    const unfinished = [BuildingEntityMock.halfBuilt];
+
+    // when
+    final finishedHouse = finished.hasComplete(BlueprintId.house);
+    final finishedForge = finished.hasComplete(BlueprintId.forge);
+    final unfinishedHouse = unfinished.hasComplete(BlueprintId.house);
+
+    // then
+    expect(finishedHouse, isTrue);
+    expect(finishedForge, isFalse);
+    expect(unfinishedHouse, isFalse);
   });
 }

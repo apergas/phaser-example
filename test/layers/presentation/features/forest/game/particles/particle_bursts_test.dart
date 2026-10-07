@@ -78,4 +78,36 @@ void main() {
     expect(chip.isAlive(0.49), isTrue);
     expect(chip.isAlive(0.5), isFalse);
   });
+
+  test('testWhenTheHeroHitsAnEnemyThenAFewDropsOfBloodFlyAwayFromHim', () {
+    // given
+    const impact = ParticleMock.trunkBase;
+
+    // when
+    final drops = ParticleBursts.bloodDrops(impact: impact, attackerOnLeft: true, random: ParticleMock.seededOne);
+
+    // then
+    expect(drops.length, inInclusiveRange(4, 6));
+    for (final drop in drops) {
+      expect(drop.kind, ParticleKind.bloodDrop);
+      expect(drop.origin, impact);
+      expect(_angleDegrees(drop.velocityX, drop.velocityY), inInclusiveRange(280, 340));
+      expect(drop.gravity, 260);
+      expect(drop.lifespanSeconds, 0.4);
+      expect(drop.alpha(0.4), 0);
+    }
+  });
+
+  test('testWhenAnEnemyHitsTheHeroThenTheBloodFliesTheOtherWay', () {
+    // given
+    const impact = ParticleMock.trunkBase;
+
+    // when
+    final drops = ParticleBursts.bloodDrops(impact: impact, attackerOnLeft: false, random: ParticleMock.seededOne);
+
+    // then
+    for (final drop in drops) {
+      expect(_angleDegrees(drop.velocityX, drop.velocityY), inInclusiveRange(200, 260));
+    }
+  });
 }

@@ -31,6 +31,19 @@ abstract final class ParticleBursts {
   static const double dustScaleStart = 0.8;
   static const double dustScaleEnd = 0.2;
   static const double sortYOffset = 1;
+  static const int bloodDropsMin = 4;
+  static const int bloodDropsMax = 6;
+  static const double bloodAngleAwayFromLeftMin = 280;
+  static const double bloodAngleAwayFromLeftMax = 340;
+  static const double bloodAngleAwayFromRightMin = 200;
+  static const double bloodAngleAwayFromRightMax = 260;
+  static const double bloodSpeedMin = 25;
+  static const double bloodSpeedMax = 60;
+  static const double bloodGravity = 260;
+  static const double bloodLifespanSeconds = 0.4;
+  static const double bloodAlphaStart = 1;
+  static const double bloodAlphaEnd = 0;
+  static const double bloodScale = 1;
 
   static List<Particle> woodChips({
     required PositionEntity trunkBase,
@@ -74,6 +87,33 @@ abstract final class ParticleBursts {
         alphaEnd: dustAlphaEnd,
         scaleStart: dustScaleStart,
         scaleEnd: dustScaleEnd,
+      );
+    });
+  }
+
+  static List<Particle> bloodDrops({
+    required PositionEntity impact,
+    required bool attackerOnLeft,
+    required math.Random random,
+  }) {
+    final minAngle = attackerOnLeft ? bloodAngleAwayFromLeftMin : bloodAngleAwayFromRightMin;
+    final maxAngle = attackerOnLeft ? bloodAngleAwayFromLeftMax : bloodAngleAwayFromRightMax;
+    final count = bloodDropsMin + random.nextInt(bloodDropsMax - bloodDropsMin + 1);
+    return List.generate(count, (_) {
+      final speed = _between(random, bloodSpeedMin, bloodSpeedMax);
+      final angle = _between(random, minAngle, maxAngle) * math.pi / 180;
+      return Particle(
+        kind: ParticleKind.bloodDrop,
+        origin: impact,
+        velocityX: speed * math.cos(angle),
+        velocityY: speed * math.sin(angle),
+        gravity: bloodGravity,
+        rotationDegrees: 0,
+        lifespanSeconds: bloodLifespanSeconds,
+        alphaStart: bloodAlphaStart,
+        alphaEnd: bloodAlphaEnd,
+        scaleStart: bloodScale,
+        scaleEnd: bloodScale,
       );
     });
   }

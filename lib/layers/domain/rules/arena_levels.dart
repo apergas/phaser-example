@@ -15,11 +15,33 @@ abstract final class ArenaLevels {
       reward: {Resource.gold: 10},
     ),
     ArenaLevelEntity(
+      id: ArenaLevelId.wolf,
+      enemies: [
+        EnemyEntity(kind: EnemyKind.wolf, stats: CombatStatsEntity(attack: 5, defense: 1, health: 22)),
+      ],
+      reward: {Resource.gold: 15},
+    ),
+    ArenaLevelEntity(
       id: ArenaLevelId.banditVeteran,
       enemies: [
         EnemyEntity(kind: EnemyKind.bandit, stats: CombatStatsEntity(attack: 6, defense: 2, health: 30)),
       ],
       reward: {Resource.gold: 20},
+    ),
+    ArenaLevelEntity(
+      id: ArenaLevelId.wolfPair,
+      enemies: [
+        EnemyEntity(kind: EnemyKind.wolf, stats: CombatStatsEntity(attack: 5, defense: 1, health: 22)),
+        EnemyEntity(kind: EnemyKind.wolf, stats: CombatStatsEntity(attack: 5, defense: 1, health: 22)),
+      ],
+      reward: {Resource.gold: 25},
+    ),
+    ArenaLevelEntity(
+      id: ArenaLevelId.bear,
+      enemies: [
+        EnemyEntity(kind: EnemyKind.bear, stats: CombatStatsEntity(attack: 9, defense: 3, health: 40)),
+      ],
+      reward: {Resource.gold: 35},
     ),
     ArenaLevelEntity(
       id: ArenaLevelId.banditTrio,
@@ -36,6 +58,15 @@ abstract final class ArenaLevels {
         EnemyEntity(kind: EnemyKind.barbarian, stats: CombatStatsEntity(attack: 12, defense: 4, health: 60)),
       ],
       reward: {Resource.gold: 50},
+    ),
+    ArenaLevelEntity(
+      id: ArenaLevelId.wolfPack,
+      enemies: [
+        EnemyEntity(kind: EnemyKind.wolf, stats: CombatStatsEntity(attack: 5, defense: 1, health: 18)),
+        EnemyEntity(kind: EnemyKind.wolf, stats: CombatStatsEntity(attack: 5, defense: 1, health: 18)),
+        EnemyEntity(kind: EnemyKind.wolf, stats: CombatStatsEntity(attack: 5, defense: 1, health: 18)),
+      ],
+      reward: {Resource.gold: 55},
     ),
     ArenaLevelEntity(
       id: ArenaLevelId.barbarianPair,

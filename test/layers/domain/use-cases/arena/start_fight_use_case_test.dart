@@ -82,7 +82,7 @@ void main() {
 
   test('testWhenTheHeroLosesThenNothingIsPaidAndAdviceIsGiven', () {
     // given
-    final session = GameSessionEntityMock.playing(WorldMock.withHero(HeroEntityMock.veteran));
+    final session = GameSessionEntityMock.playing(WorldMock.withHero(HeroEntityMock.wolfHunter));
     when(sessionRepository.current()).thenReturn(session);
 
     // when
@@ -93,6 +93,6 @@ void main() {
     expect((played.log.isVictory, played.log.rounds, played.advice), (false, 6, FightAdvice.needAttack));
     expect(played.log.reward, isEmpty);
     expect(session.world.funds.amount(Resource.gold), 0);
-    expect(session.world.hero, HeroEntityMock.veteranAfterAnotherFight);
+    expect(session.world.hero, HeroEntityMock.wolfHunterAfterAnotherFight);
   });
 }

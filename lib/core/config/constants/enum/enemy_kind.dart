@@ -1,1 +1,1 @@
-enum EnemyKind { bandit, barbarian, barbarianChief }
+enum EnemyKind { bandit, barbarian, barbarianChief, wolf, bear }

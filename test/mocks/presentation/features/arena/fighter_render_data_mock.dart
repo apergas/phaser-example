@@ -31,6 +31,15 @@ abstract final class FighterRenderDataMock {
     pose: FighterPose.idle,
   );
 
+  static const FighterRenderData wolfIdle = FighterRenderData(
+    side: FightSide.enemy,
+    index: 0,
+    enemyKind: EnemyKind.wolf,
+    health: 22,
+    maxHealth: 22,
+    pose: FighterPose.idle,
+  );
+
   static const FighterRenderData rookieBanditHurt = FighterRenderData(
     side: FightSide.enemy,
     index: 0,

@@ -31,7 +31,9 @@ import 'widgets/hud_panel.dart';
 import 'widgets/placement_bar.dart';
 
 class ForestPage extends StatelessWidget {
-  const ForestPage({super.key});
+  const ForestPage({super.key, required this.routeObserver});
+
+  final RouteObserver<ModalRoute<void>> routeObserver;
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +51,15 @@ class ForestPage extends StatelessWidget {
         getQuestsUseCase: locator.get<GetQuestsUseCase>(),
         navigationService: locator.get<NavigationService>(),
       )..add(const ForestStarted()),
-      child: const _ForestView(),
+      child: _ForestView(routeObserver: routeObserver),
     );
   }
 }
 
 class _ForestView extends StatefulWidget {
-  const _ForestView();
+  const _ForestView({required this.routeObserver});
+
+  final RouteObserver<ModalRoute<void>> routeObserver;
 
   @override
   State<_ForestView> createState() => _ForestViewState();
@@ -65,8 +69,6 @@ class _ForestViewState extends State<_ForestView> with RouteAware {
   ForestBloc get bloc => context.read<ForestBloc>();
 
   late ForestGame _game = _createGame();
-
-  final RouteObserver<ModalRoute<void>> _routeObserver = locator<NavigationService>().routeObserver;
 
   bool get _isTouchPlatform => switch (defaultTargetPlatform) {
     TargetPlatform.android || TargetPlatform.iOS => true,
@@ -93,7 +95,7 @@ class _ForestViewState extends State<_ForestView> with RouteAware {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final route = ModalRoute.of(context);
-    if (route != null) _routeObserver.subscribe(this, route);
+    if (route != null) widget.routeObserver.subscribe(this, route);
   }
 
   @override
@@ -104,7 +106,7 @@ class _ForestViewState extends State<_ForestView> with RouteAware {
 
   @override
   void dispose() {
-    _routeObserver.unsubscribe(this);
+    widget.routeObserver.unsubscribe(this);
     if (kIsWeb) BrowserContextMenu.enableContextMenu();
     super.dispose();
   }

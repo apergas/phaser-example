@@ -39,4 +39,24 @@ void main() {
     // then
     expect(wanted.where((name) => !frames.contains(name)), isEmpty);
   });
+
+  test('testWhenReadingTheArenaAtlasThenTheWolfAndTheBearHaveTheirIdleAttackAndDownFrames', () {
+    // given
+    final json = jsonDecode(File('lib/core/assets/images/lpc/arena.json').readAsStringSync()) as Map<String, dynamic>;
+    final frames = (json['frames'] as Map<String, dynamic>).keys.toSet();
+    const beasts = [('wolf', 5), ('bear', 3)];
+
+    // when
+    final wanted = [
+      for (final (beast, attackColumns) in beasts) ...[
+        for (var column = 0; column < RenderConstants.idleColumns; column++) ArenaSpriteNames.idle(beast, column),
+        for (var column = 0; column < attackColumns; column++) ArenaSpriteNames.attack(beast, column),
+        ArenaSpriteNames.down(beast),
+      ],
+    ];
+
+    // then
+    expect(wanted.where((name) => !frames.contains(name)), isEmpty);
+    expect((ArenaSpriteNames.attack('wolf', 4), ArenaSpriteNames.down('bear')), ('wolf-attack-4', 'bear-down'));
+  });
 }

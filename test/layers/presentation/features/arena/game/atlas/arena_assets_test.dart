@@ -45,4 +45,21 @@ void main() {
     expect((fence.width, fence.height, fence.pivotX, fence.pivotY), (64, 32, 0.0, 1.0));
     expect(assets.atlas.width, 1024);
   });
+
+  testWidgets('testWhenLoadingTheRealArtThenTheBeastsStandOnTheirPaws', (tester) async {
+    // given
+    final loader = ArenaAssetsLoader();
+
+    // when
+    final assets = (await tester.runAsync(loader.load))!;
+
+    // then
+    final wolf = assets.frame(ArenaSpriteNames.attack('wolf', 0));
+    final bearIdle = assets.frame(ArenaSpriteNames.idle('bear', 0));
+    final bearAttack = assets.frame(ArenaSpriteNames.attack('bear', 2));
+    final bearDown = assets.frame(ArenaSpriteNames.down('bear'));
+    expect((wolf.width, wolf.height, wolf.pivotY), (64, 32, 1.0));
+    expect((bearIdle.width, bearIdle.height, bearIdle.pivotY), (64, 64, 0.9688));
+    expect((bearAttack.pivotY, bearDown.pivotY), (0.9062, 0.8906));
+  });
 }

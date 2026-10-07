@@ -63,3 +63,15 @@ drawn bigger. Same authors and licences as the character layers.
 
 The grass (`arena-grass`) and the fence (`arena-fence`) come from the LPC Tile Atlas (see
 *Ground and decor* above). CC-BY-SA 3.0 / GPL 3.0.
+
+### Wolf and bear (`wolf-*`, `bear-*` frames in `arena.png`)
+
+Cut by `build_assets.py` from the side views that face left, without recolouring. Sources in
+`asset-packs/lpc/sources/creatures/` (see `CREDITS-creatures.txt` there).
+
+- Wolf: "[LPC] Wolf Animation" by Stephen "Redshrike" Challener (graphic artist) and
+  William.Thompsonj (contributor), `wolfsheet1.png`. CC-BY 4.0 / CC-BY 3.0 / GPL 3.0 / GPL 2.0 /
+  OGA-BY 3.0 — <https://opengameart.org/content/lpc-wolf-animation>.
+- Bear: "[LPC] bears, deer, lions and more" by tapatilorenzo, `bear, grizzly.png` from
+  `lpc_animals_2022_v1.1.zip`. CC-BY 4.0 (the author releases the bears as CC0) —
+  <https://opengameart.org/content/lpc-bears-deer-lions-and-more>.

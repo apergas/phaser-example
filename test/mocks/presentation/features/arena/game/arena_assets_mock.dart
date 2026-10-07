@@ -14,6 +14,8 @@ abstract final class ArenaAssetsMock {
     for (final fighter in [ArenaSpriteNames.hero, ...EnemyKind.values.map(ArenaSpriteNames.enemy)]) ...[
       for (var column = 0; column < 2; column++) ArenaSpriteNames.idle(fighter, column),
       for (var column = 0; column < 6; column++) ArenaSpriteNames.slash(fighter, column),
+      for (var column = 0; column < 5; column++) ArenaSpriteNames.attack(fighter, column),
+      ArenaSpriteNames.down(fighter),
     ],
   ];
 

@@ -1,0 +1,17 @@
+Arena beasts (used by build_assets.py -> arena.png)
+===================================================
+
+wolfsheet1.png
+  "[LPC] Wolf Animation" — Stephen "Redshrike" Challener (graphic artist), William.Thompsonj (contributor)
+  https://opengameart.org/content/lpc-wolf-animation
+  Download: https://opengameart.org/sites/default/files/wolfsheet1.png
+  Licences: CC-BY 4.0, CC-BY 3.0, GPL 3.0, GPL 2.0, OGA-BY 3.0
+  Attribution requested: "Attribute Stephen 'Redshrike' Challener as graphic artist and William.Thompsonj
+  as contributor. If reasonable link back to this page or the OGA homepage."
+
+bear-grizzly.png  (renamed from "lpc animals 2022 v1.1/individual creature spritesheets/bear, grizzly.png")
+  "[LPC] bears, deer, lions and more" — tapatilorenzo (LPC Spring 2022 entry)
+  https://opengameart.org/content/lpc-bears-deer-lions-and-more
+  Download: https://opengameart.org/sites/default/files/lpc_animals_2022_v1.1.zip
+  Licence: CC-BY 4.0. The author releases their own sprites (bears, deer, foxes, lions, mice) as CC0;
+  attribution appreciated.

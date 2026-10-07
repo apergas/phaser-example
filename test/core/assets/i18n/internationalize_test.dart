@@ -239,8 +239,12 @@ void main() {
       'Bárbaro',
       'Pareja de bárbaros',
       'Jefe bárbaro',
+      'Lobo',
+      'Pareja de lobos',
+      'Oso',
+      'Manada de lobos',
     ]);
-    expect(enemies, ['Bandido', 'Bárbaro', 'Jefe bárbaro']);
+    expect(enemies, ['Bandido', 'Bárbaro', 'Jefe bárbaro', 'Lobo', 'Oso']);
     expect(advice, [
       '¡Casi lo tienes! Vuelve a intentarlo.',
       'Te falta Ataque: visita la Herrería.',

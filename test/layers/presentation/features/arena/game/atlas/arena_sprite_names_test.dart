@@ -15,7 +15,7 @@ void main() {
     final names = [ArenaSpriteNames.fighter(null), for (final kind in kinds) ArenaSpriteNames.fighter(kind)];
 
     // then
-    expect(names, ['hero', 'bandit', 'barbarian', 'barbarian']);
+    expect(names, ['hero', 'bandit', 'barbarian', 'barbarian', 'bandit', 'barbarian']);
     expect(ArenaSpriteNames.idle('bandit', 1), 'bandit-idle-1');
     expect(ArenaSpriteNames.slash('hero', 5), 'hero-slash-5');
   });

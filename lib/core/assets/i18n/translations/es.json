@@ -128,12 +128,18 @@
       "banditTrio": "Trío de bandidos",
       "barbarian": "Bárbaro",
       "barbarianPair": "Pareja de bárbaros",
-      "barbarianChief": "Jefe bárbaro"
+      "barbarianChief": "Jefe bárbaro",
+      "wolf": "Lobo",
+      "wolfPair": "Pareja de lobos",
+      "bear": "Oso",
+      "wolfPack": "Manada de lobos"
     },
     "enemy": {
       "bandit": "Bandido",
       "barbarian": "Bárbaro",
-      "barbarianChief": "Jefe bárbaro"
+      "barbarianChief": "Jefe bárbaro",
+      "wolf": "Lobo",
+      "bear": "Oso"
     },
     "advice": {
       "almostThere": "¡Casi lo tienes! Vuelve a intentarlo.",

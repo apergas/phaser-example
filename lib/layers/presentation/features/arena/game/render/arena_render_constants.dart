@@ -24,6 +24,7 @@ abstract final class ArenaRenderConstants {
   static double fighterScale(EnemyKind? kind) => switch (kind) {
     null || EnemyKind.bandit || EnemyKind.barbarian => 1,
     EnemyKind.barbarianChief => chiefScale,
+    EnemyKind.wolf || EnemyKind.bear => 1,
   };
 
   static const double impactHeight = 28;

@@ -56,6 +56,26 @@ abstract final class ArenaLevelItemDataMock {
     status: ArenaLevelItemStatus.locked,
   );
 
+  static ArenaLevelItemData get wolfLocked => ArenaLevelItemData(
+    id: ArenaLevelId.wolf,
+    name: Internationalize.arenaLevel(id: ArenaLevelId.wolf),
+    enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.wolf),
+    powerText: Internationalize.arenaPower(power: 30),
+    tone: PowerTone.easy,
+    rewardText: Internationalize.arenaReward(amount: 15),
+    status: ArenaLevelItemStatus.locked,
+  );
+
+  static ArenaLevelItemData get wolfOpen => ArenaLevelItemData(
+    id: ArenaLevelId.wolf,
+    name: Internationalize.arenaLevel(id: ArenaLevelId.wolf),
+    enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.wolf),
+    powerText: Internationalize.arenaPower(power: 30),
+    tone: PowerTone.easy,
+    rewardText: Internationalize.arenaReward(amount: 15),
+    status: ArenaLevelItemStatus.open,
+  );
+
   static ArenaLevelItemData get chiefLocked => ArenaLevelItemData(
     id: ArenaLevelId.barbarianChief,
     name: Internationalize.arenaLevel(id: ArenaLevelId.barbarianChief),

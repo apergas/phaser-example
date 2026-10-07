@@ -53,8 +53,9 @@ void main() {
       expect(data.heroPower, 31);
       expect(data.levels.map((level) => level.id), ArenaLevels.all.map((level) => level.id));
       expect(data.levels[0], ArenaLevelItemDataMock.rookieOpen);
-      expect(data.levels[1], ArenaLevelItemDataMock.veteranLocked);
-      expect(data.levels[2], ArenaLevelItemDataMock.trioLocked);
+      expect(data.levels[1], ArenaLevelItemDataMock.wolfLocked);
+      expect(data.levels[2], ArenaLevelItemDataMock.veteranLocked);
+      expect(data.levels[5], ArenaLevelItemDataMock.trioLocked);
       expect(data.levels.last, ArenaLevelItemDataMock.chiefLocked);
       expect(data.selected, ArenaLevelId.banditRookie);
       expect(data.fighters, [FighterRenderDataMock.heroIdle, FighterRenderDataMock.rookieBanditIdle]);
@@ -77,7 +78,7 @@ void main() {
     verify: (bloc) {
       // then
       expect(bloc.state.data.heroPower, greaterThan(31));
-      expect(bloc.state.data.levels[1].tone, PowerTone.even);
+      expect(bloc.state.data.levels[2].tone, PowerTone.even);
     },
   );
 
@@ -113,7 +114,7 @@ void main() {
     'testWhenSelectingAnOpenLevelThenItIsSelectedAndItsEnemiesWait',
     build: () {
       // given
-      world = WorldMock.withHero(HeroEntityMock.veteran);
+      world = WorldMock.withHero(HeroEntityMock.wolfHunter);
       return ArenaBlocMock.make(world, navigationService: navigationService);
     },
     act: (bloc) {
@@ -126,8 +127,29 @@ void main() {
     verify: (bloc) {
       // then
       expect(bloc.state.data.selected, ArenaLevelId.banditVeteran);
-      expect(bloc.state.data.levels[1], ArenaLevelItemDataMock.veteranOpen);
+      expect(bloc.state.data.levels[2], ArenaLevelItemDataMock.veteranOpen);
       expect(bloc.state.data.fighters, [FighterRenderDataMock.heroIdle, FighterRenderDataMock.veteranBanditIdle]);
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
+    'testWhenTheRookieIsBeatenThenTheWolfIsSelectedAndWaitsAlone',
+    build: () {
+      // given
+      world = WorldMock.withHero(HeroEntityMock.veteran);
+      return ArenaBlocMock.make(world, navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      bloc.add(const ArenaStarted());
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(bloc.state.data.selected, ArenaLevelId.wolf);
+      expect(bloc.state.data.levels[1], ArenaLevelItemDataMock.wolfOpen);
+      expect(bloc.state.data.levels[2].id, ArenaLevelId.banditVeteran);
+      expect(bloc.state.data.fighters, [FighterRenderDataMock.heroIdle, FighterRenderDataMock.wolfIdle]);
     },
   );
 
@@ -224,7 +246,7 @@ void main() {
       expect(data.result, ArenaResultDataMock.victoryTenGold);
       expect(data.fighters, [FighterRenderDataMock.heroAfterBeatingTheRookie, FighterRenderDataMock.rookieBanditDown]);
       expect(data.levels[0], ArenaLevelItemDataMock.rookieCleared);
-      expect(data.levels[1], ArenaLevelItemDataMock.veteranOpen);
+      expect(data.levels[1], ArenaLevelItemDataMock.wolfOpen);
       expect(data.canFight, isTrue);
     },
   );
@@ -280,7 +302,7 @@ void main() {
     'testWhenTheHeroLosesThenNoGoldIsPaidAndTheAdviceIsShown',
     build: () {
       // given
-      world = WorldMock.withHero(HeroEntityMock.veteran);
+      world = WorldMock.withHero(HeroEntityMock.wolfHunter);
       return ArenaBlocMock.make(world, navigationService: navigationService);
     },
     act: (bloc) {
@@ -306,7 +328,7 @@ void main() {
     'testWhenRetryingAfterADefeatThenANewFightIsPlayed',
     build: () {
       // given
-      world = WorldMock.withHero(HeroEntityMock.veteran);
+      world = WorldMock.withHero(HeroEntityMock.wolfHunter);
       return ArenaBlocMock.make(world, navigationService: navigationService);
     },
     act: (bloc) {

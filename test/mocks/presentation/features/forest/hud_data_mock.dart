@@ -48,6 +48,16 @@ abstract final class HudDataMock {
     hero: HeroPanelDataMock.newHero,
   );
 
+  static HudData get withEveryResourceAndTool => HudData(
+    resources: [ResourceItemDataMock.wood(999), ResourceItemDataMock.gold(999)],
+    tools: [ToolItemDataMock.axe(isOwned: true)],
+    questBadge: '1/3',
+    quests: QuestItemDataMock.all,
+    buildItems: [BuildItemDataMock.affordable],
+    isBuildLocked: false,
+    hero: HeroPanelDataMock.readyToBuySword,
+  );
+
   static HudData _make({required int wood, bool isAxeOwned = false, HeroPanelData? hero}) {
     return HudData(
       resources: [ResourceItemDataMock.wood(wood)],

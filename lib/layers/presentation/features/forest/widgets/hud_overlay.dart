@@ -14,6 +14,7 @@ import 'resource_bar.dart';
 
 class HudOverlay extends StatefulWidget {
   static const double narrowWidth = 480;
+  static const double buttonsBelowWidth = 880;
   static const double _margin = 12;
 
   final HudData hud;
@@ -47,28 +48,52 @@ class _HudOverlayState extends State<HudOverlay> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
+    final resourceBar = ResourceBar(
+      resources: widget.hud.resources,
+      tools: widget.hud.tools,
+      showLabels: width >= HudOverlay.narrowWidth,
+    );
+    final maxWidth = width - 2 * HudOverlay._margin;
+    if (width < HudOverlay.buttonsBelowWidth) {
+      return Stack(
+        children: [
+          Positioned(
+            top: HudOverlay._margin,
+            left: HudOverlay._margin,
+            right: HudOverlay._margin,
+            bottom: HudOverlay._margin,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 8,
+              children: [
+                Align(alignment: Alignment.centerLeft, child: resourceBar),
+                Flexible(
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: _actions(maxWidth: maxWidth, isHeightBounded: true),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
     return Stack(
       children: [
-        Positioned(
-          top: HudOverlay._margin,
-          left: HudOverlay._margin,
-          child: ResourceBar(
-            resources: widget.hud.resources,
-            tools: widget.hud.tools,
-            showLabels: width >= HudOverlay.narrowWidth,
-          ),
-        ),
+        Positioned(top: HudOverlay._margin, left: HudOverlay._margin, child: resourceBar),
         Positioned(
           top: HudOverlay._margin,
           right: HudOverlay._margin,
-          child: _actions(maxWidth: width - 2 * HudOverlay._margin),
+          child: _actions(maxWidth: maxWidth),
         ),
       ],
     );
   }
 
-  Widget _actions({required double maxWidth}) {
+  Widget _actions({required double maxWidth, bool isHeightBounded = false}) {
     final openMenu = _openMenu;
+    final menu = openMenu == null ? null : _menu(menu: openMenu);
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: maxWidth < 0 ? 0 : maxWidth),
       child: Column(
@@ -77,7 +102,7 @@ class _HudOverlayState extends State<HudOverlay> {
         spacing: 8,
         children: [
           _buttons(),
-          if (openMenu != null) _menu(menu: openMenu),
+          if (menu != null) isHeightBounded ? Flexible(child: menu) : menu,
         ],
       ),
     );

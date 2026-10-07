@@ -11,8 +11,10 @@ import 'package:rpg/layers/presentation/features/forest/widgets/hero_panel.dart'
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_button.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_overlay.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/quest_panel.dart';
+import 'package:rpg/layers/presentation/features/forest/widgets/resource_bar.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
+import '../../../../../helpers/pump_until.dart';
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/presentation/features/forest/hud_data_mock.dart';
 
@@ -232,20 +234,72 @@ void main() {
     expect(find.byType(HeroPanel), findsNothing);
   });
 
-  testWidgets('testWhenTheScreenIsALandscapePhoneThenTheFourButtonsFitOnScreen', (tester) async {
+  testWidgets('testWhenTheScreenIsALandscapePhoneThenTheFourButtonsGoUnderTheResourceBar', (tester) async {
     // given
     tester.view.physicalSize = const Size(640, 360);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
 
     // when
-    await pumpOverlay(tester, HudDataMock.gathering);
+    await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+    await pumpUntil(tester, () => find.byType(HudButton).evaluate().length == 4);
 
     // then
     final buttons = find.byType(HudButton);
+    final resourceBar = tester.getRect(find.byType(ResourceBar));
     expect(buttons, findsNWidgets(4));
     expect(tester.takeException(), isNull);
-    expect(tester.getTopLeft(buttons.first).dx, greaterThanOrEqualTo(0));
-    expect(tester.getTopRight(buttons.last).dx, lessThanOrEqualTo(640));
+    for (final button in tester.widgetList<HudButton>(buttons)) {
+      final rect = tester.getRect(find.byWidget(button));
+      expect(rect.overlaps(resourceBar), isFalse);
+      expect(rect.top, greaterThanOrEqualTo(resourceBar.bottom));
+      expect(rect.left, greaterThanOrEqualTo(0));
+      expect(rect.right, lessThanOrEqualTo(640));
+      expect(rect.bottom, lessThanOrEqualTo(360));
+    }
+  });
+
+  testWidgets('testWhenTheScreenIsWideThenTheFourButtonsStayOnTheResourceBarLine', (tester) async {
+    // given
+    tester.view.physicalSize = const Size(1280, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // when
+    await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+    await pumpUntil(tester, () => find.byType(HudButton).evaluate().length == 4);
+
+    // then
+    final buttons = find.byType(HudButton);
+    final resourceBar = tester.getRect(find.byType(ResourceBar));
+    expect(buttons, findsNWidgets(4));
+    expect(tester.takeException(), isNull);
+    for (final button in tester.widgetList<HudButton>(buttons)) {
+      final rect = tester.getRect(find.byWidget(button));
+      expect(rect.overlaps(resourceBar), isFalse);
+      expect(rect.top, lessThan(resourceBar.bottom));
+      expect(rect.right, lessThanOrEqualTo(1280));
+    }
+  });
+
+  testWidgets('testWhenTheHeroPanelIsOpenOnALandscapePhoneThenItStaysOnScreenUnderTheButtons', (tester) async {
+    // given
+    tester.view.physicalSize = const Size(640, 360);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+
+    // when
+    await tester.tap(find.text(Internationalize.forestHero));
+    await pumpUntil(tester, () => find.byType(HeroPanel).evaluate().isNotEmpty);
+
+    // then
+    final panel = tester.getRect(find.byType(HeroPanel));
+    final heroButton = tester.getRect(find.widgetWithText(HudButton, Internationalize.forestHero));
+    expect(tester.takeException(), isNull);
+    expect(panel.top, greaterThanOrEqualTo(heroButton.bottom));
+    expect(panel.left, greaterThanOrEqualTo(0));
+    expect(panel.right, lessThanOrEqualTo(640));
+    expect(panel.bottom, lessThanOrEqualTo(360));
   });
 }

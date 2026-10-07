@@ -1,4 +1,5 @@
 import '../../../../../core/config/constants/enum/fight_side.dart';
+import '../../../../../core/config/constants/enum/skill_id.dart';
 
 sealed class ArenaEffect {
   const ArenaEffect();
@@ -60,4 +61,16 @@ final class FightEndedEffect extends ArenaEffect {
 
   @override
   int get hashCode => Object.hash(FightEndedEffect, isVictory);
+}
+
+final class SkillUsedEffect extends ArenaEffect {
+  final SkillId skill;
+
+  const SkillUsedEffect({required this.skill});
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is SkillUsedEffect && other.skill == skill;
+
+  @override
+  int get hashCode => Object.hash(SkillUsedEffect, skill);
 }

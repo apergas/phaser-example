@@ -4,6 +4,7 @@ import 'package:flame/game.dart';
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
+import 'package:rpg/core/config/constants/enum/skill_id.dart';
 import 'package:rpg/layers/presentation/features/arena/game/arena_scene_component.dart';
 import 'package:rpg/layers/presentation/features/arena/game/components/arena_ground_component.dart';
 import 'package:rpg/layers/presentation/features/forest/game/components/floating_text_component.dart';
@@ -76,8 +77,26 @@ void main() {
 
     // then
     final texts = scene.children.whereType<FloatingTextComponent>().map((text) => text.text);
-    expect(texts, [Internationalize.arenaDodge]);
+    expect(texts, [Internationalize.arenaSkillUsed(id: SkillId.dodge)]);
     expect(scene.children.whereType<ParticleBurstComponent>(), isEmpty);
+  });
+
+  testWithFlameGame('testWhenASkillIsUsedThenItsNameFloatsAboveTheHerosHeal', (game) async {
+    // given
+    final scene = await _mountedScene(game);
+
+    // when
+    scene.show(ArenaDataMock.heroGotASecondWind);
+    await game.ready();
+
+    // then
+    final texts = scene.children.whereType<FloatingTextComponent>().toList();
+    expect(texts.map((text) => text.text), [
+      Internationalize.arenaHeal(amount: 12),
+      Internationalize.arenaSkillUsed(id: SkillId.secondWind),
+    ]);
+    expect(texts.last.position.y, lessThan(texts.first.position.y));
+    expect(texts.last.position.x, texts.first.position.x);
   });
 
   testWithFlameGame('testWhenTheFightEndsThenTheBarsJumpToTheFinalHealth', (game) async {

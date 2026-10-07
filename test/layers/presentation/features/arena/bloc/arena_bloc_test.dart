@@ -350,6 +350,33 @@ void main() {
   );
 
   blocTest<ArenaBloc, ArenaState>(
+    'testWhenTheHeroStrikesTwiceThenTheSecondBlowIsFollowedByTheSkillName',
+    build: () {
+      // given
+      world = WorldMock.withHero(HeroEntityMock.withDoubleStrike);
+      return ArenaBlocMock.make(world, navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      effects = ArenaBlocMock.collectEffects(bloc);
+      bloc
+        ..add(const ArenaStarted())
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickFor(bloc, 7000);
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(effects.sublist(4, 7), [
+        ArenaEffectMock.banditHitForFour,
+        ArenaEffectMock.banditHitForFour,
+        ArenaEffectMock.doubleStrikeUsed,
+      ]);
+      expect(effects.whereType<SkillUsedEffect>(), [ArenaEffectMock.doubleStrikeUsed]);
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
     'testWhenTheHeroGetsASecondWindThenTheHealIsPlayedWithTheHealthGained',
     build: () {
       // given
@@ -369,6 +396,7 @@ void main() {
     verify: (bloc) {
       // then
       expect(effects[10], ArenaEffectMock.heroHealedTwelve);
+      expect(effects[11], ArenaEffectMock.secondWindUsed);
       expect(effects.last, ArenaEffectMock.lost);
     },
   );

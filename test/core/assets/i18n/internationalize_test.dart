@@ -288,4 +288,13 @@ void main() {
     ]);
     expect((Internationalize.arenaFight, Internationalize.arenaVictory), ('Empezar pelea', '¡Victoria!'));
   });
+
+  test('testWhenASkillIsUsedInTheArenaThenItsNameIsShouted', () {
+    // given
+    // when
+    final shouts = SkillId.values.map((id) => Internationalize.arenaSkillUsed(id: id)).toList();
+
+    // then
+    expect(shouts, ['¡Golpe doble!', '¡Segundo aliento!', '¡Esquiva!']);
+  });
 }

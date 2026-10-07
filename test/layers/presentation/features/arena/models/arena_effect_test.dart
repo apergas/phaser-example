@@ -18,4 +18,18 @@ void main() {
     expect(ArenaEffectMock.heroDodged.side, FightSide.hero);
     expect(ArenaEffectMock.heroHealedTwelve.hashCode, ArenaEffectMock.heroHealedTwelve.hashCode);
   });
+
+  test('testWhenComparingUsedSkillsThenOnlyTheSameSkillIsEqual', () {
+    // given
+    const first = ArenaEffectMock.doubleStrikeUsed;
+
+    // when
+    final sameSkill = first == ArenaEffectMock.doubleStrikeUsedCopy;
+    final otherSkill = first == ArenaEffectMock.secondWindUsed;
+
+    // then
+    expect(sameSkill, isTrue);
+    expect(first.hashCode, ArenaEffectMock.doubleStrikeUsedCopy.hashCode);
+    expect(otherSkill, isFalse);
+  });
 }

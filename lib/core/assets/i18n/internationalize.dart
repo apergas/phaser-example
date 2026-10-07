@@ -151,7 +151,8 @@ class Internationalize {
   static String get arenaDefeat => '$_arena.defeat'.tr();
   static String arenaDamage({required int amount}) => '$_arena.damage'.tr(namedArgs: {'amount': '$amount'});
   static String arenaHeal({required int amount}) => '$_arena.heal'.tr(namedArgs: {'amount': '$amount'});
-  static String get arenaDodge => '$_arena.dodge'.tr();
+  static String arenaSkillUsed({required SkillId id}) =>
+      '$_arena.skillUsed'.tr(namedArgs: {'name': forestSkillName(id: id)});
   static String arenaEnemyCount({required int count, required String name}) =>
       '$_arena.enemyCount'.tr(namedArgs: {'count': '$count', 'name': name});
   static String arenaLevel({required ArenaLevelId id}) => switch (id) {

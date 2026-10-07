@@ -28,6 +28,7 @@ abstract final class ArenaRenderConstants {
 
   static const double impactHeight = 28;
   static const double floatingTextHeight = 36;
+  static const double skillNameLift = 12;
   static const double hurtBlinkMs = 300;
   static const double blinkPeriodMs = 80;
   static const double fallenAlpha = 0.8;

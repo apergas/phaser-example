@@ -26,6 +26,10 @@ abstract final class ArenaDataMock {
 
   static ArenaData get heroDodged => replaying.copyWith(effects: const [ArenaEffectMock.heroDodged]);
 
+  static ArenaData get heroGotASecondWind => replaying.copyWith(
+    effects: const [ArenaEffectMock.heroHealedTwelve, ArenaEffectMock.secondWindUsed],
+  );
+
   static ArenaData get won => preview.copyWith(
     replay: () => FightReplayDataMock.victoryOverBanditStart().skipped(),
     fighters: const [FighterRenderDataMock.heroAfterBeatingTheRookie, FighterRenderDataMock.rookieBanditDown],

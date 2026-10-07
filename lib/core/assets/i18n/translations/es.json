@@ -139,7 +139,7 @@
     "defeat": "Derrota",
     "damage": "−{amount}",
     "heal": "+{amount}",
-    "dodge": "¡Esquiva!",
+    "skillUsed": "¡{name}!",
     "enemyCount": "{count} × {name}",
     "level": {
       "banditRookie": "Bandido novato",

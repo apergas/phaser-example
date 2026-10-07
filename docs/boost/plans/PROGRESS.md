@@ -55,5 +55,5 @@
 
 ## Siguiente paso
 
-- **Arena:** escribir los planes de C4 (lobos y oso, flujo C) y C5 (Torre de magia, flujo D).
+- **Arena:** cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md). Ahora: escribir los planes de C4 (lobos y oso, flujo C) y C5 (Torre de magia, flujo D).
 - **Aldea:** implementar F1 desde `feature/PROJECT-X-town`.

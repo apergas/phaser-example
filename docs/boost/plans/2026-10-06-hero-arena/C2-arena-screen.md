@@ -169,7 +169,7 @@ Lo que este plan fija o añade sobre la ficha (todo lo demás de la ficha se man
   ArenaAssetsMock.create()   // atlas 8 × 8 blanco con todos los frames que pide la escena
   ```
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 ```bash
 git switch feature/PROJECT-X-arena && git pull
@@ -179,7 +179,7 @@ git switch -c feature/PROJECT-X-c2-art
 
 (Si TC2.2 se hace a la vez, en otro worktree: `git worktree add ../phaser-example-c2-bloc -b feature/PROJECT-X-c2-bloc feature/PROJECT-X-c2-arena-screen`.)
 
-- [ ] **Step 2: Tests que fallan**
+- [x] **Step 2: Tests que fallan**
 
 `test/mocks/presentation/features/arena/game/arena_assets_mock.dart`:
 
@@ -361,7 +361,7 @@ const List<String> _flameAllowedImporters = [
 Run: `flutter test test/layers/presentation/features/arena/game/atlas test/core/assets/lpc_assets_test.dart test/architecture_test.dart`
 Expected: FAIL de compilación (`arena_assets.dart`, `arena_sprite_names.dart` no existen) y `lpc_assets_test.dart` falla al cargar `arena.png`.
 
-- [ ] **Step 3: Generar el atlas**
+- [x] **Step 3: Generar el atlas**
 
 En `asset-packs/lpc/build_assets.py`:
 
@@ -493,7 +493,7 @@ Expected: `Assets written to …` y sólo dos ficheros nuevos, `?? lib/core/asse
 
 Ábrelo en un visor: tres filas de luchadores (verde, granate, marrón con la piel oscura), los idle con el hacha en la mano, y a la derecha la hierba y la valla.
 
-- [ ] **Step 4: Créditos**
+- [x] **Step 4: Créditos**
 
 Al final de `lib/core/assets/images/lpc/CREDITS.md`:
 
@@ -509,7 +509,7 @@ The grass (`arena-grass`) and the fence (`arena-fence`) come from the LPC Tile A
 *Ground and decor* above). CC-BY-SA 3.0 / GPL 3.0.
 ```
 
-- [ ] **Step 5: Implementar el atlas en Dart**
+- [x] **Step 5: Implementar el atlas en Dart**
 
 `lib/layers/presentation/features/arena/game/atlas/arena_assets.dart`:
 
@@ -597,7 +597,7 @@ abstract final class ArenaSpriteNames {
 Run: `flutter test test/layers/presentation/features/arena/game/atlas test/core/assets/lpc_assets_test.dart test/architecture_test.dart`
 Expected: PASS (5 tests de la arena, los de `lpc_assets_test.dart` y los 15 de arquitectura).
 
-- [ ] **Step 6: Verificación completa**
+- [x] **Step 6: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/layers/presentation/features/arena test/layers/presentation/features/arena test/mocks/presentation/features/arena test/architecture_test.dart test/core/assets/lpc_assets_test.dart
@@ -609,7 +609,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `git diff` sin salida, `No issues found!` y todo en verde.
 
-- [ ] **Step 7: Commit y unión a la rama de fase**
+- [x] **Step 7: Commit y unión a la rama de fase**
 
 ```bash
 git add asset-packs/lpc/build_assets.py lib/core/assets/images/lpc/arena.png lib/core/assets/images/lpc/arena.json lib/core/assets/images/lpc/CREDITS.md lib/layers/presentation/features/arena/game/atlas test/layers/presentation/features/arena/game/atlas test/mocks/presentation/features/arena/game/arena_assets_mock.dart test/core/assets/lpc_assets_test.dart test/architecture_test.dart
@@ -706,7 +706,7 @@ git switch feature/PROJECT-X-c2-arena-screen && git merge --no-ff feature/PROJEC
 
 Ninguno usa `ArenaLevelEntityMock.duel`, `wall` ni `brute` (ficha).
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 ```bash
 git switch feature/PROJECT-X-c2-arena-screen && git switch -c feature/PROJECT-X-c2-bloc
@@ -714,7 +714,7 @@ git switch feature/PROJECT-X-c2-arena-screen && git switch -c feature/PROJECT-X-
 
 (O en su worktree, si va a la vez que TC2.1.)
 
-- [ ] **Step 2: Textos, primero el test**
+- [x] **Step 2: Textos, primero el test**
 
 En `test/core/assets/i18n/internationalize_test.dart`, imports nuevos
 
@@ -870,7 +870,7 @@ En `internationalize.dart`, los imports de `arena_level_id.dart`, `enemy_kind.da
 Run: `flutter test test/core/assets/i18n/internationalize_test.dart`
 Expected: PASS.
 
-- [ ] **Step 3: Enums y tiempos**
+- [x] **Step 3: Enums y tiempos**
 
 ```dart
 // lib/core/config/constants/enum/arena/power_tone.dart
@@ -893,7 +893,7 @@ abstract final class ArenaRenderConstants {
 }
 ```
 
-- [ ] **Step 4: `FightReplayData`, primero el test**
+- [x] **Step 4: `FightReplayData`, primero el test**
 
 `test/mocks/presentation/features/arena/fight_replay_data_mock.dart`:
 
@@ -1067,7 +1067,7 @@ class FightReplayData {
 Run: `flutter test test/layers/presentation/features/arena/models`
 Expected: PASS (5 tests).
 
-- [ ] **Step 5: Los demás modelos y sus mocks**
+- [x] **Step 5: Los demás modelos y sus mocks**
 
 `lib/layers/presentation/features/arena/models/arena_level_item_data.dart`:
 
@@ -1494,7 +1494,7 @@ void main() {
 Run: `flutter test test/layers/presentation/features/arena/models`
 Expected: PASS (6 tests).
 
-- [ ] **Step 6: Tests del BLoC que fallan**
+- [x] **Step 6: Tests del BLoC que fallan**
 
 `test/mocks/presentation/features/arena/arena_bloc_mock.dart` (casos de uso reales sobre `MockGameSessionRepository`, E11):
 
@@ -1927,7 +1927,7 @@ void main() {
 Run: `flutter test test/layers/presentation/features/arena/bloc`
 Expected: FAIL de compilación (`arena_bloc.dart` no existe).
 
-- [ ] **Step 7: Implementar el BLoC**
+- [x] **Step 7: Implementar el BLoC**
 
 `lib/layers/presentation/features/arena/bloc/arena_event.dart`:
 
@@ -2361,7 +2361,7 @@ Notas:
 Run: `flutter test test/layers/presentation/features/arena`
 Expected: PASS (14 tests del BLoC y 6 de modelos).
 
-- [ ] **Step 8: Verificación completa**
+- [x] **Step 8: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/config/constants/enum/arena lib/core/assets/i18n/internationalize.dart lib/layers/presentation/features/arena test/core/assets/i18n/internationalize_test.dart test/layers/presentation/features/arena test/mocks/presentation/features/arena test/mocks/domain/entities/hero/hero_entity_mock.dart
@@ -2373,7 +2373,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `git diff` sin salida (el BLoC no lleva `@Injectable()`), `No issues found!` y todo en verde.
 
-- [ ] **Step 9: Commit y unión a la rama de fase**
+- [x] **Step 9: Commit y unión a la rama de fase**
 
 ```bash
 git add lib/core/config/constants/enum/arena lib/core/assets/i18n lib/layers/presentation/features/arena/models lib/layers/presentation/features/arena/bloc lib/layers/presentation/features/arena/game/render/arena_render_constants.dart test/core/assets/i18n/internationalize_test.dart test/layers/presentation/features/arena/models test/layers/presentation/features/arena/bloc test/mocks/presentation/features/arena test/mocks/domain/entities/hero/hero_entity_mock.dart
@@ -2449,7 +2449,7 @@ Si TC2.1 y TC2.2 se unieron por separado, después de la segunda unión: `flutte
 
 > **Antes de empezar:** `grep -rn "class FloatingTextComponent" lib`. Si ya existe (F1 llegó a `feature/PROJECT-X-arena` al traer `develop`), en el Step 3 no se crea: se comprueba que su constructor es `({required String text, required PositionEntity at, Color color})` y se añaden los dos tests de este plan al fichero de test de F1, renombrando el primero si coincide.
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 ```bash
 git switch feature/PROJECT-X-c2-arena-screen && git switch -c feature/PROJECT-X-c2-scene
@@ -2457,7 +2457,7 @@ git switch feature/PROJECT-X-c2-arena-screen && git switch -c feature/PROJECT-X-
 
 (TC2.4 puede ir a la vez en otro worktree.)
 
-- [ ] **Step 2: Gotas de sangre, primero el test**
+- [x] **Step 2: Gotas de sangre, primero el test**
 
 Al final de `main` en `test/layers/presentation/features/forest/game/particles/particle_bursts_test.dart`:
 
@@ -2571,7 +2571,7 @@ y un caso más en el `switch` de `render`, después del de `ParticleKind.dust`:
 Run: `flutter test test/layers/presentation/features/forest/game/particles`
 Expected: PASS.
 
-- [ ] **Step 3: `FloatingTextComponent` (el de F1), primero el test**
+- [x] **Step 3: `FloatingTextComponent` (el de F1), primero el test**
 
 `test/layers/presentation/features/forest/game/components/floating_text_component_test.dart` (los mismos dos tests que F1, con un texto de la arena):
 
@@ -2705,7 +2705,7 @@ class FloatingTextComponent extends TextComponent<TextPaint> {
 
 Run: el mismo comando. Expected: PASS (2 tests).
 
-- [ ] **Step 4: Constantes, encuadre y frames, primero el test**
+- [x] **Step 4: Constantes, encuadre y frames, primero el test**
 
 `test/layers/presentation/features/arena/game/render/arena_framing_test.dart`:
 
@@ -2919,7 +2919,7 @@ abstract final class ArenaFrames {
 Run: `flutter test test/layers/presentation/features/arena/game/render`
 Expected: PASS (5 tests).
 
-- [ ] **Step 5: Barra de vida y luchador, primero el test**
+- [x] **Step 5: Barra de vida y luchador, primero el test**
 
 `test/layers/presentation/features/arena/game/components/health_bar_component_test.dart` (`0.7071` = `sineOut(0,5)`: a mitad de la animación la barra ha bajado el 70,7 % del camino):
 
@@ -3210,7 +3210,7 @@ class FighterComponent extends PositionComponent {
 Run: `flutter test test/layers/presentation/features/arena/game/components`
 Expected: PASS (5 tests).
 
-- [ ] **Step 6: Escena y juego, primero el test**
+- [x] **Step 6: Escena y juego, primero el test**
 
 `test/mocks/presentation/features/arena/arena_data_mock.dart`:
 
@@ -3739,7 +3739,7 @@ class ArenaGame extends FlameGame {
 Run: `flutter test test/layers/presentation/features/arena test/layers/presentation/features/forest/game test/architecture_test.dart`
 Expected: PASS.
 
-- [ ] **Step 7: Verificación completa**
+- [x] **Step 7: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/config/constants/enum/forest/particle_kind.dart lib/layers/presentation/features/forest/game lib/layers/presentation/features/arena/game test/layers/presentation/features/forest/game test/layers/presentation/features/arena/game test/mocks/presentation/features/arena
@@ -3751,7 +3751,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `git diff` sin salida, `No issues found!` y todo en verde.
 
-- [ ] **Step 8: Commit y unión a la rama de fase**
+- [x] **Step 8: Commit y unión a la rama de fase**
 
 ```bash
 git add lib/core/config/constants/enum/forest/particle_kind.dart lib/layers/presentation/features/forest/game/particles lib/layers/presentation/features/forest/game/components/floating_text_component.dart lib/layers/presentation/features/arena/game test/layers/presentation/features/forest/game test/layers/presentation/features/arena/game test/mocks/presentation/features/arena
@@ -3795,13 +3795,13 @@ git switch feature/PROJECT-X-c2-arena-screen && git merge --no-ff feature/PROJEC
 
 Distribución: arriba a la izquierda *Volver* y un panel con "Arena" y "Tu Poder: N"; debajo, la lista de niveles (hasta el borde inferior, con scroll); abajo a la derecha el botón de pelea; arriba a la derecha el panel de resultado cuando la reproducción ha terminado.
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 ```bash
 git switch feature/PROJECT-X-c2-arena-screen && git switch -c feature/PROJECT-X-c2-hud
 ```
 
-- [ ] **Step 2: Tests que fallan**
+- [x] **Step 2: Tests que fallan**
 
 `test/layers/presentation/features/arena/widgets/level_tile_test.dart`:
 
@@ -4119,7 +4119,7 @@ void main() {
 Run: `flutter test test/layers/presentation/features/arena/widgets`
 Expected: FAIL de compilación.
 
-- [ ] **Step 3: Implementar los widgets**
+- [x] **Step 3: Implementar los widgets**
 
 `lib/layers/presentation/features/arena/widgets/level_tile.dart` (el Poder y la recompensa van en un `Wrap`: con la fuente de los tests, un `Row` se desborda en 280 px):
 
@@ -4456,7 +4456,7 @@ class ArenaHud extends StatelessWidget {
 Run: `flutter test test/layers/presentation/features/arena/widgets`
 Expected: PASS (13 tests).
 
-- [ ] **Step 4: Verificación completa**
+- [x] **Step 4: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/layers/presentation/features/arena/widgets test/layers/presentation/features/arena/widgets
@@ -4466,7 +4466,7 @@ flutter test
 
 Expected: `No issues found!` y todo en verde. (No cambia nada de DI ni de mocks generados.)
 
-- [ ] **Step 5: Commit y unión a la rama de fase**
+- [x] **Step 5: Commit y unión a la rama de fase**
 
 ```bash
 git add lib/layers/presentation/features/arena/widgets test/layers/presentation/features/arena/widgets
@@ -4520,13 +4520,13 @@ flutter analyze && flutter test
   RouteAwareFake (calls: ['didPushNext', 'didPopNext'])
   ```
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 ```bash
 git switch feature/PROJECT-X-c2-arena-screen && git switch -c feature/PROJECT-X-c2-page
 ```
 
-- [ ] **Step 2: `RouteObserver` en `NavigationService`, primero el test**
+- [x] **Step 2: `RouteObserver` en `NavigationService`, primero el test**
 
 `test/mocks/core/services/route_aware_fake.dart`:
 
@@ -4599,7 +4599,7 @@ flutter test test/core/services test/layers/presentation/app
 
 Expected: PASS; `navigation_service_mocks.mocks.dart` sólo gana el getter `routeObserver` y su clase falsa `_FakeRouteObserver_1` (si no se le da un `when`, devuelve ese falso y `subscribe` falla: por eso el Step 6 lo stubea).
 
-- [ ] **Step 3: Botón *Arena* en el HUD, primero los tests**
+- [x] **Step 3: Botón *Arena* en el HUD, primero los tests**
 
 En `test/layers/presentation/theme/images/custom_icons_test.dart`, al final de `main`:
 
@@ -4717,7 +4717,7 @@ y el método, antes de `_onBuildSelected`:
 Run: `flutter test test/layers/presentation/theme test/layers/presentation/features/forest/widgets`
 Expected: PASS.
 
-- [ ] **Step 4: `ArenaPage`, primero el test**
+- [x] **Step 4: `ArenaPage`, primero el test**
 
 `test/layers/presentation/features/arena/arena_page_test.dart` (DI real con `LevelRepository` y `NavigationService` simulados, como `forest_page_test.dart`; la partida se crea con `StartGameUseCase`; la reproducción completa se empuja con pasos de 100 ms porque `pumpUntil` avanza 50 ms por vuelta y se pasaría de los 10 s):
 
@@ -5050,7 +5050,7 @@ class _ArenaViewState extends State<_ArenaView> {
 Run: `flutter test test/layers/presentation/features/arena/arena_page_test.dart`
 Expected: PASS (5 tests).
 
-- [ ] **Step 5: Entrar desde el bosque, primero el test**
+- [x] **Step 5: Entrar desde el bosque, primero el test**
 
 En `test/layers/presentation/features/forest/bloc/forest_bloc_test.dart`, imports de `package:mockito/mockito.dart` y de `arena_page.dart`, y al final de `main` (el `push` de `MockNavigationService` necesita su `when`: devuelve un `Future` y mockito no lo inventa):
 
@@ -5109,7 +5109,7 @@ final class ForestArenaRequested extends ForestEvent {
 Run: `flutter test test/layers/presentation/features/forest/bloc test/layers/presentation/features/forest/widgets`
 Expected: PASS.
 
-- [ ] **Step 6: Pausar el bosque, primero el test**
+- [x] **Step 6: Pausar el bosque, primero el test**
 
 En `test/layers/presentation/features/forest/forest_page_test.dart`:
 - variable `late RouteObserver<ModalRoute<void>> routeObserver;` junto a `navigationService`;
@@ -5190,7 +5190,7 @@ En `forest_page.dart`:
 Run: `flutter test test/layers/presentation/features/forest test/layers/presentation/app`
 Expected: PASS.
 
-- [ ] **Step 7: Documentar en `CLAUDE.md`**
+- [x] **Step 7: Documentar en `CLAUDE.md`**
 
 - *Layout* → `lib/core/`:
   - `assets/`: `images/lpc/` also holds the arena atlas `arena.{png,json}`; `images/icons/` gains `arena.svg`;
@@ -5206,7 +5206,7 @@ Expected: PASS.
 - E9: "`features/forest/` and `features/arena/` add `models/` and `game/` (Flame) next to `bloc/`, `widgets/` and the page; Flame stays confined to `game/` and the pages."
 - *Key cross-cutting conventions* → *Rendering constants*: añadir "Arena: `arena/game/render/arena_render_constants.dart` (400 ms lead-in, 600 ms per turn, impact at half the turn; 480×270 stage framed with a cover zoom between 1 and 3; hero facing right, enemies facing left; the barbarian chief is the barbarian drawn ×1.25 until C6)."
 
-- [ ] **Step 8: Verificación completa**
+- [x] **Step 8: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/services/navigation lib/core/assets/i18n/internationalize.dart lib/layers/presentation test/core/services test/mocks/core/services/route_aware_fake.dart test/layers/presentation
@@ -5222,7 +5222,7 @@ Expected:
 - `di.config.dart` sin cambios; el `.mocks.dart` de navegación sólo con el getter nuevo;
 - `No issues found!` y todo en verde (unos 490 tests; 73 nuevos en esta fase).
 
-- [ ] **Step 9: Commit y unión a la rama de fase**
+- [x] **Step 9: Commit y unión a la rama de fase**
 
 ```bash
 git add lib/core/services/navigation test/mocks/core/services lib/layers/presentation/app/container_app.dart lib/core/assets/i18n lib/core/assets/images/icons/arena.svg lib/layers/presentation/theme/images/custom_icons.dart lib/layers/presentation/features/forest lib/layers/presentation/features/arena/arena_page.dart test/core/services test/layers/presentation/theme test/layers/presentation/features/forest test/layers/presentation/features/arena/arena_page_test.dart

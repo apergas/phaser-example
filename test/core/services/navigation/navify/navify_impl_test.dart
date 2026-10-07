@@ -5,6 +5,7 @@ import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/services/navigation/navify/navify_impl.dart';
 
 import '../../../../helpers/spanish_translations.dart';
+import '../../../../mocks/core/services/route_aware_fake.dart';
 import '../../../../mocks/presentation/widgets/widget_text_mock.dart';
 
 void main() {
@@ -61,5 +62,27 @@ void main() {
     // then
     expect(find.text(WidgetTextMock.page), findsOneWidget);
     expect(navify.canPop(), isTrue);
+  });
+
+  testWidgets('testWhenAPageIsPushedOverAnotherThenTheRouteObserverTellsTheOneBelow', (tester) async {
+    // given
+    final below = RouteAwareFake();
+    await tester.pumpWidget(
+      MaterialApp(
+        navigatorKey: navify.navigatorKey,
+        navigatorObservers: [navify.routeObserver],
+        home: const Scaffold(),
+      ),
+    );
+    navify.routeObserver.subscribe(below, ModalRoute.of(tester.element(find.byType(Scaffold)))!);
+
+    // when
+    navify.push(const Scaffold());
+    await tester.pumpAndSettle();
+    navify.pop();
+    await tester.pumpAndSettle();
+
+    // then
+    expect(below.calls, ['didPushNext', 'didPopNext']);
   });
 }

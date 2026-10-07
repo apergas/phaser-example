@@ -43,3 +43,7 @@ final class ForestGearPurchaseRequested extends ForestEvent {
 
   const ForestGearPurchaseRequested({required this.gear});
 }
+
+final class ForestArenaRequested extends ForestEvent {
+  const ForestArenaRequested();
+}

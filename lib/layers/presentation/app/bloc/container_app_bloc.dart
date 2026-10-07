@@ -21,7 +21,7 @@ class ContainerAppBloc extends Bloc<ContainerAppEvent, ContainerAppState> {
   Future<void> _onStarted(ContainerAppStarted event, Emitter<ContainerAppState> emit) async {
     emit(ContainerAppInProgress(data: state.data));
 
-    _navigationService.pushReplacement(const ForestPage());
+    _navigationService.pushReplacement(ForestPage(routeObserver: _navigationService.routeObserver));
 
     emit(ContainerAppSuccess(data: state.data));
   }

@@ -34,7 +34,9 @@ import 'widgets/hud_panel.dart';
 import 'widgets/placement_bar.dart';
 
 class ForestPage extends StatelessWidget {
-  const ForestPage({super.key});
+  const ForestPage({super.key, required this.routeObserver});
+
+  final RouteObserver<ModalRoute<void>> routeObserver;
 
   @override
   Widget build(BuildContext context) {
@@ -55,19 +57,21 @@ class ForestPage extends StatelessWidget {
         buyGearUseCase: locator.get<BuyGearUseCase>(),
         navigationService: locator.get<NavigationService>(),
       )..add(const ForestStarted()),
-      child: const _ForestView(),
+      child: _ForestView(routeObserver: routeObserver),
     );
   }
 }
 
 class _ForestView extends StatefulWidget {
-  const _ForestView();
+  const _ForestView({required this.routeObserver});
+
+  final RouteObserver<ModalRoute<void>> routeObserver;
 
   @override
   State<_ForestView> createState() => _ForestViewState();
 }
 
-class _ForestViewState extends State<_ForestView> {
+class _ForestViewState extends State<_ForestView> with RouteAware {
   ForestBloc get bloc => context.read<ForestBloc>();
 
   late ForestGame _game = _createGame();
@@ -94,7 +98,21 @@ class _ForestViewState extends State<_ForestView> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != null) widget.routeObserver.subscribe(this, route);
+  }
+
+  @override
+  void didPushNext() => _game.pauseEngine();
+
+  @override
+  void didPopNext() => _game.resumeEngine();
+
+  @override
   void dispose() {
+    widget.routeObserver.unsubscribe(this);
     if (kIsWeb) BrowserContextMenu.enableContextMenu();
     super.dispose();
   }
@@ -163,6 +181,7 @@ class _ForestViewState extends State<_ForestView> {
       hud: hud,
       onBuildSelected: (blueprint) => bloc.add(ForestBuildRequested(blueprint: blueprint)),
       onGearSelected: (gear) => bloc.add(ForestGearPurchaseRequested(gear: gear)),
+      onArenaPressed: () => bloc.add(const ForestArenaRequested()),
     );
   }
 

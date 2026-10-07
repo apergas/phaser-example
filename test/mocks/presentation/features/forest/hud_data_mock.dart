@@ -1,3 +1,5 @@
+import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 import 'package:rpg/layers/presentation/features/forest/models/hero_panel_data.dart';
 import 'package:rpg/layers/presentation/features/forest/models/hud_data.dart';
 
@@ -46,6 +48,16 @@ abstract final class HudDataMock {
     buildItems: [BuildItemDataMock.affordable],
     isBuildLocked: true,
     hero: HeroPanelDataMock.newHero,
+  );
+
+  static HudData get withEveryResourceAndTool => HudData(
+    resources: [for (final resource in Resource.values) ResourceItemDataMock.of(resource, 9999)],
+    tools: [for (final tool in ToolKind.values) ToolItemDataMock.of(tool, isOwned: true)],
+    questBadge: '1/3',
+    quests: QuestItemDataMock.all,
+    buildItems: BuildItemDataMock.everyBlueprintUnaffordable,
+    isBuildLocked: false,
+    hero: HeroPanelDataMock.readyToBuySword,
   );
 
   static HudData _make({required int wood, bool isAxeOwned = false, HeroPanelData? hero}) {

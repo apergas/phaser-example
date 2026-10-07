@@ -1,6 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
+import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
+import 'package:rpg/core/config/constants/enum/fight_advice.dart';
 import 'package:rpg/core/config/constants/enum/forest/hero_panel_section.dart';
 import 'package:rpg/core/config/constants/enum/gear_id.dart';
 import 'package:rpg/core/config/constants/enum/gear_slot.dart';
@@ -198,5 +201,51 @@ void main() {
       'Has comprado: Espada corta',
       'Antes tienes que comprar la pieza anterior.',
     ]);
+  });
+
+  test('testWhenFormattingArenaNumbersThenUsesTheSpanishTexts', () {
+    // given
+    const amount = 10;
+
+    // when
+    final reward = Internationalize.arenaReward(amount: amount);
+    final power = Internationalize.arenaPower(power: 19);
+    final heroPower = Internationalize.arenaHeroPower(power: 31);
+    final damage = Internationalize.arenaDamage(amount: 4);
+    final heal = Internationalize.arenaHeal(amount: 12);
+    final group = Internationalize.arenaEnemyCount(count: 3, name: Internationalize.arenaEnemy(kind: EnemyKind.bandit));
+
+    // then
+    expect(reward, '+10 de oro');
+    expect(power, 'Poder 19');
+    expect(heroPower, 'Tu Poder: 31');
+    expect(damage, '−4');
+    expect(heal, '+12');
+    expect(group, '3 × Bandido');
+  });
+
+  test('testWhenNamingArenaLevelsEnemiesAndAdviceThenUsesTheSpanishTexts', () {
+    // given
+    // when
+    final levels = ArenaLevelId.values.map((id) => Internationalize.arenaLevel(id: id)).toList();
+    final enemies = EnemyKind.values.map((kind) => Internationalize.arenaEnemy(kind: kind)).toList();
+    final advice = FightAdvice.values.map((advice) => Internationalize.arenaAdvice(advice: advice)).toList();
+
+    // then
+    expect(levels, [
+      'Bandido novato',
+      'Bandido veterano',
+      'Trío de bandidos',
+      'Bárbaro',
+      'Pareja de bárbaros',
+      'Jefe bárbaro',
+    ]);
+    expect(enemies, ['Bandido', 'Bárbaro', 'Jefe bárbaro']);
+    expect(advice, [
+      '¡Casi lo tienes! Vuelve a intentarlo.',
+      'Te falta Ataque: visita la Herrería.',
+      'Te falta Defensa: visita la Armería.',
+    ]);
+    expect((Internationalize.arenaFight, Internationalize.arenaVictory), ('Empezar pelea', '¡Victoria!'));
   });
 }

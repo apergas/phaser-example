@@ -33,4 +33,8 @@ abstract final class BuildItemDataMock {
     ),
     isEnabled: false,
   );
+
+  static List<BuildItemData> get everyBlueprintUnaffordable => [
+    for (final id in BlueprintId.values) workshopUnaffordable(id, missingWood: 25),
+  ];
 }

@@ -15,6 +15,8 @@ const List<String> _files = [
   'hero-idle-axe.png',
   'hero-chop.png',
   'hero-hammer.png',
+  'arena.png',
+  'arena.json',
 ];
 
 void main() {

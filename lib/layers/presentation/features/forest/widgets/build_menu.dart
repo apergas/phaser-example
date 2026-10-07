@@ -17,14 +17,16 @@ class BuildMenu extends StatelessWidget {
       constraints: const BoxConstraints(minWidth: 220, maxWidth: 320),
       child: HudPanel(
         padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: 4,
-          children: [
-            for (final item in items)
-              BuildOptionTile(item: item, onPressed: item.isEnabled ? () => onSelected(item.blueprint) : null),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 4,
+            children: [
+              for (final item in items)
+                BuildOptionTile(item: item, onPressed: item.isEnabled ? () => onSelected(item.blueprint) : null),
+            ],
+          ),
         ),
       ),
     );

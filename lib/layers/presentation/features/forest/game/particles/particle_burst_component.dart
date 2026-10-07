@@ -17,6 +17,8 @@ class ParticleBurstComponent extends Component {
   static const double sparkleSize = 3;
   static const Rect chipBody = Rect.fromLTWH(-1.5, -1, 3, 2);
   static const Rect chipHighlight = Rect.fromLTWH(-1.5, -1, 2, 1);
+  static const Color bloodColor = Color(0xFF9E1B1B);
+  static const Rect bloodDrop = Rect.fromLTWH(-1, -1, 2, 2);
 
   final List<Particle> _particles;
   final Paint _paint = Paint();
@@ -50,6 +52,9 @@ class ParticleBurstComponent extends Component {
           final size = sparkleSize * particle.scale(_ageSeconds);
           _paint.color = sparkleColor.withValues(alpha: alpha);
           canvas.drawRect(Rect.fromCenter(center: Offset(at.x, at.y), width: size, height: size), _paint);
+        case ParticleKind.bloodDrop:
+          _paint.color = bloodColor.withValues(alpha: alpha);
+          canvas.drawRect(bloodDrop.shift(Offset(at.x, at.y)), _paint);
       }
     }
   }

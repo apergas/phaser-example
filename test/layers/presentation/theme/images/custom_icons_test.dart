@@ -38,4 +38,26 @@ void main() {
     // then
     expect(exists, isTrue);
   });
+
+  test('testWhenResolvingTheArenaIconThenTheSvgFileExists', () {
+    // given
+    const path = CustomIcons.arena;
+
+    // when
+    final exists = File(path).existsSync();
+
+    // then
+    expect(exists, isTrue);
+  });
+
+  test('testWhenResolvingTheLockIconThenTheSvgFileExists', () {
+    // given
+    const path = CustomIcons.lock;
+
+    // when
+    final exists = File(path).existsSync();
+
+    // then
+    expect(exists, isTrue);
+  });
 }

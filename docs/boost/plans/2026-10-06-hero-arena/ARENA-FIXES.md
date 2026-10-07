@@ -100,7 +100,17 @@ Además:
 - hay que recalcular los resultados exactos de `combat_test.dart` y de los mocks de peleas, y el test de equilibrado de C7;
 - el Poder (`HeroRules.power`) usa el ataque medio del rango.
 
-## 5. Pendientes que ya estaban apuntados
+## 5. HUD del bosque en móvil: botones alineados a la izquierda
+
+Por debajo de `HudOverlay.buttonsBelowWidth` (920 px), los botones (*Misiones*, *Construir*, *Héroe*, *Arena*) bajan a la línea de debajo de la `ResourceBar`, pero **alineados a la derecha**. En el móvil queda raro: la barra empieza a la izquierda y los botones a la derecha.
+
+**Qué hacer:** mantenerlos en la segunda línea, pero **alineados a la izquierda**, debajo de la barra de recursos y con su mismo margen.
+- En `HudOverlay`, en la rama estrecha: `Align(topRight)` pasa a `topLeft`, y la columna de botones y menú usa `CrossAxisAlignment.start`.
+- El menú abierto (*Misiones*, *Construir*, *Héroe*) también se abre alineado a la izquierda, bajo los botones.
+- Ajustar los tests de 640 × 360 y 640 × 300 de `hud_overlay_test.dart` (comprobar el borde izquierdo en lugar del derecho) y la línea de `CLAUDE.md` que dice "right-aligned".
+- En pantallas anchas (≥ 920 px) no cambia nada.
+
+## 6. Pendientes que ya estaban apuntados
 
 Del cierre de C2 y C3 (sección 5 del README):
 - **Decisiones provisionales de C2**, a revisar con este pulido: la pausa con `RouteObserver`, el panel de victoria sin botón y el umbral ámbar del Poder (×1,25). La de "todos con hacha" la resuelven 1.2 y 1.3.

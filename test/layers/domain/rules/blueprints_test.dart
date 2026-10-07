@@ -13,10 +13,29 @@ void main() {
     final blueprint = Blueprints.of(id);
 
     // then
-    expect(
-      blueprint,
-      BlueprintEntityMock.mock,
-    );
-    expect(Blueprints.all, [Blueprints.house]);
+    expect(blueprint, BlueprintEntityMock.mock);
+  });
+
+  test('testWhenAskingForTheWorkshopsThenTheyCostTwentyFiveWoodAndTakeTenHits', () {
+    // given
+    const forge = BlueprintId.forge;
+    const armory = BlueprintId.armory;
+
+    // when
+    final blueprints = (Blueprints.of(forge), Blueprints.of(armory));
+
+    // then
+    expect(blueprints, (BlueprintEntityMock.forge, BlueprintEntityMock.armory));
+  });
+
+  test('testWhenListingBlueprintsThenEveryIdAppearsOnceInDeclarationOrder', () {
+    // given
+    final ids = Blueprints.all.map((blueprint) => blueprint.id).toList();
+
+    // when
+    final expected = BlueprintId.values;
+
+    // then
+    expect(ids, expected);
   });
 }

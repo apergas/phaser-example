@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:flame/game.dart';
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/layers/presentation/features/forest/game/components/placement_ghost_component.dart';
 import 'package:rpg/layers/presentation/features/forest/game/components/ground_component.dart';
 import 'package:rpg/layers/presentation/features/forest/game/components/tree_component.dart';
 import 'package:rpg/layers/presentation/features/forest/game/forest_scene_component.dart';
@@ -157,6 +159,25 @@ void main() {
     expect(ghostWhilePlacing!.isValid, isTrue);
     expect(scene.ghost, isNull);
     expect(ghostWhilePlacing.isMounted, isFalse);
+  });
+
+  testWithFlameGame('testWhenThePlacedBlueprintChangesThenTheGhostIsReplaced', (game) async {
+    // given
+    final scene = await _mountedScene(game);
+    scene.show(ForestDataMock.placing);
+    await game.ready();
+    final houseGhost = scene.ghost!;
+
+    // when
+    scene.show(ForestDataMock.placingForge);
+    await game.ready();
+
+    // then
+    expect(houseGhost.isMounted, isFalse);
+    expect(scene.ghost, isNot(same(houseGhost)));
+    expect(scene.ghost!.blueprint, BlueprintId.forge);
+    expect(scene.ghost!.isMounted, isTrue);
+    expect(scene.children.whereType<PlacementGhostComponent>(), hasLength(1));
   });
 
   testWithFlameGame('testWhenShowingTheSameSnapshotTwiceThenComponentCountsStayTheSame', (game) async {

@@ -124,6 +124,12 @@ abstract final class ForestDataMock {
     isValid: false,
   );
 
+  static final PlacementData forgePlacement = PlacementData(
+    blueprint: BlueprintId.forge,
+    position: const PositionEntity(x: 300, y: 200),
+    isValid: true,
+  );
+
   static final ForestData initial = ForestData(world: world, player: player);
 
   static final ForestData treeHit = ForestData(
@@ -159,4 +165,6 @@ abstract final class ForestDataMock {
   );
 
   static final ForestData placing = ForestData(world: world, player: player, placement: validPlacement);
+
+  static final ForestData placingForge = ForestData(world: world, player: player, placement: forgePlacement);
 }

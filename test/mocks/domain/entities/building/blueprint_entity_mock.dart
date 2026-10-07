@@ -22,4 +22,18 @@ abstract final class BlueprintEntityMock {
       footprintRadius: footprintRadius,
     );
   }
+
+  static const BlueprintEntity forge = BlueprintEntity(
+    id: BlueprintId.forge,
+    cost: {Resource.wood: 25},
+    hitsToBuild: 10,
+    footprintRadius: 40,
+  );
+
+  static const BlueprintEntity armory = BlueprintEntity(
+    id: BlueprintId.armory,
+    cost: {Resource.wood: 25},
+    hitsToBuild: 10,
+    footprintRadius: 40,
+  );
 }

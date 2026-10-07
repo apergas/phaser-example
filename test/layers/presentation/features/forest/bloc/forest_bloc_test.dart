@@ -172,7 +172,11 @@ void main() {
     wait: Duration.zero,
     verify: (bloc) {
       // then
-      expect(bloc.state.data.hud!.buildItems, [BuildItemDataMock.makeUnaffordable(missingWood: 5)]);
+      expect(bloc.state.data.hud!.buildItems, [
+        BuildItemDataMock.makeUnaffordable(missingWood: 5),
+        BuildItemDataMock.workshopUnaffordable(BlueprintId.forge, missingWood: 15),
+        BuildItemDataMock.workshopUnaffordable(BlueprintId.armory, missingWood: 15),
+      ]);
       expect(bloc.state.data.placement, isNull);
       expect(
         ForestBlocMock.shownMessages(navigationService),

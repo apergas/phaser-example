@@ -117,4 +117,16 @@ void main() {
       'Mundo de juego: bosque con árboles, el personaje y los edificios',
     ]);
   });
+
+  test('testWhenNamingEveryBlueprintThenNoneFallsBackToItsKey', () {
+    // given
+    final names = BlueprintId.values.map((id) => Internationalize.forestBlueprint(id: id)).toList();
+
+    // when
+    final untranslated = names.where((name) => name.contains('forest.')).toList();
+
+    // then
+    expect(untranslated, isEmpty);
+    expect(names, ['Casa', 'Herrería', 'Armería']);
+  });
 }

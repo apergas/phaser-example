@@ -13,6 +13,8 @@ abstract final class SpriteNames {
 
   static String building(BlueprintId id) => switch (id) {
     BlueprintId.house => 'house',
+    BlueprintId.forge => 'forge',
+    BlueprintId.armory => 'armory',
   };
 
   static String item(ToolKind kind) => switch (kind) {

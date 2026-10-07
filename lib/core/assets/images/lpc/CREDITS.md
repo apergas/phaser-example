@@ -43,11 +43,13 @@ Daniel Eddeland, Johann Charlot, Skyler Robert Colladay.
 CC-BY-SA 3.0 / GPL 3.0 — <https://opengameart.org/content/lpc-tile-atlas>. Full list in
 `asset-packs/lpc/sources/terrain/Attribution.txt`.
 
-## House (`house` frame in `forest.png`)
+## House, forge and armory (`house`, `forge`, `armory` frames in `forest.png`)
 
-Assembled from "[LPC] Thatched-roof Cottage" (timber-frame wall and thatched roof) and
+Assembled from "[LPC] Thatched-roof Cottage" (timber-frame and stone walls, thatched roof) and
 "[LPC] Windows & Doors" (door), both by bluecarrot16. CC-BY-SA 3.0 / GPL 3.0 —
 <https://opengameart.org/content/lpc-thatched-roof-cottage>,
 <https://opengameart.org/content/lpc-windows-doors>.
+The forge and armory roofs are recoloured (dark grey, red); the forge chimney is a stone block
+from the LPC Tile Atlas below.
 
 The stump (`stump` frame) comes from the LPC Tile Atlas above.

@@ -39,7 +39,9 @@
       "gold": "{amount} de oro"
     },
     "blueprint": {
-      "house": "Casa"
+      "house": "Casa",
+      "forge": "Herrería",
+      "armory": "Armería"
     },
     "quest": {
       "pickUpAxe": "Recoge el hacha",

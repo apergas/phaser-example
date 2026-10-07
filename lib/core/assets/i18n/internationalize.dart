@@ -49,6 +49,8 @@ class Internationalize {
   static String forestMissing({required String amounts}) => '$_forest.hud.missing'.tr(namedArgs: {'amounts': amounts});
   static String forestBlueprint({required BlueprintId id}) => switch (id) {
     BlueprintId.house => '$_forest.blueprint.house'.tr(),
+    BlueprintId.forge => '$_forest.blueprint.forge'.tr(),
+    BlueprintId.armory => '$_forest.blueprint.armory'.tr(),
   };
   static String forestQuestTitle({required QuestId id}) => switch (id) {
     QuestId.pickUpAxe => '$_forest.quest.pickUpAxe'.tr(),

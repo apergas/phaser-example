@@ -1,0 +1,1 @@
+enum HeroPanelSection { gear, skills }

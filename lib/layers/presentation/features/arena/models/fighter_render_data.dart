@@ -21,7 +21,9 @@ class FighterRenderData {
     this.swingProgress = 0,
   });
 
-  String get key => '${side.name}-$index';
+  static String keyOf(FightSide side, int index) => '${side.name}-$index';
+
+  String get key => keyOf(side, index);
 
   @override
   bool operator ==(Object other) =>

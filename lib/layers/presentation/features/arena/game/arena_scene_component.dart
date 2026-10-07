@@ -40,10 +40,7 @@ class ArenaSceneComponent extends Component {
   void _reconcile(List<FighterRenderData> fighters) {
     final keys = {for (final fighter in fighters) fighter.key};
     for (final key in _fighters.keys.where((key) => !keys.contains(key)).toList()) {
-      final removed = _fighters.remove(key)!;
-      removed.shadow.removeFromParent();
-      removed.healthBar.removeFromParent();
-      removed.removeFromParent();
+      _removeFighter(_fighters.remove(key)!);
     }
     for (final fighter in fighters) {
       final current = _fighters[fighter.key];
@@ -52,9 +49,7 @@ class ArenaSceneComponent extends Component {
         continue;
       }
       if (current != null) {
-        current.shadow.removeFromParent();
-        current.healthBar.removeFromParent();
-        current.removeFromParent();
+        _removeFighter(current);
       }
       final created = FighterComponent(assets: _assets, fighter: fighter);
       _fighters[fighter.key] = created;
@@ -79,8 +74,14 @@ class ArenaSceneComponent extends Component {
     }
   }
 
+  void _removeFighter(FighterComponent fighter) {
+    fighter.shadow.removeFromParent();
+    fighter.healthBar.removeFromParent();
+    fighter.removeFromParent();
+  }
+
   void _onHit(FightSide side, int index, int damage) {
-    final fighter = _fighters['${side.name}-$index'];
+    final fighter = _fighters[FighterRenderData.keyOf(side, index)];
     if (fighter == null) return;
     _float(side, index, Internationalize.arenaDamage(amount: damage), CustomColors.hudWarning);
     if (damage <= 0) return;
@@ -99,7 +100,7 @@ class ArenaSceneComponent extends Component {
   }
 
   void _float(FightSide side, int index, String text, Color color) {
-    final fighter = _fighters['${side.name}-$index'];
+    final fighter = _fighters[FighterRenderData.keyOf(side, index)];
     if (fighter == null) return;
     add(FloatingTextComponent(text: text, at: fighter.headPoint, color: color));
   }

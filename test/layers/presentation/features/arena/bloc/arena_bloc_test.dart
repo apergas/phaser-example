@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rpg/core/config/constants/enum/arena/fighter_pose.dart';
+import 'package:rpg/core/config/constants/enum/arena/power_tone.dart';
 import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/layers/domain/rules/arena_levels.dart';
@@ -58,6 +59,25 @@ void main() {
       expect(data.selected, ArenaLevelId.banditRookie);
       expect(data.fighters, [FighterRenderDataMock.heroIdle, FighterRenderDataMock.rookieBanditIdle]);
       expect(data.canFight, isTrue);
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
+    'testWhenALevelPowerIsUpToAQuarterAboveTheHeroThenItsToneIsEven',
+    build: () {
+      // given
+      world = WorldMock.withHero(HeroEntityMock.dodgerAfterOneFight);
+      return ArenaBlocMock.make(world, navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      bloc.add(const ArenaStarted());
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(bloc.state.data.heroPower, greaterThan(31));
+      expect(bloc.state.data.levels[1].tone, PowerTone.even);
     },
   );
 

@@ -45,7 +45,7 @@ void main() {
     await tester.tap(find.text(level.name));
 
     // then
-    expect(tester.widget<Icon>(find.byIcon(Icons.lock)).semanticLabel, Internationalize.arenaLocked);
+    expect(find.bySemanticsLabel(Internationalize.arenaLocked), findsOneWidget);
     expect(tester.widget<Text>(find.text(level.powerText)).style!.color, CustomColors.error);
     expect(taps, 0);
   });

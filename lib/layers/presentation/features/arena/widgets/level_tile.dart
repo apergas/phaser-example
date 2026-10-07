@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../../core/assets/i18n/internationalize.dart';
 import '../../../../../core/config/constants/enum/arena/arena_level_item_status.dart';
 import '../../../../../core/config/constants/enum/arena/power_tone.dart';
 import '../../../theme/colors/custom_colors.dart';
+import '../../../theme/images/custom_icons.dart';
 import '../../../theme/styles/custom_text_styles.dart';
 import '../../forest/widgets/hud_panel.dart';
 import '../models/arena_level_item_data.dart';
@@ -77,11 +79,11 @@ class LevelTile extends StatelessWidget {
 
   Widget _status() {
     return switch (level.status) {
-      ArenaLevelItemStatus.locked => Icon(
-        Icons.lock,
-        size: 18,
-        color: CustomColors.hudMuted,
-        semanticLabel: Internationalize.arenaLocked,
+      ArenaLevelItemStatus.locked => SvgPicture.asset(
+        CustomIcons.lock,
+        width: 18,
+        height: 18,
+        semanticsLabel: Internationalize.arenaLocked,
       ),
       ArenaLevelItemStatus.open => const SizedBox.shrink(),
       ArenaLevelItemStatus.cleared => Text(

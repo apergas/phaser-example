@@ -62,7 +62,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
   }
 
   Future<void> _onStarted(ArenaStarted event, Emitter<ArenaState> emit) async {
-    emit(ArenaInProgress(data: state.data));
+    emit(ArenaInProgress(data: state.data.copyWith(effects: const [])));
 
     try {
       final arena = _getArenaUseCase();
@@ -83,7 +83,12 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
         message: exception.message,
         buttonTitle: Internationalize.commonAccept,
       );
-      emit(ArenaFailure(data: state.data, exception: exception));
+      emit(
+        ArenaFailure(
+          data: state.data.copyWith(effects: const []),
+          exception: exception,
+        ),
+      );
     }
   }
 

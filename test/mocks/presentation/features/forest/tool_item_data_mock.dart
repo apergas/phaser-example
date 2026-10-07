@@ -8,4 +8,10 @@ abstract final class ToolItemDataMock {
     name: Internationalize.forestTool(tool: ToolKind.axe),
     isOwned: isOwned,
   );
+
+  static ToolItemData of(ToolKind tool, {required bool isOwned}) => ToolItemData(
+    tool: tool,
+    name: Internationalize.forestTool(tool: tool),
+    isOwned: isOwned,
+  );
 }

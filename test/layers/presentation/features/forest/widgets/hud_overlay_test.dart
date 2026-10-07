@@ -6,15 +6,16 @@ import 'package:rpg/core/config/constants/enum/gear_id.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/layers/presentation/features/forest/models/hud_data.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/build_menu.dart';
+import 'package:rpg/layers/presentation/features/forest/widgets/build_option_tile.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/gear_option_tile.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hero_panel.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_button.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_overlay.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/quest_panel.dart';
+import 'package:rpg/layers/presentation/features/forest/widgets/quest_row.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/resource_bar.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
-import '../../../../../helpers/pump_until.dart';
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/presentation/features/forest/hud_data_mock.dart';
 
@@ -242,7 +243,6 @@ void main() {
 
     // when
     await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
-    await pumpUntil(tester, () => find.byType(HudButton).evaluate().length == 4);
 
     // then
     final buttons = find.byType(HudButton);
@@ -267,7 +267,6 @@ void main() {
 
     // when
     await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
-    await pumpUntil(tester, () => find.byType(HudButton).evaluate().length == 4);
 
     // then
     final buttons = find.byType(HudButton);
@@ -291,7 +290,7 @@ void main() {
 
     // when
     await tester.tap(find.text(Internationalize.forestHero));
-    await pumpUntil(tester, () => find.byType(HeroPanel).evaluate().isNotEmpty);
+    await tester.pump();
 
     // then
     final panel = tester.getRect(find.byType(HeroPanel));
@@ -302,4 +301,94 @@ void main() {
     expect(panel.right, lessThanOrEqualTo(640));
     expect(panel.bottom, lessThanOrEqualTo(360));
   });
+
+  testWidgets('testWhenTheScreenIsJustBelowTheBreakpointThenTheButtonsGoUnderTheResourceBar', (tester) async {
+    // given
+    tester.view.physicalSize = const Size(HudOverlay.buttonsBelowWidth - 1, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // when
+    await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+
+    // then
+    final resourceBar = tester.getRect(find.byType(ResourceBar));
+    for (final button in tester.widgetList<HudButton>(find.byType(HudButton))) {
+      expect(tester.getRect(find.byWidget(button)).top, greaterThanOrEqualTo(resourceBar.bottom));
+    }
+  });
+
+  testWidgets('testWhenTheScreenIsAtTheBreakpointThenTheButtonsStayOnTheResourceBarLine', (tester) async {
+    // given
+    tester.view.physicalSize = const Size(HudOverlay.buttonsBelowWidth, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // when
+    await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+
+    // then
+    final resourceBar = tester.getRect(find.byType(ResourceBar));
+    for (final button in tester.widgetList<HudButton>(find.byType(HudButton))) {
+      expect(tester.getRect(find.byWidget(button)).top, lessThan(resourceBar.bottom));
+    }
+  });
+
+  for (final size in const [Size(640, 360), Size(640, 300)]) {
+    testWidgets('testWhenTheBuildMenuIsOpenOnALandscapePhoneThenItScrollsOnScreen ${size.width}x${size.height}', (
+      tester,
+    ) async {
+      // given
+      tester.view.physicalSize = size;
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+
+      // when
+      await tester.tap(find.text(Internationalize.forestBuild));
+      await tester.pump();
+
+      // then
+      final menu = tester.getRect(find.byType(BuildMenu));
+      expect(tester.takeException(), isNull);
+      expect(find.byType(BuildOptionTile, skipOffstage: false), findsNWidgets(BlueprintId.values.length));
+      expect(find.descendant(of: find.byType(BuildMenu), matching: find.byType(Scrollable)), findsOneWidget);
+      expect(
+        menu.top,
+        greaterThanOrEqualTo(tester.getRect(find.widgetWithText(HudButton, Internationalize.forestBuild)).bottom),
+      );
+      expect(menu.left, greaterThanOrEqualTo(0));
+      expect(menu.right, lessThanOrEqualTo(size.width));
+      expect(menu.bottom, lessThanOrEqualTo(size.height));
+    });
+
+    testWidgets('testWhenTheQuestPanelIsOpenOnALandscapePhoneThenItScrollsOnScreen ${size.width}x${size.height}', (
+      tester,
+    ) async {
+      // given
+      tester.view.physicalSize = size;
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+
+      // when
+      await tester.tap(find.text(Internationalize.forestQuests));
+      await tester.pump();
+
+      // then
+      final panel = tester.getRect(find.byType(QuestPanel));
+      expect(tester.takeException(), isNull);
+      expect(
+        find.byType(QuestRow, skipOffstage: false),
+        findsNWidgets(HudDataMock.withEveryResourceAndTool.quests.length),
+      );
+      expect(
+        panel.top,
+        greaterThanOrEqualTo(tester.getRect(find.widgetWithText(HudButton, Internationalize.forestQuests)).bottom),
+      );
+      expect(panel.left, greaterThanOrEqualTo(0));
+      expect(panel.right, lessThanOrEqualTo(size.width));
+      expect(panel.bottom, lessThanOrEqualTo(size.height));
+    });
+  }
 }

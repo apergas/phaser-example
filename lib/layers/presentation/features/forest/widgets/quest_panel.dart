@@ -18,13 +18,15 @@ class QuestPanel extends StatelessWidget {
       constraints: const BoxConstraints(minWidth: 220, maxWidth: 320),
       child: HudPanel(
         padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _title(),
-            for (final quest in quests) QuestRow(quest: quest),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _title(),
+              for (final quest in quests) QuestRow(quest: quest),
+            ],
+          ),
         ),
       ),
     );

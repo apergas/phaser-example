@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../config/constants/enum/blueprint_id.dart';
+import '../../config/constants/enum/forest/hero_panel_section.dart';
+import '../../config/constants/enum/gear_id.dart';
+import '../../config/constants/enum/gear_slot.dart';
 import '../../config/constants/enum/quest_id.dart';
 import '../../config/constants/enum/resource.dart';
 import '../../config/constants/enum/tool_kind.dart';
@@ -77,4 +80,39 @@ class Internationalize {
   static String get forestPlacementCancel => '$_forest.placement.cancel'.tr();
   static String get forestAccessibilityGameWorld => '$_forest.accessibility.gameWorld'.tr();
   static String get forestRetry => '$_forest.retry'.tr();
+  static String get forestHero => '$_forest.hero.title'.tr();
+  static String get forestHeroPower => '$_forest.hero.power'.tr();
+  static String get forestHeroAttack => '$_forest.hero.attack'.tr();
+  static String get forestHeroDefense => '$_forest.hero.defense'.tr();
+  static String get forestHeroHealth => '$_forest.hero.health'.tr();
+  static String forestHeroWeaponStats({required int attack}) =>
+      '$_forest.hero.weaponStats'.tr(namedArgs: {'attack': '$attack'});
+  static String forestHeroArmorStats({required int defense, required int health}) =>
+      '$_forest.hero.armorStats'.tr(namedArgs: {'defense': '$defense', 'health': '$health'});
+  static String forestHeroSlot({required GearSlot slot}) => switch (slot) {
+    GearSlot.weapon => '$_forest.hero.slot.weapon'.tr(),
+    GearSlot.armor => '$_forest.hero.slot.armor'.tr(),
+  };
+  static String forestHeroSection({required HeroPanelSection section}) => switch (section) {
+    HeroPanelSection.gear => '$_forest.hero.section.gear'.tr(),
+    HeroPanelSection.skills => '$_forest.hero.section.skills'.tr(),
+  };
+  static String get forestHeroEquipped => '$_forest.hero.equipped'.tr();
+  static String get forestHeroBuy => '$_forest.hero.buy'.tr();
+  static String forestHeroNeedsBuilding({required String name}) =>
+      '$_forest.hero.needsBuilding'.tr(namedArgs: {'name': name});
+  static String get forestHeroMaxed => '$_forest.hero.maxed'.tr();
+  static String forestGear({required GearId id}) => switch (id) {
+    GearId.woodcutterAxe => '$_forest.gear.woodcutterAxe'.tr(),
+    GearId.shortSword => '$_forest.gear.shortSword'.tr(),
+    GearId.ironSword => '$_forest.gear.ironSword'.tr(),
+    GearId.steelSword => '$_forest.gear.steelSword'.tr(),
+    GearId.workClothes => '$_forest.gear.workClothes'.tr(),
+    GearId.leatherArmor => '$_forest.gear.leatherArmor'.tr(),
+    GearId.chainMail => '$_forest.gear.chainMail'.tr(),
+    GearId.plateArmor => '$_forest.gear.plateArmor'.tr(),
+  };
+  static String forestMessageGearPurchased({required String name}) =>
+      '$_forest.message.gearPurchased'.tr(namedArgs: {'name': name});
+  static String get forestMessageGearNotNextTier => '$_forest.message.gearNotNextTier'.tr();
 }

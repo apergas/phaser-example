@@ -42,7 +42,8 @@
     "blueprint": {
       "house": "Casa",
       "forge": "Herrería",
-      "armory": "Armería"
+      "armory": "Armería",
+      "mageTower": "Torre de magia"
     },
     "quest": {
       "pickUpAxe": "Recoge el hacha",

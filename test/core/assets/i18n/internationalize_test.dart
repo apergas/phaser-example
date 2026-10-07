@@ -133,7 +133,7 @@ void main() {
 
     // then
     expect(untranslated, isEmpty);
-    expect(names, ['Casa', 'Herrería', 'Armería']);
+    expect(names, ['Casa', 'Herrería', 'Armería', 'Torre de magia']);
   });
 
   test('testWhenNamingEveryGearPieceThenUsesTheSpanishNames', () {

@@ -178,6 +178,7 @@ void main() {
         BuildItemDataMock.makeUnaffordable(missingWood: 5),
         BuildItemDataMock.workshopUnaffordable(BlueprintId.forge, missingWood: 15),
         BuildItemDataMock.workshopUnaffordable(BlueprintId.armory, missingWood: 15),
+        BuildItemDataMock.mageTowerUnaffordable(missingWood: 20),
       ]);
       expect(bloc.state.data.placement, isNull);
       expect(

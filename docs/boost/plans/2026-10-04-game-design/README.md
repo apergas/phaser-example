@@ -189,7 +189,7 @@ Las fases de la aldea no van directamente a `develop`. Se acumulan en **`feature
   2. `/cerrar-tarea` abre el PR con `Closes #n` y la mueve a *Review*.
   3. Al fusionar, pasa a *Done*.
 
-El tracker todavía no existe: quien empiece F0 crea labels, milestones, issues y el Project con estas reglas. El plan *Héroe y arena* usa el mismo Project con sus propias labels (`phase:C*`, `stream:C`, `stream:D`; sección 4 de su README).
+El tracker existe desde el 2026-10-07 (issues #12–#40, Project *Gameplay roadmap* número 2). F0, C0 y C1 se cerraron antes de crearlo: sus issues están cerrados y apuntan a sus PR. El plan *Héroe y arena* usa el mismo Project con sus propias labels (`phase:C*`, `stream:C`, `stream:D`; sección 4 de su README).
 
 ## 5. Desviaciones registradas
 

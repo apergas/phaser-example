@@ -46,8 +46,8 @@
 |---|---|---|---|
 | C0 Contrato común | ✅ | `feature/PROJECT-X-arena` (#9) | Oro, caja del `World`, héroe y entidades de combate. |
 | C1 Motor y niveles | ✅ | `feature/PROJECT-X-arena` (#10) | Lógica sin pantalla; 418 tests en verde. |
-| C2 Pantalla de la arena | 🟢 plan listo | — | En paralelo con C3. Decisiones provisionales a revisar en la fase de pruebas. |
-| C3 Herrería y Armería | 🟢 plan listo | — | En paralelo con C2. |
+| C2 Pantalla de la arena | ✅ | `feature/PROJECT-X-arena` (PR C2) | Lleva unida C3 y resuelve los cruces; HUD con botones bajo la barra en pantallas estrechas. Decisiones provisionales a revisar en la fase de pruebas. |
+| C3 Herrería y Armería | ✅ | `feature/PROJECT-X-arena` (PR C3) | Herrería, Armería y panel *Héroe*; el oro llega con C2. |
 | C4 Lobos y oso | 📝 ficha | — | Necesita arte nuevo. Después de C2. |
 | C5 Torre de magia | 📝 ficha | — | Después de C3. |
 | C6 Bárbaros y jefe | 📝 ficha | — | Después de C4. |
@@ -55,5 +55,5 @@
 
 ## Siguiente paso
 
-- **Arena:** crear `feature/PROJECT-X-c2-arena-screen` y `feature/PROJECT-X-c3-forge-armory` desde `feature/PROJECT-X-arena` e implementarlas.
+- **Arena:** escribir los planes de C4 (lobos y oso, flujo C) y C5 (Torre de magia, flujo D).
 - **Aldea:** implementar F1 desde `feature/PROJECT-X-town`.

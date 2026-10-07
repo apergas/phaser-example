@@ -66,8 +66,8 @@ Para trabajar en una tarea **no hace falta leer el proyecto**. Lee sólo esto:
 |---|---|---|---|---|
 | **C0** Contrato común: oro y héroe | ✅ [C0-contract.md](C0-contract.md) | Común | F0 | `Resource.gold` en el HUD; `World.funds` / `earn` / `spend`; `HeroEntity` dentro del `World`; entidades de combate (`CombatStatsEntity`, `EnemyEntity`, `ArenaLevelEntity`, `FightLogEntity`); catálogo `Gear`; `HeroRules.stats` / `power`; `GetHeroStatusUseCase`. **Sin jugabilidad nueva** salvo el oro (a 0) en el HUD. |
 | **C1** Motor de combate y niveles | ✅ [C1-combat-engine.md](C1-combat-engine.md) | C | C0 | `Combat.resolve`, `ArenaLevels` con los niveles de humanos, `GetArenaUseCase`, `StartFightUseCase`: pelear, cobrar y desbloquear. Sólo dominio. |
-| **C2** Pantalla de la arena | 🟢 [C2-arena-screen.md](C2-arena-screen.md) | C | C0 (C1 para pelear de verdad) | `ArenaPage` + `ArenaBloc` + escena Flame que reproduce el `FightLogEntity`; botón *Arena* en el HUD del bosque; bandidos con el arte del héroe recoloreado. |
-| **C3** Herrería y Armería | 🟢 [C3-forge-armory.md](C3-forge-armory.md) | D | C0 | Dos edificios nuevos; comprar armas y armaduras (`BuyGearUseCase`); panel *Héroe* en el HUD del bosque con Poder, atributos y equipo. |
+| **C2** Pantalla de la arena | ✅ [C2-arena-screen.md](C2-arena-screen.md) | C | C0 (C1 para pelear de verdad) | `ArenaPage` + `ArenaBloc` + escena Flame que reproduce el `FightLogEntity`; botón *Arena* en el HUD del bosque; bandidos con el arte del héroe recoloreado. |
+| **C3** Herrería y Armería | ✅ [C3-forge-armory.md](C3-forge-armory.md) | D | C0 | Dos edificios nuevos; comprar armas y armaduras (`BuyGearUseCase`); panel *Héroe* en el HUD del bosque con Poder, atributos y equipo. |
 | **C4** Lobos y oso | 📝 [C4-beasts.md](C4-beasts.md) | C | C2 | Arte LPC nuevo de animales; `EnemyKind.wolf` / `bear`; niveles 2, 4, 5 y 8. |
 | **C5** Torre de magia y habilidades | 📝 [C5-mage-tower.md](C5-mage-tower.md) | D | C3 | Edificio *Torre de magia*; catálogo `Skills`; `LearnSkillUseCase`; pestaña *Habilidades* del panel *Héroe*. Los efectos en la pelea ya los aplica el motor de C1. |
 | **C6** Bárbaros y jefe | 📝 [C6-barbarians.md](C6-barbarians.md) | C | C4 | Arte de bárbaros y jefe; peleas de grupo bien colocadas (hasta 3 enemigos); pantalla de victoria final. |
@@ -173,3 +173,28 @@ Aquí se apunta todo lo que se haga distinto de lo que dicen los planes: qué, p
     - el test de flujo calcula la recompensa repetida a partir del catálogo;
     - `CLAUDE.md` aclara que la semilla la pasa `StartFightUseCase`.
   - **Aviso para C7 (y C4, si toca el primer nivel):** tres tests de casos de uso comparan el primer nivel del catálogo con mocks (`ArenaLevelEntityMock.banditRookie`, `FightResultEntityMock.victoryOverBandit`, `ArenaLevelStatusEntityMock.rookieForNewHero`). Si se cambia ese nivel, hay que actualizar esos mocks. Los tests del motor usan sus propios mocks y no dependen del catálogo.
+- **Tracker (2026-10-07):** se crea al empezar C2 y C3 (issues #12–#40, Project *Gameplay roadmap*). Los issues de C0 y C1 se crearon ya cerrados, apuntando a #9 y #10. C2 y C3 tienen un issue por tarea.
+- **C2 y C3 a la vez (2026-10-07):** las dos fases se hicieron en paralelo, cada una en su rama de fase y su worktree. Las tareas paralelas tuvieron rama propia (`-c2-scene` / `-c2-hud`, `-c3-gear-purchase` / `-c3-hero-panel`) y se unieron en su fase con `git merge --no-ff`, sin PR por tarea. C3 va primero a `feature/PROJECT-X-arena`; C2 llega segunda y resuelve los cruces: antes de su PR se le une la rama de C3 (`[PROJECT-X]: Merge the forge and armory phase into the arena screen phase`). Hubo 17 ficheros en conflicto, todos aditivos. Los atlas se regeneraron con `build_assets.py`: `forest.*` sale igual que en C3 y `arena.*` igual que en C2.
+- **C2 (2026-10-07):**
+  - **Arte:** todos los luchadores golpean con el hacha, porque no hay espadas en `sources/` (llegan con C3/C6). El jefe usa los frames del bárbaro escalados ×1,25 al dibujarlo, no en el atlas.
+  - **Modelos:** `ArenaData` lleva además `fighters`, `result` y `effects`. El BLoC usa también `GetHeroStatusUseCase` para la vida del héroe antes de la primera pelea.
+  - **Números flotantes:** no hay `FloatingNumberComponent`. Se usa `FloatingTextComponent` con la API de F1 (TF1.2): si F1 llega después a la rama, se queda cualquiera de los dos ficheros, porque son idénticos.
+  - **Pausa del bosque:** `NavigationService` expone `routeObserver`. Al contrario que el código del plan, `ForestPage` lo recibe **por constructor**: se lo pasa `ContainerAppBloc` y la página ya no lee `locator`. Así se cumple la convención de que sólo se usa `locator` en `BlocProvider.create`.
+  - **Panel de victoria sin botón.**
+  - **Decisiones provisionales**, a revisar en la fase de pruebas de la arena: el `RouteObserver`, los luchadores sólo con hacha, el panel de victoria sin botón y el umbral de color ámbar (×1,25).
+  - **Añadidos de la revisión final:**
+    - el candado de nivel bloqueado es un SVG propio (`lock.svg`, `CustomIcons.lock`), no `Icons.lock`;
+    - `ArenaInProgress` y `ArenaFailure` se emiten sin los efectos anteriores (si no, al reiniciar se repetían);
+    - hay un test del tono `PowerTone.even`;
+    - la escena tiene un único método para quitar un luchador y una única clave (`FighterRenderData.keyOf`).
+  - **HUD con cuatro botones (README 3.2):** a 640 × 360 los cuatro botones (*Misiones*, *Construir*, *Héroe*, *Arena*) no caben junto a la `ResourceBar`. Con la fuente real se solapan unos 200 px; ya con los tres botones de C3 se solapaban unos 80 px. Agrupar *Arena* y *Héroe* no bastaba. Se decide que, por debajo de `HudOverlay.buttonsBelowWidth = 920` px, la fila de botones baje a una segunda línea bajo la `ResourceBar`, alineada a la derecha. En pantallas anchas todo sigue en una línea. Los menús *Misiones* y *Construir* se desplazan, igual que el panel *Héroe*, si no caben de alto. **Aviso para la aldea (F5, F9…):** cada recurso o herramienta nueva ensancha la barra unos 90 px. Los tests de 919 y 920 px (con `HudDataMock.withEveryResourceAndTool`) fallarán entonces, y habrá que volver a medir el umbral.
+  - **Pendiente para F2 (guardado):** `ArenaBloc._emitReplay` llama a `GetArenaUseCase` sin `try/catch`. Hoy no puede fallar, porque a la arena sólo se entra con una partida en marcha. Si F2 introduce errores de almacenamiento, hay que capturarlos ahí.
+- **C3 (2026-10-07):**
+  - **Ramas:** TC3.1 y TC3.4 se hicieron en la rama de fase. TC3.2 y TC3.3 se hicieron a la vez, cada una en su worktree, y se unieron sin conflictos.
+  - **Test del fantasma de F0:** ya existe (`testWhenThePlacedBlueprintChangesThenTheGhostIsReplaced`). F6 ya no tiene que añadirlo.
+  - **Añadidos de la revisión final:**
+    - en `CREDITS.md`, la chimenea apunta a la sección de arriba (el plan decía "below");
+    - las estadísticas del panel *Héroe* se leen una sola vez con lector de pantalla (`excludeSemantics`);
+    - hay tests del BLoC para `notEnoughResources` y para que saltarse un nivel no emita el efecto de compra.
+  - **Sin oro en el juego hasta C2:** con C3 sola no hay forma de ganar oro. La compra se prueba a mano con las dos fases juntas.
+  - **Aviso para C5:** `HeroPanel(sections:)` ya pinta pestañas. Falta pasar `sections` desde `HudOverlay`, y añadir un `assert(sections.isNotEmpty)` y el reinicio de `_section` en `didUpdateWidget`.

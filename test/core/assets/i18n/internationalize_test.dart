@@ -1,6 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/forest/hero_panel_section.dart';
+import 'package:rpg/core/config/constants/enum/gear_id.dart';
+import 'package:rpg/core/config/constants/enum/gear_slot.dart';
 import 'package:rpg/core/config/constants/enum/quest_id.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
@@ -115,6 +118,85 @@ void main() {
       'Construir aquí',
       'Cancelar',
       'Mundo de juego: bosque con árboles, el personaje y los edificios',
+    ]);
+  });
+
+  test('testWhenNamingEveryBlueprintThenNoneFallsBackToItsKey', () {
+    // given
+    final names = BlueprintId.values.map((id) => Internationalize.forestBlueprint(id: id)).toList();
+
+    // when
+    final untranslated = names.where((name) => name.contains('forest.')).toList();
+
+    // then
+    expect(untranslated, isEmpty);
+    expect(names, ['Casa', 'Herrería', 'Armería']);
+  });
+
+  test('testWhenNamingEveryGearPieceThenUsesTheSpanishNames', () {
+    // given
+    final names = GearId.values.map((id) => Internationalize.forestGear(id: id)).toList();
+
+    // when
+    final untranslated = names.where((name) => name.startsWith('forest.')).toList();
+
+    // then
+    expect(untranslated, isEmpty);
+    expect(names, [
+      'Hacha de leñador',
+      'Espada corta',
+      'Espada de hierro',
+      'Espada de acero',
+      'Ropa de trabajo',
+      'Armadura de cuero',
+      'Cota de malla',
+      'Armadura de placas',
+    ]);
+  });
+
+  test('testWhenReadingEveryHeroTextThenNoneFallsBackToItsKey', () {
+    // given
+    final texts = [
+      Internationalize.forestHero,
+      Internationalize.forestHeroPower,
+      Internationalize.forestHeroAttack,
+      Internationalize.forestHeroDefense,
+      Internationalize.forestHeroHealth,
+      Internationalize.forestHeroWeaponStats(attack: 7),
+      Internationalize.forestHeroArmorStats(defense: 3, health: 40),
+      for (final slot in GearSlot.values) Internationalize.forestHeroSlot(slot: slot),
+      for (final section in HeroPanelSection.values) Internationalize.forestHeroSection(section: section),
+      Internationalize.forestHeroEquipped,
+      Internationalize.forestHeroBuy,
+      Internationalize.forestHeroNeedsBuilding(name: 'Herrería'),
+      Internationalize.forestHeroMaxed,
+      Internationalize.forestMessageGearPurchased(name: 'Espada corta'),
+      Internationalize.forestMessageGearNotNextTier,
+    ];
+
+    // when
+    final untranslated = texts.where((text) => text.startsWith('forest.')).toList();
+
+    // then
+    expect(untranslated, isEmpty);
+    expect(texts, [
+      'Héroe',
+      'Poder',
+      'Ataque',
+      'Defensa',
+      'Vida',
+      'Ataque 7',
+      'Defensa 3 · Vida 40',
+      'Arma',
+      'Armadura',
+      'Equipo',
+      'Habilidades',
+      'En uso',
+      'Comprar',
+      'Construye la Herrería',
+      'Ya tienes la mejor pieza',
+      'Has comprado: Espada corta',
+      'Antes tienes que comprar la pieza anterior.',
     ]);
   });
 }

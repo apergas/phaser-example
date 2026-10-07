@@ -23,4 +23,14 @@ abstract final class BuildItemDataMock {
     ),
     isEnabled: false,
   );
+
+  static BuildItemData workshopUnaffordable(BlueprintId id, {required int missingWood}) => BuildItemData(
+    blueprint: id,
+    name: Internationalize.forestBlueprint(id: id),
+    costText: Internationalize.forestAmount(resource: Resource.wood, amount: 25),
+    missingText: Internationalize.forestMissing(
+      amounts: Internationalize.forestAmount(resource: Resource.wood, amount: missingWood),
+    ),
+    isEnabled: false,
+  );
 }

@@ -1,3 +1,4 @@
+import '../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../core/config/constants/enum/gear_id.dart';
 import '../../../core/config/constants/enum/gear_slot.dart';
 import '../../../core/config/constants/enum/resource.dart';
@@ -64,4 +65,9 @@ abstract final class Gear {
 
   static int maxTier(GearSlot slot) =>
       all.where((gear) => gear.slot == slot).fold(0, (max, gear) => gear.tier > max ? gear.tier : max);
+
+  static BlueprintId workshopFor(GearSlot slot) => switch (slot) {
+    GearSlot.weapon => BlueprintId.forge,
+    GearSlot.armor => BlueprintId.armory,
+  };
 }

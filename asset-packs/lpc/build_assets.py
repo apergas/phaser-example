@@ -9,7 +9,7 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
   hero-{chop,hammer}.png           128x128 work animations: body slash frames between the tool's
                                    back and front layers (same layout as the LPC generator)
   forest.png + forest.json         JSON-hash atlas (TexturePacker format): trees (pivot = trunk base), decor, stump,
-                                   axe pickup and the house (pivot = bottom centre)
+                                   axe pickup, the house, the forge and the armory (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
 
 Requires Pillow. Licences and authors: see CREDITS.md next to the outputs.
@@ -152,6 +152,16 @@ HOUSE_ROOF_BOX = (80, 0, 215, 128)  # thatched-roof.png
 HOUSE_DOOR_BOX = (16, 0, 48, 48)  # doors_0.png
 HOUSE_ROOF_OVERLAP = 28
 
+# Forge and armory reuse the house layout. The thatch ships in exactly these nine colours (dark -> light),
+# so recolour() swaps the whole roof; the wall and door keep their own colours.
+ROOF_RAMP = [(43, 28, 29), (48, 33, 36), (98, 53, 28), (112, 86, 55), (137, 103, 56), (154, 114, 57), (183, 149, 67), (227, 198, 84), (237, 226, 108)]
+FORGE_ROOF = [(20, 20, 24), (26, 26, 30), (40, 40, 46), (54, 54, 60), (66, 66, 74), (76, 76, 84), (94, 94, 102), (118, 118, 126), (136, 136, 144)]
+ARMORY_ROOF = [(40, 14, 16), (46, 18, 20), (90, 24, 22), (110, 32, 28), (132, 40, 34), (148, 46, 38), (176, 60, 46), (212, 90, 68), (228, 118, 90)]
+FORGE_WALL_BOX = (0, 256, 96, 352)  # cottage.png, stone wall with timber frame
+CHIMNEY_BOX = (448, 480, 480, 512)  # terrain_atlas.png, cracked stone block
+CHIMNEY_RISE = 18  # pixels the chimney sticks out above the roof
+CHIMNEY_INSET = 20  # distance from the chimney's right edge to the roof's right edge
+
 
 def trim(image: Image.Image, name: str) -> Image.Image:
     """Crops to the visible pixels; fails loudly instead of shipping an empty sprite."""
@@ -200,21 +210,39 @@ def pack(frames: dict, width: int = 1024, padding: int = 2) -> tuple:
     return atlas, positions
 
 
-def build_house() -> Image.Image:
+def build_cottage(wall_box: tuple, roof_colours: list = None, chimney: Image.Image = None) -> Image.Image:
+    """Wall, door and thatched roof; optionally a recoloured roof and a chimney sticking out of it."""
     buildings = SOURCES / "buildings"
-    wall = Image.open(buildings / "cottage.png").convert("RGBA").crop(HOUSE_WALL_BOX)
+    wall = Image.open(buildings / "cottage.png").convert("RGBA").crop(wall_box)
     roof = Image.open(buildings / "thatched-roof.png").convert("RGBA").crop(HOUSE_ROOF_BOX)
     roof = roof.crop(roof.getbbox())
+    if roof_colours is not None:
+        roof = recolour(roof, ROOF_RAMP, roof_colours)
     door = Image.open(buildings / "doors_0.png").convert("RGBA").crop(HOUSE_DOOR_BOX)
     door = door.crop(door.getbbox())
 
+    top = CHIMNEY_RISE if chimney is not None else 0
     width = max(roof.width, wall.width)
-    house = Image.new("RGBA", (width, roof.height + wall.height - HOUSE_ROOF_OVERLAP))
-    wall_x, wall_y = (width - wall.width) // 2, roof.height - HOUSE_ROOF_OVERLAP
-    house.alpha_composite(wall, (wall_x, wall_y))
-    house.alpha_composite(door, (wall_x + (wall.width - door.width) // 2, wall_y + wall.height - door.height))
-    house.alpha_composite(roof, ((width - roof.width) // 2, 0))
-    return house
+    image = Image.new("RGBA", (width, top + roof.height + wall.height - HOUSE_ROOF_OVERLAP))
+    wall_x, wall_y = (width - wall.width) // 2, top + roof.height - HOUSE_ROOF_OVERLAP
+    image.alpha_composite(wall, (wall_x, wall_y))
+    image.alpha_composite(door, (wall_x + (wall.width - door.width) // 2, wall_y + wall.height - door.height))
+    image.alpha_composite(roof, ((width - roof.width) // 2, top))
+    if chimney is not None:
+        image.alpha_composite(chimney, (width - chimney.width - CHIMNEY_INSET, 0))
+    return image
+
+
+def build_house() -> Image.Image:
+    return build_cottage(HOUSE_WALL_BOX)
+
+
+def build_forge(terrain: Image.Image) -> Image.Image:
+    return build_cottage(FORGE_WALL_BOX, FORGE_ROOF, trim(terrain.crop(CHIMNEY_BOX), "chimney"))
+
+
+def build_armory() -> Image.Image:
+    return build_cottage(HOUSE_WALL_BOX, ARMORY_ROOF)
 
 
 def build_forest() -> None:
@@ -241,6 +269,10 @@ def build_forest() -> None:
     pivots["axe-pickup"] = {"x": 0.5, "y": 0.5}
     frames["house"] = build_house()
     pivots["house"] = {"x": 0.5, "y": 1}
+    frames["forge"] = build_forge(terrain)
+    pivots["forge"] = {"x": 0.5, "y": 1}
+    frames["armory"] = build_armory()
+    pivots["armory"] = {"x": 0.5, "y": 1}
 
     atlas, positions = pack(frames)
     atlas.save(OUT / "forest.png")

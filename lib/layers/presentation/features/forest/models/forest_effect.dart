@@ -1,3 +1,4 @@
+import '../../../../../core/config/constants/enum/gear_id.dart';
 import '../../../../domain/entities/building/building_entity.dart';
 
 sealed class ForestEffect {
@@ -83,4 +84,16 @@ final class BuildingCompletedEffect extends ForestEffect {
 
   @override
   int get hashCode => Object.hash(BuildingCompletedEffect, buildingId);
+}
+
+final class GearPurchasedEffect extends ForestEffect {
+  final GearId gear;
+
+  const GearPurchasedEffect({required this.gear});
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is GearPurchasedEffect && other.gear == gear;
+
+  @override
+  int get hashCode => Object.hash(GearPurchasedEffect, gear);
 }

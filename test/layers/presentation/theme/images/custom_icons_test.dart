@@ -27,4 +27,15 @@ void main() {
     // then
     expect(missing, isEmpty);
   });
+
+  test('testWhenResolvingTheHeroIconThenTheSvgFileExists', () {
+    // given
+    const path = CustomIcons.hero;
+
+    // when
+    final exists = File(path).existsSync();
+
+    // then
+    expect(exists, isTrue);
+  });
 }

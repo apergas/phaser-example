@@ -17,4 +17,10 @@ abstract final class BuildOptionEntityMock {
 
   static BuildOptionEntity make({Map<Resource, int> missing = const {}}) =>
       BuildOptionEntity(blueprint: BlueprintId.house, cost: const {Resource.wood: 15}, missing: missing);
+
+  static BuildOptionEntity workshop(BlueprintId id, {required int missingWood}) => BuildOptionEntity(
+    blueprint: id,
+    cost: const {Resource.wood: 25},
+    missing: {Resource.wood: missingWood},
+  );
 }

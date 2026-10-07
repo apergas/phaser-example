@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/gear_id.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/layers/presentation/features/forest/models/hud_data.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/build_menu.dart';
+import 'package:rpg/layers/presentation/features/forest/widgets/gear_option_tile.dart';
+import 'package:rpg/layers/presentation/features/forest/widgets/hero_panel.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_button.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_overlay.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/quest_panel.dart';
@@ -16,9 +19,9 @@ import '../../../../../mocks/presentation/features/forest/hud_data_mock.dart';
 void main() {
   setUpAll(loadSpanishTranslations);
 
-  Future<List<BlueprintId>> pumpOverlay(WidgetTester tester, HudData hud) async {
+  Future<List<BlueprintId>> pumpOverlay(WidgetTester tester, HudData hud, {List<GearId>? gears}) async {
     final selected = <BlueprintId>[];
-    await tester.pumpHud(HudOverlay(hud: hud, onBuildSelected: selected.add));
+    await tester.pumpHud(HudOverlay(hud: hud, onBuildSelected: selected.add, onGearSelected: (gears ?? []).add));
     return selected;
   }
 
@@ -152,5 +155,53 @@ void main() {
     // then
     expect(tester.getTopRight(find.byType(BuildMenu)).dx, lessThanOrEqualTo(260));
     expect(tester.getTopLeft(find.byType(BuildMenu)).dx, greaterThanOrEqualTo(0));
+  });
+
+  testWidgets('testWhenHeroIsTappedThenTheHeroPanelOpensAndBuyingReportsThePiece', (tester) async {
+    // given
+    final gears = <GearId>[];
+    await pumpOverlay(tester, HudDataMock.withHeroReadyToBuy, gears: gears);
+
+    // when
+    await tester.tap(find.text(Internationalize.forestHero));
+    await tester.pump();
+    await tester.tap(find.byKey(GearOptionTile.buyKey(GearId.shortSword)));
+    await tester.pump();
+
+    // then
+    expect(find.byType(HeroPanel), findsOneWidget);
+    expect(gears, [GearId.shortSword]);
+  });
+
+  testWidgets('testWhenBuildIsTappedWhileTheHeroPanelIsOpenThenOnlyTheBuildMenuIsShown', (tester) async {
+    // given
+    await pumpOverlay(tester, HudDataMock.gathering);
+    await tester.tap(find.text(Internationalize.forestHero));
+    await tester.pump();
+
+    // when
+    await tester.tap(find.text(Internationalize.forestBuild));
+    await tester.pump();
+
+    // then
+    expect(find.byType(BuildMenu), findsOneWidget);
+    expect(find.byType(HeroPanel), findsNothing);
+  });
+
+  testWidgets('testWhenTheScreenIsALandscapePhoneThenTheThreeButtonsFitOnScreen', (tester) async {
+    // given
+    tester.view.physicalSize = const Size(640, 360);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // when
+    await pumpOverlay(tester, HudDataMock.gathering);
+
+    // then
+    final buttons = find.byType(HudButton);
+    expect(buttons, findsNWidgets(3));
+    expect(tester.takeException(), isNull);
+    expect(tester.getTopLeft(buttons.first).dx, greaterThanOrEqualTo(0));
+    expect(tester.getTopRight(buttons.last).dx, lessThanOrEqualTo(640));
   });
 }

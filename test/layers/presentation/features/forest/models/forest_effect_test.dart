@@ -27,4 +27,18 @@ void main() {
     // then
     expect(isEqual, isFalse);
   });
+
+  test('testWhenComparingGearPurchasesThenOnlyTheSamePieceIsEqual', () {
+    // given
+    const first = ForestEffectMock.shortSwordPurchased;
+
+    // when
+    final sameGear = first == ForestEffectMock.shortSwordPurchasedCopy;
+    final otherGear = first == ForestEffectMock.leatherArmorPurchased;
+
+    // then
+    expect(sameGear, isTrue);
+    expect(first.hashCode, ForestEffectMock.shortSwordPurchasedCopy.hashCode);
+    expect(otherGear, isFalse);
+  });
 }

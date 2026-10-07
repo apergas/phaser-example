@@ -91,6 +91,8 @@ class ForestSceneComponent extends Component {
         _onBuildingHammered(buildingId, progress);
       case BuildingCompletedEffect(:final buildingId):
         _onBuildingCompleted(buildingId);
+      case GearPurchasedEffect():
+        _onGearPurchased();
     }
   }
 
@@ -135,6 +137,18 @@ class ForestSceneComponent extends Component {
 
   void _onBuildingCompleted(String buildingId) {
     _buildings[buildingId]?.complete();
+  }
+
+  void _onGearPurchased() {
+    final player = _player;
+    if (player == null) return;
+    final feet = PositionEntity(x: player.position.x, y: player.position.y);
+    add(
+      ParticleBurstComponent(
+        particles: ParticleBursts.sparkles(feet: feet, random: _random),
+        sortY: ParticleBursts.sparklesSortY(feet),
+      ),
+    );
   }
 
   BuildingComponent _building(BuildingEntity building) {

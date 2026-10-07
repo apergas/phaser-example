@@ -32,6 +32,8 @@ const List<String> _flameConfined = ['package:flame'];
 const List<String> _flameAllowedImporters = [
   'lib/layers/presentation/features/forest/game/',
   'lib/layers/presentation/features/forest/forest_page.dart',
+  'lib/layers/presentation/features/arena/game/',
+  'lib/layers/presentation/features/arena/arena_page.dart',
 ];
 
 const String _worldFolder = 'lib/layers/domain/world/';
@@ -132,7 +134,7 @@ List<String> violations({
 
 void main() {
   group('rules', () {
-    test('testWhenCheckingLibThenFlameIsOnlyImportedByTheForestGameAndPage', () {
+    test('testWhenCheckingLibThenFlameIsOnlyImportedByTheGamesAndTheirPages', () {
       // given
       final sources = sourcesUnder('lib');
 
@@ -283,6 +285,9 @@ import 'package:rpg/layers/presentation/app/container_app.dart';
             "import 'package:flame_bloc/flame_bloc.dart';\n",
         'lib/layers/presentation/features/forest/game/forest_game.dart': "import 'package:flame/game.dart';\n",
         'lib/layers/presentation/features/forest/forest_page.dart': "import 'package:flame/game.dart';\n",
+        'lib/layers/presentation/features/arena/widgets/level_list.dart': "import 'package:flame/game.dart';\n",
+        'lib/layers/presentation/features/arena/game/arena_game.dart': "import 'package:flame/game.dart';\n",
+        'lib/layers/presentation/features/arena/arena_page.dart': "import 'package:flame/game.dart';\n",
       };
 
       // when
@@ -296,6 +301,7 @@ import 'package:rpg/layers/presentation/app/container_app.dart';
       expect(found, [
         'lib/layers/presentation/features/forest/widgets/hud.dart -> package:flame/game.dart',
         'lib/layers/presentation/features/forest/bloc/forest_bloc.dart -> package:flame_bloc/flame_bloc.dart',
+        'lib/layers/presentation/features/arena/widgets/level_list.dart -> package:flame/game.dart',
       ]);
     });
 

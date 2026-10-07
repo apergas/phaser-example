@@ -11,6 +11,9 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
   forest.png + forest.json         JSON-hash atlas (TexturePacker format): trees (pivot = trunk base), decor, stump,
                                    axe pickup and the house (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
+  arena.png + arena.json           JSON-hash atlas for the arena: hero, bandit and barbarian idle (64px, axe in
+                                   hand) and slash (128px) frames in their one facing (pivot = feet), the grass
+                                   cell and a fence segment
 
 Requires Pillow. Licences and authors: see CREDITS.md next to the outputs.
 """
@@ -63,12 +66,12 @@ WORK_FRAME = 128
 DIRECTIONS = 4
 
 
-def body_sheet(animation: str) -> Image.Image:
+def body_sheet(animation: str, recolours: dict = RECOLOURS) -> Image.Image:
     sheet = None
     for layer in CHARACTER_LAYERS:
         image = Image.open(SOURCES / "character" / f"{layer}__{animation}.png").convert("RGBA")
-        if layer in RECOLOURS:
-            image = recolour(image, *RECOLOURS[layer])
+        if layer in recolours:
+            image = recolour(image, *recolours[layer])
         sheet = image if sheet is None else Image.alpha_composite(sheet, image)
     return sheet
 
@@ -242,8 +245,17 @@ def build_forest() -> None:
     frames["house"] = build_house()
     pivots["house"] = {"x": 0.5, "y": 1}
 
+    write_atlas("forest", frames, pivots)
+
+    ground = Image.new("RGBA", (CELL * len(GROUND_TILES), CELL))
+    for index, (column, row) in enumerate(GROUND_TILES):
+        ground.alpha_composite(terrain.crop((column * CELL, row * CELL, (column + 1) * CELL, (row + 1) * CELL)), (index * CELL, 0))
+    ground.save(OUT / "ground.png")
+
+
+def write_atlas(atlas_name: str, frames: dict, pivots: dict) -> None:
     atlas, positions = pack(frames)
-    atlas.save(OUT / "forest.png")
+    atlas.save(OUT / f"{atlas_name}.png")
     data = {
         "frames": {
             name: {
@@ -256,18 +268,67 @@ def build_forest() -> None:
             }
             for name, (x, y) in positions.items()
         },
-        "meta": {"image": "forest.png", "size": {"w": atlas.width, "h": atlas.height}, "scale": "1"},
+        "meta": {"image": f"{atlas_name}.png", "size": {"w": atlas.width, "h": atlas.height}, "scale": "1"},
     }
-    (OUT / "forest.json").write_text(json.dumps(data, indent=1))
+    (OUT / f"{atlas_name}.json").write_text(json.dumps(data, indent=1))
 
-    ground = Image.new("RGBA", (CELL * len(GROUND_TILES), CELL))
-    for index, (column, row) in enumerate(GROUND_TILES):
-        ground.alpha_composite(terrain.crop((column * CELL, row * CELL, (column + 1) * CELL, (row + 1) * CELL)), (index * CELL, 0))
-    ground.save(OUT / "ground.png")
+
+# --- Arena atlas -----------------------------------------------------------------------------
+
+# Skin ships in the human ramp, dark -> light; body and head share it.
+SKIN_RAMP = [(153, 66, 60), (204, 134, 101), (228, 164, 124), (249, 213, 186), (250, 236, 231)]
+BANDIT_RECOLOURS = {
+    **RECOLOURS,
+    "torso_clothes_longsleeve_longsleeve_male": (CLOTH_RAMP, [(48, 14, 16), (82, 22, 24), (112, 32, 30), (140, 46, 40), (168, 64, 54)]),
+    "legs_pants_male": (CLOTH_RAMP, [(28, 22, 24), (44, 34, 36), (62, 48, 48), (82, 64, 62), (104, 82, 78)]),
+    "hair_plain_adult": (HAIR_RAMP, [(20, 16, 16), (32, 26, 24), (46, 38, 34), (60, 50, 44), (76, 64, 56)]),
+}
+BARBARIAN_SKIN = [(78, 38, 30), (120, 72, 50), (146, 96, 66), (172, 122, 88), (196, 156, 126)]
+BARBARIAN_RECOLOURS = {
+    **RECOLOURS,
+    "body_bodies_male": (SKIN_RAMP, BARBARIAN_SKIN),
+    "head_heads_human_male": (SKIN_RAMP, BARBARIAN_SKIN),
+    "torso_clothes_longsleeve_longsleeve_male": (CLOTH_RAMP, [(44, 28, 16), (74, 48, 26), (102, 68, 38), (130, 90, 52), (158, 114, 70)]),
+    "legs_pants_male": (CLOTH_RAMP, [(36, 26, 18), (58, 42, 28), (80, 58, 38), (104, 76, 50), (128, 96, 64)]),
+    "hair_plain_adult": (HAIR_RAMP, [(60, 20, 8), (92, 34, 12), (120, 50, 18), (148, 68, 26), (176, 90, 38)]),
+}
+# Fighter -> (recolours, LPC row): the hero faces right (row 3), the enemies face left (row 1).
+ARENA_FIGHTERS = {
+    "hero": (RECOLOURS, 3),
+    "bandit": (BANDIT_RECOLOURS, 1),
+    "barbarian": (BARBARIAN_RECOLOURS, 1),
+}
+ARENA_GRASS = (1, 23)  # (column, row) of terrain_atlas.png, the same grass as the forest ground
+ARENA_FENCE_BOX = (480, 608, 544, 640)  # terrain_atlas.png: a post and a rail, 64x32, tiles horizontally
+IDLE_PIVOT = {"x": 0.5, "y": round(62 / FRAME, 4)}
+SLASH_PIVOT = {"x": 0.5, "y": round((32 + 62) / WORK_FRAME, 4)}
+
+
+def cells(sheet: Image.Image, row: int, size: int) -> list:
+    return [sheet.crop((column * size, row * size, (column + 1) * size, (row + 1) * size)) for column in range(sheet.width // size)]
+
+
+def build_arena() -> None:
+    terrain = Image.open(SOURCES / "terrain" / "terrain_atlas.png").convert("RGBA")
+    frames, pivots = {}, {}
+    for fighter, (recolours, row) in ARENA_FIGHTERS.items():
+        idle = with_idle_axe(body_sheet("idle", recolours))
+        slash = work_sheet(body_sheet("slash", recolours), "axe")
+        for column, image in enumerate(cells(idle, row, FRAME)):
+            frames[f"{fighter}-idle-{column}"], pivots[f"{fighter}-idle-{column}"] = image, IDLE_PIVOT
+        for column, image in enumerate(cells(slash, row, WORK_FRAME)):
+            frames[f"{fighter}-slash-{column}"], pivots[f"{fighter}-slash-{column}"] = image, SLASH_PIVOT
+    column, row = ARENA_GRASS
+    frames["arena-grass"] = terrain.crop((column * CELL, row * CELL, (column + 1) * CELL, (row + 1) * CELL))
+    pivots["arena-grass"] = {"x": 0, "y": 0}
+    frames["arena-fence"] = trim(terrain.crop(ARENA_FENCE_BOX), "arena-fence")
+    pivots["arena-fence"] = {"x": 0, "y": 1}
+    write_atlas("arena", frames, pivots)
 
 
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     build_character()
     build_forest()
+    build_arena()
     print(f"Assets written to {OUT}")

@@ -51,3 +51,13 @@ Assembled from "[LPC] Thatched-roof Cottage" (timber-frame wall and thatched roo
 <https://opengameart.org/content/lpc-windows-doors>.
 
 The stump (`stump` frame) comes from the LPC Tile Atlas above.
+
+## Arena (`arena.png`)
+
+Fighters composed by `build_assets.py` from the same character layers and axe as `hero-*.png`
+(see *Character* above), each kept in one facing. The bandit and the barbarian are recolours of
+those layers (clothes, hair and, for the barbarian, skin); the barbarian chief is the barbarian
+drawn bigger. Same authors and licences as the character layers.
+
+The grass (`arena-grass`) and the fence (`arena-fence`) come from the LPC Tile Atlas (see
+*Ground and decor* above). CC-BY-SA 3.0 / GPL 3.0.

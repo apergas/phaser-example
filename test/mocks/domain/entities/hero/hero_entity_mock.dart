@@ -56,4 +56,10 @@ abstract final class HeroEntityMock {
     clearedLevels: {ArenaLevelId.banditRookie, ArenaLevelId.banditVeteran},
     fightsFought: 2,
   );
+
+  static const HeroEntity packHunter = HeroEntity(
+    weaponTier: 3,
+    armorTier: 3,
+    clearedLevels: {ArenaLevelId.barbarian},
+  );
 }

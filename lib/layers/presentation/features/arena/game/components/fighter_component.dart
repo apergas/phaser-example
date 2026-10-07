@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 
 import '../../../../../../core/config/constants/enum/arena/fighter_pose.dart';
+import '../../../../../../core/config/constants/enum/enemy_kind.dart';
 import '../../../../../../core/config/constants/enum/fight_side.dart';
 import '../../../../../domain/entities/geometry/position_entity.dart';
 import '../../../forest/game/components/shadow_component.dart';
@@ -31,7 +32,9 @@ class FighterComponent extends PositionComponent {
     : _fighter = fighter,
       shadow = ShadowComponent(
         center: ArenaFrames.spot(fighter.side, fighter.index).toVector2(),
-        size: Vector2(shadowWidth, shadowHeight) * ArenaRenderConstants.fighterScale(fighter.enemyKind),
+        size:
+            Vector2(shadowWidthOf(fighter.enemyKind), shadowHeight) *
+            ArenaRenderConstants.fighterScale(fighter.enemyKind),
       ),
       healthBar = HealthBarComponent(
         position: ArenaFrames.spot(fighter.side, fighter.index).toVector2()
@@ -45,11 +48,17 @@ class FighterComponent extends PositionComponent {
     healthBar
       ..show(health: fighter.health, maxHealth: fighter.maxHealth)
       ..snap();
+    _place();
   }
+
+  static double shadowWidthOf(EnemyKind? kind) =>
+      ArenaFrames.isBeast(kind) ? ArenaRenderConstants.beastShadowWidth : shadowWidth;
 
   FighterRenderData get fighter => _fighter;
 
   String get frameName => ArenaFrames.frameName(_fighter, _animationSeconds);
+
+  bool get tipsOver => _fighter.pose == FighterPose.down && !ArenaFrames.isBeast(_fighter.enemyKind);
 
   bool get isBlinkedOut =>
       _blinkMs > 0 && ((ArenaRenderConstants.hurtBlinkMs - _blinkMs) ~/ ArenaRenderConstants.blinkPeriodMs).isOdd;
@@ -67,10 +76,19 @@ class FighterComponent extends PositionComponent {
   void show(FighterRenderData fighter) {
     _fighter = fighter;
     healthBar.show(health: fighter.health, maxHealth: fighter.maxHealth);
+    _place();
   }
 
   void hit() {
     _blinkMs = ArenaRenderConstants.hurtBlinkMs;
+  }
+
+  void _place() {
+    final ground = ArenaFrames.groundSpot(_fighter);
+    final lift = ArenaFrames.lift(_fighter);
+    shadow.position.setValues(ground.x, ground.y);
+    position.setValues(ground.x, ground.y - lift);
+    healthBar.position.setValues(ground.x, ground.y - lift - ArenaRenderConstants.healthBarLift * scale.y);
   }
 
   @override
@@ -88,7 +106,7 @@ class FighterComponent extends PositionComponent {
     final isDown = _fighter.pose == FighterPose.down;
     _paint.color = Color.fromRGBO(255, 255, 255, isDown ? ArenaRenderConstants.fallenAlpha : 1);
     canvas.save();
-    if (isDown) canvas.rotate((_fighter.side == FightSide.hero ? -1 : 1) * math.pi / 2);
+    if (tipsOver) canvas.rotate((_fighter.side == FightSide.hero ? -1 : 1) * math.pi / 2);
     sprite.render(
       canvas,
       position: Vector2(-frame.width * frame.pivotX, -frame.height * frame.pivotY),

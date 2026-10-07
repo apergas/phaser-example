@@ -10,6 +10,7 @@ class FighterRenderData {
   final int maxHealth;
   final FighterPose pose;
   final double swingProgress;
+  final int targetIndex;
 
   const FighterRenderData({
     required this.side,
@@ -19,6 +20,7 @@ class FighterRenderData {
     required this.maxHealth,
     required this.pose,
     this.swingProgress = 0,
+    this.targetIndex = 0,
   });
 
   static String keyOf(FightSide side, int index) => '${side.name}-$index';
@@ -35,8 +37,9 @@ class FighterRenderData {
           other.health == health &&
           other.maxHealth == maxHealth &&
           other.pose == pose &&
-          other.swingProgress == swingProgress;
+          other.swingProgress == swingProgress &&
+          other.targetIndex == targetIndex;
 
   @override
-  int get hashCode => Object.hash(side, index, enemyKind, health, maxHealth, pose, swingProgress);
+  int get hashCode => Object.hash(side, index, enemyKind, health, maxHealth, pose, swingProgress, targetIndex);
 }

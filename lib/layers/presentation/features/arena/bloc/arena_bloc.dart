@@ -307,6 +307,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
       maxHealth: replay.maxHealthOf(side, index),
       pose: pose,
       swingProgress: pose == FighterPose.attack ? progress : 0,
+      targetIndex: pose == FighterPose.attack ? turn?.targetIndex ?? 0 : 0,
     );
   }
 }

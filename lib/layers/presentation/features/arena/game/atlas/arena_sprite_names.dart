@@ -9,8 +9,8 @@ abstract final class ArenaSpriteNames {
     EnemyKind.bandit => 'bandit',
     EnemyKind.barbarian => 'barbarian',
     EnemyKind.barbarianChief => 'barbarian',
-    EnemyKind.wolf => 'bandit',
-    EnemyKind.bear => 'barbarian',
+    EnemyKind.wolf => 'wolf',
+    EnemyKind.bear => 'bear',
   };
 
   static String fighter(EnemyKind? kind) => kind == null ? hero : enemy(kind);

@@ -30,4 +30,17 @@ void main() {
     // then
     expect(isEqual, isFalse);
   });
+
+  test('testWhenASkillChangesThenThePanelsAreNotEqual', () {
+    // given
+    final first = HeroPanelDataMock.newHero;
+    final second = HeroPanelDataMock.readyToLearnDoubleStrike;
+
+    // when
+    final isEqual = first == second;
+
+    // then
+    expect(isEqual, isFalse);
+    expect(first.rows, second.rows);
+  });
 }

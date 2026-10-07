@@ -9,6 +9,7 @@ import '../../config/constants/enum/gear_id.dart';
 import '../../config/constants/enum/gear_slot.dart';
 import '../../config/constants/enum/quest_id.dart';
 import '../../config/constants/enum/resource.dart';
+import '../../config/constants/enum/skill_id.dart';
 import '../../config/constants/enum/tool_kind.dart';
 
 class Internationalize {
@@ -120,6 +121,21 @@ class Internationalize {
   static String forestMessageGearPurchased({required String name}) =>
       '$_forest.message.gearPurchased'.tr(namedArgs: {'name': name});
   static String get forestMessageGearNotNextTier => '$_forest.message.gearNotNextTier'.tr();
+  static String get forestHeroLearn => '$_forest.hero.learn'.tr();
+  static String get forestHeroKnown => '$_forest.hero.known'.tr();
+  static String forestSkillName({required SkillId id}) => switch (id) {
+    SkillId.doubleStrike => '$_forest.skill.doubleStrike.name'.tr(),
+    SkillId.secondWind => '$_forest.skill.secondWind.name'.tr(),
+    SkillId.dodge => '$_forest.skill.dodge.name'.tr(),
+  };
+  static String forestSkillDescription({required SkillId id}) => switch (id) {
+    SkillId.doubleStrike => '$_forest.skill.doubleStrike.description'.tr(),
+    SkillId.secondWind => '$_forest.skill.secondWind.description'.tr(),
+    SkillId.dodge => '$_forest.skill.dodge.description'.tr(),
+  };
+  static String forestMessageSkillLearned({required String name}) =>
+      '$_forest.message.skillLearned'.tr(namedArgs: {'name': name});
+  static String get forestMessageSkillAlreadyKnown => '$_forest.message.skillAlreadyKnown'.tr();
   static const String _arena = 'arena';
   static String get arenaTitle => '$_arena.title'.tr();
   static String arenaHeroPower({required int power}) => '$_arena.heroPower'.tr(namedArgs: {'power': '$power'});

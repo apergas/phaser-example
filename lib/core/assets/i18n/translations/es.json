@@ -64,7 +64,9 @@
       "buildingCompleted": "Construcción terminada: {name}",
       "questCompleted": "Misión completada: {title}",
       "gearPurchased": "Has comprado: {name}",
-      "gearNotNextTier": "Antes tienes que comprar la pieza anterior."
+      "gearNotNextTier": "Antes tienes que comprar la pieza anterior.",
+      "skillLearned": "Has aprendido: {name}",
+      "skillAlreadyKnown": "Ya conoces esa habilidad."
     },
     "hero": {
       "title": "Héroe",
@@ -85,7 +87,9 @@
       "equipped": "En uso",
       "buy": "Comprar",
       "needsBuilding": "Construye la {name}",
-      "maxed": "Ya tienes la mejor pieza"
+      "maxed": "Ya tienes la mejor pieza",
+      "learn": "Aprender",
+      "known": "Aprendida"
     },
     "gear": {
       "woodcutterAxe": "Hacha de leñador",
@@ -96,6 +100,20 @@
       "leatherArmor": "Armadura de cuero",
       "chainMail": "Cota de malla",
       "plateArmor": "Armadura de placas"
+    },
+    "skill": {
+      "doubleStrike": {
+        "name": "Golpe doble",
+        "description": "Cada tercer ataque golpea dos veces."
+      },
+      "secondWind": {
+        "name": "Segundo aliento",
+        "description": "Una vez por pelea, por debajo del 30 % de vida recupera el 40 %."
+      },
+      "dodge": {
+        "name": "Esquiva",
+        "description": "Un 20 % de posibilidades de esquivar cada golpe."
+      }
     },
     "placement": {
       "confirm": "Construir aquí",

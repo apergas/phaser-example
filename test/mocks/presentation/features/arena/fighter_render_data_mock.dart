@@ -67,4 +67,13 @@ abstract final class FighterRenderDataMock {
     pose: FighterPose.attack,
     swingProgress: swingProgress,
   );
+
+  static const FighterRenderData chiefIdle = FighterRenderData(
+    side: FightSide.enemy,
+    index: 0,
+    enemyKind: EnemyKind.barbarianChief,
+    health: 70,
+    maxHealth: 70,
+    pose: FighterPose.idle,
+  );
 }

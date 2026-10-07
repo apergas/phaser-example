@@ -47,6 +47,10 @@ import 'package:rpg/layers/domain/repositories/level/level_repository.dart'
     as _i38;
 import 'package:rpg/layers/domain/repositories/session/game_session_repository.dart'
     as _i745;
+import 'package:rpg/layers/domain/use-cases/arena/get_arena_use_case.dart'
+    as _i87;
+import 'package:rpg/layers/domain/use-cases/arena/start_fight_use_case.dart'
+    as _i258;
 import 'package:rpg/layers/domain/use-cases/game/advance_game_use_case.dart'
     as _i785;
 import 'package:rpg/layers/domain/use-cases/game/can_place_building_use_case.dart'
@@ -117,6 +121,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i368.StartGameUseCase>(
       () => _i368.StartGameUseCase(
         levelRepository: gh<_i38.LevelRepository>(),
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i87.GetArenaUseCase>(
+      () => _i87.GetArenaUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i258.StartFightUseCase>(
+      () => _i258.StartFightUseCase(
         sessionRepository: gh<_i745.GameSessionRepository>(),
       ),
     );

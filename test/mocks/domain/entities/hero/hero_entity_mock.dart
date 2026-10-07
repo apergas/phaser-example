@@ -23,4 +23,13 @@ abstract final class HeroEntityMock {
     clearedLevels: {ArenaLevelId.banditRookie},
     fightsFought: 3,
   );
+
+  static const HeroEntity afterFirstVictory = HeroEntity(clearedLevels: {ArenaLevelId.banditRookie}, fightsFought: 1);
+
+  static const HeroEntity afterFirstDefeat = HeroEntity(fightsFought: 1);
+
+  static const HeroEntity veteranAfterAnotherFight = HeroEntity(
+    clearedLevels: {ArenaLevelId.banditRookie},
+    fightsFought: 4,
+  );
 }

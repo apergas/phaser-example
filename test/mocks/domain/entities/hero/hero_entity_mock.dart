@@ -41,4 +41,6 @@ abstract final class HeroEntityMock {
     clearedLevels: {ArenaLevelId.banditRookie},
     skills: {SkillId.secondWind},
   );
+
+  static const HeroEntity withDoubleStrike = HeroEntity(skills: {SkillId.doubleStrike});
 }

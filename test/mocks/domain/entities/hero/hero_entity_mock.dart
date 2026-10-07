@@ -33,6 +33,8 @@ abstract final class HeroEntityMock {
     fightsFought: 4,
   );
 
+  static const HeroEntity withShortSword = HeroEntity(weaponTier: 1);
+
   static const HeroEntity dodgerAfterOneFight = HeroEntity(skills: {SkillId.dodge}, fightsFought: 1);
 
   static const HeroEntity veteranWithSecondWind = HeroEntity(

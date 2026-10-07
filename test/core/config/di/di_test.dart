@@ -16,6 +16,8 @@ import 'package:rpg/layers/domain/use-cases/game/get_quests_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/get_world_snapshot_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/move_player_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/start_game_use_case.dart';
+import 'package:rpg/layers/domain/use-cases/hero/buy_gear_use_case.dart';
+import 'package:rpg/layers/domain/use-cases/hero/get_gear_options_use_case.dart';
 import 'package:rpg/core/config/di/di.dart';
 import 'package:rpg/core/config/di/di_environment.dart';
 import 'package:rpg/core/config/di/locator.dart';
@@ -73,6 +75,8 @@ void main() {
       locator.isRegistered<GetQuestsUseCase>(),
       locator.isRegistered<GetArenaUseCase>(),
       locator.isRegistered<StartFightUseCase>(),
+      locator.isRegistered<BuyGearUseCase>(),
+      locator.isRegistered<GetGearOptionsUseCase>(),
       locator.isRegistered<LevelRepository>(),
       locator.isRegistered<GameSessionRepository>(),
       locator.isRegistered<LevelLocalDatasource>(),

@@ -40,7 +40,9 @@
       "gold": "{amount} de oro"
     },
     "blueprint": {
-      "house": "Casa"
+      "house": "Casa",
+      "forge": "Herrería",
+      "armory": "Armería"
     },
     "quest": {
       "pickUpAxe": "Recoge el hacha",
@@ -59,7 +61,40 @@
       "woodGained": "+{wood} de madera",
       "placing": "Elige dónde construir: {name}. Clic derecho o Esc para cancelar.",
       "buildingCompleted": "Construcción terminada: {name}",
-      "questCompleted": "Misión completada: {title}"
+      "questCompleted": "Misión completada: {title}",
+      "gearPurchased": "Has comprado: {name}",
+      "gearNotNextTier": "Antes tienes que comprar la pieza anterior."
+    },
+    "hero": {
+      "title": "Héroe",
+      "power": "Poder",
+      "attack": "Ataque",
+      "defense": "Defensa",
+      "health": "Vida",
+      "weaponStats": "Ataque {attack}",
+      "armorStats": "Defensa {defense} · Vida {health}",
+      "slot": {
+        "weapon": "Arma",
+        "armor": "Armadura"
+      },
+      "section": {
+        "gear": "Equipo",
+        "skills": "Habilidades"
+      },
+      "equipped": "En uso",
+      "buy": "Comprar",
+      "needsBuilding": "Construye la {name}",
+      "maxed": "Ya tienes la mejor pieza"
+    },
+    "gear": {
+      "woodcutterAxe": "Hacha de leñador",
+      "shortSword": "Espada corta",
+      "ironSword": "Espada de hierro",
+      "steelSword": "Espada de acero",
+      "workClothes": "Ropa de trabajo",
+      "leatherArmor": "Armadura de cuero",
+      "chainMail": "Cota de malla",
+      "plateArmor": "Armadura de placas"
     },
     "placement": {
       "confirm": "Construir aquí",

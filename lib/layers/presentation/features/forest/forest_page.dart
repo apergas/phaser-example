@@ -18,6 +18,9 @@ import '../../../domain/use-cases/game/get_quests_use_case.dart';
 import '../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
 import '../../../domain/use-cases/game/move_player_use_case.dart';
 import '../../../domain/use-cases/game/start_game_use_case.dart';
+import '../../../domain/use-cases/hero/buy_gear_use_case.dart';
+import '../../../domain/use-cases/hero/get_gear_options_use_case.dart';
+import '../../../domain/use-cases/hero/get_hero_status_use_case.dart';
 import 'bloc/forest_bloc.dart';
 import '../../theme/colors/custom_colors.dart';
 import '../../theme/styles/custom_text_styles.dart';
@@ -49,6 +52,9 @@ class ForestPage extends StatelessWidget {
         getWorldSnapshotUseCase: locator.get<GetWorldSnapshotUseCase>(),
         getBuildOptionsUseCase: locator.get<GetBuildOptionsUseCase>(),
         getQuestsUseCase: locator.get<GetQuestsUseCase>(),
+        getHeroStatusUseCase: locator.get<GetHeroStatusUseCase>(),
+        getGearOptionsUseCase: locator.get<GetGearOptionsUseCase>(),
+        buyGearUseCase: locator.get<BuyGearUseCase>(),
         navigationService: locator.get<NavigationService>(),
       )..add(const ForestStarted()),
       child: _ForestView(routeObserver: routeObserver),
@@ -174,6 +180,7 @@ class _ForestViewState extends State<_ForestView> with RouteAware {
     return HudOverlay(
       hud: hud,
       onBuildSelected: (blueprint) => bloc.add(ForestBuildRequested(blueprint: blueprint)),
+      onGearSelected: (gear) => bloc.add(ForestGearPurchaseRequested(gear: gear)),
       onArenaPressed: () => bloc.add(const ForestArenaRequested()),
     );
   }

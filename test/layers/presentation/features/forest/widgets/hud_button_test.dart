@@ -69,16 +69,16 @@ void main() {
     );
   });
 
-  testWidgets('testWhenAnIconIsGivenThenItIsShownBeforeTheLabel', (tester) async {
+  testWidgets('testWhenAnIconIsGivenThenItIsDrawnBeforeTheLabel', (tester) async {
     // given
-    final button = HudButton(label: Internationalize.forestArena, icon: CustomIcons.arena, onPressed: () {});
+    final button = HudButton(label: Internationalize.forestHero, icon: CustomIcons.hero, onPressed: () {});
 
     // when
     await tester.pumpHud(Center(child: button));
 
     // then
-    final icon = tester.getTopLeft(find.byType(SvgPicture));
-    final label = tester.getTopLeft(find.text(Internationalize.forestArena));
-    expect(icon.dx, lessThan(label.dx));
+    final icon = find.byType(SvgPicture);
+    expect(icon, findsOneWidget);
+    expect(tester.getCenter(icon).dx, lessThan(tester.getCenter(find.text(Internationalize.forestHero)).dx));
   });
 }

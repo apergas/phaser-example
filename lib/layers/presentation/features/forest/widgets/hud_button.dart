@@ -7,12 +7,12 @@ import 'hud_panel.dart';
 
 class HudButton extends StatelessWidget {
   final String label;
-  final String? badge;
   final String? icon;
+  final String? badge;
   final VoidCallback? onPressed;
   final bool isActive;
 
-  const HudButton({super.key, required this.label, this.badge, this.icon, this.onPressed, this.isActive = false});
+  const HudButton({super.key, required this.label, this.icon, this.badge, this.onPressed, this.isActive = false});
 
   @override
   Widget build(BuildContext context) {

@@ -15,6 +15,7 @@ import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
 import 'package:rpg/layers/presentation/features/forest/forest_page.dart';
 import 'package:rpg/layers/presentation/features/forest/game/atlas/lpc_assets_loader.dart';
 import 'package:rpg/layers/presentation/features/forest/game/forest_game.dart';
+import 'package:rpg/layers/presentation/features/forest/widgets/hero_panel.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_overlay.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/placement_bar.dart';
 
@@ -161,6 +162,19 @@ void main() {
     expect(find.byType(HudOverlay), findsOneWidget);
     expect(find.bySemanticsLabel(Internationalize.forestAccessibilityGameWorld), findsOneWidget);
     expect(find.byType(PlacementBar), findsNothing);
+  });
+
+  testWidgets('testWhenHeroIsTappedThenTheHeroPanelShowsTheHerosPower', (tester) async {
+    // given
+    await pumpGame(tester);
+
+    // when
+    await tester.tap(find.text(Internationalize.forestHero));
+    await tester.pump();
+
+    // then
+    expect(find.byType(HeroPanel), findsOneWidget);
+    expect(find.text(Internationalize.forestHeroPower), findsOneWidget);
   });
 
   testWidgets('testWhenEscapeIsPressedDuringPlacementThenThePlacementIsCancelled', (tester) async {

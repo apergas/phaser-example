@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import '../../../../../core/assets/i18n/internationalize.dart';
 import '../../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../../../core/config/constants/enum/forest/hud_menu.dart';
+import '../../../../../core/config/constants/enum/gear_id.dart';
 import '../../../theme/images/custom_icons.dart';
 import '../models/hud_data.dart';
 import 'build_menu.dart';
+import 'hero_panel.dart';
 import 'hud_button.dart';
 import 'quest_panel.dart';
 import 'resource_bar.dart';
@@ -16,9 +18,16 @@ class HudOverlay extends StatefulWidget {
 
   final HudData hud;
   final ValueChanged<BlueprintId> onBuildSelected;
+  final ValueChanged<GearId> onGearSelected;
   final VoidCallback onArenaPressed;
 
-  const HudOverlay({super.key, required this.hud, required this.onBuildSelected, required this.onArenaPressed});
+  const HudOverlay({
+    super.key,
+    required this.hud,
+    required this.onBuildSelected,
+    required this.onGearSelected,
+    required this.onArenaPressed,
+  });
 
   @override
   State<HudOverlay> createState() => _HudOverlayState();
@@ -98,6 +107,12 @@ class _HudOverlayState extends State<HudOverlay> {
           isActive: _openMenu == HudMenu.build,
           onPressed: widget.hud.isBuildLocked ? null : () => _toggle(HudMenu.build),
         ),
+        HudButton(
+          label: Internationalize.forestHero,
+          icon: CustomIcons.hero,
+          isActive: _openMenu == HudMenu.hero,
+          onPressed: () => _toggle(HudMenu.hero),
+        ),
         HudButton(label: Internationalize.forestArena, icon: CustomIcons.arena, onPressed: _onArenaPressed),
       ],
     );
@@ -107,6 +122,7 @@ class _HudOverlayState extends State<HudOverlay> {
     return switch (menu) {
       HudMenu.quests => QuestPanel(quests: widget.hud.quests),
       HudMenu.build => BuildMenu(items: widget.hud.buildItems, onSelected: _onBuildSelected),
+      HudMenu.hero => HeroPanel(hero: widget.hud.hero, onBuy: widget.onGearSelected),
     };
   }
 

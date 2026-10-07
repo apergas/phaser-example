@@ -79,6 +79,26 @@ void main() {
     expect(chip.isAlive(0.5), isFalse);
   });
 
+  test('testWhenGearIsBoughtThenTenSparklesRiseAroundTheHerosChest', () {
+    // given
+    const feet = ParticleMock.heroFeet;
+
+    // when
+    final sparkles = ParticleBursts.sparkles(feet: feet, random: ParticleMock.sparklesRandom);
+
+    // then
+    expect(sparkles, hasLength(10));
+    for (final sparkle in sparkles) {
+      expect(sparkle.kind, ParticleKind.sparkle);
+      expect(sparkle.origin.y, 126);
+      expect(sparkle.origin.x, inInclusiveRange(140, 160));
+      expect(_angleDegrees(sparkle.velocityX, sparkle.velocityY), inInclusiveRange(200, 340));
+      expect(sparkle.gravity, 0);
+      expect(sparkle.lifespanSeconds, 0.6);
+    }
+    expect(ParticleBursts.sparklesSortY(feet), 151);
+  });
+
   test('testWhenTheHeroHitsAnEnemyThenAFewDropsOfBloodFlyAwayFromHim', () {
     // given
     const impact = ParticleMock.trunkBase;

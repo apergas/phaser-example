@@ -49,7 +49,7 @@
 | C2 Pantalla de la arena | ✅ | `feature/PROJECT-X-arena` (#42) | Lleva unida C3 y resuelve los cruces; HUD con botones bajo la barra en pantallas estrechas. Decisiones provisionales a revisar en la fase de pruebas. |
 | C3 Herrería y Armería | ✅ | `feature/PROJECT-X-arena` (#41) | Herrería, Armería y panel *Héroe*; el oro llega con C2. |
 | C4 Lobos y oso | 📝 ficha | — | Necesita arte nuevo. Después de C2. |
-| C5 Torre de magia | 📝 ficha | — | Después de C3. |
+| C5 Torre de magia | 🟢 plan listo | — | Rama `feature/PROJECT-X-c5-mage-tower` desde arena; en paralelo con C4. |
 | C6 Bárbaros y jefe | 📝 ficha | — | Después de C4. |
 | C7 Misiones y equilibrado | 📝 ficha | — | Al final (después de C1, C3 y C5). |
 

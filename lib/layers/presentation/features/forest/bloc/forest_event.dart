@@ -47,3 +47,9 @@ final class ForestGearPurchaseRequested extends ForestEvent {
 final class ForestArenaRequested extends ForestEvent {
   const ForestArenaRequested();
 }
+
+final class ForestSkillLearnRequested extends ForestEvent {
+  final SkillId skill;
+
+  const ForestSkillLearnRequested({required this.skill});
+}

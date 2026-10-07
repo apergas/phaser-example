@@ -10,6 +10,7 @@ abstract final class HeroPanelDataMock {
     defense: 1,
     health: 30,
     rows: [GearRowDataMock.weaponNeedsForge, GearRowDataMock.armorNeedsArmory],
+    skills: SkillItemDataMock.withoutTower,
   );
 
   static HeroPanelData get newHeroCopy => HeroPanelData(
@@ -18,6 +19,7 @@ abstract final class HeroPanelDataMock {
     defense: 1,
     health: 30,
     rows: [GearRowDataMock.weaponNeedsForge, GearRowDataMock.armorNeedsArmory],
+    skills: SkillItemDataMock.withoutTower,
   );
 
   static HeroPanelData get readyToBuySword => HeroPanelData(
@@ -26,6 +28,7 @@ abstract final class HeroPanelDataMock {
     defense: 1,
     health: 30,
     rows: [GearRowDataMock.weaponReadyToBuy, GearRowDataMock.armorNeedsArmory],
+    skills: SkillItemDataMock.withoutTower,
   );
 
   static HeroPanelData get readyToLearnDoubleStrike => HeroPanelData(

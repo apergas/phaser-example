@@ -17,6 +17,7 @@ class ParticleBurstComponent extends Component {
   static const double sparkleSize = 3;
   static const Rect chipBody = Rect.fromLTWH(-1.5, -1, 3, 2);
   static const Rect chipHighlight = Rect.fromLTWH(-1.5, -1, 2, 1);
+  static const Color magicSparkleColor = Color(0xFF8FC8FF);
   static const Color bloodColor = Color(0xFF9E1B1B);
   static const Rect bloodDrop = Rect.fromLTWH(-1, -1, 2, 2);
 
@@ -49,14 +50,24 @@ class ParticleBurstComponent extends Component {
           _paint.color = dustColor.withValues(alpha: alpha);
           canvas.drawCircle(Offset(at.x, at.y), dustRadius * particle.scale(_ageSeconds), _paint);
         case ParticleKind.sparkle:
-          final size = sparkleSize * particle.scale(_ageSeconds);
-          _paint.color = sparkleColor.withValues(alpha: alpha);
-          canvas.drawRect(Rect.fromCenter(center: Offset(at.x, at.y), width: size, height: size), _paint);
+          _renderSparkle(canvas, at, sparkleSize * particle.scale(_ageSeconds), sparkleColor.withValues(alpha: alpha));
         case ParticleKind.bloodDrop:
           _paint.color = bloodColor.withValues(alpha: alpha);
           canvas.drawRect(bloodDrop.shift(Offset(at.x, at.y)), _paint);
+        case ParticleKind.magicSparkle:
+          _renderSparkle(
+            canvas,
+            at,
+            sparkleSize * particle.scale(_ageSeconds),
+            magicSparkleColor.withValues(alpha: alpha),
+          );
       }
     }
+  }
+
+  void _renderSparkle(Canvas canvas, PositionEntity at, double size, Color color) {
+    _paint.color = color;
+    canvas.drawRect(Rect.fromCenter(center: Offset(at.x, at.y), width: size, height: size), _paint);
   }
 
   void _renderChip(Canvas canvas, PositionEntity at, double rotationDegrees, double alpha) {

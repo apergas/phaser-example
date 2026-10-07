@@ -13,6 +13,8 @@ import 'package:rpg/layers/domain/use-cases/game/start_game_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/hero/buy_gear_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/hero/get_gear_options_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/hero/get_hero_status_use_case.dart';
+import 'package:rpg/layers/domain/use-cases/hero/get_skill_options_use_case.dart';
+import 'package:rpg/layers/domain/use-cases/hero/learn_skill_use_case.dart';
 import 'package:rpg/layers/domain/world/world.dart';
 import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
 import 'package:rpg/layers/presentation/features/forest/models/forest_effect.dart';
@@ -56,6 +58,8 @@ abstract final class ForestBlocMock {
       getHeroStatusUseCase: GetHeroStatusUseCase(sessionRepository: sessionRepository),
       getGearOptionsUseCase: GetGearOptionsUseCase(sessionRepository: sessionRepository),
       buyGearUseCase: BuyGearUseCase(sessionRepository: sessionRepository),
+      getSkillOptionsUseCase: GetSkillOptionsUseCase(sessionRepository: sessionRepository),
+      learnSkillUseCase: LearnSkillUseCase(sessionRepository: sessionRepository),
       navigationService: navigationService,
     );
   }

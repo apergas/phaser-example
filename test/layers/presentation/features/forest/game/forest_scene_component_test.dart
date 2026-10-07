@@ -175,6 +175,20 @@ void main() {
     expect(bursts.single.priority, greaterThan(scene.player!.priority));
   });
 
+  testWithFlameGame('testWhenASkillIsLearnedThenBlueSparklesBurstOnTheHero', (game) async {
+    // given
+    final scene = await _mountedScene(game);
+
+    // when
+    scene.show(ForestDataMock.skillLearned);
+    await game.ready();
+
+    // then
+    final bursts = scene.children.whereType<ParticleBurstComponent>();
+    expect(bursts, hasLength(1));
+    expect(bursts.single.priority, greaterThan(scene.player!.priority));
+  });
+
   testWithFlameGame('testWhenThePlacedBlueprintChangesThenTheGhostIsReplaced', (game) async {
     // given
     final scene = await _mountedScene(game);

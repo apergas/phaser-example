@@ -99,6 +99,24 @@ void main() {
     expect(ParticleBursts.sparklesSortY(feet), 151);
   });
 
+  test('testWhenASkillIsLearnedThenTheSameSparklesRiseInBlue', () {
+    // given
+    const feet = ParticleMock.heroFeet;
+    final gold = ParticleBursts.sparkles(feet: feet, random: ParticleMock.sparklesRandom);
+
+    // when
+    final blue = ParticleBursts.sparkles(
+      feet: feet,
+      random: ParticleMock.sparklesRandom,
+      kind: ParticleKind.magicSparkle,
+    );
+
+    // then
+    expect(blue.map((sparkle) => sparkle.kind).toSet(), {ParticleKind.magicSparkle});
+    expect(blue.map((sparkle) => sparkle.origin), gold.map((sparkle) => sparkle.origin));
+    expect(blue.map((sparkle) => sparkle.velocityX), gold.map((sparkle) => sparkle.velocityX));
+  });
+
   test('testWhenTheHeroHitsAnEnemyThenAFewDropsOfBloodFlyAwayFromHim', () {
     // given
     const impact = ParticleMock.trunkBase;

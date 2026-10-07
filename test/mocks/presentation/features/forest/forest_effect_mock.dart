@@ -1,4 +1,5 @@
 import 'package:rpg/core/config/constants/enum/gear_id.dart';
+import 'package:rpg/core/config/constants/enum/skill_id.dart';
 import 'package:rpg/layers/presentation/features/forest/models/forest_effect.dart';
 
 abstract final class ForestEffectMock {
@@ -17,4 +18,10 @@ abstract final class ForestEffectMock {
   static const GearPurchasedEffect shortSwordPurchasedCopy = GearPurchasedEffect(gear: GearId.shortSword);
 
   static const GearPurchasedEffect leatherArmorPurchased = GearPurchasedEffect(gear: GearId.leatherArmor);
+
+  static const SkillLearnedEffect doubleStrikeLearned = SkillLearnedEffect(skill: SkillId.doubleStrike);
+
+  static const SkillLearnedEffect doubleStrikeLearnedCopy = SkillLearnedEffect(skill: SkillId.doubleStrike);
+
+  static const SkillLearnedEffect dodgeLearned = SkillLearnedEffect(skill: SkillId.dodge);
 }

@@ -13,8 +13,11 @@ import '../../../../../core/config/constants/enum/forest/work_tool.dart';
 import '../../../../../core/config/constants/enum/gear_id.dart';
 import '../../../../../core/config/constants/enum/gear_option_state.dart';
 import '../../../../../core/config/constants/enum/gear_slot.dart';
+import '../../../../../core/config/constants/enum/learn_skill_result.dart';
 import '../../../../../core/config/constants/enum/player_activity.dart';
 import '../../../../../core/config/constants/enum/resource.dart';
+import '../../../../../core/config/constants/enum/skill_id.dart';
+import '../../../../../core/config/constants/enum/skill_option_state.dart';
 import '../../../../../core/config/constants/enum/tool_kind.dart';
 import '../../../../../core/error-handling/exceptions/app_exceptions.dart';
 import '../../../../../core/error-handling/exceptions/custom_exception.dart';
@@ -28,7 +31,9 @@ import '../../../../domain/entities/game/world_snapshot_entity.dart';
 import '../../../../domain/entities/gear/gear_entity.dart';
 import '../../../../domain/entities/gear/gear_option_entity.dart';
 import '../../../../domain/entities/geometry/position_entity.dart';
+import '../../../../domain/entities/hero/skill_option_entity.dart';
 import '../../../../domain/rules/gear.dart';
+import '../../../../domain/rules/skills.dart';
 import '../../../../domain/use-cases/game/advance_game_use_case.dart';
 import '../../../../domain/use-cases/game/can_place_building_use_case.dart';
 import '../../../../domain/use-cases/game/chop_tree_use_case.dart';
@@ -42,6 +47,8 @@ import '../../../../domain/use-cases/game/start_game_use_case.dart';
 import '../../../../domain/use-cases/hero/buy_gear_use_case.dart';
 import '../../../../domain/use-cases/hero/get_gear_options_use_case.dart';
 import '../../../../domain/use-cases/hero/get_hero_status_use_case.dart';
+import '../../../../domain/use-cases/hero/get_skill_options_use_case.dart';
+import '../../../../domain/use-cases/hero/learn_skill_use_case.dart';
 import '../../../../domain/world/extensions/inventory_rules.dart';
 import '../../arena/arena_page.dart';
 import '../models/build_item_data.dart';
@@ -55,6 +62,7 @@ import '../models/player_pose.dart';
 import '../models/player_render_data.dart';
 import '../models/quest_item_data.dart';
 import '../models/resource_item_data.dart';
+import '../models/skill_item_data.dart';
 import '../models/tool_item_data.dart';
 
 part 'forest_event.dart';
@@ -74,6 +82,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final GetHeroStatusUseCase _getHeroStatusUseCase;
   final GetGearOptionsUseCase _getGearOptionsUseCase;
   final BuyGearUseCase _buyGearUseCase;
+  final GetSkillOptionsUseCase _getSkillOptionsUseCase;
+  final LearnSkillUseCase _learnSkillUseCase;
   final NavigationService _navigationService;
 
   PositionEntity? _lastPosition;
@@ -95,6 +105,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._getHeroStatusUseCase,
     required this._getGearOptionsUseCase,
     required this._buyGearUseCase,
+    required this._getSkillOptionsUseCase,
+    required this._learnSkillUseCase,
     required this._navigationService,
   }) : super(const ForestInitial()) {
     on<ForestEvent>((event, emit) async {
@@ -106,6 +118,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         ForestBuildRequested() => _onBuildRequested(event, emit),
         ForestPlacementCancelled() => _onPlacementCancelled(event, emit),
         ForestGearPurchaseRequested() => _onGearPurchaseRequested(event, emit),
+        ForestSkillLearnRequested() => _onSkillLearnRequested(event, emit),
         ForestArenaRequested() => _onArenaRequested(event, emit),
       };
     });
@@ -252,6 +265,27 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     }
   }
 
+  Future<void> _onSkillLearnRequested(ForestSkillLearnRequested event, Emitter<ForestState> emit) async {
+    if (state is! ForestSuccess) return;
+    final effects = <ForestEffect>[];
+    _learnSkill(event.skill, effects: effects);
+    emit(ForestSuccess(data: _buildData(effects: effects)));
+  }
+
+  void _learnSkill(SkillId id, {required List<ForestEffect> effects}) {
+    switch (_learnSkillUseCase(id: id)) {
+      case LearnSkillResult.ok:
+        _showMessage(Internationalize.forestMessageSkillLearned(name: Internationalize.forestSkillName(id: id)));
+        effects.add(SkillLearnedEffect(skill: id));
+      case LearnSkillResult.missingBuilding:
+        _showMessage(Internationalize.forestHeroNeedsBuilding(name: _skillBuildingName));
+      case LearnSkillResult.alreadyKnown:
+        _showMessage(Internationalize.forestMessageSkillAlreadyKnown);
+      case LearnSkillResult.notEnoughResources:
+        _showMessage(Internationalize.forestMessageNotEnoughResources);
+    }
+  }
+
   void _react(GameEventEntity gameEvent, {required double fromX, required List<ForestEffect> effects}) {
     switch (gameEvent) {
       case ItemPickedUpEventEntity(:final itemId, :final kind):
@@ -372,6 +406,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       rows: [
         for (final slot in GearSlot.values) _gearRow(slot, options.where((option) => option.gear.slot == slot)),
       ],
+      skills: [for (final option in _getSkillOptionsUseCase()) _skillItem(option)],
     );
   }
 
@@ -408,6 +443,25 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   }
 
   String _workshopName(GearEntity gear) => Internationalize.forestBlueprint(id: Gear.workshopFor(gear.slot));
+
+  SkillItemData _skillItem(SkillOptionEntity option) {
+    final skill = option.skill;
+    return SkillItemData(
+      id: skill.id,
+      name: Internationalize.forestSkillName(id: skill.id),
+      description: Internationalize.forestSkillDescription(id: skill.id),
+      costText: option.state == SkillOptionState.known ? null : _amounts(skill.cost),
+      reasonText: switch (option.state) {
+        SkillOptionState.needsBuilding => Internationalize.forestHeroNeedsBuilding(name: _skillBuildingName),
+        SkillOptionState.unaffordable => Internationalize.forestMissing(amounts: _amounts(option.missing)),
+        SkillOptionState.known || SkillOptionState.available => null,
+      },
+      isKnown: option.state == SkillOptionState.known,
+      canLearn: option.canLearn,
+    );
+  }
+
+  String get _skillBuildingName => Internationalize.forestBlueprint(id: Skills.building);
 
   QuestItemData _questItem(QuestProgressEntity quest) {
     return QuestItemData(

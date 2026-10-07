@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flame/components.dart';
 
+import '../../../../../core/config/constants/enum/forest/particle_kind.dart';
 import '../../../../domain/entities/building/building_entity.dart';
 import '../../../../domain/entities/game/world_snapshot_entity.dart';
 import '../../../../domain/entities/geometry/position_entity.dart';
@@ -92,7 +93,9 @@ class ForestSceneComponent extends Component {
       case BuildingCompletedEffect(:final buildingId):
         _onBuildingCompleted(buildingId);
       case GearPurchasedEffect():
-        _onGearPurchased();
+        _sparkleOnPlayer(ParticleKind.sparkle);
+      case SkillLearnedEffect():
+        _sparkleOnPlayer(ParticleKind.magicSparkle);
     }
   }
 
@@ -139,13 +142,13 @@ class ForestSceneComponent extends Component {
     _buildings[buildingId]?.complete();
   }
 
-  void _onGearPurchased() {
+  void _sparkleOnPlayer(ParticleKind kind) {
     final player = _player;
     if (player == null) return;
     final feet = PositionEntity(x: player.position.x, y: player.position.y);
     add(
       ParticleBurstComponent(
-        particles: ParticleBursts.sparkles(feet: feet, random: _random),
+        particles: ParticleBursts.sparkles(feet: feet, random: _random, kind: kind),
         sortY: ParticleBursts.sparklesSortY(feet),
       ),
     );

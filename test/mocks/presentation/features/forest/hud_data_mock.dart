@@ -20,6 +20,8 @@ abstract final class HudDataMock {
 
   static HudData get withHeroReadyToBuy => _make(wood: 0, hero: HeroPanelDataMock.readyToBuySword);
 
+  static HudData get withSkillReadyToLearn => _make(wood: 0, hero: HeroPanelDataMock.readyToLearnDoubleStrike);
+
   static HudData get start => HudData(
     resources: [ResourceItemDataMock.wood(0)],
     tools: [ToolItemDataMock.axe(isOwned: false)],

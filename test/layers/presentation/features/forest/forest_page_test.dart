@@ -6,6 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/forest/hero_panel_section.dart';
+import 'package:rpg/core/config/constants/enum/skill_id.dart';
 import 'package:rpg/core/config/di/di.dart';
 import 'package:rpg/core/config/di/di_environment.dart';
 import 'package:rpg/core/config/di/locator.dart';
@@ -18,6 +20,7 @@ import 'package:rpg/layers/presentation/features/forest/game/forest_game.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hero_panel.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_overlay.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/placement_bar.dart';
+import 'package:rpg/layers/presentation/features/forest/widgets/skill_tile.dart';
 
 import '../../../../helpers/pump_until.dart';
 import '../../../../helpers/spanish_translations.dart';
@@ -175,6 +178,26 @@ void main() {
     // then
     expect(find.byType(HeroPanel), findsOneWidget);
     expect(find.text(Internationalize.forestHeroPower), findsOneWidget);
+  });
+
+  testWidgets('testWhenTheSkillsTabIsOpenedThenEachSkillAsksForTheMageTower', (tester) async {
+    // given
+    await pumpGame(tester);
+    await tester.tap(find.text(Internationalize.forestHero));
+    await tester.pump();
+
+    // when
+    await tester.tap(find.text(Internationalize.forestHeroSection(section: HeroPanelSection.skills)));
+    await tester.pump();
+
+    // then
+    expect(find.byType(SkillTile), findsNWidgets(SkillId.values.length));
+    expect(
+      find.text(
+        Internationalize.forestHeroNeedsBuilding(name: Internationalize.forestBlueprint(id: BlueprintId.mageTower)),
+      ),
+      findsNWidgets(SkillId.values.length),
+    );
   });
 
   testWidgets('testWhenEscapeIsPressedDuringPlacementThenThePlacementIsCancelled', (tester) async {

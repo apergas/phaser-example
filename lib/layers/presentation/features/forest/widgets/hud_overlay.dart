@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/assets/i18n/internationalize.dart';
 import '../../../../../core/config/constants/enum/blueprint_id.dart';
+import '../../../../../core/config/constants/enum/forest/hero_panel_section.dart';
 import '../../../../../core/config/constants/enum/forest/hud_menu.dart';
 import '../../../../../core/config/constants/enum/gear_id.dart';
+import '../../../../../core/config/constants/enum/skill_id.dart';
 import '../../../theme/images/custom_icons.dart';
 import '../models/hud_data.dart';
 import 'build_menu.dart';
@@ -21,6 +23,7 @@ class HudOverlay extends StatefulWidget {
   final ValueChanged<BlueprintId> onBuildSelected;
   final ValueChanged<GearId> onGearSelected;
   final VoidCallback onArenaPressed;
+  final ValueChanged<SkillId> onSkillSelected;
 
   const HudOverlay({
     super.key,
@@ -28,6 +31,7 @@ class HudOverlay extends StatefulWidget {
     required this.onBuildSelected,
     required this.onGearSelected,
     required this.onArenaPressed,
+    required this.onSkillSelected,
   });
 
   @override
@@ -147,7 +151,12 @@ class _HudOverlayState extends State<HudOverlay> {
     return switch (menu) {
       HudMenu.quests => QuestPanel(quests: widget.hud.quests),
       HudMenu.build => BuildMenu(items: widget.hud.buildItems, onSelected: _onBuildSelected),
-      HudMenu.hero => HeroPanel(hero: widget.hud.hero, onBuy: widget.onGearSelected),
+      HudMenu.hero => HeroPanel(
+        hero: widget.hud.hero,
+        onBuy: widget.onGearSelected,
+        onLearn: widget.onSkillSelected,
+        sections: HeroPanelSection.values,
+      ),
     };
   }
 

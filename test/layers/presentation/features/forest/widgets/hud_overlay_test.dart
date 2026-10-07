@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/forest/hero_panel_section.dart';
 import 'package:rpg/core/config/constants/enum/gear_id.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:rpg/core/config/constants/enum/skill_id.dart';
 import 'package:rpg/layers/presentation/features/forest/models/hud_data.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/build_menu.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/build_option_tile.dart';
@@ -14,6 +16,7 @@ import 'package:rpg/layers/presentation/features/forest/widgets/hud_overlay.dart
 import 'package:rpg/layers/presentation/features/forest/widgets/quest_panel.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/quest_row.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/resource_bar.dart';
+import 'package:rpg/layers/presentation/features/forest/widgets/skill_tile.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
 import '../../../../../helpers/spanish_translations.dart';
@@ -27,6 +30,7 @@ void main() {
     HudData hud, {
     List<GearId>? gears,
     VoidCallback? onArenaPressed,
+    List<SkillId>? skills,
   }) async {
     final selected = <BlueprintId>[];
     await tester.pumpHud(
@@ -35,6 +39,7 @@ void main() {
         onBuildSelected: selected.add,
         onGearSelected: (gears ?? []).add,
         onArenaPressed: onArenaPressed ?? () {},
+        onSkillSelected: (skills ?? []).add,
       ),
     );
     return selected;
@@ -186,6 +191,24 @@ void main() {
     // then
     expect(find.byType(HeroPanel), findsOneWidget);
     expect(gears, [GearId.shortSword]);
+  });
+
+  testWidgets('testWhenTheSkillsTabIsOpenedThenLearningReportsTheSkill', (tester) async {
+    // given
+    final skills = <SkillId>[];
+    await pumpOverlay(tester, HudDataMock.withSkillReadyToLearn, skills: skills);
+    await tester.tap(find.text(Internationalize.forestHero));
+    await tester.pump();
+
+    // when
+    await tester.tap(find.text(Internationalize.forestHeroSection(section: HeroPanelSection.skills)));
+    await tester.pump();
+    await tester.tap(find.byKey(SkillTile.learnKey(SkillId.doubleStrike)));
+    await tester.pump();
+
+    // then
+    expect(find.byType(SkillTile), findsNWidgets(3));
+    expect(skills, [SkillId.doubleStrike]);
   });
 
   testWidgets('testWhenBuildIsTappedWhileTheHeroPanelIsOpenThenOnlyTheBuildMenuIsShown', (tester) async {

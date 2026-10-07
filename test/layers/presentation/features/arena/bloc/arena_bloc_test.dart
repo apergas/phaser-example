@@ -224,6 +224,51 @@ void main() {
   );
 
   blocTest<ArenaBloc, ArenaState>(
+    'testWhenTheWolfStrikesThenItLeapsAtTheHero',
+    build: () {
+      // given
+      world = WorldMock.withHero(HeroEntityMock.veteran);
+      return ArenaBlocMock.make(world, navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      bloc
+        ..add(const ArenaStarted())
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickFor(bloc, 1248);
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(bloc.state.data.selected, ArenaLevelId.wolf);
+      expect(bloc.state.data.fighters[1], FighterRenderDataMock.wolfLeaping(248 / 600));
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
+    'testWhenTheHeroStrikesTheSecondWolfOfThePackThenThatWolfIsItsTarget',
+    build: () {
+      // given
+      world = WorldMock.withHero(HeroEntityMock.packHunter);
+      return ArenaBlocMock.make(world, navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      bloc
+        ..add(const ArenaStarted())
+        ..add(const ArenaLevelSelected(levelId: ArenaLevelId.wolfPack))
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickFor(bloc, 4848);
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      final hero = bloc.state.data.fighters.first;
+      expect((hero.pose, hero.targetIndex), (FighterPose.attack, 1));
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
     'testWhenTheReplayEndsThenEveryTurnPlayedOnceAndTheVictoryIsShown',
     build: () {
       // given

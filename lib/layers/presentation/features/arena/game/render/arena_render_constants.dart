@@ -27,6 +27,21 @@ abstract final class ArenaRenderConstants {
     EnemyKind.wolf || EnemyKind.bear => 1,
   };
 
+  static const List<int> wolfBiteSequence = [0, 1, 1, 2, 2, 3, 4, 0];
+  static const List<int> bearSwipeSequence = [0, 1, 1, 2, 2, 2, 1, 0];
+
+  static List<int>? leapSequence(EnemyKind? kind) => switch (kind) {
+    null || EnemyKind.bandit || EnemyKind.barbarian || EnemyKind.barbarianChief => null,
+    EnemyKind.wolf => wolfBiteSequence,
+    EnemyKind.bear => bearSwipeSequence,
+  };
+
+  static const double leapOutShare = 0.4;
+  static const double leapBackShare = 0.6;
+  static const double leapGap = 30;
+  static const double leapHeight = 10;
+  static const double beastShadowWidth = 44;
+
   static const double impactHeight = 28;
   static const double floatingTextHeight = 36;
   static const double hurtBlinkMs = 300;

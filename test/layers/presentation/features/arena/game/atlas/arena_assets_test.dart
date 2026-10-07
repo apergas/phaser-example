@@ -12,7 +12,7 @@ void main() {
     final assets = ArenaAssetsMock.create();
 
     // when
-    void lookUp() => assets.frame('wolf-idle-0');
+    void lookUp() => assets.frame('dragon-idle-0');
 
     // then
     expect(lookUp, throwsArgumentError);

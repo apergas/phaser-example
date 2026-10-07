@@ -13,6 +13,8 @@ class ParticleBurstComponent extends Component {
   static const Color chipLight = Color(0xFFC89A5E);
   static const Color dustColor = Color(0xFFD8CDB0);
   static const double dustRadius = 3;
+  static const Color sparkleColor = Color(0xFFF4D77A);
+  static const double sparkleSize = 3;
   static const Rect chipBody = Rect.fromLTWH(-1.5, -1, 3, 2);
   static const Rect chipHighlight = Rect.fromLTWH(-1.5, -1, 2, 1);
 
@@ -44,6 +46,10 @@ class ParticleBurstComponent extends Component {
         case ParticleKind.dust:
           _paint.color = dustColor.withValues(alpha: alpha);
           canvas.drawCircle(Offset(at.x, at.y), dustRadius * particle.scale(_ageSeconds), _paint);
+        case ParticleKind.sparkle:
+          final size = sparkleSize * particle.scale(_ageSeconds);
+          _paint.color = sparkleColor.withValues(alpha: alpha);
+          canvas.drawRect(Rect.fromCenter(center: Offset(at.x, at.y), width: size, height: size), _paint);
       }
     }
   }

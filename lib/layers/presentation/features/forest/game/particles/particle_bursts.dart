@@ -31,6 +31,18 @@ abstract final class ParticleBursts {
   static const double dustScaleStart = 0.8;
   static const double dustScaleEnd = 0.2;
   static const double sortYOffset = 1;
+  static const int sparklesPerPurchase = 10;
+  static const double sparkleLift = 24;
+  static const double sparkleSpreadX = 10;
+  static const double sparkleAngleMin = 200;
+  static const double sparkleAngleMax = 340;
+  static const double sparkleSpeedMin = 15;
+  static const double sparkleSpeedMax = 40;
+  static const double sparkleLifespanSeconds = 0.6;
+  static const double sparkleAlphaStart = 1;
+  static const double sparkleAlphaEnd = 0;
+  static const double sparkleScaleStart = 1;
+  static const double sparkleScaleEnd = 0.4;
 
   static List<Particle> woodChips({
     required PositionEntity trunkBase,
@@ -77,6 +89,28 @@ abstract final class ParticleBursts {
       );
     });
   }
+
+  static List<Particle> sparkles({required PositionEntity feet, required math.Random random}) {
+    return List.generate(sparklesPerPurchase, (_) {
+      final speed = _between(random, sparkleSpeedMin, sparkleSpeedMax);
+      final angle = _between(random, sparkleAngleMin, sparkleAngleMax) * math.pi / 180;
+      return Particle(
+        kind: ParticleKind.sparkle,
+        origin: PositionEntity(x: feet.x + _between(random, -sparkleSpreadX, sparkleSpreadX), y: feet.y - sparkleLift),
+        velocityX: speed * math.cos(angle),
+        velocityY: speed * math.sin(angle),
+        gravity: 0,
+        rotationDegrees: 0,
+        lifespanSeconds: sparkleLifespanSeconds,
+        alphaStart: sparkleAlphaStart,
+        alphaEnd: sparkleAlphaEnd,
+        scaleStart: sparkleScaleStart,
+        scaleEnd: sparkleScaleEnd,
+      );
+    });
+  }
+
+  static double sparklesSortY(PositionEntity feet) => feet.y + sortYOffset;
 
   static double chipsSortY(PositionEntity trunkBase) => trunkBase.y + sortYOffset;
 

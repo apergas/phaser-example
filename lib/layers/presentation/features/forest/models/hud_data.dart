@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 
 import 'build_item_data.dart';
+import 'hero_panel_data.dart';
 import 'quest_item_data.dart';
 import 'resource_item_data.dart';
 import 'tool_item_data.dart';
@@ -12,6 +13,7 @@ class HudData {
   final List<QuestItemData> quests;
   final List<BuildItemData> buildItems;
   final bool isBuildLocked;
+  final HeroPanelData hero;
 
   const HudData({
     required this.resources,
@@ -20,6 +22,7 @@ class HudData {
     required this.quests,
     required this.buildItems,
     required this.isBuildLocked,
+    required this.hero,
   });
 
   @override
@@ -31,7 +34,8 @@ class HudData {
           other.questBadge == questBadge &&
           const ListEquality<QuestItemData>().equals(other.quests, quests) &&
           const ListEquality<BuildItemData>().equals(other.buildItems, buildItems) &&
-          other.isBuildLocked == isBuildLocked;
+          other.isBuildLocked == isBuildLocked &&
+          other.hero == hero;
 
   @override
   int get hashCode => Object.hash(
@@ -41,5 +45,6 @@ class HudData {
     Object.hashAll(quests),
     Object.hashAll(buildItems),
     isBuildLocked,
+    hero,
   );
 }

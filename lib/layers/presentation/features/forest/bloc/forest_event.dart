@@ -37,3 +37,9 @@ final class ForestBuildRequested extends ForestEvent {
 final class ForestPlacementCancelled extends ForestEvent {
   const ForestPlacementCancelled();
 }
+
+final class ForestGearPurchaseRequested extends ForestEvent {
+  final GearId gear;
+
+  const ForestGearPurchaseRequested({required this.gear});
+}

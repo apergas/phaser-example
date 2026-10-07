@@ -4,11 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/assets/i18n/internationalize.dart';
 import '../../../../../core/config/constants/enum/blueprint_id.dart';
+import '../../../../../core/config/constants/enum/buy_gear_result.dart';
 import '../../../../../core/config/constants/enum/chop_result.dart';
 import '../../../../../core/config/constants/enum/construction_rejection.dart';
 import '../../../../../core/config/constants/enum/forest/facing.dart';
 import '../../../../../core/config/constants/enum/forest/quest_item_status.dart';
 import '../../../../../core/config/constants/enum/forest/work_tool.dart';
+import '../../../../../core/config/constants/enum/gear_id.dart';
+import '../../../../../core/config/constants/enum/gear_option_state.dart';
+import '../../../../../core/config/constants/enum/gear_slot.dart';
 import '../../../../../core/config/constants/enum/player_activity.dart';
 import '../../../../../core/config/constants/enum/resource.dart';
 import '../../../../../core/config/constants/enum/tool_kind.dart';
@@ -21,7 +25,10 @@ import '../../../../domain/entities/game/game_event_entity.dart';
 import '../../../../domain/entities/game/player_status_entity.dart';
 import '../../../../domain/entities/game/quest_progress_entity.dart';
 import '../../../../domain/entities/game/world_snapshot_entity.dart';
+import '../../../../domain/entities/gear/gear_entity.dart';
+import '../../../../domain/entities/gear/gear_option_entity.dart';
 import '../../../../domain/entities/geometry/position_entity.dart';
+import '../../../../domain/rules/gear.dart';
 import '../../../../domain/use-cases/game/advance_game_use_case.dart';
 import '../../../../domain/use-cases/game/can_place_building_use_case.dart';
 import '../../../../domain/use-cases/game/chop_tree_use_case.dart';
@@ -32,9 +39,15 @@ import '../../../../domain/use-cases/game/get_quests_use_case.dart';
 import '../../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
 import '../../../../domain/use-cases/game/move_player_use_case.dart';
 import '../../../../domain/use-cases/game/start_game_use_case.dart';
+import '../../../../domain/use-cases/hero/buy_gear_use_case.dart';
+import '../../../../domain/use-cases/hero/get_gear_options_use_case.dart';
+import '../../../../domain/use-cases/hero/get_hero_status_use_case.dart';
 import '../../../../domain/world/extensions/inventory_rules.dart';
 import '../models/build_item_data.dart';
 import '../models/forest_effect.dart';
+import '../models/gear_item_data.dart';
+import '../models/gear_row_data.dart';
+import '../models/hero_panel_data.dart';
 import '../models/hud_data.dart';
 import '../models/placement_data.dart';
 import '../models/player_pose.dart';
@@ -57,6 +70,9 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final GetWorldSnapshotUseCase _getWorldSnapshotUseCase;
   final GetBuildOptionsUseCase _getBuildOptionsUseCase;
   final GetQuestsUseCase _getQuestsUseCase;
+  final GetHeroStatusUseCase _getHeroStatusUseCase;
+  final GetGearOptionsUseCase _getGearOptionsUseCase;
+  final BuyGearUseCase _buyGearUseCase;
   final NavigationService _navigationService;
 
   PositionEntity? _lastPosition;
@@ -75,6 +91,9 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._getWorldSnapshotUseCase,
     required this._getBuildOptionsUseCase,
     required this._getQuestsUseCase,
+    required this._getHeroStatusUseCase,
+    required this._getGearOptionsUseCase,
+    required this._buyGearUseCase,
     required this._navigationService,
   }) : super(const ForestInitial()) {
     on<ForestEvent>((event, emit) async {
@@ -85,6 +104,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         ForestPointerMoved() => _onPointerMoved(event, emit),
         ForestBuildRequested() => _onBuildRequested(event, emit),
         ForestPlacementCancelled() => _onPlacementCancelled(event, emit),
+        ForestGearPurchaseRequested() => _onGearPurchaseRequested(event, emit),
       };
     });
   }
@@ -202,6 +222,27 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     }
   }
 
+  Future<void> _onGearPurchaseRequested(ForestGearPurchaseRequested event, Emitter<ForestState> emit) async {
+    if (state is! ForestSuccess) return;
+    final effects = <ForestEffect>[];
+    _buyGear(event.gear, effects: effects);
+    emit(ForestSuccess(data: _buildData(effects: effects)));
+  }
+
+  void _buyGear(GearId id, {required List<ForestEffect> effects}) {
+    switch (_buyGearUseCase(id: id)) {
+      case BuyGearResult.ok:
+        _showMessage(Internationalize.forestMessageGearPurchased(name: Internationalize.forestGear(id: id)));
+        effects.add(GearPurchasedEffect(gear: id));
+      case BuyGearResult.missingBuilding:
+        _showMessage(Internationalize.forestHeroNeedsBuilding(name: _workshopName(Gear.byId(id))));
+      case BuyGearResult.notNextTier:
+        _showMessage(Internationalize.forestMessageGearNotNextTier);
+      case BuyGearResult.notEnoughResources:
+        _showMessage(Internationalize.forestMessageNotEnoughResources);
+    }
+  }
+
   void _react(GameEventEntity gameEvent, {required double fromX, required List<ForestEffect> effects}) {
     switch (gameEvent) {
       case ItemPickedUpEventEntity(:final itemId, :final kind):
@@ -307,8 +348,57 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       quests: [for (final quest in quests) _questItem(quest)],
       buildItems: [for (final option in _getBuildOptionsUseCase()) _buildItem(option)],
       isBuildLocked: _placement != null,
+      hero: _heroPanel(),
     );
   }
+
+  HeroPanelData _heroPanel() {
+    final status = _getHeroStatusUseCase();
+    final options = _getGearOptionsUseCase();
+    return HeroPanelData(
+      power: status.power,
+      attack: status.stats.attack,
+      defense: status.stats.defense,
+      health: status.stats.health,
+      rows: [
+        for (final slot in GearSlot.values) _gearRow(slot, options.where((option) => option.gear.slot == slot)),
+      ],
+    );
+  }
+
+  GearRowData _gearRow(GearSlot slot, Iterable<GearOptionEntity> options) {
+    final equipped = options.firstWhere((option) => option.state == GearOptionState.equipped);
+    final next = options.firstWhereOrNull(
+      (option) => option.state != GearOptionState.equipped && option.state != GearOptionState.locked,
+    );
+    return GearRowData(
+      slot: slot,
+      title: Internationalize.forestHeroSlot(slot: slot),
+      equipped: _gearItem(equipped),
+      next: next == null ? null : _gearItem(next),
+    );
+  }
+
+  GearItemData _gearItem(GearOptionEntity option) {
+    final gear = option.gear;
+    return GearItemData(
+      id: gear.id,
+      name: Internationalize.forestGear(id: gear.id),
+      statsText: switch (gear.slot) {
+        GearSlot.weapon => Internationalize.forestHeroWeaponStats(attack: gear.attack),
+        GearSlot.armor => Internationalize.forestHeroArmorStats(defense: gear.defense, health: gear.health),
+      },
+      costText: option.state == GearOptionState.equipped ? null : _amounts(gear.cost),
+      reasonText: switch (option.state) {
+        GearOptionState.needsBuilding => Internationalize.forestHeroNeedsBuilding(name: _workshopName(gear)),
+        GearOptionState.unaffordable => Internationalize.forestMissing(amounts: _amounts(option.missing)),
+        GearOptionState.equipped || GearOptionState.available || GearOptionState.locked => null,
+      },
+      canBuy: option.canBuy,
+    );
+  }
+
+  String _workshopName(GearEntity gear) => Internationalize.forestBlueprint(id: Gear.workshopFor(gear.slot));
 
   QuestItemData _questItem(QuestProgressEntity quest) {
     return QuestItemData(

@@ -99,7 +99,7 @@ C1 ─▶ C2 ─▶ C4 ─▶ C6                      C3 ─▶ C5 ──┬─�
 La arena no entra en `develop` fase a fase. Se acumula en una rama de integración, **`feature/PROJECT-X-arena`**, que se fusiona en `develop` **una sola vez**, cuando el modo esté completo. Así `develop`, `main` y la web publicada nunca tienen la arena a medias.
 
 - **Ramas de fase:** cada fase (C2, C3…) sale de `feature/PROJECT-X-arena` (ya con las anteriores fusionadas) y su PR va hacia esa rama, no hacia `develop`.
-- **Traer `develop` a menudo:** cada vez que se fusiona en `develop` una fase de la aldea, se ejecuta `git merge develop` en `feature/PROJECT-X-arena`.
+- **Traer `develop` a menudo:** la aldea vive en `feature/PROJECT-X-town` y pasa a `develop` por bloques (README de la aldea, sección 3.0). Cada vez que entra un bloque de la aldea (o documentación) en `develop`, se ejecuta `git merge develop` en `feature/PROJECT-X-arena`.
   - Los conflictos y los cruces de la sección 3.2 se resuelven en ese momento, en un commit propio.
   - La arena siempre "llega segunda", así que **todos los cruces los resuelve el flujo de la arena**.
 - **Tests a mano:** el CI (`deploy.yml`) sólo se lanza con `main`. Tras cada unión en `feature/PROJECT-X-arena` hay que ejecutar la batería de cierre de fase (`build_runner` + `git diff`, `flutter analyze`, `flutter test`, tests en Chrome).

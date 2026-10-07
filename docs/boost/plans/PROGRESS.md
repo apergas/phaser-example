@@ -16,15 +16,21 @@
 
 | Rama | Contenido | Destino |
 |---|---|---|
-| `develop` | La aldea, que avanza fase a fase, y todos los planes (`docs/`). | `main` (publicado en GitHub Pages) |
+| `develop` | Lo integrado de las dos partes y todos los planes (`docs/`). | `main` (publicado en GitHub Pages) |
+| `feature/PROJECT-X-town` | Integración de la aldea: las fases F terminadas. | `develop`, por bloques jugables (README de la aldea, sección 3.0) |
 | `feature/PROJECT-X-arena` | Integración de la arena: todo `develop` más las fases C terminadas. | `develop`, una sola vez, cuando la arena esté completa (README de la arena, sección 3.0) |
+
+**Bloques de la aldea** (cada uno pasa a `develop` cuando está completo):
+- **Bloque 1:** F1–F4 (árboles, guardado, rebrote y misiones).
+- **Bloque 2:** F5–F8 (piedra, almacén, cantera y taller).
+- **Bloque 3 en adelante:** F9–F15, cuando se replanifiquen.
 
 ## Aldea
 
 | Fase | Estado | Dónde está | Notas |
 |---|---|---|---|
-| F0 Generalizar recursos, herramientas y edificios | ✅ | `develop` (#6) | Incluye el arreglo de las líneas del suelo. |
-| F1 Árboles con personalidad | 🟢 plan listo | — | Rama `feature/PROJECT-X-f1-…` desde `develop`. |
+| F0 Generalizar recursos, herramientas y edificios | ✅ | `develop` (#6), anterior a `town` | Incluye el arreglo de las líneas del suelo. |
+| F1 Árboles con personalidad | 🟢 plan listo | — | Rama `feature/PROJECT-X-f1-…` desde `feature/PROJECT-X-town`. |
 | F2 Guardado automático | 📝 ficha | — | Antes de empezar: decidir cómo queda la sesión en el datasource (entidad frente a DBO). |
 | F3 Rebrote de árboles | 📝 ficha | — | Después de F1. |
 | F4 Misiones, capítulo 1 | 📝 ficha | — | Después de F3. |
@@ -50,4 +56,4 @@
 ## Siguiente paso
 
 - **Arena:** crear `feature/PROJECT-X-c2-arena-screen` y `feature/PROJECT-X-c3-forge-armory` desde `feature/PROJECT-X-arena` e implementarlas.
-- **Aldea:** implementar F1 desde `develop`.
+- **Aldea:** implementar F1 desde `feature/PROJECT-X-town`.

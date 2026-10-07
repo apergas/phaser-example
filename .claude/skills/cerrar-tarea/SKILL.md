@@ -44,9 +44,9 @@ Haz el commit junto al código: `[PROJECT-X]: <imperative description>`, en un c
 Confirma con el usuario antes de hacer *push* y abrir el PR.
 
 ```bash
-git fetch origin && git rebase origin/develop        # arena (C*): origin/feature/PROJECT-X-arena
+git fetch origin && git merge origin/feature/PROJECT-X-town   # arena (C*): origin/feature/PROJECT-X-arena
 git push -u origin HEAD
-gh pr create --repo apergas/phaser-example --base develop --title "[PROJECT-X]: <title>" --body "<resumen>
+gh pr create --repo apergas/phaser-example --base feature/PROJECT-X-town --title "[PROJECT-X]: <title>" --body "<resumen>
 
 Cómo probarlo:
 <pasos de la tarea>
@@ -55,9 +55,11 @@ Closes #<n>"
 gh issue comment <n> --repo apergas/phaser-example --body "PR abierto: <url>. Verificado: <comandos en verde y plataformas probadas>. Pendiente: <si algo quedó sin verificar>"
 ```
 
-- **Conflicto de rebase en `lib/core/assets/images/lpc/forest.{png,json}` o `arena.{png,json}`:** toma la versión de `develop`, ejecuta `cd asset-packs/lpc && python3 build_assets.py` y añade el resultado.
+- **Conflicto al unir ramas en `lib/core/assets/images/lpc/forest.{png,json}` o `arena.{png,json}`:** toma la versión de `develop`, ejecuta `cd asset-packs/lpc && python3 build_assets.py` y añade el resultado.
 - **Conflicto en `di.config.dart` o en un `*.mocks.dart`:** toma cualquiera de las dos versiones, ejecuta `dart run build_runner build --delete-conflicting-outputs` y añade el resultado.
 - **Arena (fases C\*):** la PR va a `feature/PROJECT-X-arena` (`--base feature/PROJECT-X-arena`), no a `develop`. Ver la sección 3.0 del README de la arena.
+- **Aldea (fases F\*):** la PR va a `feature/PROJECT-X-town`. El paso de `town` a `develop` es por bloques (sección 3.0 del README de la aldea) y no lo hace esta skill.
+- **Solo documentación** (planes, `PROGRESS.md`): PR directa a `develop`.
 - Tras resolver un conflicto, vuelve a ejecutar la batería del paso 1.
 - Si existe el Project, mueve la tarjeta a *Review*.
 

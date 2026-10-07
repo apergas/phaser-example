@@ -133,7 +133,23 @@ F1 ─▶ F3 ─▶ F4 ─▶ F5 ──────┐                F2 ─▶ 
 
 ## 3. Reglas de trabajo en paralelo
 
-- **Rama por tarea:** `feature/PROJECT-X-<fase>-<tarea>`, por ejemplo `feature/PROJECT-X-f0-domain`. Sale de `develop`; PR a `develop`. Antes de abrir el PR, *rebase* sobre `develop`.
+### 3.0 Rama de integración de la aldea (decidido el 2026-10-07)
+
+Las fases de la aldea no van directamente a `develop`. Se acumulan en **`feature/PROJECT-X-town`**, que pasa a `develop` **por bloques jugables**:
+
+| Bloque | Fases | Qué se puede jugar al pasar a `develop` |
+|---|---|---|
+| 1 | F1–F4 | Árboles distintos, guardado, rebrote y misiones del capítulo 1. |
+| 2 | F5–F8 | Piedra, almacén, cantera y taller. |
+| 3 en adelante | F9–F15 | Se definen al replanificar. |
+
+- **Ramas de fase o de tarea:** salen de `feature/PROJECT-X-town` y su PR va hacia esa rama, no hacia `develop`.
+- **Cerrar un bloque:** una PR de `feature/PROJECT-X-town` a `develop`, con la prueba manual completa en web, Android e iOS. Después, el flujo de la arena hace `git merge develop` en `feature/PROJECT-X-arena` y resuelve ahí los cruces (sección 6).
+- **Tests a mano:** el CI sólo se lanza con `main`, así que tras cada unión en `feature/PROJECT-X-town` se ejecuta la batería de cierre de fase.
+- **La documentación sí va a `develop`:** planes, casillas, desviaciones y `PROGRESS.md`, en PR propias, como en la arena.
+- **Si `develop` cambia por otra vía** (documentación, un arreglo urgente): `git merge develop` en `feature/PROJECT-X-town`. Siempre `merge`, nunca `rebase`, para no cambiar los identificadores de los commits.
+
+- **Rama por tarea:** `feature/PROJECT-X-<fase>-<tarea>`, por ejemplo `feature/PROJECT-X-f1-domain`. Sale de `feature/PROJECT-X-town`; PR a `feature/PROJECT-X-town` (sección 3.0). Antes de abrir el PR, `git merge` de `feature/PROJECT-X-town` en la rama.
 - **Cada tarea deja `develop` en verde:** al ser una sola app, una tarea que cambia una API del dominio adapta en el mismo PR todo lo que la usa (BLoC, widgets, componentes y tests). No se dejan APIs `@Deprecated` a medias.
 - **Persistencia (a partir de F2):**
   - Cada fase que añade estado lo añade también al guardado y sube `SaveDBO.currentVersion`.
@@ -212,7 +228,7 @@ Resumen; el detalle está en la sección 3 del [README del plan de la arena](../
 
 - **Dependencia dura:** sólo **F0 → C0** (el oro es un `Resource`). Ninguna fase F depende de una fase C.
 - **Regla de los cruces:** lo resuelve **la fase que se fusiona segunda**, en el mismo PR. Así cada plan se puede implementar sin el otro.
-- **La arena vive en `feature/PROJECT-X-arena` hasta estar completa** (sección 3.0 del README de la arena). Para este plan, eso significa que en `develop` **la arena todavía no está**: las notas *Si la arena ya está* no se aplican y las fases de la aldea se hacen como si la arena no existiera. Los cruces los resuelve el flujo de la arena al traer `develop` a su rama.
+- **La arena vive en `feature/PROJECT-X-arena` hasta estar completa** (sección 3.0 del README de la arena), y la aldea en `feature/PROJECT-X-town`, que pasa a `develop` por bloques (sección 3.0). Para este plan, eso significa que en `develop` **la arena todavía no está**: las notas *Si la arena ya está* no se aplican y las fases de la aldea se hacen como si la arena no existiera. Los cruces los resuelve el flujo de la arena al traer `develop` a su rama.
 - **Lo que este plan debe respetar si C0 ya está en `develop`:**
   - El `World` tiene `hero` / `updateHero` y la caja `funds` / `earn` / `spend`. Las fases que tocan el inventario o el stock mantienen esos métodos funcionando y sus tests (`world_funds_test.dart`, `world_hero_test.dart`) en verde.
   - `Resource.gold` existe. Los recursos nuevos (`stone`, `food`) se añaden al final del enum, después de `gold`.

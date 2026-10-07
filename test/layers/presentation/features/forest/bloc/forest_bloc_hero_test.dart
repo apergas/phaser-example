@@ -154,6 +154,7 @@ void main() {
     },
     act: (bloc) {
       // when
+      effects = ForestBlocMock.collectEffects(bloc);
       bloc
         ..add(const ForestStarted())
         ..add(const ForestGearPurchaseRequested(gear: GearId.ironSword));
@@ -161,7 +162,35 @@ void main() {
     wait: Duration.zero,
     verify: (bloc) {
       // then
+      expect(effects.whereType<GearPurchasedEffect>(), isEmpty);
       expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessageGearNotNextTier));
+    },
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenBuyingTheSwordWithShortFundsThenSaysThereAreNotEnoughResources',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        GearScenarioMock.withForge(funds: FundsMock.fiveGoldShortOfShortSword),
+        navigationService: navigationService,
+      );
+    },
+    act: (bloc) {
+      // when
+      effects = ForestBlocMock.collectEffects(bloc);
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestGearPurchaseRequested(gear: GearId.shortSword));
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(effects.whereType<GearPurchasedEffect>(), isEmpty);
+      expect(
+        ForestBlocMock.shownMessages(navigationService),
+        contains(Internationalize.forestMessageNotEnoughResources),
+      );
     },
   );
 }

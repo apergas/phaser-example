@@ -50,6 +50,6 @@ Assembled from "[LPC] Thatched-roof Cottage" (timber-frame and stone walls, that
 <https://opengameart.org/content/lpc-thatched-roof-cottage>,
 <https://opengameart.org/content/lpc-windows-doors>.
 The forge and armory roofs are recoloured (dark grey, red); the forge chimney is a stone block
-from the LPC Tile Atlas below.
+from the LPC Tile Atlas above.
 
 The stump (`stump` frame) comes from the LPC Tile Atlas above.

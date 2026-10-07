@@ -78,6 +78,7 @@ class _HeroPanelState extends State<HeroPanel> {
     return Semantics(
       label: label,
       value: '$value',
+      excludeSemantics: true,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         spacing: 6,

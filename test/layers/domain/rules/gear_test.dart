@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/gear_id.dart';
 import 'package:rpg/core/config/constants/enum/gear_slot.dart';
 import 'package:rpg/layers/domain/entities/gear/gear_entity.dart';
@@ -75,5 +76,17 @@ void main() {
 
     // then
     expect((gear.slot, gear.tier), (GearSlot.armor, 2));
+  });
+
+  test('testWhenAskingWhereGearIsSoldThenWeaponsAreAtTheForgeAndArmorAtTheArmory', () {
+    // given
+    const weapon = GearSlot.weapon;
+    const armor = GearSlot.armor;
+
+    // when
+    final workshops = (Gear.workshopFor(weapon), Gear.workshopFor(armor));
+
+    // then
+    expect(workshops, (BlueprintId.forge, BlueprintId.armory));
   });
 }

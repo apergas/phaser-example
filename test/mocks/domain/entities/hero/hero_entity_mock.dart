@@ -32,4 +32,6 @@ abstract final class HeroEntityMock {
     clearedLevels: {ArenaLevelId.banditRookie},
     fightsFought: 4,
   );
+
+  static const HeroEntity withShortSword = HeroEntity(weaponTier: 1);
 }

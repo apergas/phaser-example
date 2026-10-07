@@ -20,4 +20,6 @@ abstract final class CombatStatsEntityMock {
   static const CombatStatsEntity duelist = CombatStatsEntity(attack: 8, defense: 0, health: 24);
 
   static const CombatStatsEntity wall = CombatStatsEntity(attack: 2, defense: 20, health: 100);
+
+  static const CombatStatsEntity heroWithShortSword = CombatStatsEntity(attack: 7, defense: 1, health: 30);
 }

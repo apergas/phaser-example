@@ -68,5 +68,47 @@
       "gameWorld": "Mundo de juego: bosque con árboles, el personaje y los edificios"
     },
     "retry": "Reintentar"
+  },
+  "arena": {
+    "title": "Arena",
+    "heroPower": "Tu Poder: {power}",
+    "power": "Poder {power}",
+    "reward": "+{amount} de oro",
+    "cleared": "Ganado",
+    "locked": "Cerrado",
+    "fight": "Empezar pelea",
+    "back": "Volver",
+    "skip": "Saltar",
+    "retry": "Reintentar",
+    "victory": "¡Victoria!",
+    "defeat": "Derrota",
+    "damage": "−{amount}",
+    "heal": "+{amount}",
+    "dodge": "¡Esquiva!",
+    "enemyCount": "{count} × {name}",
+    "level": {
+      "banditRookie": "Bandido novato",
+      "banditVeteran": "Bandido veterano",
+      "banditTrio": "Trío de bandidos",
+      "barbarian": "Bárbaro",
+      "barbarianPair": "Pareja de bárbaros",
+      "barbarianChief": "Jefe bárbaro"
+    },
+    "enemy": {
+      "bandit": "Bandido",
+      "barbarian": "Bárbaro",
+      "barbarianChief": "Jefe bárbaro"
+    },
+    "advice": {
+      "almostThere": "¡Casi lo tienes! Vuelve a intentarlo.",
+      "needAttack": "Te falta Ataque: visita la Herrería.",
+      "needDefense": "Te falta Defensa: visita la Armería."
+    },
+    "message": {
+      "locked": "Ese nivel todavía está cerrado."
+    },
+    "accessibility": {
+      "stage": "Arena: el héroe frente a sus rivales"
+    }
   }
 }

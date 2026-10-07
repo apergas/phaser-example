@@ -32,4 +32,11 @@ abstract final class HeroEntityMock {
     clearedLevels: {ArenaLevelId.banditRookie},
     fightsFought: 4,
   );
+
+  static const HeroEntity dodgerAfterOneFight = HeroEntity(skills: {SkillId.dodge}, fightsFought: 1);
+
+  static const HeroEntity veteranWithSecondWind = HeroEntity(
+    clearedLevels: {ArenaLevelId.banditRookie},
+    skills: {SkillId.secondWind},
+  );
 }

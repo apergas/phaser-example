@@ -33,6 +33,8 @@ Ahora no hay espadas en `asset-packs/lpc/sources/`: por eso todos los luchadores
 
 ## 2. Mejoras del héroe sólo con oro
 
+> **Pasa a C7 (decidido el 2026-10-08):** se hace dentro de C7, junto con el equilibrado, para no equilibrar dos veces. Lo de abajo queda como referencia para el plan de C7.
+
 Hoy cada pieza de equipo cuesta madera **y** oro (`Gear.all`):
 
 | Pieza | Coste actual |
@@ -64,6 +66,8 @@ Hoy cada luchador se queda en su sitio (héroe en x = 190, enemigos en x = 300/3
 Todo esto es de la escena (`FighterComponent`, `ArenaSceneComponent`) y de `FightReplayData` (fase del turno); el dominio no cambia. Puede que haga falta alargar `turnMs` (por ejemplo a 800 ms) para que se lea bien.
 
 ## 4. Daño: ¿fijo o aleatorio?
+
+> **Pasa a C7 (decidido el 2026-10-08):** el daño por rangos se hace dentro de C7, junto con el equilibrado. Lo de abajo queda como referencia para el plan de C7.
 
 ### Cómo funciona ahora
 

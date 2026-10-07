@@ -16,9 +16,9 @@ import '../../../../../mocks/presentation/features/forest/hud_data_mock.dart';
 void main() {
   setUpAll(loadSpanishTranslations);
 
-  Future<List<BlueprintId>> pumpOverlay(WidgetTester tester, HudData hud) async {
+  Future<List<BlueprintId>> pumpOverlay(WidgetTester tester, HudData hud, {VoidCallback? onArenaPressed}) async {
     final selected = <BlueprintId>[];
-    await tester.pumpHud(HudOverlay(hud: hud, onBuildSelected: selected.add));
+    await tester.pumpHud(HudOverlay(hud: hud, onBuildSelected: selected.add, onArenaPressed: onArenaPressed ?? () {}));
     return selected;
   }
 
@@ -152,5 +152,21 @@ void main() {
     // then
     expect(tester.getTopRight(find.byType(BuildMenu)).dx, lessThanOrEqualTo(260));
     expect(tester.getTopLeft(find.byType(BuildMenu)).dx, greaterThanOrEqualTo(0));
+  });
+
+  testWidgets('testWhenArenaIsTappedThenTheOpenMenuClosesAndTheArenaIsRequested', (tester) async {
+    // given
+    var arenaTaps = 0;
+    await pumpOverlay(tester, HudDataMock.gathering, onArenaPressed: () => arenaTaps++);
+    await tester.tap(find.text(Internationalize.forestQuests));
+    await tester.pump();
+
+    // when
+    await tester.tap(find.text(Internationalize.forestArena));
+    await tester.pump();
+
+    // then
+    expect(arenaTaps, 1);
+    expect(find.byType(QuestPanel), findsNothing);
   });
 }

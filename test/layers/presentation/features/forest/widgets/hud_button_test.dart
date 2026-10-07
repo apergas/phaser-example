@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_button.dart';
+import 'package:rpg/layers/presentation/theme/images/custom_icons.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
 import '../../../../../helpers/spanish_translations.dart';
@@ -65,5 +67,18 @@ void main() {
       tester.widget<Text>(find.text(WidgetTextMock.badge)).style!.fontFeatures,
       contains(const FontFeature.tabularFigures()),
     );
+  });
+
+  testWidgets('testWhenAnIconIsGivenThenItIsShownBeforeTheLabel', (tester) async {
+    // given
+    final button = HudButton(label: Internationalize.forestArena, icon: CustomIcons.arena, onPressed: () {});
+
+    // when
+    await tester.pumpHud(Center(child: button));
+
+    // then
+    final icon = tester.getTopLeft(find.byType(SvgPicture));
+    final label = tester.getTopLeft(find.text(Internationalize.forestArena));
+    expect(icon.dx, lessThan(label.dx));
   });
 }

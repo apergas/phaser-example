@@ -33,6 +33,7 @@ void main() {
 
   late MockLevelRepository levelRepository;
   late MockNavigationService navigationService;
+  late RouteObserver<ModalRoute<void>> routeObserver;
 
   setUpAll(loadSpanishTranslations);
 
@@ -41,6 +42,8 @@ void main() {
     await configureDependencies(environment: DiEnvironment.dev);
     levelRepository = MockLevelRepository();
     navigationService = MockNavigationService();
+    routeObserver = RouteObserver<ModalRoute<void>>();
+    when(navigationService.routeObserver).thenReturn(routeObserver);
     locator.allowReassignment = true;
     locator.registerFactory<LevelRepository>(() => levelRepository);
     locator.registerSingleton<NavigationService>(navigationService);
@@ -221,5 +224,33 @@ void main() {
 
     // then
     expect(game.world.scene, isNotNull);
+  });
+
+  testWidgets('testWhenAPageIsPushedOverTheForestThenTheGamePausesAndResumesOnReturn', (tester) async {
+    // given
+    when(levelRepository.load()).thenReturn(ForestScenarioMock.fifteenWood());
+    await tester.pumpWidget(MaterialApp(navigatorObservers: [routeObserver], home: const ForestPage()));
+    await pumpUntil(tester, () => find.byType(HudOverlay).evaluate().isNotEmpty);
+    final game = tester.widget<GameWidget<ForestGame>>(find.byType(GameWidget<ForestGame>)).game!;
+    await pumpUntil(tester, () => game.world.isReady);
+    final bloc = tester.element(find.byType(HudOverlay)).read<ForestBloc>();
+    final navigator = tester.state<NavigatorState>(find.byType(Navigator));
+
+    // when
+    navigator.push(MaterialPageRoute<void>(builder: (_) => const SizedBox()));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    final stateWhilePaused = bloc.state;
+    await tester.pump(const Duration(milliseconds: 100));
+    final pausedAfterFrames = game.paused;
+    final ticksWhilePaused = !identical(bloc.state, stateWhilePaused);
+    navigator.pop();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // then
+    expect(pausedAfterFrames, isTrue);
+    expect(ticksWhilePaused, isFalse);
+    expect(game.paused, isFalse);
   });
 }

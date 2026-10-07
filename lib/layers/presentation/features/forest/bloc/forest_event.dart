@@ -37,3 +37,7 @@ final class ForestBuildRequested extends ForestEvent {
 final class ForestPlacementCancelled extends ForestEvent {
   const ForestPlacementCancelled();
 }
+
+final class ForestArenaRequested extends ForestEvent {
+  const ForestArenaRequested();
+}

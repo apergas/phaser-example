@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../theme/colors/custom_colors.dart';
 import '../../../theme/styles/custom_text_styles.dart';
@@ -7,14 +8,16 @@ import 'hud_panel.dart';
 class HudButton extends StatelessWidget {
   final String label;
   final String? badge;
+  final String? icon;
   final VoidCallback? onPressed;
   final bool isActive;
 
-  const HudButton({super.key, required this.label, this.badge, this.onPressed, this.isActive = false});
+  const HudButton({super.key, required this.label, this.badge, this.icon, this.onPressed, this.isActive = false});
 
   @override
   Widget build(BuildContext context) {
     final badgeText = badge;
+    final iconPath = icon;
     return Opacity(
       opacity: onPressed == null ? 0.5 : 1,
       child: HudPanel(
@@ -31,6 +34,7 @@ class HudButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 spacing: 8,
                 children: [
+                  if (iconPath != null) SvgPicture.asset(iconPath, width: 18, height: 18, excludeFromSemantics: true),
                   Text(label, style: CustomTextStyles.system15w600.copyWith(color: CustomColors.hudText)),
                   if (badgeText != null) _badge(text: badgeText),
                 ],

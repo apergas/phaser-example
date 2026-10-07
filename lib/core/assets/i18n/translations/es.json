@@ -25,7 +25,8 @@
       "build": "Construir",
       "quests": "Misiones",
       "questDone": "Hecha",
-      "missing": "Faltan {amounts}"
+      "missing": "Faltan {amounts}",
+      "arena": "Arena"
     },
     "resource": {
       "wood": "Madera",

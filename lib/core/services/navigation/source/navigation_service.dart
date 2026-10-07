@@ -5,6 +5,7 @@ import '../../../../layers/presentation/widgets/custom-popup/custom_pop_up.dart'
 
 abstract interface class NavigationService {
   GlobalKey<NavigatorState> get navigatorKey;
+  RouteObserver<ModalRoute<void>> get routeObserver;
   Future<T?>? push<T extends Object?>(Widget page, {Object? arguments});
   void pop<T extends Object?>([T? result]);
   Future<T?> pushReplacement<T extends Object?, TO extends Object?>(

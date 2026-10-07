@@ -61,10 +61,12 @@ class _ForestView extends StatefulWidget {
   State<_ForestView> createState() => _ForestViewState();
 }
 
-class _ForestViewState extends State<_ForestView> {
+class _ForestViewState extends State<_ForestView> with RouteAware {
   ForestBloc get bloc => context.read<ForestBloc>();
 
   late ForestGame _game = _createGame();
+
+  final RouteObserver<ModalRoute<void>> _routeObserver = locator<NavigationService>().routeObserver;
 
   bool get _isTouchPlatform => switch (defaultTargetPlatform) {
     TargetPlatform.android || TargetPlatform.iOS => true,
@@ -88,7 +90,21 @@ class _ForestViewState extends State<_ForestView> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != null) _routeObserver.subscribe(this, route);
+  }
+
+  @override
+  void didPushNext() => _game.pauseEngine();
+
+  @override
+  void didPopNext() => _game.resumeEngine();
+
+  @override
   void dispose() {
+    _routeObserver.unsubscribe(this);
     if (kIsWeb) BrowserContextMenu.enableContextMenu();
     super.dispose();
   }
@@ -156,6 +172,7 @@ class _ForestViewState extends State<_ForestView> {
     return HudOverlay(
       hud: hud,
       onBuildSelected: (blueprint) => bloc.add(ForestBuildRequested(blueprint: blueprint)),
+      onArenaPressed: () => bloc.add(const ForestArenaRequested()),
     );
   }
 

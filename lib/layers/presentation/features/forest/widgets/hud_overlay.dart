@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../../core/assets/i18n/internationalize.dart';
 import '../../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../../../core/config/constants/enum/forest/hud_menu.dart';
+import '../../../theme/images/custom_icons.dart';
 import '../models/hud_data.dart';
 import 'build_menu.dart';
 import 'hud_button.dart';
@@ -15,8 +16,9 @@ class HudOverlay extends StatefulWidget {
 
   final HudData hud;
   final ValueChanged<BlueprintId> onBuildSelected;
+  final VoidCallback onArenaPressed;
 
-  const HudOverlay({super.key, required this.hud, required this.onBuildSelected});
+  const HudOverlay({super.key, required this.hud, required this.onBuildSelected, required this.onArenaPressed});
 
   @override
   State<HudOverlay> createState() => _HudOverlayState();
@@ -96,6 +98,7 @@ class _HudOverlayState extends State<HudOverlay> {
           isActive: _openMenu == HudMenu.build,
           onPressed: widget.hud.isBuildLocked ? null : () => _toggle(HudMenu.build),
         ),
+        HudButton(label: Internationalize.forestArena, icon: CustomIcons.arena, onPressed: _onArenaPressed),
       ],
     );
   }
@@ -109,6 +112,11 @@ class _HudOverlayState extends State<HudOverlay> {
 
   void _toggle(HudMenu menu) {
     setState(() => _openMenu = _openMenu == menu ? null : menu);
+  }
+
+  void _onArenaPressed() {
+    setState(() => _openMenu = null);
+    widget.onArenaPressed();
   }
 
   void _onBuildSelected(BlueprintId blueprint) {

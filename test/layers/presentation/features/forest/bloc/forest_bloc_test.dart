@@ -1,11 +1,13 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/forest/facing.dart';
 import 'package:rpg/core/config/constants/enum/forest/work_tool.dart';
 import 'package:rpg/layers/domain/rules/rules.dart';
 import 'package:rpg/layers/domain/world/world.dart';
+import 'package:rpg/layers/presentation/features/arena/arena_page.dart';
 import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
 import 'package:rpg/layers/presentation/features/forest/models/forest_effect.dart';
 import 'package:rpg/layers/presentation/features/forest/models/placement_data.dart';
@@ -358,5 +360,27 @@ void main() {
       isA<ForestSuccess>().having((state) => state.data.effects, 'effects', [ForestEffectMock.axePickedUp]),
       isA<ForestSuccess>().having((state) => state.data.effects, 'effects', isEmpty),
     ],
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenTheArenaIsRequestedThenItOpensAndCancelsThePlacement',
+    build: () {
+      // given
+      when(navigationService.push(any)).thenReturn(null);
+      return ForestBlocMock.make(ForestScenarioMock.fifteenWood(), navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestBuildRequested(blueprint: BlueprintId.house))
+        ..add(const ForestArenaRequested());
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      verify(navigationService.push(argThat(isA<ArenaPage>()))).called(1);
+      expect(bloc.state.data.placement, isNull);
+    },
   );
 }

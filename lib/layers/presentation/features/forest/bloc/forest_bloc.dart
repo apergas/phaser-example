@@ -33,6 +33,7 @@ import '../../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
 import '../../../../domain/use-cases/game/move_player_use_case.dart';
 import '../../../../domain/use-cases/game/start_game_use_case.dart';
 import '../../../../domain/world/extensions/inventory_rules.dart';
+import '../../arena/arena_page.dart';
 import '../models/build_item_data.dart';
 import '../models/forest_effect.dart';
 import '../models/hud_data.dart';
@@ -85,6 +86,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         ForestPointerMoved() => _onPointerMoved(event, emit),
         ForestBuildRequested() => _onBuildRequested(event, emit),
         ForestPlacementCancelled() => _onPlacementCancelled(event, emit),
+        ForestArenaRequested() => _onArenaRequested(event, emit),
       };
     });
   }
@@ -154,6 +156,13 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   Future<void> _onPlacementCancelled(ForestPlacementCancelled event, Emitter<ForestState> emit) async {
     if (state is! ForestSuccess) return;
     _placement = null;
+    emit(ForestSuccess(data: _buildData(effects: const [])));
+  }
+
+  Future<void> _onArenaRequested(ForestArenaRequested event, Emitter<ForestState> emit) async {
+    if (state is! ForestSuccess) return;
+    _placement = null;
+    _navigationService.push(const ArenaPage());
     emit(ForestSuccess(data: _buildData(effects: const [])));
   }
 

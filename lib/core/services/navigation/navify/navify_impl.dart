@@ -12,6 +12,9 @@ class NavifyImpl implements NavigationService {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
+  final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
+  @override
   Future<T?>? push<T extends Object?>(Widget page, {Object? arguments}) {
     return navigatorKey.currentState!.push<T>(
       MaterialPageRoute<T>(

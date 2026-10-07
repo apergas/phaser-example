@@ -190,13 +190,13 @@ Lo que este plan fija o añade sobre la ficha (todo lo demás de la ficha se man
   ForestDataMock.forgePlacement / .placingForge
   ```
 
-- [ ] **Step 1: Crear la rama de fase**
+- [x] **Step 1: Crear la rama de fase**
 
 ```bash
 git switch feature/PROJECT-X-arena && git pull && git switch -c feature/PROJECT-X-c3-forge-armory
 ```
 
-- [ ] **Step 2: Ampliar los datos de prueba**
+- [x] **Step 2: Ampliar los datos de prueba**
 
 `test/mocks/domain/entities/building/blueprint_entity_mock.dart`, al final de la clase:
 
@@ -262,7 +262,7 @@ y al final de la clase:
     for (final id in BlueprintId.values) SpriteNames.building(id),
 ```
 
-- [ ] **Step 3: Escribir los tests que fallan**
+- [x] **Step 3: Escribir los tests que fallan**
 
 `test/layers/domain/rules/blueprints_test.dart` (sustituye el fichero):
 
@@ -405,7 +405,7 @@ void main() {
 Run: `flutter test test/layers/domain/rules/blueprints_test.dart`
 Expected: FAIL al compilar (`BlueprintId.forge` no existe).
 
-- [ ] **Step 4: Enum, catálogo, textos, nombres de sprite y desplazamiento**
+- [x] **Step 4: Enum, catálogo, textos, nombres de sprite y desplazamiento**
 
 `lib/core/config/constants/enum/blueprint_id.dart`:
 
@@ -479,7 +479,7 @@ Expected: PASS.
 Run: `flutter test test/layers/presentation/features/forest/game/atlas/lpc_atlas_test.dart`
 Expected: FAIL en `testWhenParsingTheGeneratedAtlasThenEveryLevelSpriteExists`: faltan los frames `forge` y `armory` en `forest.json`. Es la guarda de F0; se arregla en el paso siguiente.
 
-- [ ] **Step 5: Generar el arte**
+- [x] **Step 5: Generar el arte**
 
 En `asset-packs/lpc/build_assets.py`:
 
@@ -582,7 +582,7 @@ The forge and armory roofs are recoloured (dark grey, red); the forge chimney is
 from the LPC Tile Atlas below.
 ```
 
-- [ ] **Step 6: Ver que pasan**
+- [x] **Step 6: Ver que pasan**
 
 ```bash
 flutter test test/layers/presentation/features/forest test/layers/domain test/core/assets
@@ -590,7 +590,7 @@ flutter test test/layers/presentation/features/forest test/layers/domain test/co
 
 Expected: PASS, incluidos `lpc_atlas_test.dart` (los frames existen) y `testWhenThePlacedBlueprintChangesThenTheGhostIsReplaced`.
 
-- [ ] **Step 7: Comprobar la persistencia de edificios**
+- [x] **Step 7: Comprobar la persistencia de edificios**
 
 ```bash
 grep -rn "BlueprintId" lib/layers/data
@@ -600,7 +600,7 @@ grep -rn "BlueprintId" lib/layers/data
 - Con un mapper que lee el id con `BlueprintId.values.byName`: no hay nada que hacer.
 - Con un `switch` o una tabla a mano: se añaden `forge` y `armory` en el mismo commit y se apunta en la sección 5 del README.
 
-- [ ] **Step 8: Verificación completa**
+- [x] **Step 8: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/assets/i18n/internationalize.dart lib/layers/domain/rules/blueprints.dart lib/layers/presentation/features/forest/game/atlas/sprite_names.dart lib/layers/presentation/features/forest/game/render/render_constants.dart test/layers/domain/rules/blueprints_test.dart test/layers/domain/use-cases/game/get_build_options_use_case_test.dart test/layers/presentation/features/forest/bloc/forest_bloc_test.dart test/layers/presentation/features/forest/game/atlas/sprite_names_test.dart test/layers/presentation/features/forest/game/forest_scene_component_test.dart test/core/assets/i18n/internationalize_test.dart test/mocks/domain/entities/building/blueprint_entity_mock.dart test/mocks/domain/entities/game/build_option_entity_mock.dart test/mocks/presentation/features/forest/build_item_data_mock.dart test/mocks/presentation/features/forest/game/forest_data_mock.dart test/mocks/presentation/features/forest/game/lpc_assets_mock.dart
@@ -612,7 +612,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `git diff` sin salida en lo generado (esta tarea no toca DI ni mocks de mockito), `No issues found!` y todo en verde.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add asset-packs/lpc/build_assets.py lib/core/assets lib/core/config/constants/enum/blueprint_id.dart lib/layers/domain/rules/blueprints.dart lib/layers/presentation/features/forest/game test
@@ -687,7 +687,7 @@ Prueba rápida en Chrome (`flutter run -d chrome`): el menú *Construir* lista *
   GearScenarioMock.forgeSite / .armorySite / .buildMs / .withoutWorkshops / .withForge / .withForgeAndArmory / .withForgeUnderConstruction
   ```
 
-- [ ] **Step 1: Crear la rama (sólo si TC3.3 se hace a la vez)**
+- [x] **Step 1: Crear la rama (sólo si TC3.3 se hace a la vez)**
 
 ```bash
 git switch feature/PROJECT-X-c3-forge-armory && git pull
@@ -697,7 +697,7 @@ cd ../phaser-example-c3-gear-purchase && flutter pub get
 
 Si no hay trabajo en paralelo, se sigue en la rama de fase.
 
-- [ ] **Step 2: Escribir los datos de prueba**
+- [x] **Step 2: Escribir los datos de prueba**
 
 `test/mocks/domain/entities/hero/hero_entity_mock.dart`, al final de la clase:
 
@@ -805,7 +805,7 @@ abstract final class GearOptionEntityMock {
 }
 ```
 
-- [ ] **Step 3: Escribir los tests que fallan**
+- [x] **Step 3: Escribir los tests que fallan**
 
 `test/layers/domain/rules/gear_test.dart`: añadir `import 'package:rpg/core/config/constants/enum/blueprint_id.dart';` y, al final de `main`:
 
@@ -1159,7 +1159,7 @@ void main() {
 Run: `flutter test test/layers/domain`
 Expected: FAIL al compilar (`BuyGearResult`, `GearOptionEntity`, `Gear.workshopFor`… no existen).
 
-- [ ] **Step 4: Enums, `Gear.workshopFor` y `BuildingListRules`**
+- [x] **Step 4: Enums, `Gear.workshopFor` y `BuildingListRules`**
 
 `lib/core/config/constants/enum/buy_gear_result.dart`:
 
@@ -1197,7 +1197,7 @@ extension BuildingListRules on Iterable<BuildingEntity> {
 }
 ```
 
-- [ ] **Step 5: `GearOptionEntity`**
+- [x] **Step 5: `GearOptionEntity`**
 
 `lib/layers/domain/entities/gear/gear_option_entity.dart`:
 
@@ -1236,7 +1236,7 @@ class GearOptionEntity {
 }
 ```
 
-- [ ] **Step 6: Casos de uso**
+- [x] **Step 6: Casos de uso**
 
 `lib/layers/domain/use-cases/hero/buy_gear_use_case.dart`. Las comprobaciones van en el orden de la ficha. `world.spend` es atómico (C0): si falla, no se ha cobrado nada.
 
@@ -1326,7 +1326,7 @@ flutter test test/layers/domain
 
 Expected: `di.config.dart` sólo registra `BuyGearUseCase` y `GetGearOptionsUseCase`; PASS.
 
-- [ ] **Step 7: Registrar los casos de uso en el test de DI**
+- [x] **Step 7: Registrar los casos de uso en el test de DI**
 
 En `test/core/config/di/di_test.dart`, añadir los imports
 
@@ -1345,7 +1345,7 @@ y, en `testWhenConfiguringDependenciesThenEveryGameDependencyIsRegistered`, desp
 Run: `flutter test test/core/config/di/di_test.dart`
 Expected: PASS.
 
-- [ ] **Step 8: Verificación completa**
+- [x] **Step 8: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/config/constants/enum/buy_gear_result.dart lib/core/config/constants/enum/gear_option_state.dart lib/layers/domain/entities/gear lib/layers/domain/rules/gear.dart lib/layers/domain/world/extensions/building_rules.dart lib/layers/domain/use-cases/hero test/layers/domain/entities/gear test/layers/domain/rules/gear_test.dart test/layers/domain/world/extensions/building_rules_test.dart test/layers/domain/use-cases/hero test/core/config/di/di_test.dart test/mocks/domain/entities/gear test/mocks/domain/game/gear_scenario_mock.dart test/mocks/domain/entities/hero test/mocks/domain/world/funds_mock.dart
@@ -1357,7 +1357,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `No issues found!` y todo en verde.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add lib/core/config/constants/enum lib/core/config/di/di.config.dart lib/layers/domain test/layers/domain test/core/config/di/di_test.dart test/mocks/domain
@@ -1424,7 +1424,7 @@ Si se hizo en su propio *worktree*, se une cuando TC3.3 también esté (TC3.4, S
   HeroPanelDataMock.newHero / .newHeroCopy / .readyToBuySword
   ```
 
-- [ ] **Step 1: Crear la rama (sólo si TC3.2 se hace a la vez)**
+- [x] **Step 1: Crear la rama (sólo si TC3.2 se hace a la vez)**
 
 ```bash
 git switch feature/PROJECT-X-c3-forge-armory && git pull
@@ -1432,7 +1432,7 @@ git worktree add ../phaser-example-c3-hero-panel -b feature/PROJECT-X-c3-hero-pa
 cd ../phaser-example-c3-hero-panel && flutter pub get
 ```
 
-- [ ] **Step 2: Textos**
+- [x] **Step 2: Textos**
 
 `lib/core/assets/i18n/translations/es.json`:
 - en el bloque `forest.message`, después de `"questCompleted"` (con su coma):
@@ -1608,7 +1608,7 @@ y, al final de la clase (después de `forestRetry`):
 Run: `flutter test test/core/assets/i18n/internationalize_test.dart`
 Expected: PASS.
 
-- [ ] **Step 3: Icono y `HudButton.icon` (TDD)**
+- [x] **Step 3: Icono y `HudButton.icon` (TDD)**
 
 `test/layers/presentation/theme/images/custom_icons_test.dart`, al final de `main`:
 
@@ -1673,7 +1673,7 @@ Expected: FAIL al compilar (`CustomIcons.hero` y el parámetro `icon` no existen
 Run: `flutter test test/layers/presentation/theme test/layers/presentation/features/forest/widgets/hud_button_test.dart`
 Expected: PASS.
 
-- [ ] **Step 4: Datos de prueba de los modelos**
+- [x] **Step 4: Datos de prueba de los modelos**
 
 `test/mocks/presentation/features/forest/gear_item_data_mock.dart`. Los costes se escriben como los forma el BLoC (`_amounts`: por orden de `Resource`, separados por coma):
 
@@ -1828,7 +1828,7 @@ abstract final class HeroPanelDataMock {
 }
 ```
 
-- [ ] **Step 5: Tests de modelos y widgets que fallan**
+- [x] **Step 5: Tests de modelos y widgets que fallan**
 
 `test/layers/presentation/features/forest/models/hero_panel_data_test.dart`:
 
@@ -2093,7 +2093,7 @@ void main() {
 Run: `flutter test test/layers/presentation/features/forest/models test/layers/presentation/features/forest/widgets`
 Expected: FAIL al compilar (los modelos y widgets no existen).
 
-- [ ] **Step 6: Modelos**
+- [x] **Step 6: Modelos**
 
 `lib/layers/presentation/features/forest/models/gear_item_data.dart`:
 
@@ -2207,7 +2207,7 @@ class HeroPanelData {
 }
 ```
 
-- [ ] **Step 7: Widgets**
+- [x] **Step 7: Widgets**
 
 `lib/layers/presentation/features/forest/widgets/gear_option_tile.dart`:
 
@@ -2483,7 +2483,7 @@ class _HeroPanelState extends State<HeroPanel> {
 Run: `flutter test test/layers/presentation/features/forest/models test/layers/presentation/features/forest/widgets`
 Expected: PASS.
 
-- [ ] **Step 8: Verificación completa**
+- [x] **Step 8: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/assets/i18n/internationalize.dart lib/core/config/constants/enum/forest/hero_panel_section.dart lib/layers/presentation/features/forest/models lib/layers/presentation/features/forest/widgets lib/layers/presentation/theme/images/custom_icons.dart test/core/assets/i18n/internationalize_test.dart test/layers/presentation/features/forest/models test/layers/presentation/features/forest/widgets test/layers/presentation/theme test/mocks/presentation/features/forest/gear_item_data_mock.dart test/mocks/presentation/features/forest/gear_row_data_mock.dart test/mocks/presentation/features/forest/hero_panel_data_mock.dart
@@ -2494,7 +2494,7 @@ flutter test
 
 Expected: `git diff` sin salida en lo generado, `No issues found!` y todo en verde. El panel todavía no se ve en el juego (lo conecta TC3.4).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add lib/core/assets lib/core/config/constants/enum/forest/hero_panel_section.dart lib/layers/presentation test
@@ -2556,7 +2556,7 @@ git commit -m "[PROJECT-X]: Add the hero panel with gear rows and buy buttons"
   ForestDataMock.gearPurchased
   ```
 
-- [ ] **Step 1: Unir TC3.2 y TC3.3 (sólo si se hicieron en paralelo)**
+- [x] **Step 1: Unir TC3.2 y TC3.3 (sólo si se hicieron en paralelo)**
 
 ```bash
 git switch feature/PROJECT-X-c3-forge-armory
@@ -2569,7 +2569,7 @@ git worktree remove ../phaser-example-c3-gear-purchase && git worktree remove ..
 
 Expected: las dos uniones sin conflictos (no comparten ficheros), lo generado al día y todo en verde. Los mensajes de los *merge* son los que propone git (`Merge branch '…'`), que el hook acepta como en C1.
 
-- [ ] **Step 2: Datos de prueba**
+- [x] **Step 2: Datos de prueba**
 
 `test/mocks/presentation/features/forest/forest_bloc_mock.dart`: importar los tres casos de uso de `use-cases/hero/` y, después de `getQuestsUseCase: …`:
 
@@ -2674,7 +2674,7 @@ abstract final class HudDataMock {
   );
 ```
 
-- [ ] **Step 3: Tests que fallan**
+- [x] **Step 3: Tests que fallan**
 
 `test/layers/presentation/features/forest/bloc/forest_bloc_hero_test.dart` (decisión 16):
 
@@ -3012,7 +3012,7 @@ void main() {
 Run: `flutter test test/layers/presentation/features/forest`
 Expected: FAIL al compilar (`ForestGearPurchaseRequested`, `GearPurchasedEffect`, `HudData.hero`, `onGearSelected`, `ParticleBursts.sparkles`… no existen).
 
-- [ ] **Step 4: Enums, efecto y partículas**
+- [x] **Step 4: Enums, efecto y partículas**
 
 `lib/core/config/constants/enum/forest/hud_menu.dart`:
 
@@ -3124,7 +3124,7 @@ y el método, antes de `_building`:
   }
 ```
 
-- [ ] **Step 5: `HudData`, `HudOverlay` y la página**
+- [x] **Step 5: `HudData`, `HudOverlay` y la página**
 
 `lib/layers/presentation/features/forest/models/hud_data.dart`:
 - import `hero_panel_data.dart`;
@@ -3174,7 +3174,7 @@ y el método, antes de `_building`:
       onGearSelected: (gear) => bloc.add(ForestGearPurchaseRequested(gear: gear)),
 ```
 
-- [ ] **Step 6: Evento y BLoC**
+- [x] **Step 6: Evento y BLoC**
 
 `lib/layers/presentation/features/forest/bloc/forest_event.dart`, al final:
 
@@ -3292,7 +3292,7 @@ final class ForestGearPurchaseRequested extends ForestEvent {
 Run: `flutter test test/layers/presentation/features/forest`
 Expected: PASS, incluidos los tests anteriores del BLoC y del HUD (sólo cambian por el campo `hero` de los mocks).
 
-- [ ] **Step 7: Documentar en `CLAUDE.md`**
+- [x] **Step 7: Documentar en `CLAUDE.md`**
 
 En *Architecture*:
 - `lib/layers/domain/` → `entities/<feature>/`: "gear (`GearEntity`)" pasa a "gear (`GearEntity`, `GearOptionEntity` with a `GearOptionState`, `missing` and `canBuy`)".
@@ -3306,7 +3306,7 @@ En *Architecture*:
 
 En *Key cross-cutting conventions*, en la línea *New resource, tool or building*, añadir al final: "`LpcAssetsMock` builds a frame for every `BlueprintId`, and new buildings reuse `build_cottage()` in `build_assets.py` (recoloured roof via `ROOF_RAMP`)."
 
-- [ ] **Step 8: Verificación completa**
+- [x] **Step 8: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/config/constants/enum/forest lib/layers/presentation/features/forest test/layers/presentation/features/forest test/mocks/presentation/features/forest/forest_bloc_mock.dart test/mocks/presentation/features/forest/hud_data_mock.dart test/mocks/presentation/features/forest/forest_effect_mock.dart test/mocks/presentation/features/forest/game/particle_mock.dart test/mocks/presentation/features/forest/game/forest_data_mock.dart
@@ -3318,7 +3318,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `git diff` sin salida en lo generado, `No issues found!` y todo en verde.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add lib/core/config/constants/enum/forest lib/layers/presentation test

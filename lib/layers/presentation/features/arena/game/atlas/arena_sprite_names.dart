@@ -16,4 +16,8 @@ abstract final class ArenaSpriteNames {
   static String idle(String fighter, int column) => '$fighter-idle-$column';
 
   static String slash(String fighter, int column) => '$fighter-slash-$column';
+
+  static String attack(String fighter, int column) => '$fighter-attack-$column';
+
+  static String down(String fighter) => '$fighter-down';
 }

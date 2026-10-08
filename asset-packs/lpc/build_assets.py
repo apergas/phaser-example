@@ -12,8 +12,9 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
                                    axe pickup, the house, the forge and the armory (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
   arena.png + arena.json           JSON-hash atlas for the arena: hero, bandit and barbarian idle (64px, axe in
-                                   hand) and slash (128px) frames in their one facing (pivot = feet), the grass
-                                   cell and a fence segment
+                                   hand) and slash (128px) frames in their one facing (pivot = feet), the wolf
+                                   and bear idle, attack and down frames facing left, the grass cell and a fence
+                                   segment
 
 Requires Pillow. Licences and authors: see CREDITS.md next to the outputs.
 """
@@ -334,10 +335,39 @@ ARENA_GRASS = (1, 23)  # (column, row) of terrain_atlas.png, the same grass as t
 ARENA_FENCE_BOX = (480, 608, 544, 640)  # terrain_atlas.png: a post and a rail, 64x32, tiles horizontally
 IDLE_PIVOT = {"x": 0.5, "y": round(62 / FRAME, 4)}
 SLASH_PIVOT = {"x": 0.5, "y": round((32 + 62) / WORK_FRAME, 4)}
+# Beast -> (sheet in sources/creatures, origin of the side views, cell size, animations). The rows used already face
+# left. Each animation is (row, columns, ground): one frame per column, and ground = the pixel row the paws stand on
+# in that row (the pivot, like the feet of the people). A single column is named without an index ("wolf-down").
+ARENA_BEASTS = {
+    "wolf": (
+        "wolfsheet1.png",
+        (320, 0),
+        (64, 32),
+        {"idle": (9, [0, 1], 32), "attack": (11, [0, 1, 2, 3, 4], 32), "down": (6, [3], 32)},
+    ),
+    "bear": (
+        "bear-grizzly.png",
+        (0, 0),
+        (64, 64),
+        {"idle": (2, [0, 1], 62), "attack": (6, [0, 1, 2], 58), "down": (10, [3], 57)},
+    ),
+}
 
 
 def cells(sheet: Image.Image, row: int, size: int) -> list:
     return [sheet.crop((column * size, row * size, (column + 1) * size, (row + 1) * size)) for column in range(sheet.width // size)]
+
+
+def add_beasts(frames: dict, pivots: dict) -> None:
+    for beast, (file_name, (origin_x, origin_y), (width, height), animations) in ARENA_BEASTS.items():
+        sheet = Image.open(SOURCES / "creatures" / file_name).convert("RGBA")
+        for animation, (row, columns, ground) in animations.items():
+            for index, column in enumerate(columns):
+                x, y = origin_x + column * width, origin_y + row * height
+                name = f"{beast}-{animation}" if len(columns) == 1 else f"{beast}-{animation}-{index}"
+                cell = sheet.crop((x, y, x + width, y + height))
+                trim(cell, name)
+                frames[name], pivots[name] = cell, {"x": 0.5, "y": round(ground / height, 4)}
 
 
 def build_arena() -> None:
@@ -350,6 +380,7 @@ def build_arena() -> None:
             frames[f"{fighter}-idle-{column}"], pivots[f"{fighter}-idle-{column}"] = image, IDLE_PIVOT
         for column, image in enumerate(cells(slash, row, WORK_FRAME)):
             frames[f"{fighter}-slash-{column}"], pivots[f"{fighter}-slash-{column}"] = image, SLASH_PIVOT
+    add_beasts(frames, pivots)
     column, row = ARENA_GRASS
     frames["arena-grass"] = terrain.crop((column * CELL, row * CELL, (column + 1) * CELL, (row + 1) * CELL))
     pivots["arena-grass"] = {"x": 0, "y": 0}

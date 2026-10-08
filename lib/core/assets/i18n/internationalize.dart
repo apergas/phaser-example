@@ -144,11 +144,17 @@ class Internationalize {
     ArenaLevelId.barbarian => '$_arena.level.barbarian'.tr(),
     ArenaLevelId.barbarianPair => '$_arena.level.barbarianPair'.tr(),
     ArenaLevelId.barbarianChief => '$_arena.level.barbarianChief'.tr(),
+    ArenaLevelId.wolf => '$_arena.level.wolf'.tr(),
+    ArenaLevelId.wolfPair => '$_arena.level.wolfPair'.tr(),
+    ArenaLevelId.bear => '$_arena.level.bear'.tr(),
+    ArenaLevelId.wolfPack => '$_arena.level.wolfPack'.tr(),
   };
   static String arenaEnemy({required EnemyKind kind}) => switch (kind) {
     EnemyKind.bandit => '$_arena.enemy.bandit'.tr(),
     EnemyKind.barbarian => '$_arena.enemy.barbarian'.tr(),
     EnemyKind.barbarianChief => '$_arena.enemy.barbarianChief'.tr(),
+    EnemyKind.wolf => '$_arena.enemy.wolf'.tr(),
+    EnemyKind.bear => '$_arena.enemy.bear'.tr(),
   };
   static String arenaAdvice({required FightAdvice advice}) => switch (advice) {
     FightAdvice.almostThere => '$_arena.advice.almostThere'.tr(),

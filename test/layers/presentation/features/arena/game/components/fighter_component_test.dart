@@ -54,4 +54,40 @@ void main() {
     expect(fighter.isBlinkedOut, isFalse);
     expect(fighter.healthBar.targetFraction, 0.8);
   });
+
+  testWithFlameGame('testWhenTheWolfLeapsThenItsShadowAndBarFollowAndItLandsBackOnItsSpot', (game) async {
+    // given
+    final wolf = FighterComponent(assets: ArenaAssetsMock.create(), fighter: FighterRenderDataMock.wolfIdle);
+    await game.ensureAdd(wolf);
+
+    // when
+    wolf.show(FighterRenderDataMock.wolfLeaping(0.5));
+    final atTheHero = (wolf.position.clone(), wolf.shadow.position.clone(), wolf.healthBar.position.clone());
+    wolf.show(FighterRenderDataMock.wolfLeaping(0.2));
+    final inTheAir = wolf.position.y - wolf.shadow.position.y;
+    wolf.show(FighterRenderDataMock.wolfIdle);
+
+    // then
+    expect(atTheHero, (Vector2(220, 170), Vector2(220, 170), Vector2(220, 118)));
+    expect(inTheAir, closeTo(-10, 1e-9));
+    expect((wolf.position, wolf.shadow.position), (Vector2(300, 170), Vector2(300, 170)));
+    expect(wolf.shadow.size.x, 44);
+    expect(wolf.frameName, startsWith('wolf-idle-'));
+  });
+
+  testWithFlameGame('testWhenTheWolfFallsThenItLiesOnItsOwnFrameInsteadOfTippingOver', (game) async {
+    // given
+    final wolf = FighterComponent(assets: ArenaAssetsMock.create(), fighter: FighterRenderDataMock.wolfIdle);
+    final bandit = FighterComponent(assets: ArenaAssetsMock.create(), fighter: FighterRenderDataMock.rookieBanditIdle);
+    await game.ensureAdd(wolf);
+    await game.ensureAdd(bandit);
+
+    // when
+    wolf.show(FighterRenderDataMock.wolfDown);
+    bandit.show(FighterRenderDataMock.rookieBanditDown);
+
+    // then
+    expect((wolf.frameName, wolf.tipsOver), ('wolf-down', false));
+    expect((bandit.frameName, bandit.tipsOver), ('bandit-idle-0', true));
+  });
 }

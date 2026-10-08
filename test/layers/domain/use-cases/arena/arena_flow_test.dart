@@ -69,6 +69,27 @@ void main() {
     expect(session.world.funds.amount(Resource.gold), goldBefore + expectedRepeatGold);
   });
 
+  test('testWhenAGameFromBeforeTheBeastsGoesOnThenItKeepsItsLevelsAndCanFightTheWolfAndTheWolfPair', () {
+    // given
+    final session = playingWith(HeroEntityMock.beforeTheBeasts);
+
+    // when
+    final results = [
+      startFight(levelId: ArenaLevelId.wolf),
+      startFight(levelId: ArenaLevelId.banditVeteran),
+      startFight(levelId: ArenaLevelId.wolfPair),
+    ];
+
+    // then
+    expect(results, everyElement(isA<FightPlayedEntity>()));
+    expect(
+      session.world.hero.clearedLevels,
+      containsAll([ArenaLevelId.banditRookie, ArenaLevelId.banditVeteran]),
+    );
+    final veteran = getArena().levels.firstWhere((status) => status.level.id == ArenaLevelId.banditVeteran);
+    expect((veteran.isUnlocked, veteran.isCleared), (true, true));
+  });
+
   test('testWhenANewHeroTriesTheLastLevelThenItIsLockedAndNothingChanges', () {
     // given
     final session = playingWith(HeroEntityMock.mock);

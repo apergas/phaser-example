@@ -31,6 +31,22 @@ void main() {
       // then
       expect(unlocked, (true, false));
     });
+
+    test('testWhenTheHeroClearedLevelsBeforeTheBeastsArrivedThenTheyStayOpenAndSoDoTheBeastsBehindThem', () {
+      // given
+      const hero = HeroEntityMock.beforeTheBeasts;
+
+      // when
+      final unlocked = ArenaLevels.all.where(hero.isUnlocked).map((level) => level.id);
+
+      // then
+      expect(unlocked, [
+        ArenaLevelId.banditRookie,
+        ArenaLevelId.wolf,
+        ArenaLevelId.banditVeteran,
+        ArenaLevelId.wolfPair,
+      ]);
+    });
   });
 
   group('hasCleared', () {

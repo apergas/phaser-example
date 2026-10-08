@@ -31,6 +31,15 @@ abstract final class FighterRenderDataMock {
     pose: FighterPose.idle,
   );
 
+  static const FighterRenderData wolfIdle = FighterRenderData(
+    side: FightSide.enemy,
+    index: 0,
+    enemyKind: EnemyKind.wolf,
+    health: 22,
+    maxHealth: 22,
+    pose: FighterPose.idle,
+  );
+
   static const FighterRenderData rookieBanditHurt = FighterRenderData(
     side: FightSide.enemy,
     index: 0,
@@ -75,5 +84,34 @@ abstract final class FighterRenderDataMock {
     health: 70,
     maxHealth: 70,
     pose: FighterPose.idle,
+  );
+
+  static FighterRenderData wolfLeaping(double swingProgress) => FighterRenderData(
+    side: FightSide.enemy,
+    index: 0,
+    enemyKind: EnemyKind.wolf,
+    health: 19,
+    maxHealth: 22,
+    pose: FighterPose.attack,
+    swingProgress: swingProgress,
+  );
+
+  static FighterRenderData bearLeaping(double swingProgress) => FighterRenderData(
+    side: FightSide.enemy,
+    index: 0,
+    enemyKind: EnemyKind.bear,
+    health: 40,
+    maxHealth: 40,
+    pose: FighterPose.attack,
+    swingProgress: swingProgress,
+  );
+
+  static const FighterRenderData wolfDown = FighterRenderData(
+    side: FightSide.enemy,
+    index: 0,
+    enemyKind: EnemyKind.wolf,
+    health: 0,
+    maxHealth: 22,
+    pose: FighterPose.down,
   );
 }

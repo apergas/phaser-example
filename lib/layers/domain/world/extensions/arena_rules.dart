@@ -8,6 +8,7 @@ import '../../rules/rules.dart';
 
 extension ArenaRules on HeroEntity {
   bool isUnlocked(ArenaLevelEntity level) {
+    if (hasCleared(level.id)) return true;
     final index = ArenaLevels.all.indexWhere((candidate) => candidate.id == level.id);
     if (index < 0) return false;
     return index == 0 || hasCleared(ArenaLevels.all[index - 1].id);

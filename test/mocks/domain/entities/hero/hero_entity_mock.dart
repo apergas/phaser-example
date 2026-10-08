@@ -38,7 +38,28 @@ abstract final class HeroEntityMock {
   static const HeroEntity dodgerAfterOneFight = HeroEntity(skills: {SkillId.dodge}, fightsFought: 1);
 
   static const HeroEntity veteranWithSecondWind = HeroEntity(
-    clearedLevels: {ArenaLevelId.banditRookie},
+    clearedLevels: {ArenaLevelId.banditRookie, ArenaLevelId.wolf},
     skills: {SkillId.secondWind},
+  );
+
+  static const HeroEntity wolfHunter = HeroEntity(
+    clearedLevels: {ArenaLevelId.banditRookie, ArenaLevelId.wolf},
+    fightsFought: 3,
+  );
+
+  static const HeroEntity wolfHunterAfterAnotherFight = HeroEntity(
+    clearedLevels: {ArenaLevelId.banditRookie, ArenaLevelId.wolf},
+    fightsFought: 4,
+  );
+
+  static const HeroEntity beforeTheBeasts = HeroEntity(
+    clearedLevels: {ArenaLevelId.banditRookie, ArenaLevelId.banditVeteran},
+    fightsFought: 2,
+  );
+
+  static const HeroEntity packHunter = HeroEntity(
+    weaponTier: 3,
+    armorTier: 3,
+    clearedLevels: {ArenaLevelId.barbarian},
   );
 }

@@ -3,6 +3,7 @@
 All art in this folder comes from the Liberated Pixel Cup (LPC) family of assets and was
 recombined and recoloured by `asset-packs/lpc/build_assets.py`. Derived files keep the
 original licences: **CC-BY-SA 3.0** (also offered under GPL 3.0 / OGA-BY 3.0 where noted).
+The arena wolf and bear sheets keep their own licences (wolf: OGA-BY 3.0 / CC-BY 3.0-4.0 / GPL; bear: CC-BY 4.0, also CC0 per the author), see "Wolf and bear" below.
 
 ## Character (`hero-*.png`)
 

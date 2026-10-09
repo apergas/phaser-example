@@ -8,6 +8,7 @@ import '../../config/constants/enum/forest/hero_panel_section.dart';
 import '../../config/constants/enum/gear_id.dart';
 import '../../config/constants/enum/gear_slot.dart';
 import '../../config/constants/enum/quest_id.dart';
+import '../../config/constants/enum/quest_line.dart';
 import '../../config/constants/enum/resource.dart';
 import '../../config/constants/enum/skill_id.dart';
 import '../../config/constants/enum/tool_kind.dart';
@@ -65,6 +66,18 @@ class Internationalize {
     QuestId.pickUpAxe => '$_forest.quest.pickUpAxe'.tr(),
     QuestId.gatherWood => '$_forest.quest.gatherWood'.tr(),
     QuestId.buildHouse => '$_forest.quest.buildHouse'.tr(),
+    QuestId.buildForge => '$_forest.quest.buildForge'.tr(),
+    QuestId.winFirstFight => '$_forest.quest.winFirstFight'.tr(),
+    QuestId.buyFirstWeapon => '$_forest.quest.buyFirstWeapon'.tr(),
+    QuestId.buildArmory => '$_forest.quest.buildArmory'.tr(),
+    QuestId.buildMageTower => '$_forest.quest.buildMageTower'.tr(),
+    QuestId.learnASkill => '$_forest.quest.learnASkill'.tr(),
+    QuestId.clearHalfArena => '$_forest.quest.clearHalfArena'.tr(),
+    QuestId.becomeChampion => '$_forest.quest.becomeChampion'.tr(),
+  };
+  static String forestQuestLine({required QuestLine line}) => switch (line) {
+    QuestLine.village => '$_forest.questLine.village'.tr(),
+    QuestLine.hero => '$_forest.questLine.hero'.tr(),
   };
   static String get forestMessageWelcome => '$_forest.message.welcome'.tr();
   static String get forestMessageNeedAxe => '$_forest.message.needAxe'.tr();
@@ -73,7 +86,8 @@ class Internationalize {
   static String get forestMessageBlockedSite => '$_forest.message.blockedSite'.tr();
   static String get forestMessageNotEnoughResources => '$_forest.message.notEnoughResources'.tr();
   static String get forestMessageBuildingStarted => '$_forest.message.buildingStarted'.tr();
-  static String get forestMessageAllQuestsCompleted => '$_forest.message.allQuestsCompleted'.tr();
+  static String forestMessageQuestLineCompleted({required QuestLine line}) =>
+      '$_forest.message.questLineCompleted'.tr(namedArgs: {'line': forestQuestLine(line: line)});
   static String forestMessageWoodGained({required int wood}) =>
       '$_forest.message.woodGained'.tr(namedArgs: {'wood': '$wood'});
   static String forestMessagePlacing({required String name}) =>

@@ -308,10 +308,12 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         );
         effects.add(BuildingCompletedEffect(buildingId: buildingId));
       case QuestCompletedEventEntity(:final questId):
-        final allDone = _getQuestsUseCase().every((quest) => quest.isCompleted);
+        final quests = _getQuestsUseCase();
+        final line = quests.firstWhere((quest) => quest.id == questId).line;
+        final lineDone = quests.where((quest) => quest.line == line).every((quest) => quest.isCompleted);
         _showMessage(
-          allDone
-              ? Internationalize.forestMessageAllQuestsCompleted
+          lineDone
+              ? Internationalize.forestMessageQuestLineCompleted(line: line)
               : Internationalize.forestMessageQuestCompleted(title: Internationalize.forestQuestTitle(id: questId)),
         );
     }
@@ -466,6 +468,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
 
   QuestItemData _questItem(QuestProgressEntity quest) {
     return QuestItemData(
+      line: quest.line,
       title: Internationalize.forestQuestTitle(id: quest.id),
       progressText: switch (quest) {
         QuestProgressEntity(isCompleted: true) => Internationalize.forestQuestDone,

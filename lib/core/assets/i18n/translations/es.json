@@ -48,7 +48,19 @@
     "quest": {
       "pickUpAxe": "Recoge el hacha",
       "gatherWood": "Consigue al menos 15 de madera",
-      "buildHouse": "Construye una casa"
+      "buildHouse": "Construye una casa",
+      "buildForge": "Construye la Herrería",
+      "winFirstFight": "Gana un nivel de la arena",
+      "buyFirstWeapon": "Compra la Espada corta",
+      "buildArmory": "Construye la Armería",
+      "buildMageTower": "Construye la Torre de magia",
+      "learnASkill": "Aprende una habilidad",
+      "clearHalfArena": "Gana la mitad de los niveles de la arena",
+      "becomeChampion": "Gana al Jefe bárbaro"
+    },
+    "questLine": {
+      "village": "Aldea",
+      "hero": "Héroe"
     },
     "message": {
       "welcome": "Hay un hacha en el suelo, cerca de ti. Recógela pasando por encima.",
@@ -58,7 +70,7 @@
       "blockedSite": "Ahí no cabe. Busca un sitio despejado.",
       "notEnoughResources": "No tienes recursos suficientes.",
       "buildingStarted": "Manos a la obra…",
-      "allQuestsCompleted": "¡Has completado todas las misiones!",
+      "questLineCompleted": "¡Has completado las misiones de {line}!",
       "woodGained": "+{wood} de madera",
       "placing": "Elige dónde construir: {name}. Clic derecho o Esc para cancelar.",
       "buildingCompleted": "Construcción terminada: {name}",

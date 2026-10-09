@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/quest_line.dart';
 import 'package:rpg/core/config/constants/enum/chop_result.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/layers/domain/entities/game/construction_result_entity.dart';
@@ -76,6 +77,6 @@ void main() {
     expect(events, contains(GameEventEntityMock.buildingCompleted));
     expect(events, contains(GameEventEntityMock.buildHouseCompleted));
     expect(getPlayerStatus().inventory.amount(Resource.wood), 3);
-    expect(getQuests().every((quest) => quest.isCompleted), isTrue);
+    expect(getQuests().where((quest) => quest.line == QuestLine.village).every((quest) => quest.isCompleted), isTrue);
   });
 }

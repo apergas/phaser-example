@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/quest_line.dart';
 import 'package:rpg/core/config/constants/enum/forest/facing.dart';
 import 'package:rpg/core/config/constants/enum/forest/work_tool.dart';
 import 'package:rpg/layers/domain/rules/rules.dart';
@@ -53,9 +54,10 @@ void main() {
       // then
       final hud = bloc.state.data.hud!;
       expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessageWelcome));
-      expect(hud.questBadge, '0/3');
+      expect(hud.questBadge, '0/11');
       expect(hud.quests[0], QuestItemDataMock.pickUpAxeCurrent);
       expect(hud.quests[1], QuestItemDataMock.gatherWoodPending);
+      expect(hud.quests[3], QuestItemDataMock.buildForgeCurrent);
     },
   );
 
@@ -314,10 +316,13 @@ void main() {
       wait: Duration.zero,
       verify: (bloc) {
         // then
-        expect(badgeBefore, '2/3');
+        expect(badgeBefore, '2/11');
         expect(effects, contains(ForestEffectMock.buildingCompleted));
-        expect(bloc.state.data.hud!.questBadge, '3/3');
-        expect(ForestBlocMock.shownMessages(navigationService).last, Internationalize.forestMessageAllQuestsCompleted);
+        expect(bloc.state.data.hud!.questBadge, '3/11');
+        expect(
+          ForestBlocMock.shownMessages(navigationService).last,
+          Internationalize.forestMessageQuestLineCompleted(line: QuestLine.village),
+        );
       },
     );
   });

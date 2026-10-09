@@ -12,13 +12,14 @@ class ResultPanel extends StatelessWidget {
 
   final ArenaResultData result;
   final VoidCallback onRetry;
+  final double width;
 
-  const ResultPanel({super.key, required this.result, required this.onRetry});
+  const ResultPanel({super.key, required this.result, required this.onRetry, this.width = maxWidth});
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: maxWidth),
+      constraints: BoxConstraints(maxWidth: width),
       child: HudPanel(
         isHighlighted: result.isVictory,
         padding: const EdgeInsets.all(16),
@@ -39,7 +40,11 @@ class ResultPanel extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: CustomTextStyles.system15w600.copyWith(color: CustomColors.hudText),
               ),
-            if (!result.isVictory) HudButton(label: Internationalize.arenaRetry, onPressed: onRetry),
+            if (!result.isVictory)
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: HudButton(label: Internationalize.arenaRetry, onPressed: onRetry),
+              ),
           ],
         ),
       ),

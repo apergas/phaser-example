@@ -15,6 +15,8 @@ import 'result_panel.dart';
 class ArenaHud extends StatelessWidget {
   static const double _margin = 12;
   static const double _listTop = 64;
+  static const double _narrowResultBelowHeight = 480;
+  static const double _narrowResultWidthFactor = 0.2;
 
   final List<ArenaLevelItemData> levels;
   final ArenaLevelId? selected;
@@ -43,6 +45,16 @@ class ArenaHud extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) => _stack(
+        constraints.maxHeight < _narrowResultBelowHeight
+            ? constraints.maxWidth * _narrowResultWidthFactor
+            : ResultPanel.maxWidth,
+      ),
+    );
+  }
+
+  Widget _stack(double resultWidth) {
     final shownResult = result;
     return Stack(
       children: [
@@ -62,7 +74,7 @@ class ArenaHud extends StatelessWidget {
           Positioned(
             top: _margin,
             right: _margin,
-            child: ResultPanel(result: shownResult, onRetry: onFight),
+            child: ResultPanel(result: shownResult, onRetry: onFight, width: resultWidth),
           ),
       ],
     );

@@ -139,7 +139,7 @@ Añadir un test del BLoC con dos misiones de la misma línea completadas a la ve
 > - El fallo al refrescar la lista tras una pelea se captura: sale el error y el resultado se queda.
 > - Un golpe sin daño ya no enseña "−0" ni salpica.
 > - Frame propio de "recibir el golpe": **descartado** (habría que bajar la animación `hurt` de todas las capas; el parpadeo basta).
-> - El panel de derrota a 844 × 390: **sigue pendiente.** En la prueba manual de C8 (emulador Android, 915 × 412, nivel del jefe) el panel de derrota tapa la cabeza y la barra de vida del guardia de arriba. Arreglo posible: bajar el panel o moverlo al centro abajo en pantallas bajas.
+> - El panel de derrota a 844 × 390: en la prueba manual de C8 (emulador Android, 915 × 412, nivel del jefe) tapaba la cabeza y la barra de vida del guardia de arriba. **Arreglado después:** por debajo de 480 px de alto, `ArenaHud` estrecha el panel de resultado al 20 % del ancho, pegado a la derecha (los luchadores acaban en el 78 % del ancho), y el botón *Reintentar* se encoge si no cabe. Comprobado en el emulador.
 
 Del cierre de C2 y C3 (sección 5 del README):
 - **Decisiones provisionales de C2**, a revisar con este pulido: la pausa con `RouteObserver`, el panel de victoria sin botón y el umbral ámbar del Poder (×1,25). La de "todos con hacha" la resuelven 1.2 y 1.3.

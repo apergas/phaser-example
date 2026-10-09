@@ -52,9 +52,9 @@
 | C5 Torre de magia | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Torre de magia, catálogo `Skills`, pestaña *Habilidades* y nombres de las habilidades en la arena. Unida tras C4 con dos conflictos aditivos; 612 tests en verde. |
 | C6 Bárbaros y jefe | ✅ | `feature/PROJECT-X-arena` (#51) | Bárbaros y jefe con capas LPC reales (cuero, barba, casco; jefe con casco vikingo), hacha de siempre; anillo bajo el objetivo y caídos al 50 %; *Campeón de la arena* con confeti e insignia en el panel *Héroe*. 630 tests en verde; prueba manual en Chrome y Android. |
 | C7 Misiones y equilibrado | ✅ | `develop` (#52, #53) | Daño por rangos, línea de misiones *Héroe*, equipo sólo con oro y test de equilibrado con los números finales (tabla en `GAME_DESIGN.md` 3.8). 639 tests en verde. |
-| C8 Pulido de la arena | ✅ | `feature/PROJECT-X-arena` (sin PR por ahora) | Lo de `ARENA-FIXES.md`: armas y veterano propios, luchadores que se acercan a golpear (turnos de 800 ms), HUD del móvil a la izquierda, mensajes de misiones agrupados y pendientes de C2/C3. 645 tests en verde. Pendiente: el panel de derrota tapa al enemigo de arriba en móvil. |
+| C8 Pulido de la arena | ✅ | `feature/PROJECT-X-arena` (sin PR por ahora) | Lo de `ARENA-FIXES.md`: armas y veterano propios, luchadores que se acercan a golpear (turnos de 800 ms), HUD del móvil a la izquierda, mensajes de misiones agrupados y pendientes de C2/C3. 649 tests en verde. El panel de resultado se estrecha a la derecha en pantallas bajas para no tapar al enemigo de arriba. |
 
 ## Siguiente paso
 
-- **Arena:** C0–C7 en `develop` (#53) y C8 hecha en `feature/PROJECT-X-arena`, sin PR por ahora. Queda en `ARENA-FIXES.md` §7 el panel de derrota que tapa al enemigo de arriba en móvil. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
+- **Arena:** C0–C7 en `develop` (#53) y C8 hecha en `feature/PROJECT-X-arena`, sin PR por ahora. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
 - **Aldea:** implementar F1 desde `feature/PROJECT-X-town`.

@@ -34,10 +34,10 @@ Lee el apartado *Cómo probarlo* de la tarea, o de la fase si es la última tare
 - Marca los checkboxes de la tarea en `docs/boost/plans/2026-10-04-game-design/F<n>-*.md` o `docs/boost/plans/2026-10-06-hero-arena/C<n>-*.md`.
 - Si la tarea resolvió un cruce entre los dos planes (sección 6 del README de la aldea, sección 3.2 del de la arena), dilo en el PR.
 - Si algo se hizo distinto de lo planeado (firmas, nombres, arte, números), añade una línea en la sección 5 *Desviaciones registradas* del README. Indica fase y tarea, qué cambió y por qué.
-- Si es la última tarea de la fase, cambia su icono en la tabla de fases del README a ✅ y actualiza su fila en `docs/boost/plans/PROGRESS.md` (estado, dónde está, PR y fecha de última actualización).
+- Actualiza la fila de la fase en `docs/boost/plans/PROGRESS.md` con la tarea terminada (estado, dónde está, notas y fecha de última actualización) y su apartado *Siguiente paso*. Si es la última tarea de la fase, cambia además su icono a ✅, aquí y en la tabla de fases del README.
 - Si la tarea cambia una excepción documentada (E1–E11) o la estructura descrita en `CLAUDE.md`, actualízalo y añádelo con un `git add CLAUDE.md` aparte.
 
-Haz el commit junto al código: `[PROJECT-X]: <imperative description>`, en un comando `git commit` independiente. **Sin ninguna atribución a IA**: el hook lo rechaza. Comprueba con `git log -1` que el commit existe.
+Todo esto (plan, README y `PROGRESS.md`) va en **la misma rama de la tarea**, en un commit propio (por ejemplo `[PROJECT-X]: Update the roadmap progress after TC6.1`): no hay rama ni PR aparte para la documentación. Mensaje `[PROJECT-X]: <imperative description>`, en un comando `git commit` independiente. **Sin ninguna atribución a IA**: el hook lo rechaza. Comprueba con `git log -1` que el commit existe.
 
 ## 4. PR y tracker
 
@@ -59,7 +59,7 @@ gh issue comment <n> --repo apergas/phaser-example --body "PR abierto: <url>. Ve
 - **Conflicto en `di.config.dart` o en un `*.mocks.dart`:** toma cualquiera de las dos versiones, ejecuta `dart run build_runner build --delete-conflicting-outputs` y añade el resultado.
 - **Arena (fases C\*):** la PR va a `feature/PROJECT-X-arena` (`--base feature/PROJECT-X-arena`), no a `develop`. Ver la sección 3.0 del README de la arena.
 - **Aldea (fases F\*):** la PR va a `feature/PROJECT-X-town`. El paso de `town` a `develop` es por bloques (sección 3.0 del README de la aldea) y no lo hace esta skill.
-- **Solo documentación** (planes, `PROGRESS.md`): PR directa a `develop`.
+- **Documentación** (planes, README, `PROGRESS.md`): viaja con el código, en la rama de la tarea y en su mismo PR. Llega a `develop` cuando lo hace la rama de integración.
 - Tras resolver un conflicto, vuelve a ejecutar la batería del paso 1.
 - Si existe el Project, mueve la tarjeta a *Review*.
 

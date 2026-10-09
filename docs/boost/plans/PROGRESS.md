@@ -4,7 +4,7 @@
 > - Aldea: [`2026-10-04-game-design/`](2026-10-04-game-design/README.md)
 > - Héroe y arena: [`2026-10-06-hero-arena/`](2026-10-06-hero-arena/README.md)
 >
-> Última actualización: 2026-10-09. Se actualiza al cerrar cada fase (`/cerrar-tarea`) y al pasar un plan de ficha a detallado.
+> Última actualización: 2026-10-09. Se actualiza al terminar cada tarea (`/cerrar-tarea`) y al pasar un plan de ficha a detallado, con un commit en la misma rama de la tarea. Cada rama de integración lleva su copia al día; `develop` la recibe cuando entra la rama.
 
 **Leyenda:**
 - ✅ terminada.
@@ -19,7 +19,6 @@
 | `develop` | Lo integrado de las dos partes y todos los planes (`docs/`). | `main` (publicado en GitHub Pages) |
 | `feature/PROJECT-X-town` | Integración de la aldea: las fases F terminadas. | `develop`, por bloques jugables (README de la aldea, sección 3.0) |
 | `feature/PROJECT-X-arena` | Integración de la arena: todo `develop` más las fases C terminadas. | `develop`, una sola vez, cuando la arena esté completa (README de la arena, sección 3.0) |
-| `feature/PROJECT-X-progress` | Planes y este resumen (sólo `docs/`). | `develop`, por PR |
 
 **Bloques de la aldea** (cada uno pasa a `develop` cuando está completo):
 - **Bloque 1:** F1–F4 (árboles, guardado, rebrote y misiones).
@@ -57,5 +56,4 @@
 ## Siguiente paso
 
 - **Arena:** escribir el plan de C6 (bárbaros y jefe, flujo C) y después el de C7. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
-- **Planes:** subir `feature/PROJECT-X-progress` y abrir su PR a `develop` (planes de C4 y C5, `ARENA-FIXES.md` y este resumen).
 - **Aldea:** implementar F1 desde `feature/PROJECT-X-town`.

@@ -146,8 +146,8 @@ Las fases de la aldea no van directamente a `develop`. Se acumulan en **`feature
 - **Ramas de fase o de tarea:** salen de `feature/PROJECT-X-town` y su PR va hacia esa rama, no hacia `develop`.
 - **Cerrar un bloque:** una PR de `feature/PROJECT-X-town` a `develop`, con la prueba manual completa en web, Android e iOS. Después, el flujo de la arena hace `git merge develop` en `feature/PROJECT-X-arena` y resuelve ahí los cruces (sección 6).
 - **Tests a mano:** el CI sólo se lanza con `main`, así que tras cada unión en `feature/PROJECT-X-town` se ejecuta la batería de cierre de fase.
-- **La documentación sí va a `develop`:** planes, casillas, desviaciones y `PROGRESS.md`, en PR propias, como en la arena.
-- **Si `develop` cambia por otra vía** (documentación, un arreglo urgente): `git merge develop` en `feature/PROJECT-X-town`. Siempre `merge`, nunca `rebase`, para no cambiar los identificadores de los commits.
+- **La documentación va con el código (decidido el 2026-10-09):** planes, casillas, desviaciones y `PROGRESS.md` se actualizan en la misma rama de la tarea o fase, en un commit propio, y entran con ella en `feature/PROJECT-X-town`. No hay rama ni PR aparte, como en la arena.
+- **Si `develop` cambia por otra vía** (un arreglo urgente, la arena): `git merge develop` en `feature/PROJECT-X-town`. Siempre `merge`, nunca `rebase`, para no cambiar los identificadores de los commits.
 
 - **Rama por tarea:** `feature/PROJECT-X-<fase>-<tarea>`, por ejemplo `feature/PROJECT-X-f1-domain`. Sale de `feature/PROJECT-X-town`; PR a `feature/PROJECT-X-town` (sección 3.0). Antes de abrir el PR, `git merge` de `feature/PROJECT-X-town` en la rama.
 - **Cada tarea deja `develop` en verde:** al ser una sola app, una tarea que cambia una API del dominio adapta en el mismo PR todo lo que la usa (BLoC, widgets, componentes y tests). No se dejan APIs `@Deprecated` a medias.

@@ -2,9 +2,11 @@
 
 > Lista de ajustes de la arena que se aplicarán **cuando el plan *Héroe y arena* esté completo** (después de C7), en una fase propia de pulido. No es un plan detallado: cada punto se convierte en tarea cuando se planifique esa fase.
 >
-> Abierta el 2026-10-07, tras probar C2 y C3 juntas.
+> Abierta el 2026-10-07, tras probar C2 y C3 juntas. **Hecha en C8 (2026-10-09)**, salvo lo que se indica en cada punto: plan en [`C8-arena-polish.md`](C8-arena-polish.md).
 
 ## 1. Arte de los luchadores
+
+> **Hecho en C8 (TC8.1).** El veterano es `EnemyKind.banditVeteran`: camisa azul y espada de hierro. El héroe lleva en la arena el arma equipada: hacha, o la espada *arming* de LPC en bronce (corta), hierro o acero.
 
 ### 1.1 Bandido novato y bandido veterano se ven iguales
 
@@ -53,6 +55,8 @@ Hoy cada pieza de equipo cuesta madera **y** oro (`Gear.all`):
 - Ajustar `GearOptionEntity.missing`, los textos de "Faltan…" y los mocks (`FundsMock`, `GearScenarioMock`) que hoy cuentan madera.
 
 ## 3. Los luchadores se acercan para golpear
+
+> **Hecho en C8 (TC8.2)**, con turnos de 800 ms: avanzar hasta el 35 %, golpe a mitad y volver desde el 65 %, a 30 px del objetivo. Al volver, el luchador anda de espaldas (sigue mirando al enemigo).
 
 Hoy cada luchador se queda en su sitio (héroe en x = 190, enemigos en x = 300/340) y golpea al aire: el golpe "llega" aunque estén a más de 100 px.
 
@@ -106,6 +110,8 @@ Además:
 
 ## 5. HUD del bosque en móvil: botones alineados a la izquierda
 
+> **Hecho en C8 (TC8.3).**
+
 Por debajo de `HudOverlay.buttonsBelowWidth` (920 px), los botones (*Misiones*, *Construir*, *Héroe*, *Arena*) bajan a la línea de debajo de la `ResourceBar`, pero **alineados a la derecha**. En el móvil queda raro: la barra empieza a la izquierda y los botones a la derecha.
 
 **Qué hacer:** mantenerlos en la segunda línea, pero **alineados a la izquierda**, debajo de la barra de recursos y con su mismo margen.
@@ -116,6 +122,8 @@ Por debajo de `HudOverlay.buttonsBelowWidth` (920 px), los botones (*Misiones*, 
 
 ## 6. Mensajes de misiones repetidos
 
+> **Hecho en C8 (TC8.4).**
+
 Las misiones se comprueban en cada `ForestTicked`, y el bosque está en pausa mientras la arena está encima. Al volver, varias misiones del héroe que se miden con la arena (*Gana un nivel de la arena*, *Gana la mitad de los niveles de la arena*, *Gana al Jefe bárbaro*) pueden completarse en el mismo tick, y salen varios mensajes seguidos. Si son las últimas de su línea, "¡Has completado las misiones de Héroe!" sale una vez por cada misión.
 
 **Qué hacer:** en `ForestBloc`, agrupar los `QuestCompletedEventEntity` del mismo tick:
@@ -125,6 +133,13 @@ Las misiones se comprueban en cada `ForestTicked`, y el bosque está en pausa mi
 Añadir un test del BLoC con dos misiones de la misma línea completadas a la vez (el escenario `GearScenarioMock.withAllWorkshops` con `HeroEntityMock.championWithEveryQuestDone` ya lo provoca) que compruebe que el mensaje de línea completada sale una sola vez.
 
 ## 7. Pendientes que ya estaban apuntados
+
+> **Resuelto en C8 (TC8.5):**
+> - Las decisiones provisionales de C2 se dan por buenas (decisión del usuario, 2026-10-09).
+> - El fallo al refrescar la lista tras una pelea se captura: sale el error y el resultado se queda.
+> - Un golpe sin daño ya no enseña "−0" ni salpica.
+> - Frame propio de "recibir el golpe": **descartado** (habría que bajar la animación `hurt` de todas las capas; el parpadeo basta).
+> - El panel de derrota a 844 × 390 se revisa en la prueba manual de C8.
 
 Del cierre de C2 y C3 (sección 5 del README):
 - **Decisiones provisionales de C2**, a revisar con este pulido: la pausa con `RouteObserver`, el panel de victoria sin botón y el umbral ámbar del Poder (×1,25). La de "todos con hacha" la resuelven 1.2 y 1.3.

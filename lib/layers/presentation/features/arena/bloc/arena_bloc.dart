@@ -169,9 +169,18 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
     ];
     var data = state.data.copyWith(replay: () => next, fighters: _replayFighters(next), effects: effects);
     if (next.isFinished) {
-      final arena = _getArenaUseCase();
-      _arena = arena;
-      data = _withArena(data, arena).copyWith(result: () => _result(next));
+      data = data.copyWith(result: () => _result(next));
+      try {
+        final arena = _getArenaUseCase();
+        _arena = arena;
+        data = _withArena(data, arena);
+      } on AppException catch (exception) {
+        _navigationService.showErrorPopUp(
+          title: exception.title,
+          message: exception.message,
+          buttonTitle: Internationalize.commonAccept,
+        );
+      }
     }
     emit(ArenaSuccess(data: data));
   }

@@ -559,6 +559,39 @@ void main() {
   );
 
   blocTest<ArenaBloc, ArenaState>(
+    'testWhenTheListCannotBeRefreshedAfterAFightThenTheErrorIsShownAndTheResultStays',
+    build: () {
+      // given
+      return ArenaBlocMock.make(
+        world,
+        navigationService: navigationService,
+        error: AppExceptionMock.noGameInProgress,
+        callsBeforeError: 3,
+      );
+    },
+    act: (bloc) {
+      // when
+      bloc
+        ..add(const ArenaStarted())
+        ..add(const ArenaFightRequested())
+        ..add(const ArenaReplaySkipped());
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(bloc.state, isA<ArenaSuccess>());
+      expect(bloc.state.data.result, ArenaResultDataMock.victoryTenGold);
+      verify(
+        navigationService.showErrorPopUp(
+          title: AppExceptionMock.noGameInProgress.title,
+          message: AppExceptionMock.noGameInProgress.message,
+          buttonTitle: anyNamed('buttonTitle'),
+        ),
+      ).called(1);
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
     'testWhenClosedThenGoesBackToTheForest',
     build: () {
       // given

@@ -91,9 +91,8 @@ class ArenaSceneComponent extends Component {
 
   void _onHit(FightSide side, int index, int damage) {
     final fighter = _fighters[FighterRenderData.keyOf(side, index)];
-    if (fighter == null) return;
+    if (fighter == null || damage <= 0) return;
     _float(side, index, Internationalize.arenaDamage(amount: damage), CustomColors.hudWarning);
-    if (damage <= 0) return;
     fighter.hit();
     final impact = fighter.impactPoint;
     add(

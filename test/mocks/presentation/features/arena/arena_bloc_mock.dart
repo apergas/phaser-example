@@ -13,11 +13,17 @@ import '../../../domain/repositories/repository_mocks.mocks.dart';
 abstract final class ArenaBlocMock {
   static const double frameMs = 16;
 
-  static ArenaBloc make(World world, {required MockNavigationService navigationService, Exception? error}) {
+  static ArenaBloc make(
+    World world, {
+    required MockNavigationService navigationService,
+    Exception? error,
+    int callsBeforeError = 0,
+  }) {
     final sessionRepository = MockGameSessionRepository();
     final session = GameSessionEntityMock.playing(world);
+    var calls = 0;
     when(sessionRepository.current()).thenAnswer((_) {
-      if (error != null) throw error;
+      if (error != null && calls++ >= callsBeforeError) throw error;
       return session;
     });
     return ArenaBloc(

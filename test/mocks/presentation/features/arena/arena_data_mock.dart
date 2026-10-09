@@ -24,6 +24,8 @@ abstract final class ArenaDataMock {
     effects: const [ArenaEffectMock.banditHitForFour],
   );
 
+  static ArenaData get banditHitForNothing => replaying.copyWith(effects: const [ArenaEffectMock.banditHitForNothing]);
+
   static ArenaData get heroDodged => replaying.copyWith(effects: const [ArenaEffectMock.heroDodged]);
 
   static ArenaData get heroGotASecondWind => replaying.copyWith(

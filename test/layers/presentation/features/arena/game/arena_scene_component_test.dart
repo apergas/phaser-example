@@ -126,4 +126,17 @@ void main() {
     // then
     expect(scene.children.whereType<ParticleBurstComponent>(), hasLength(1));
   });
+
+  testWithFlameGame('testWhenABlowDoesNoDamageThenNothingFloatsOrSplashes', (game) async {
+    // given
+    final scene = await _mountedScene(game);
+
+    // when
+    scene.show(ArenaDataMock.banditHitForNothing);
+    await game.ready();
+
+    // then
+    expect(scene.children.whereType<FloatingTextComponent>(), isEmpty);
+    expect(scene.children.whereType<ParticleBurstComponent>(), isEmpty);
+  });
 }

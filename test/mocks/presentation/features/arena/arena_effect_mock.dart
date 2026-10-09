@@ -5,6 +5,8 @@ import 'package:rpg/layers/presentation/features/arena/models/arena_effect.dart'
 abstract final class ArenaEffectMock {
   static const HitEffect banditHitForFour = HitEffect(side: FightSide.enemy, index: 0, damage: 4);
 
+  static const HitEffect banditHitForNothing = HitEffect(side: FightSide.enemy, index: 0, damage: 0);
+
   static const HitEffect heroHitForTwo = HitEffect(side: FightSide.hero, index: 0, damage: 2);
 
   static const HitEffect banditHitForThree = HitEffect(side: FightSide.enemy, index: 0, damage: 3);

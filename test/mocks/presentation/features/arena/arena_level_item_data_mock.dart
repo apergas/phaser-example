@@ -29,7 +29,7 @@ abstract final class ArenaLevelItemDataMock {
   static ArenaLevelItemData get veteranLocked => ArenaLevelItemData(
     id: ArenaLevelId.banditVeteran,
     name: Internationalize.arenaLevel(id: ArenaLevelId.banditVeteran),
-    enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.bandit),
+    enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.banditVeteran),
     powerText: Internationalize.arenaPower(power: 41),
     tone: PowerTone.hard,
     rewardText: Internationalize.arenaReward(amount: 30),
@@ -39,7 +39,7 @@ abstract final class ArenaLevelItemDataMock {
   static ArenaLevelItemData get veteranOpen => ArenaLevelItemData(
     id: ArenaLevelId.banditVeteran,
     name: Internationalize.arenaLevel(id: ArenaLevelId.banditVeteran),
-    enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.bandit),
+    enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.banditVeteran),
     powerText: Internationalize.arenaPower(power: 41),
     tone: PowerTone.hard,
     rewardText: Internationalize.arenaReward(amount: 30),

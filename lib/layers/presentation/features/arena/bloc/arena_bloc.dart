@@ -11,6 +11,8 @@ import '../../../../../core/config/constants/enum/enemy_kind.dart';
 import '../../../../../core/config/constants/enum/fight_action.dart';
 import '../../../../../core/config/constants/enum/fight_advice.dart';
 import '../../../../../core/config/constants/enum/fight_side.dart';
+import '../../../../../core/config/constants/enum/gear_id.dart';
+import '../../../../../core/config/constants/enum/gear_slot.dart';
 import '../../../../../core/config/constants/enum/resource.dart';
 import '../../../../../core/config/constants/enum/skill_id.dart';
 import '../../../../../core/error-handling/exceptions/app_exceptions.dart';
@@ -22,6 +24,7 @@ import '../../../../domain/entities/combat/arena_level_status_entity.dart';
 import '../../../../domain/entities/combat/fight_result_entity.dart';
 import '../../../../domain/use-cases/arena/get_arena_use_case.dart';
 import '../../../../domain/use-cases/arena/start_fight_use_case.dart';
+import '../../../../domain/rules/gear.dart';
 import '../../../../domain/use-cases/hero/get_hero_status_use_case.dart';
 import '../game/render/arena_render_constants.dart';
 import '../models/arena_effect.dart';
@@ -44,6 +47,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
   ArenaEntity? _arena;
   FightAdvice? _advice;
   bool _isFirstChampionship = false;
+  GearId _heroWeapon = GearId.woodcutterAxe;
 
   ArenaBloc({
     required this._getArenaUseCase,
@@ -266,7 +270,9 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
   }
 
   List<FighterRenderData> _previewFighters(ArenaEntity arena, ArenaLevelId? selected) {
-    final heroHealth = _getHeroStatusUseCase().stats.health;
+    final status = _getHeroStatusUseCase();
+    final heroHealth = status.stats.health;
+    _heroWeapon = Gear.of(GearSlot.weapon, status.hero.weaponTier).id;
     final level = arena.levels.firstWhereOrNull((status) => status.level.id == selected)?.level;
     return [
       FighterRenderData(
@@ -276,6 +282,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
         health: heroHealth,
         maxHealth: heroHealth,
         pose: FighterPose.idle,
+        weapon: _heroWeapon,
       ),
       if (level != null)
         for (final (index, enemy) in level.enemies.indexed)
@@ -339,6 +346,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
       swingProgress: pose == FighterPose.attack ? progress : 0,
       targetIndex: pose == FighterPose.attack ? turn?.targetIndex ?? 0 : 0,
       isTargeted: isTargeted,
+      weapon: side == FightSide.hero ? _heroWeapon : null,
     );
   }
 }

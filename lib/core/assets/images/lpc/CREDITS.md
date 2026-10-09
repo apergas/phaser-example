@@ -59,9 +59,20 @@ The stump (`stump` frame) comes from the LPC Tile Atlas above.
 ## Arena (`arena.png`)
 
 Fighters composed by `build_assets.py` from the same character layers and axe as `hero-*.png`
-(see *Character* above), each kept in one facing. The bandit is a recolour of those layers
-(clothes and hair). Same authors and licences as the character layers. The barbarian and the
-barbarian chief add their own layers (see *Barbarians* below).
+(see *Character* above), each kept in one facing, standing, walking and striking. The bandit and
+the veteran bandit are recolours of those layers (clothes and hair). Same authors and licences as
+the character layers. The barbarian and the barbarian chief add their own layers (see
+*Barbarians* below); the hero's swords and the veteran's sword are the arming sword (see *Swords*
+below).
+
+### Swords (`hero-short-sword-*`, `hero-iron-sword-*`, `hero-steel-sword-*`, `bandit-veteran-*`)
+
+"Arming Sword" of the [Universal LPC Spritesheet Character Generator](https://github.com/liberatedpixelcup/Universal-LPC-Spritesheet-Character-Generator)
+(commit 58ce1aa), in its bronze (short sword), iron (iron sword and the veteran bandit) and steel
+(steel sword) variants: `asset-packs/lpc/sources/tools/sword-*.png`. By ElizaWy; walk by
+JaidynReiman. OGA-BY 3.0 —
+<https://github.com/ElizaWy/LPC/tree/main/Characters/Props/Sword%2001%20-%20Arming%20Sword>,
+<https://opengameart.org/content/lpc-expanded-sit-run-jump-more>.
 
 The grass (`arena-grass`) and the fence (`arena-fence`) come from the LPC Tile Atlas (see
 *Ground and decor* above). CC-BY-SA 3.0 / GPL 3.0.

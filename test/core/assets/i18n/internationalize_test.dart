@@ -302,7 +302,7 @@ void main() {
       'Oso',
       'Manada de lobos',
     ]);
-    expect(enemies, ['Bandido', 'Bárbaro', 'Jefe bárbaro', 'Lobo', 'Oso']);
+    expect(enemies, ['Bandido', 'Bárbaro', 'Jefe bárbaro', 'Lobo', 'Oso', 'Bandido veterano']);
     expect(advice, [
       '¡Casi lo tienes! Vuelve a intentarlo.',
       'Te falta Ataque: visita la Herrería.',

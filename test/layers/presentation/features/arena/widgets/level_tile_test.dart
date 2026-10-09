@@ -22,7 +22,7 @@ void main() {
         child: LevelTile(level: level, isSelected: true, isEnabled: true, onTap: () => taps++),
       ),
     );
-    await tester.tap(find.text(level.name));
+    await tester.tap(find.text(level.name).first);
 
     // then
     expect(find.text(level.enemiesText), findsOneWidget);
@@ -42,7 +42,7 @@ void main() {
         child: LevelTile(level: level, isSelected: false, isEnabled: true, onTap: () => taps++),
       ),
     );
-    await tester.tap(find.text(level.name));
+    await tester.tap(find.text(level.name).first);
 
     // then
     expect(find.bySemanticsLabel(Internationalize.arenaLocked), findsOneWidget);

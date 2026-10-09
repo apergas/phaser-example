@@ -22,7 +22,7 @@ abstract final class ArenaRenderConstants {
   static const double chiefScale = 1.25;
 
   static double fighterScale(EnemyKind? kind) => switch (kind) {
-    null || EnemyKind.bandit || EnemyKind.barbarian => 1,
+    null || EnemyKind.bandit || EnemyKind.banditVeteran || EnemyKind.barbarian => 1,
     EnemyKind.barbarianChief => chiefScale,
     EnemyKind.wolf || EnemyKind.bear => 1,
   };
@@ -31,7 +31,7 @@ abstract final class ArenaRenderConstants {
   static const List<int> bearSwipeSequence = [0, 1, 1, 2, 2, 2, 1, 0];
 
   static List<int>? leapSequence(EnemyKind? kind) => switch (kind) {
-    null || EnemyKind.bandit || EnemyKind.barbarian || EnemyKind.barbarianChief => null,
+    null || EnemyKind.bandit || EnemyKind.banditVeteran || EnemyKind.barbarian || EnemyKind.barbarianChief => null,
     EnemyKind.wolf => wolfBiteSequence,
     EnemyKind.bear => bearSwipeSequence,
   };

@@ -13,7 +13,7 @@ import 'arena_render_constants.dart';
 
 abstract final class ArenaFrames {
   static String frameName(FighterRenderData fighter, double animationSeconds) {
-    final name = ArenaSpriteNames.fighter(fighter.enemyKind);
+    final name = ArenaSpriteNames.fighter(fighter.enemyKind, weapon: fighter.weapon);
     final leap = ArenaRenderConstants.leapSequence(fighter.enemyKind);
     return switch (fighter.pose) {
       FighterPose.attack when leap != null => ArenaSpriteNames.attack(

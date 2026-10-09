@@ -30,7 +30,7 @@ abstract final class ArenaLevels {
       id: ArenaLevelId.banditVeteran,
       enemies: [
         EnemyEntity(
-          kind: EnemyKind.bandit,
+          kind: EnemyKind.banditVeteran,
           stats: CombatStatsEntity(attackMin: 4, attackMax: 6, defense: 2, health: 36),
         ),
       ],

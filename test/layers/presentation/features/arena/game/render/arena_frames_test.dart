@@ -116,4 +116,15 @@ void main() {
     // then
     expect((spot, lift), (const PositionEntity(x: 190, y: 170), 0.0));
   });
+
+  test('testWhenTheHeroHoldsASwordThenItsFramesAreTheSwordOnes', () {
+    // given
+    const hero = FighterRenderDataMock.heroWithSteelSwordIdle;
+
+    // when
+    final name = ArenaFrames.frameName(hero, 0);
+
+    // then
+    expect(name, 'hero-steel-sword-idle-0');
+  });
 }

@@ -191,6 +191,7 @@ class Internationalize {
     EnemyKind.barbarianChief => '$_arena.enemy.barbarianChief'.tr(),
     EnemyKind.wolf => '$_arena.enemy.wolf'.tr(),
     EnemyKind.bear => '$_arena.enemy.bear'.tr(),
+    EnemyKind.banditVeteran => '$_arena.enemy.banditVeteran'.tr(),
   };
   static String arenaAdvice({required FightAdvice advice}) => switch (advice) {
     FightAdvice.almostThere => '$_arena.advice.almostThere'.tr(),

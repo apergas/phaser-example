@@ -4,6 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:rpg/core/config/constants/enum/arena/fighter_pose.dart';
 import 'package:rpg/core/config/constants/enum/arena/power_tone.dart';
 import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
+import 'package:rpg/core/config/constants/enum/gear_id.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/layers/domain/rules/arena_levels.dart';
 import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
@@ -536,6 +537,24 @@ void main() {
       expect(effects[12], ArenaEffectMock.heroHealedTwelve);
       expect(effects[13], ArenaEffectMock.secondWindUsed);
       expect(effects.last, ArenaEffectMock.lost);
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
+    'testWhenTheHeroHasBoughtTheShortSwordThenItHoldsItInTheArena',
+    build: () {
+      // given
+      world = WorldMock.withHero(HeroEntityMock.withShortSword);
+      return ArenaBlocMock.make(world, navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      bloc.add(const ArenaStarted());
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(bloc.state.data.fighters.first.weapon, GearId.shortSword);
     },
   );
 

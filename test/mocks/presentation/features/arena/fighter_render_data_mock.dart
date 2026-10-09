@@ -1,6 +1,7 @@
 import 'package:rpg/core/config/constants/enum/arena/fighter_pose.dart';
 import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
 import 'package:rpg/core/config/constants/enum/fight_side.dart';
+import 'package:rpg/core/config/constants/enum/gear_id.dart';
 import 'package:rpg/layers/presentation/features/arena/models/fighter_render_data.dart';
 
 abstract final class FighterRenderDataMock {
@@ -11,6 +12,17 @@ abstract final class FighterRenderDataMock {
     health: 30,
     maxHealth: 30,
     pose: FighterPose.idle,
+    weapon: GearId.woodcutterAxe,
+  );
+
+  static const FighterRenderData heroWithSteelSwordIdle = FighterRenderData(
+    side: FightSide.hero,
+    index: 0,
+    enemyKind: null,
+    health: 30,
+    maxHealth: 30,
+    pose: FighterPose.idle,
+    weapon: GearId.steelSword,
   );
 
   static const FighterRenderData rookieBanditIdle = FighterRenderData(
@@ -26,7 +38,7 @@ abstract final class FighterRenderDataMock {
   static const FighterRenderData veteranBanditIdle = FighterRenderData(
     side: FightSide.enemy,
     index: 0,
-    enemyKind: EnemyKind.bandit,
+    enemyKind: EnemyKind.banditVeteran,
     health: 36,
     maxHealth: 36,
     pose: FighterPose.idle,
@@ -79,6 +91,7 @@ abstract final class FighterRenderDataMock {
     health: 22,
     maxHealth: 30,
     pose: FighterPose.idle,
+    weapon: GearId.woodcutterAxe,
   );
 
   static FighterRenderData heroSwinging(double swingProgress) => FighterRenderData(
@@ -89,6 +102,7 @@ abstract final class FighterRenderDataMock {
     maxHealth: 30,
     pose: FighterPose.attack,
     swingProgress: swingProgress,
+    weapon: GearId.woodcutterAxe,
   );
 
   static const FighterRenderData chiefIdle = FighterRenderData(

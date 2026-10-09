@@ -19,7 +19,7 @@ void main() {
     );
 
     // when
-    await tester.tap(find.text(levels[1].name));
+    await tester.tap(find.text(levels[1].name).first);
 
     // then
     expect(selected, [ArenaLevelId.banditVeteran]);
@@ -35,7 +35,7 @@ void main() {
     );
 
     // when
-    await tester.tap(find.text(levels[1].name));
+    await tester.tap(find.text(levels[1].name).first);
 
     // then
     expect(selected, isEmpty);

@@ -187,13 +187,13 @@ Lo que este plan fija o añade sobre la ficha (todo lo demás de la ficha se man
   BuildItemDataMock.mageTowerUnaffordable({required int missingWood})
   ```
 
-- [ ] **Step 1: Crear la rama de fase**
+- [x] **Step 1: Crear la rama de fase**
 
 ```bash
 git switch feature/PROJECT-X-arena && git pull && git switch -c feature/PROJECT-X-c5-mage-tower
 ```
 
-- [ ] **Step 2: Ampliar los datos de prueba**
+- [x] **Step 2: Ampliar los datos de prueba**
 
 `test/mocks/domain/entities/building/blueprint_entity_mock.dart`, al final de la clase:
 
@@ -238,7 +238,7 @@ git switch feature/PROJECT-X-arena && git pull && git switch -c feature/PROJECT-
 
 `BuildItemDataMock.everyBlueprintUnaffordable` (C2) recorre `BlueprintId.values` y ya incluye la Torre; no hay que tocarlo.
 
-- [ ] **Step 3: Escribir los tests que fallan**
+- [x] **Step 3: Escribir los tests que fallan**
 
 `test/layers/domain/rules/blueprints_test.dart`, antes de `testWhenListingBlueprintsThenEveryIdAppearsOnceInDeclarationOrder`:
 
@@ -305,7 +305,7 @@ git switch feature/PROJECT-X-arena && git pull && git switch -c feature/PROJECT-
 Run: `flutter test test/layers/domain/rules/blueprints_test.dart`
 Expected: FAIL al compilar (`BlueprintId.mageTower` no existe).
 
-- [ ] **Step 4: Enum, catálogo, textos, nombre de sprite y desplazamiento**
+- [x] **Step 4: Enum, catálogo, textos, nombre de sprite y desplazamiento**
 
 `lib/core/config/constants/enum/blueprint_id.dart`:
 
@@ -376,7 +376,7 @@ Expected: PASS.
 Run: `flutter test test/layers/presentation/features/forest/game/atlas/lpc_atlas_test.dart`
 Expected: FAIL en `testWhenParsingTheGeneratedAtlasThenEveryLevelSpriteExists`: falta el frame `mage-tower` en `forest.json`. Es la guarda de F0; se arregla en el paso siguiente.
 
-- [ ] **Step 5: Generar el arte**
+- [x] **Step 5: Generar el arte**
 
 En `asset-packs/lpc/build_assets.py`:
 
@@ -456,7 +456,7 @@ The forge and armory roofs are recoloured (dark grey, red); the forge chimney is
 from the LPC Tile Atlas above. The mage tower roof is recoloured violet and stretched 40 % taller.
 ```
 
-- [ ] **Step 6: Ver que pasan**
+- [x] **Step 6: Ver que pasan**
 
 ```bash
 flutter test test/layers/presentation/features/forest test/layers/domain test/core/assets
@@ -464,7 +464,7 @@ flutter test test/layers/presentation/features/forest test/layers/domain test/co
 
 Expected: PASS, incluido `lpc_atlas_test.dart` (el frame existe).
 
-- [ ] **Step 7: Comprobar la persistencia de edificios**
+- [x] **Step 7: Comprobar la persistencia de edificios**
 
 ```bash
 grep -rn "BlueprintId" lib/layers/data
@@ -474,7 +474,7 @@ grep -rn "BlueprintId" lib/layers/data
 - Con un mapper que lee el id con `BlueprintId.values.byName`: no hay nada que hacer.
 - Con un `switch` o una tabla a mano: se añade `mageTower` en el mismo commit y se apunta en la sección 5 del README.
 
-- [ ] **Step 8: Verificación completa**
+- [x] **Step 8: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/assets/i18n/internationalize.dart lib/core/config/constants/enum/blueprint_id.dart lib/layers/domain/rules/blueprints.dart lib/layers/presentation/features/forest/game/atlas/sprite_names.dart lib/layers/presentation/features/forest/game/render/render_constants.dart test/layers/domain/rules/blueprints_test.dart test/layers/domain/use-cases/game/get_build_options_use_case_test.dart test/layers/presentation/features/forest/bloc/forest_bloc_test.dart test/layers/presentation/features/forest/game/atlas/sprite_names_test.dart test/core/assets/i18n/internationalize_test.dart test/mocks/domain/entities/building/blueprint_entity_mock.dart test/mocks/domain/entities/game/build_option_entity_mock.dart test/mocks/presentation/features/forest/build_item_data_mock.dart
@@ -486,7 +486,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `git diff` sin salida en lo generado (esta tarea no toca DI ni mocks de mockito), `No issues found!` y todo en verde (554 tests en la máquina virtual de Dart).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add asset-packs/lpc/build_assets.py lib/core/assets lib/core/config/constants/enum/blueprint_id.dart lib/layers/domain/rules/blueprints.dart lib/layers/presentation/features/forest/game test
@@ -562,7 +562,7 @@ Prueba rápida en Chrome (`flutter run -d chrome`): el menú *Construir* lista *
   SkillScenarioMock.towerSite / .buildMs / .withoutTower / .withTower / .withTowerUnderConstruction
   ```
 
-- [ ] **Step 1: Crear la rama (sólo si TC5.3 se hace a la vez)**
+- [x] **Step 1: Crear la rama (sólo si TC5.3 se hace a la vez)**
 
 ```bash
 git switch feature/PROJECT-X-c5-mage-tower
@@ -572,7 +572,7 @@ cd ../phaser-example-c5-skills-domain && flutter pub get
 
 Si no hay trabajo en paralelo, se sigue en la rama de fase.
 
-- [ ] **Step 2: Escribir los datos de prueba**
+- [x] **Step 2: Escribir los datos de prueba**
 
 `test/mocks/domain/entities/hero/hero_entity_mock.dart`, al final de la clase:
 
@@ -683,7 +683,7 @@ abstract final class SkillOptionEntityMock {
 }
 ```
 
-- [ ] **Step 3: Escribir los tests que fallan**
+- [x] **Step 3: Escribir los tests que fallan**
 
 `test/layers/domain/rules/skills_test.dart` (decisión 4):
 
@@ -1067,7 +1067,7 @@ void main() {
 Run: `flutter test test/layers/domain`
 Expected: FAIL al compilar (`LearnSkillResult`, `SkillEntity`, `Skills`… no existen).
 
-- [ ] **Step 4: Enums, entidades y catálogo**
+- [x] **Step 4: Enums, entidades y catálogo**
 
 `lib/core/config/constants/enum/learn_skill_result.dart`:
 
@@ -1175,7 +1175,7 @@ abstract final class Skills {
 }
 ```
 
-- [ ] **Step 5: Casos de uso**
+- [x] **Step 5: Casos de uso**
 
 `lib/layers/domain/use-cases/hero/learn_skill_use_case.dart`. Las comprobaciones van en el orden de la ficha. `world.spend` es atómico (C0): si falla, no se ha cobrado nada.
 
@@ -1254,7 +1254,7 @@ flutter test test/layers/domain
 
 Expected: `di.config.dart` sólo registra `LearnSkillUseCase` y `GetSkillOptionsUseCase`; PASS.
 
-- [ ] **Step 6: Registrar los casos de uso en el test de DI**
+- [x] **Step 6: Registrar los casos de uso en el test de DI**
 
 En `test/core/config/di/di_test.dart`, añadir los imports
 
@@ -1273,7 +1273,7 @@ y, en `testWhenConfiguringDependenciesThenEveryGameDependencyIsRegistered`, desp
 Run: `flutter test test/core/config/di/di_test.dart`
 Expected: PASS.
 
-- [ ] **Step 7: Verificación completa**
+- [x] **Step 7: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/config/constants/enum/learn_skill_result.dart lib/core/config/constants/enum/skill_option_state.dart lib/layers/domain/entities/hero lib/layers/domain/rules/skills.dart lib/layers/domain/use-cases/hero test/layers/domain/entities/hero test/layers/domain/rules/skills_test.dart test/layers/domain/use-cases/hero test/core/config/di/di_test.dart test/mocks/domain/entities/hero test/mocks/domain/game/skill_scenario_mock.dart test/mocks/domain/world/funds_mock.dart
@@ -1285,7 +1285,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `No issues found!` y todo en verde (18 tests más que TC5.1).
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add lib/core/config/constants/enum lib/core/config/di/di.config.dart lib/layers/domain test/layers/domain test/core/config/di/di_test.dart test/mocks/domain
@@ -1340,7 +1340,7 @@ Si se hizo en su propio *worktree*, se une cuando TC5.3 también esté (TC5.4, S
   HeroPanelDataMock.readyToLearnDoubleStrike
   ```
 
-- [ ] **Step 1: Crear la rama (sólo si TC5.2 se hace a la vez)**
+- [x] **Step 1: Crear la rama (sólo si TC5.2 se hace a la vez)**
 
 ```bash
 git switch feature/PROJECT-X-c5-mage-tower
@@ -1348,7 +1348,7 @@ git worktree add ../phaser-example-c5-skills-tab -b feature/PROJECT-X-c5-skills-
 cd ../phaser-example-c5-skills-tab && flutter pub get
 ```
 
-- [ ] **Step 2: Textos (TDD)**
+- [x] **Step 2: Textos (TDD)**
 
 `test/core/assets/i18n/internationalize_test.dart`: añadir el import `package:rpg/core/config/constants/enum/skill_id.dart` y, antes de `testWhenFormattingArenaNumbersThenUsesTheSpanishTexts`:
 
@@ -1453,7 +1453,7 @@ Expected: FAIL al compilar (`forestSkillName`… no existen).
 Run: `flutter test test/core/assets/i18n/internationalize_test.dart`
 Expected: PASS.
 
-- [ ] **Step 3: Datos de prueba de los modelos**
+- [x] **Step 3: Datos de prueba de los modelos**
 
 `test/mocks/presentation/features/forest/skill_item_data_mock.dart`. Los precios se escriben como los forma el BLoC (`_amounts`), en el orden de `Skills.all` (decisión 4):
 
@@ -1540,7 +1540,7 @@ abstract final class SkillItemDataMock {
   );
 ```
 
-- [ ] **Step 4: Tests de modelos y widgets que fallan**
+- [x] **Step 4: Tests de modelos y widgets que fallan**
 
 `test/layers/presentation/features/forest/models/hero_panel_data_test.dart`, al final de `main`:
 
@@ -1823,7 +1823,7 @@ void main() {
 Run: `flutter test test/layers/presentation/features/forest/models test/layers/presentation/features/forest/widgets`
 Expected: FAIL al compilar (`SkillItemData`, `SkillTile`, `HeroPanel.onLearn`… no existen).
 
-- [ ] **Step 5: Modelos**
+- [x] **Step 5: Modelos**
 
 `lib/layers/presentation/features/forest/models/skill_item_data.dart`:
 
@@ -1893,7 +1893,7 @@ class SkillItemData {
   String toString() => 'HeroPanelData(power: $power, $attack/$defense/$health, rows: $rows, skills: $skills)';
 ```
 
-- [ ] **Step 6: Widgets**
+- [x] **Step 6: Widgets**
 
 `lib/layers/presentation/features/forest/widgets/skill_tile.dart` (mismo aspecto que `GearOptionTile`):
 
@@ -2118,7 +2118,7 @@ class _HeroPanelState extends State<HeroPanel> {
 Run: `flutter test test/layers/presentation/features/forest/models test/layers/presentation/features/forest/widgets`
 Expected: PASS.
 
-- [ ] **Step 7: Verificación completa**
+- [x] **Step 7: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/assets/i18n/internationalize.dart lib/layers/presentation/features/forest/models lib/layers/presentation/features/forest/widgets test/core/assets/i18n/internationalize_test.dart test/layers/presentation/features/forest/models test/layers/presentation/features/forest/widgets test/mocks/presentation/features/forest/skill_item_data_mock.dart test/mocks/presentation/features/forest/hero_panel_data_mock.dart
@@ -2129,7 +2129,7 @@ flutter test
 
 Expected: `git diff` sin salida en lo generado, `No issues found!` y todo en verde (10 tests más que TC5.1). La pestaña todavía no se ve en el juego (la conecta TC5.4).
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add lib/core/assets lib/layers/presentation test
@@ -2185,7 +2185,7 @@ git commit -m "[PROJECT-X]: Add the skills tab to the hero panel"
   ForestDataMock.skillLearned
   ```
 
-- [ ] **Step 1: Unir TC5.2 y TC5.3 (sólo si se hicieron en paralelo)**
+- [x] **Step 1: Unir TC5.2 y TC5.3 (sólo si se hicieron en paralelo)**
 
 ```bash
 git switch feature/PROJECT-X-c5-mage-tower
@@ -2198,7 +2198,7 @@ git worktree remove ../phaser-example-c5-skills-domain && git worktree remove ..
 
 Expected: las dos uniones sin conflictos (no comparten ficheros), lo generado al día y todo en verde (582 tests). Los mensajes de los *merge* son los que propone git (`Merge branch '…'`), que el hook acepta como en C3.
 
-- [ ] **Step 2: Datos de prueba**
+- [x] **Step 2: Datos de prueba**
 
 `test/mocks/presentation/features/forest/forest_bloc_mock.dart`: importar los dos casos de uso nuevos de `use-cases/hero/` y, después de `buyGearUseCase: …`:
 
@@ -2239,7 +2239,7 @@ Expected: las dos uniones sin conflictos (no comparten ficheros), lo generado al
   );
 ```
 
-- [ ] **Step 3: Tests que fallan**
+- [x] **Step 3: Tests que fallan**
 
 `test/layers/presentation/features/forest/bloc/forest_bloc_skill_test.dart` (decisiones 11 y 15):
 
@@ -2559,7 +2559,7 @@ void main() {
 Run: `flutter test test/layers/presentation/features/forest`
 Expected: FAIL al compilar (`ForestSkillLearnRequested`, `SkillLearnedEffect`, `onSkillSelected`, `ParticleKind.magicSparkle`… no existen).
 
-- [ ] **Step 4: Enum, efecto, partículas y escena**
+- [x] **Step 4: Enum, efecto, partículas y escena**
 
 `lib/core/config/constants/enum/forest/particle_kind.dart`:
 
@@ -2658,7 +2658,7 @@ final class SkillLearnedEffect extends ForestEffect {
   }
 ```
 
-- [ ] **Step 5: `HudOverlay` y la página**
+- [x] **Step 5: `HudOverlay` y la página**
 
 `lib/layers/presentation/features/forest/widgets/hud_overlay.dart` (decisión 8):
 - imports `../../../../../core/config/constants/enum/forest/hero_panel_section.dart` y `../../../../../core/config/constants/enum/skill_id.dart`;
@@ -2689,7 +2689,7 @@ final class SkillLearnedEffect extends ForestEffect {
       onSkillSelected: (skill) => bloc.add(ForestSkillLearnRequested(skill: skill)),
 ```
 
-- [ ] **Step 6: Evento y BLoC**
+- [x] **Step 6: Evento y BLoC**
 
 `lib/layers/presentation/features/forest/bloc/forest_event.dart`, al final (decisión 13):
 
@@ -2778,7 +2778,7 @@ final class ForestSkillLearnRequested extends ForestEvent {
 Run: `flutter test test/layers/presentation/features/forest`
 Expected: PASS, incluidos los tests anteriores del BLoC y del HUD (`forest_bloc_hero_test.dart` sigue igual: sus paneles esperados ya llevan `SkillItemDataMock.withoutTower`).
 
-- [ ] **Step 7: Documentar en `CLAUDE.md`**
+- [x] **Step 7: Documentar en `CLAUDE.md`**
 
 En *Architecture*:
 - `entities/<feature>/`: "hero (`CombatStatsEntity`, `HeroEntity`, `HeroStatusEntity`)" pasa a "hero (`CombatStatsEntity`, `HeroEntity`, `HeroStatusEntity`, `SkillEntity`, `SkillOptionEntity` with a `SkillOptionState`, `missing` and `canLearn`)".
@@ -2791,7 +2791,7 @@ En *Architecture*:
 
 En *Key cross-cutting conventions*, en la línea *New resource, tool or building*: "(recoloured roof via `ROOF_RAMP`)" pasa a "(recoloured roof via `ROOF_RAMP`, taller with `roof_stretch`)".
 
-- [ ] **Step 8: Verificación completa**
+- [x] **Step 8: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/config/constants/enum/forest lib/layers/presentation/features/forest test/layers/presentation/features/forest test/mocks/presentation/features/forest
@@ -2803,7 +2803,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `git diff` sin salida en lo generado, `No issues found!` y todo en verde (593 tests).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add lib/core/config/constants/enum/forest lib/layers/presentation test
@@ -2851,7 +2851,7 @@ Expected: el último comando termina sin salida.
   ArenaDataMock.heroGotASecondWind
   ```
 
-- [ ] **Step 1: Datos de prueba**
+- [x] **Step 1: Datos de prueba**
 
 `test/mocks/presentation/features/arena/arena_effect_mock.dart`: importar `skill_id.dart` y, antes de `won`:
 
@@ -2871,7 +2871,7 @@ Expected: el último comando termina sin salida.
   );
 ```
 
-- [ ] **Step 2: Tests que fallan**
+- [x] **Step 2: Tests que fallan**
 
 `test/core/assets/i18n/internationalize_test.dart`, al final de `main`:
 
@@ -2977,7 +2977,7 @@ Expected: el último comando termina sin salida.
 Run: `flutter test test/core/assets test/layers/presentation/features/arena`
 Expected: FAIL al compilar (`arenaSkillUsed`, `SkillUsedEffect` no existen).
 
-- [ ] **Step 3: Texto y efecto**
+- [x] **Step 3: Texto y efecto**
 
 `lib/core/assets/i18n/translations/es.json`, bloque `arena`: la línea `"dodge": "¡Esquiva!",` pasa a ser
 
@@ -3008,7 +3008,7 @@ final class SkillUsedEffect extends ArenaEffect {
 }
 ```
 
-- [ ] **Step 4: BLoC y escena**
+- [x] **Step 4: BLoC y escena**
 
 `lib/layers/presentation/features/arena/bloc/arena_bloc.dart`:
 - import `../../../../../core/config/constants/enum/skill_id.dart`;
@@ -3071,11 +3071,11 @@ final class SkillUsedEffect extends ArenaEffect {
 Run: `flutter test test/core/assets test/layers/presentation/features/arena`
 Expected: PASS, incluidos los tests de C2 con los índices de siempre.
 
-- [ ] **Step 5: Documentar en `CLAUDE.md`**
+- [x] **Step 5: Documentar en `CLAUDE.md`**
 
 En *Architecture*, `features/arena/`: "`ArenaResultData` and sealed `ArenaEffect`s);" pasa a "`ArenaResultData` and sealed `ArenaEffect`s; a double strike or a second wind adds a `SkillUsedEffect` after its own effect, and the scene floats the skill name (`Internationalize.arenaSkillUsed`, also used for the dodge) above the hero);".
 
-- [ ] **Step 6: Verificación completa**
+- [x] **Step 6: Verificación completa**
 
 ```bash
 cd asset-packs/lpc && python3 build_assets.py && cd ../.. && git status --short lib/core/assets/images/lpc
@@ -3088,7 +3088,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `build_assets.py` no cambia nada (`git status` sin salida), `git diff` sin salida en lo generado, `No issues found!` y todo en verde (597 tests en la máquina virtual de Dart y 40 en Chrome).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add lib/core/assets lib/layers/presentation test

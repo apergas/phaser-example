@@ -145,7 +145,7 @@ Lo que este plan fija o añade sobre la ficha (todo lo demás de la ficha se man
   - frames en `arena.json`: `wolf-idle-{0,1}`, `wolf-attack-{0..4}`, `wolf-down`, `bear-idle-{0,1}`, `bear-attack-{0..2}`, `bear-down` (decisión 2);
   - `ArenaAssetsMock.create()` tiene también `<luchador>-attack-{0..4}` y `<luchador>-down` para cada luchador.
 
-- [ ] **Step 1: Ramas**
+- [x] **Step 1: Ramas**
 
 ```bash
 git switch feature/PROJECT-X-arena && git pull
@@ -155,7 +155,7 @@ git switch -c feature/PROJECT-X-c4-art
 
 (TC4.2 a la vez, en otro worktree: `git worktree add ../phaser-example-c4-levels -b feature/PROJECT-X-c4-levels feature/PROJECT-X-c4-beasts`, y allí `flutter pub get`.)
 
-- [ ] **Step 2: Descargar el arte y comprobarlo**
+- [x] **Step 2: Descargar el arte y comprobarlo**
 
 Desde la raíz del repositorio. El zip se abre en una carpeta temporal nueva y sólo se copia el PNG del oso:
 
@@ -200,7 +200,7 @@ bear-grizzly.png  (renamed from "lpc animals 2022 v1.1/individual creature sprit
   attribution appreciated.
 ```
 
-- [ ] **Step 3: Tests que fallan**
+- [x] **Step 3: Tests que fallan**
 
 En `test/mocks/presentation/features/arena/game/arena_assets_mock.dart`, cada luchador gana sus frames de ataque y de caído (después de la línea de `slash`):
 
@@ -265,7 +265,7 @@ Al final de `test/layers/presentation/features/arena/game/atlas/arena_assets_tes
 Run: `flutter test test/layers/presentation/features/arena/game/atlas`
 Expected: FAIL de compilación (`The method 'attack' isn't defined for the type 'ArenaSpriteNames'`).
 
-- [ ] **Step 4: Generar el atlas**
+- [x] **Step 4: Generar el atlas**
 
 En `asset-packs/lpc/build_assets.py`:
 
@@ -337,7 +337,7 @@ Expected: `Assets written to …` y sólo `M lib/core/assets/images/lpc/arena.js
 
 Ábrelo en un visor: abajo, tras las personas, cinco frames del oso (dos de pie, tres del zarpazo), el oso tumbado, siete del lobo (dos de pie y cinco del mordisco), el lobo tumbado, y a la derecha la hierba y la valla. Todos miran a la izquierda.
 
-- [ ] **Step 5: Créditos**
+- [x] **Step 5: Créditos**
 
 Al final de `lib/core/assets/images/lpc/CREDITS.md` (dentro de la sección *Arena*):
 
@@ -356,7 +356,7 @@ Cut by `build_assets.py` from the side views that face left, without recolouring
   <https://opengameart.org/content/lpc-bears-deer-lions-and-more>.
 ```
 
-- [ ] **Step 6: Nombres de los frames nuevos**
+- [x] **Step 6: Nombres de los frames nuevos**
 
 En `lib/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart`, al final de la clase:
 
@@ -372,7 +372,7 @@ En `lib/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart`, 
 Run: `flutter test test/layers/presentation/features/arena/game/atlas test/core/assets/lpc_assets_test.dart`
 Expected: PASS (7 tests en `atlas/`, 2 de ellos nuevos, y los de `lpc_assets_test.dart`).
 
-- [ ] **Step 7: Verificación completa**
+- [x] **Step 7: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/layers/presentation/features/arena/game/atlas test/layers/presentation/features/arena/game/atlas test/mocks/presentation/features/arena/game/arena_assets_mock.dart
@@ -384,7 +384,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `git diff` sin salida, `No issues found!` y todo en verde (554 tests si la rama todavía no tiene TC4.2).
 
-- [ ] **Step 8: Commit y unión a la rama de fase**
+- [x] **Step 8: Commit y unión a la rama de fase**
 
 ```bash
 git add asset-packs/lpc/sources/creatures asset-packs/lpc/build_assets.py lib/core/assets/images/lpc/arena.png lib/core/assets/images/lpc/arena.json lib/core/assets/images/lpc/CREDITS.md lib/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart test/layers/presentation/features/arena/game/atlas test/mocks/presentation/features/arena/game/arena_assets_mock.dart
@@ -432,7 +432,7 @@ git switch feature/PROJECT-X-c4-beasts && git merge --no-ff feature/PROJECT-X-c4
   ```
   - mocks: `HeroEntityMock.wolfHunter`, `wolfHunterAfterAnotherFight`, `beforeTheBeasts`; `ArenaLevelItemDataMock.wolfLocked` / `wolfOpen`; `FighterRenderDataMock.wolfIdle`.
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 En el worktree de TC4.2 (`../phaser-example-c4-levels`, rama `feature/PROJECT-X-c4-levels`) o, si va después de TC4.1:
 
@@ -440,7 +440,7 @@ En el worktree de TC4.2 (`../phaser-example-c4-levels`, rama `feature/PROJECT-X-
 git switch feature/PROJECT-X-c4-beasts && git switch -c feature/PROJECT-X-c4-levels
 ```
 
-- [ ] **Step 2: Mocks**
+- [x] **Step 2: Mocks**
 
 `test/mocks/domain/entities/hero/hero_entity_mock.dart`: `veteranWithSecondWind` gana el lobo y, al final de la clase, tres mocks nuevos:
 
@@ -504,7 +504,7 @@ git switch feature/PROJECT-X-c4-beasts && git switch -c feature/PROJECT-X-c4-lev
   );
 ```
 
-- [ ] **Step 3: Tests que fallan**
+- [x] **Step 3: Tests que fallan**
 
 `test/layers/domain/rules/arena_levels_test.dart`: import de `enemy_kind.dart` y dos tests antes de `testWhenFindingByIdThenItReturnsThatLevel`:
 
@@ -701,7 +701,7 @@ import 'package:rpg/layers/domain/rules/arena_levels.dart';
 Run: `flutter test test/layers/domain test/core/assets test/layers/presentation/features/arena`
 Expected: FAIL de compilación (`There's no constant named 'wolf' in 'ArenaLevelId'`, `… 'wolf' in 'EnemyKind'`).
 
-- [ ] **Step 4: Enums**
+- [x] **Step 4: Enums**
 
 `lib/core/config/constants/enum/enemy_kind.dart`:
 
@@ -728,7 +728,7 @@ enum ArenaLevelId {
 
 Los `switch` exhaustivos dejan de compilar a propósito (aviso de C2): `ArenaSpriteNames.enemy`, `ArenaRenderConstants.fighterScale`, `Internationalize.arenaLevel` e `Internationalize.arenaEnemy`. Se arreglan en los pasos siguientes, en el orden de declaración.
 
-- [ ] **Step 5: Catálogo y desbloqueo**
+- [x] **Step 5: Catálogo y desbloqueo**
 
 `lib/layers/domain/rules/arena_levels.dart`: tres inserciones en `all`.
 - Después del nivel `banditRookie`:
@@ -788,7 +788,7 @@ Los `switch` exhaustivos dejan de compilar a propósito (aviso de C2): `ArenaSpr
   }
 ```
 
-- [ ] **Step 6: Textos**
+- [x] **Step 6: Textos**
 
 `lib/core/assets/i18n/translations/es.json`, bloques `arena.level` y `arena.enemy`:
 
@@ -838,7 +838,7 @@ Los `switch` exhaustivos dejan de compilar a propósito (aviso de C2): `ArenaSpr
   };
 ```
 
-- [ ] **Step 7: Los dos `switch` de la escena**
+- [x] **Step 7: Los dos `switch` de la escena**
 
 `lib/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart` (arte provisional hasta TC4.3, decisión 9):
 
@@ -865,7 +865,7 @@ Los `switch` exhaustivos dejan de compilar a propósito (aviso de C2): `ArenaSpr
 Run: `flutter test test/layers/domain test/core/assets test/layers/presentation/features/arena`
 Expected: PASS.
 
-- [ ] **Step 8: `CLAUDE.md`**
+- [x] **Step 8: `CLAUDE.md`**
 
 En la línea de `rules/` (sección *Architecture*), el trozo de `ArenaLevels` queda así:
 
@@ -873,7 +873,7 @@ En la línea de `rules/` (sección *Architecture*), el trozo de `ArenaLevels` qu
 `ArenaLevels`: the list order is the play order (a new level can go anywhere in the list, its `ArenaLevelId` always at the end of the enum; `ArenaRules.isUnlocked` also opens any level already cleared, so a game keeps its levels when new ones are inserted), and the combat constants of `Rules`)
 ```
 
-- [ ] **Step 9: Verificación completa**
+- [x] **Step 9: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/config/constants/enum lib/core/assets/i18n/internationalize.dart lib/layers/domain/rules lib/layers/domain/world/extensions/arena_rules.dart lib/layers/presentation/features/arena test/layers/domain test/core/assets/i18n test/layers/presentation/features/arena test/mocks/domain/entities/hero test/mocks/presentation/features/arena
@@ -887,7 +887,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `git diff` sin salida, `No issues found!` y todo en verde (557 tests si la rama todavía no tiene TC4.1).
 
-- [ ] **Step 10: Commit y unión a la rama de fase**
+- [x] **Step 10: Commit y unión a la rama de fase**
 
 ```bash
 git add lib/core/config/constants/enum/enemy_kind.dart lib/core/config/constants/enum/arena_level_id.dart lib/layers/domain/rules/arena_levels.dart lib/layers/domain/world/extensions/arena_rules.dart lib/core/assets/i18n lib/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart lib/layers/presentation/features/arena/game/render/arena_render_constants.dart test/layers/domain test/core/assets/i18n/internationalize_test.dart test/layers/presentation/features/arena test/mocks/domain/entities/hero/hero_entity_mock.dart test/mocks/presentation/features/arena
@@ -947,13 +947,13 @@ Con las dos tareas unidas, comprueba en la rama de fase que `flutter analyze` y 
   bool get tipsOver;       // caído y persona: gira 90°; los animales no
   ```
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 ```bash
 git switch feature/PROJECT-X-c4-beasts && git switch -c feature/PROJECT-X-c4-leap
 ```
 
-- [ ] **Step 2: Mocks**
+- [x] **Step 2: Mocks**
 
 Al final de `test/mocks/presentation/features/arena/fighter_render_data_mock.dart`:
 
@@ -1000,7 +1000,7 @@ Al final de `test/mocks/domain/entities/hero/hero_entity_mock.dart` (héroe con 
 }
 ```
 
-- [ ] **Step 3: Tests que fallan**
+- [x] **Step 3: Tests que fallan**
 
 `test/layers/presentation/features/arena/game/atlas/arena_sprite_names_test.dart`:
 - import nuevo:
@@ -1241,7 +1241,7 @@ Al final de `test/layers/presentation/features/arena/game/components/fighter_com
 Run: `flutter test test/layers/presentation/features/arena`
 Expected: FAIL de compilación (`The method 'leapSequence' isn't defined`, `The getter 'targetIndex' isn't defined`, `The getter 'tipsOver' isn't defined`…).
 
-- [ ] **Step 4: Nombres definitivos y constantes del salto**
+- [x] **Step 4: Nombres definitivos y constantes del salto**
 
 `lib/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart`, los dos casos provisionales de TC4.2:
 
@@ -1275,7 +1275,7 @@ Expected: FAIL de compilación (`The method 'leapSequence' isn't defined`, `The 
   static const double beastShadowWidth = 44;
 ```
 
-- [ ] **Step 5: El objetivo en `FighterRenderData` y en el BLoC**
+- [x] **Step 5: El objetivo en `FighterRenderData` y en el BLoC**
 
 `lib/layers/presentation/features/arena/models/fighter_render_data.dart`:
 
@@ -1342,7 +1342,7 @@ class FighterRenderData {
     );
 ```
 
-- [ ] **Step 6: Frames y salto en `ArenaFrames`**
+- [x] **Step 6: Frames y salto en `ArenaFrames`**
 
 `lib/layers/presentation/features/arena/game/render/arena_frames.dart` completo:
 
@@ -1434,7 +1434,7 @@ abstract final class ArenaFrames {
 
 (No se usa `distanceTo` de `domain/world/extensions/`: fuera de `domain/world/` no se importan sus internos, `architecture_test.dart`.)
 
-- [ ] **Step 7: `FighterComponent` sigue el salto**
+- [x] **Step 7: `FighterComponent` sigue el salto**
 
 `lib/layers/presentation/features/arena/game/components/fighter_component.dart` completo:
 
@@ -1563,7 +1563,7 @@ class FighterComponent extends PositionComponent {
 Run: `flutter test test/layers/presentation/features/arena`
 Expected: PASS (todos los de la arena; 8 nuevos en esta tarea).
 
-- [ ] **Step 8: `CLAUDE.md`**
+- [x] **Step 8: `CLAUDE.md`**
 
 En *Key cross-cutting conventions*, al final de la línea **Rendering constants**, la frase de la arena queda así, y justo debajo va la receta nueva:
 
@@ -1572,7 +1572,7 @@ hero facing right, enemies facing left; the barbarian chief is the barbarian dra
 - **New enemy kind:** the `EnemyKind` value (appended at the end) + its cases in `ArenaSpriteNames.enemy`, `ArenaRenderConstants.fighterScale` and `leapSequence`, `Internationalize.arenaEnemy` and `es.json`, and its frames in `arena.png` (`build_assets.py`, credited in `CREDITS.md`); `arena_sprite_names_test.dart` and `internationalize_test.dart` fail if any piece is missing.
 ```
 
-- [ ] **Step 9: Verificación completa**
+- [x] **Step 9: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/layers/presentation/features/arena test/layers/presentation/features/arena test/mocks/presentation/features/arena test/mocks/domain/entities/hero
@@ -1584,7 +1584,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `git diff` sin salida, `No issues found!`, **567 tests** en verde y los 40 de Chrome en verde.
 
-- [ ] **Step 10: Commit y unión a la rama de fase**
+- [x] **Step 10: Commit y unión a la rama de fase**
 
 ```bash
 git add lib/layers/presentation/features/arena test/layers/presentation/features/arena test/mocks/presentation/features/arena/fighter_render_data_mock.dart test/mocks/domain/entities/hero/hero_entity_mock.dart

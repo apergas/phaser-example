@@ -8,7 +8,6 @@
 
 **Leyenda:**
 - ✅ terminada.
-- 🔀 implementada en su rama de fase, falta unirla a la de integración.
 - 🟢 plan detallado, lista para implementar.
 - 📝 ficha: hay que detallar el plan al empezar.
 - 💭 esbozo: se replanifica más adelante.
@@ -50,13 +49,13 @@
 | C1 Motor y niveles | ✅ | `feature/PROJECT-X-arena` (#10) | Lógica sin pantalla; 418 tests en verde. |
 | C2 Pantalla de la arena | ✅ | `feature/PROJECT-X-arena` (#42) | Lleva unida C3 y resuelve los cruces; HUD con botones bajo la barra en pantallas estrechas. Decisiones provisionales a revisar en la fase de pruebas. |
 | C3 Herrería y Armería | ✅ | `feature/PROJECT-X-arena` (#41) | Herrería, Armería y panel *Héroe*; el oro llega con C2. |
-| C4 Lobos y oso | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Lobo de Redshrike y oso de tapatilorenzo (CC-BY 4.0 / OGA-BY 3.0, aceptado); niveles de animales y salto hacia el objetivo. Issues #37, #48 y #49 siguen abiertos. |
-| C5 Torre de magia | 🔀 implementada | `feature/PROJECT-X-c5-mage-tower` (sólo local) | TC5.1–TC5.5 hechas. Al unirla a arena chocan `CLAUDE.md` y `hero_entity_mock.dart` (previsto en el plan: la resuelve C5 por llegar segunda); regenerar los atlas, no resolverlos a mano. Issues #38 y #44–#47 abiertos. |
+| C4 Lobos y oso | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Lobo de Redshrike y oso de tapatilorenzo (CC-BY / OGA-BY, aceptado); niveles de animales y salto hacia el objetivo. |
+| C5 Torre de magia | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Torre de magia, catálogo `Skills`, pestaña *Habilidades* y nombres de las habilidades en la arena. Unida tras C4 con dos conflictos aditivos; 612 tests en verde. |
 | C6 Bárbaros y jefe | 📝 ficha | — | Desbloqueada (C4 terminada). |
-| C7 Misiones y equilibrado | 📝 ficha | — | Al final (después de C1, C3 y C5). |
+| C7 Misiones y equilibrado | 📝 ficha | — | Desbloqueada (C1, C3 y C5 terminadas); va al final, después de C6. |
 
 ## Siguiente paso
 
-- **Arena:** unir C5 a `feature/PROJECT-X-arena` (resolver los dos conflictos, regenerar atlas, `analyze` y `test`); cerrar los issues de C4 y C5 y pasar sus tarjetas a *Done*; escribir el plan de C6. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
+- **Arena:** escribir el plan de C6 (bárbaros y jefe, flujo C) y después el de C7. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
 - **Planes:** subir `feature/PROJECT-X-progress` y abrir su PR a `develop` (planes de C4 y C5, `ARENA-FIXES.md` y este resumen).
 - **Aldea:** implementar F1 desde `feature/PROJECT-X-town`.

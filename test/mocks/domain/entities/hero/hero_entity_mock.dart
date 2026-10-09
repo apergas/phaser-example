@@ -64,4 +64,28 @@ abstract final class HeroEntityMock {
   );
 
   static const HeroEntity withDoubleStrike = HeroEntity(skills: {SkillId.doubleStrike});
+
+  static const HeroEntity chiefChallenger = HeroEntity(
+    weaponTier: 3,
+    armorTier: 3,
+    skills: {SkillId.doubleStrike, SkillId.secondWind, SkillId.dodge},
+    clearedLevels: {ArenaLevelId.barbarianPair},
+    fightsFought: 9,
+  );
+
+  static const HeroEntity newChampion = HeroEntity(
+    weaponTier: 3,
+    armorTier: 3,
+    skills: {SkillId.doubleStrike, SkillId.secondWind, SkillId.dodge},
+    clearedLevels: {ArenaLevelId.barbarianPair, ArenaLevelId.barbarianChief},
+    fightsFought: 10,
+  );
+
+  static const HeroEntity champion = HeroEntity(
+    weaponTier: 3,
+    armorTier: 3,
+    skills: {SkillId.doubleStrike, SkillId.secondWind, SkillId.dodge},
+    clearedLevels: {ArenaLevelId.barbarianPair, ArenaLevelId.barbarianChief},
+    fightsFought: 12,
+  );
 }

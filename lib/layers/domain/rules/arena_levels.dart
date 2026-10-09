@@ -6,6 +6,8 @@ import '../entities/combat/enemy_entity.dart';
 import '../entities/hero/combat_stats_entity.dart';
 
 abstract final class ArenaLevels {
+  static const ArenaLevelId championship = ArenaLevelId.barbarianChief;
+
   static const List<ArenaLevelEntity> all = [
     ArenaLevelEntity(
       id: ArenaLevelId.banditRookie,

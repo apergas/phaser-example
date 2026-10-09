@@ -62,6 +62,21 @@ void main() {
     });
   });
 
+  group('isChampion', () {
+    test('testWhenTheHeroHasBeatenTheChiefThenItIsAChampion', () {
+      // given
+      const champion = HeroEntityMock.champion;
+      const challenger = HeroEntityMock.chiefChallenger;
+
+      // when
+      final champions = (champion.isChampion, challenger.isChampion);
+
+      // then
+      expect(champions, (true, false));
+      expect(ArenaLevels.all.map((level) => level.id), contains(ArenaLevels.championship));
+    });
+  });
+
   group('rewardFor', () {
     test('testWhenTheLevelIsNotClearedThenTheRewardIsComplete', () {
       // given

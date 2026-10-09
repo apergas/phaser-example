@@ -16,6 +16,8 @@ extension ArenaRules on HeroEntity {
 
   bool hasCleared(ArenaLevelId id) => clearedLevels.contains(id);
 
+  bool get isChampion => hasCleared(ArenaLevels.championship);
+
   Map<Resource, int> rewardFor(ArenaLevelEntity level) {
     if (!hasCleared(level.id)) return level.reward;
     return {

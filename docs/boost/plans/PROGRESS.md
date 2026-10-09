@@ -55,5 +55,5 @@
 
 ## Siguiente paso
 
-- **Arena:** hoja de ruta completa (C0–C7 en `feature/PROJECT-X-arena`). Siguiente: el pulido de `ARENA-FIXES.md` (más los mensajes de misiones repetidos) y, después, la PR de `feature/PROJECT-X-arena` a `develop` con la prueba manual en web, Android e iOS. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
+- **Arena:** hoja de ruta completa (C0–C7). PR de `feature/PROJECT-X-arena` a `develop` abierta el 2026-10-09, antes del pulido (decisión del usuario); la prueba manual completa en Android e iOS queda pendiente en la PR. El pulido de `ARENA-FIXES.md` (más los mensajes de misiones repetidos) se hará más adelante, en ramas desde `develop`. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
 - **Aldea:** implementar F1 desde `feature/PROJECT-X-town`.

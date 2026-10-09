@@ -20,6 +20,7 @@ abstract final class FighterRenderDataMock {
     health: 20,
     maxHealth: 20,
     pose: FighterPose.idle,
+    isTargeted: true,
   );
 
   static const FighterRenderData veteranBanditIdle = FighterRenderData(
@@ -29,6 +30,7 @@ abstract final class FighterRenderDataMock {
     health: 30,
     maxHealth: 30,
     pose: FighterPose.idle,
+    isTargeted: true,
   );
 
   static const FighterRenderData wolfIdle = FighterRenderData(
@@ -38,6 +40,7 @@ abstract final class FighterRenderDataMock {
     health: 22,
     maxHealth: 22,
     pose: FighterPose.idle,
+    isTargeted: true,
   );
 
   static const FighterRenderData rookieBanditHurt = FighterRenderData(
@@ -47,6 +50,7 @@ abstract final class FighterRenderDataMock {
     health: 16,
     maxHealth: 20,
     pose: FighterPose.hurt,
+    isTargeted: true,
   );
 
   static const FighterRenderData rookieBanditDown = FighterRenderData(
@@ -94,6 +98,7 @@ abstract final class FighterRenderDataMock {
     maxHealth: 22,
     pose: FighterPose.attack,
     swingProgress: swingProgress,
+    isTargeted: true,
   );
 
   static FighterRenderData bearLeaping(double swingProgress) => FighterRenderData(

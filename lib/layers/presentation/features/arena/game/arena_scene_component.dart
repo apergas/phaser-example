@@ -57,6 +57,7 @@ class ArenaSceneComponent extends Component {
       final created = FighterComponent(assets: _assets, fighter: fighter);
       _fighters[fighter.key] = created;
       add(created.shadow);
+      add(created.ring);
       add(created.healthBar);
       add(created);
     }
@@ -81,6 +82,7 @@ class ArenaSceneComponent extends Component {
 
   void _removeFighter(FighterComponent fighter) {
     fighter.shadow.removeFromParent();
+    fighter.ring.removeFromParent();
     fighter.healthBar.removeFromParent();
     fighter.removeFromParent();
   }

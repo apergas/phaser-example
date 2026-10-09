@@ -269,6 +269,29 @@ void main() {
   );
 
   blocTest<ArenaBloc, ArenaState>(
+    'testWhenTheFirstWolfOfThePackFallsThenTheRingMovesToTheNextOne',
+    build: () {
+      // given
+      world = WorldMock.withHero(HeroEntityMock.packHunter);
+      return ArenaBlocMock.make(world, navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      bloc
+        ..add(const ArenaStarted())
+        ..add(const ArenaLevelSelected(levelId: ArenaLevelId.wolfPack))
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickFor(bloc, 4848);
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      final targeted = bloc.state.data.fighters.where((fighter) => fighter.isTargeted);
+      expect(targeted.map((fighter) => fighter.index), [1]);
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
     'testWhenTheReplayEndsThenEveryTurnPlayedOnceAndTheVictoryIsShown',
     build: () {
       // given

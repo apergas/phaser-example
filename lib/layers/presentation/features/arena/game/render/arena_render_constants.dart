@@ -47,7 +47,9 @@ abstract final class ArenaRenderConstants {
   static const double skillNameLift = 12;
   static const double hurtBlinkMs = 300;
   static const double blinkPeriodMs = 80;
-  static const double fallenAlpha = 0.8;
+  static const double fallenAlpha = 0.5;
+  static const double targetRingPadding = 8;
+  static const double targetRingStroke = 1;
 
   static const double healthBarWidth = 28;
   static const double healthBarHeight = 4;

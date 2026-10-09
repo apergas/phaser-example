@@ -15,6 +15,7 @@ import '../atlas/arena_assets.dart';
 import '../render/arena_frames.dart';
 import '../render/arena_render_constants.dart';
 import 'health_bar_component.dart';
+import 'target_ring_component.dart';
 
 class FighterComponent extends PositionComponent {
   static const double shadowWidth = 22;
@@ -22,6 +23,7 @@ class FighterComponent extends PositionComponent {
 
   final ArenaAssets _assets;
   final ShadowComponent shadow;
+  final TargetRingComponent ring;
   final HealthBarComponent healthBar;
   final Paint _paint = Paint()..filterQuality = FilterQuality.none;
   FighterRenderData _fighter;
@@ -34,6 +36,15 @@ class FighterComponent extends PositionComponent {
         center: ArenaFrames.spot(fighter.side, fighter.index).toVector2(),
         size:
             Vector2(shadowWidthOf(fighter.enemyKind), shadowHeight) *
+            ArenaRenderConstants.fighterScale(fighter.enemyKind),
+      ),
+      ring = TargetRingComponent(
+        center: ArenaFrames.spot(fighter.side, fighter.index).toVector2(),
+        size:
+            Vector2(
+              shadowWidthOf(fighter.enemyKind) + ArenaRenderConstants.targetRingPadding,
+              shadowHeight + ArenaRenderConstants.targetRingPadding / 2,
+            ) *
             ArenaRenderConstants.fighterScale(fighter.enemyKind),
       ),
       healthBar = HealthBarComponent(
@@ -87,6 +98,9 @@ class FighterComponent extends PositionComponent {
     final ground = ArenaFrames.groundSpot(_fighter);
     final lift = ArenaFrames.lift(_fighter);
     shadow.position.setValues(ground.x, ground.y);
+    ring
+      ..position.setValues(ground.x, ground.y)
+      ..isShown = _fighter.isTargeted && _fighter.pose != FighterPose.down;
     position.setValues(ground.x, ground.y - lift);
     healthBar.position.setValues(ground.x, ground.y - lift - ArenaRenderConstants.healthBarLift * scale.y);
   }

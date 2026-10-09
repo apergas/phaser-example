@@ -22,9 +22,9 @@ import '../../../../domain/entities/combat/arena_entity.dart';
 import '../../../../domain/entities/combat/arena_level_entity.dart';
 import '../../../../domain/entities/combat/arena_level_status_entity.dart';
 import '../../../../domain/entities/combat/fight_result_entity.dart';
+import '../../../../domain/rules/gear.dart';
 import '../../../../domain/use-cases/arena/get_arena_use_case.dart';
 import '../../../../domain/use-cases/arena/start_fight_use_case.dart';
-import '../../../../domain/rules/gear.dart';
 import '../../../../domain/use-cases/hero/get_hero_status_use_case.dart';
 import '../game/render/arena_render_constants.dart';
 import '../models/arena_effect.dart';
@@ -282,7 +282,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
     final status = _getHeroStatusUseCase();
     final heroHealth = status.stats.health;
     _heroWeapon = Gear.of(GearSlot.weapon, status.hero.weaponTier).id;
-    final level = arena.levels.firstWhereOrNull((status) => status.level.id == selected)?.level;
+    final level = arena.levels.firstWhereOrNull((entry) => entry.level.id == selected)?.level;
     return [
       FighterRenderData(
         side: FightSide.hero,

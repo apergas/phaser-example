@@ -49,7 +49,7 @@ Decididas con el usuario el 2026-10-09:
 Del plan:
 
 5. **Frames de andar:** columnas 0–8 de la hoja `walk` en la fila del luchador; la animación usa 1–8 a 10 fps (`PlayerFrames.walkColumn`), como en el bosque. Para los bárbaros se bajan también las hojas `walk` de sus seis capas.
-6. **Al volver el luchador anda de espaldas** (sigue mirando al enemigo): no hay frames que miren al otro lado en el atlas, y de espaldas se lee bien en 240 ms.
+6. **Al volver el luchador anda de espaldas** (sigue mirando al enemigo): no hay frames que miren al otro lado en el atlas, y de espaldas se lee bien en 280 ms.
 7. **Frame propio de "recibir el golpe" (§7): descartado.** Habría que bajar la animación `hurt` de todas las capas; el parpadeo basta.
 8. **Error al refrescar la lista:** `_emitReplay` pone primero el resultado y después intenta `GetArenaUseCase`; si falla, `showErrorPopUp` y la lista se queda como estaba.
 9. **"−0":** `_onHit` no hace nada si el daño es 0 (ni número ni gotas).

@@ -31,6 +31,42 @@ abstract final class ParticleBursts {
   static const double dustScaleStart = 0.8;
   static const double dustScaleEnd = 0.2;
   static const double sortYOffset = 1;
+  static const int sparklesPerPurchase = 10;
+  static const double sparkleLift = 24;
+  static const double sparkleSpreadX = 10;
+  static const double sparkleAngleMin = 200;
+  static const double sparkleAngleMax = 340;
+  static const double sparkleSpeedMin = 15;
+  static const double sparkleSpeedMax = 40;
+  static const double sparkleLifespanSeconds = 0.6;
+  static const double sparkleAlphaStart = 1;
+  static const double sparkleAlphaEnd = 0;
+  static const double sparkleScaleStart = 1;
+  static const double sparkleScaleEnd = 0.4;
+  static const int confettiPieces = 24;
+  static const double confettiAngleMin = 220;
+  static const double confettiAngleMax = 320;
+  static const double confettiSpeedMin = 60;
+  static const double confettiSpeedMax = 120;
+  static const double confettiSpreadX = 16;
+  static const double confettiGravity = 140;
+  static const double confettiLifespanSeconds = 1.2;
+  static const double confettiAlphaStart = 1;
+  static const double confettiAlphaEnd = 0;
+  static const double confettiScale = 1;
+  static const int bloodDropsMin = 4;
+  static const int bloodDropsMax = 6;
+  static const double bloodAngleAwayFromLeftMin = 280;
+  static const double bloodAngleAwayFromLeftMax = 340;
+  static const double bloodAngleAwayFromRightMin = 200;
+  static const double bloodAngleAwayFromRightMax = 260;
+  static const double bloodSpeedMin = 25;
+  static const double bloodSpeedMax = 60;
+  static const double bloodGravity = 260;
+  static const double bloodLifespanSeconds = 0.4;
+  static const double bloodAlphaStart = 1;
+  static const double bloodAlphaEnd = 0;
+  static const double bloodScale = 1;
 
   static List<Particle> woodChips({
     required PositionEntity trunkBase,
@@ -77,6 +113,79 @@ abstract final class ParticleBursts {
       );
     });
   }
+
+  static List<Particle> sparkles({
+    required PositionEntity feet,
+    required math.Random random,
+    ParticleKind kind = ParticleKind.sparkle,
+  }) {
+    return List.generate(sparklesPerPurchase, (_) {
+      final speed = _between(random, sparkleSpeedMin, sparkleSpeedMax);
+      final angle = _between(random, sparkleAngleMin, sparkleAngleMax) * math.pi / 180;
+      return Particle(
+        kind: kind,
+        origin: PositionEntity(x: feet.x + _between(random, -sparkleSpreadX, sparkleSpreadX), y: feet.y - sparkleLift),
+        velocityX: speed * math.cos(angle),
+        velocityY: speed * math.sin(angle),
+        gravity: 0,
+        rotationDegrees: 0,
+        lifespanSeconds: sparkleLifespanSeconds,
+        alphaStart: sparkleAlphaStart,
+        alphaEnd: sparkleAlphaEnd,
+        scaleStart: sparkleScaleStart,
+        scaleEnd: sparkleScaleEnd,
+      );
+    });
+  }
+
+  static List<Particle> confetti({required PositionEntity at, required math.Random random}) {
+    return List.generate(confettiPieces, (index) {
+      final speed = _between(random, confettiSpeedMin, confettiSpeedMax);
+      final angle = _between(random, confettiAngleMin, confettiAngleMax) * math.pi / 180;
+      return Particle(
+        kind: index.isEven ? ParticleKind.sparkle : ParticleKind.magicSparkle,
+        origin: PositionEntity(x: at.x + _between(random, -confettiSpreadX, confettiSpreadX), y: at.y),
+        velocityX: speed * math.cos(angle),
+        velocityY: speed * math.sin(angle),
+        gravity: confettiGravity,
+        rotationDegrees: 0,
+        lifespanSeconds: confettiLifespanSeconds,
+        alphaStart: confettiAlphaStart,
+        alphaEnd: confettiAlphaEnd,
+        scaleStart: confettiScale,
+        scaleEnd: confettiScale,
+      );
+    });
+  }
+
+  static List<Particle> bloodDrops({
+    required PositionEntity impact,
+    required bool attackerOnLeft,
+    required math.Random random,
+  }) {
+    final minAngle = attackerOnLeft ? bloodAngleAwayFromLeftMin : bloodAngleAwayFromRightMin;
+    final maxAngle = attackerOnLeft ? bloodAngleAwayFromLeftMax : bloodAngleAwayFromRightMax;
+    final count = bloodDropsMin + random.nextInt(bloodDropsMax - bloodDropsMin + 1);
+    return List.generate(count, (_) {
+      final speed = _between(random, bloodSpeedMin, bloodSpeedMax);
+      final angle = _between(random, minAngle, maxAngle) * math.pi / 180;
+      return Particle(
+        kind: ParticleKind.bloodDrop,
+        origin: impact,
+        velocityX: speed * math.cos(angle),
+        velocityY: speed * math.sin(angle),
+        gravity: bloodGravity,
+        rotationDegrees: 0,
+        lifespanSeconds: bloodLifespanSeconds,
+        alphaStart: bloodAlphaStart,
+        alphaEnd: bloodAlphaEnd,
+        scaleStart: bloodScale,
+        scaleEnd: bloodScale,
+      );
+    });
+  }
+
+  static double sparklesSortY(PositionEntity feet) => feet.y + sortYOffset;
 
   static double chipsSortY(PositionEntity trunkBase) => trunkBase.y + sortYOffset;
 

@@ -20,6 +20,7 @@ class ContainerApp extends StatelessWidget {
       child: MaterialApp(
         title: Internationalize.appTitle,
         navigatorKey: locator<NavigationService>().navigatorKey,
+        navigatorObservers: [locator<NavigationService>().routeObserver],
         theme: CustomTheme.data,
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,

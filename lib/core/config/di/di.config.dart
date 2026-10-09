@@ -47,6 +47,10 @@ import 'package:rpg/layers/domain/repositories/level/level_repository.dart'
     as _i38;
 import 'package:rpg/layers/domain/repositories/session/game_session_repository.dart'
     as _i745;
+import 'package:rpg/layers/domain/use-cases/arena/get_arena_use_case.dart'
+    as _i87;
+import 'package:rpg/layers/domain/use-cases/arena/start_fight_use_case.dart'
+    as _i258;
 import 'package:rpg/layers/domain/use-cases/game/advance_game_use_case.dart'
     as _i785;
 import 'package:rpg/layers/domain/use-cases/game/can_place_building_use_case.dart'
@@ -67,6 +71,16 @@ import 'package:rpg/layers/domain/use-cases/game/move_player_use_case.dart'
     as _i470;
 import 'package:rpg/layers/domain/use-cases/game/start_game_use_case.dart'
     as _i368;
+import 'package:rpg/layers/domain/use-cases/hero/buy_gear_use_case.dart'
+    as _i889;
+import 'package:rpg/layers/domain/use-cases/hero/get_gear_options_use_case.dart'
+    as _i459;
+import 'package:rpg/layers/domain/use-cases/hero/get_hero_status_use_case.dart'
+    as _i108;
+import 'package:rpg/layers/domain/use-cases/hero/get_skill_options_use_case.dart'
+    as _i481;
+import 'package:rpg/layers/domain/use-cases/hero/learn_skill_use_case.dart'
+    as _i874;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -118,6 +132,16 @@ extension GetItInjectableX on _i174.GetIt {
         sessionRepository: gh<_i745.GameSessionRepository>(),
       ),
     );
+    gh.factory<_i87.GetArenaUseCase>(
+      () => _i87.GetArenaUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i258.StartFightUseCase>(
+      () => _i258.StartFightUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
     gh.factory<_i785.AdvanceGameUseCase>(
       () => _i785.AdvanceGameUseCase(
         sessionRepository: gh<_i745.GameSessionRepository>(),
@@ -160,6 +184,31 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i470.MovePlayerUseCase>(
       () => _i470.MovePlayerUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i889.BuyGearUseCase>(
+      () => _i889.BuyGearUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i459.GetGearOptionsUseCase>(
+      () => _i459.GetGearOptionsUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i108.GetHeroStatusUseCase>(
+      () => _i108.GetHeroStatusUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i481.GetSkillOptionsUseCase>(
+      () => _i481.GetSkillOptionsUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i874.LearnSkillUseCase>(
+      () => _i874.LearnSkillUseCase(
         sessionRepository: gh<_i745.GameSessionRepository>(),
       ),
     );

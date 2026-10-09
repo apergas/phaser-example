@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/config/constants/enum/quest_id.dart';
+import 'package:rpg/core/config/constants/enum/quest_line.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
@@ -10,11 +11,12 @@ import 'package:rpg/layers/domain/world/extensions/player_rules.dart';
 
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/game/quest_progress_entity_mock.dart';
+import '../../../mocks/domain/entities/hero/hero_entity_mock.dart';
 import '../../../mocks/domain/entities/player/inventory_entity_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
 
 void main() {
-  test('testWhenGameStartsThenEveryQuestIsPendingAndTheFirstIsCurrent', () {
+  test('testWhenGameStartsThenEveryQuestIsPendingAndEachLineHasItsFirstQuestCurrent', () {
     // given
     final world = WorldMock.make();
 
@@ -22,11 +24,27 @@ void main() {
     final status = QuestLog().status(world);
 
     // then
-    expect(status, const [
+    expect(status.where((quest) => quest.line == QuestLine.village), const [
       QuestProgressEntityMock.pickUpAxePending,
       QuestProgressEntityMock.gatherWoodPending,
       QuestProgressEntityMock.buildHousePending,
     ]);
+    expect(status.where((quest) => quest.line == QuestLine.hero).first, QuestProgressEntityMock.buildForgeCurrent);
+    expect(status.where((quest) => quest.isCurrent), hasLength(2));
+  });
+
+  test('testWhenTheHeroHasBecomeChampionThenItsQuestsAreFulfilledAndTheArenaOneCountsLevels', () {
+    // given
+    final world = WorldMock.withHero(HeroEntityMock.champion);
+    final questLog = QuestLog();
+
+    // when
+    final completed = questLog.update(world).map((event) => event.questId);
+    final halfArena = questLog.status(world).firstWhere((quest) => quest.id == QuestId.clearHalfArena);
+
+    // then
+    expect(completed, [QuestId.winFirstFight, QuestId.buyFirstWeapon, QuestId.learnASkill, QuestId.becomeChampion]);
+    expect((halfArena.progress, halfArena.target, halfArena.isCurrent), (2, 5, false));
   });
 
   test('testWhenQuestIsFulfilledThenItIsReportedOnlyOnce', () {

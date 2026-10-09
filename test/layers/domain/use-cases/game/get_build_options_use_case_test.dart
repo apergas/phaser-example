@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/layers/domain/use-cases/game/get_build_options_use_case.dart';
 
 import '../../../../mocks/domain/game/game_scenario_mock.dart';
@@ -25,7 +26,12 @@ void main() {
     final options = sut();
 
     // then
-    expect(options, [BuildOptionEntityMock.unaffordable]);
+    expect(options, [
+      BuildOptionEntityMock.unaffordable,
+      BuildOptionEntityMock.workshop(BlueprintId.forge, missingWood: 15),
+      BuildOptionEntityMock.workshop(BlueprintId.armory, missingWood: 15),
+      BuildOptionEntityMock.mageTower(missingWood: 20),
+    ]);
   });
 
   test('testWhenWoodEqualsTheCostThenHouseIsAffordable', () {
@@ -36,7 +42,12 @@ void main() {
     final options = sut();
 
     // then
-    expect(options, [BuildOptionEntityMock.mock]);
+    expect(options, [
+      BuildOptionEntityMock.mock,
+      BuildOptionEntityMock.workshop(BlueprintId.forge, missingWood: 10),
+      BuildOptionEntityMock.workshop(BlueprintId.armory, missingWood: 10),
+      BuildOptionEntityMock.mageTower(missingWood: 15),
+    ]);
   });
 
   test('testWhenWoodExceedsTheCostThenHouseIsAffordable', () {
@@ -47,6 +58,11 @@ void main() {
     final options = sut();
 
     // then
-    expect(options, [BuildOptionEntityMock.mock]);
+    expect(options, [
+      BuildOptionEntityMock.mock,
+      BuildOptionEntityMock.workshop(BlueprintId.forge, missingWood: 8),
+      BuildOptionEntityMock.workshop(BlueprintId.armory, missingWood: 8),
+      BuildOptionEntityMock.mageTower(missingWood: 13),
+    ]);
   });
 }

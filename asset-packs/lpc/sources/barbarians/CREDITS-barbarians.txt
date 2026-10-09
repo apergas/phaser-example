@@ -1,0 +1,34 @@
+Arena barbarians (used by build_assets.py -> arena.png)
+=====================================================
+
+Layers of the Universal LPC Spritesheet Character Generator, commit 58ce1aa479e4df32845a73a5d0afc221c3a893c2:
+https://github.com/liberatedpixelcup/Universal-LPC-Spritesheet-Character-Generator
+Each file is spritesheets/<path>/{idle,slash}.png, renamed to <name>__{idle,slash}.png.
+
+legs_shorts_male            <- legs/shorts/shorts/male
+  JaidynReiman, ElizaWy, bluecarrot16, Johannes Sjölund (wulax), Stephen Challener (Redshrike)
+  OGA-BY 3.0, GPL 3.0
+  https://opengameart.org/content/lpc-expanded-pants
+
+torso_armour_leather_male   <- torso/armour/leather/male
+  Johannes Sjölund (wulax), bluecarrot16, JaidynReiman
+  OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0
+  https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+  https://opengameart.org/content/lpc-expanded-armor
+
+arms_bracers_male           <- arms/bracers/male
+  Matthew Krohn (makrohn), Johannes Sjölund (wulax), JaidynReiman
+  OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0
+  https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+
+beards_beard_winter_male    <- beards/beard/winter/male
+  bluecarrot16
+  CC0
+  https://opengameart.org/content/lpc-santa
+
+hat_helmet_barbarian_adult  <- hat/helmet/barbarian/adult
+hat_helmet_barbarian_viking_adult <- hat/helmet/barbarian_viking/adult
+  bluecarrot16, JaidynReiman, Napsio (Vitruvian Studio)
+  CC-BY 3.0, CC-BY 4.0, OGA-BY 3.0, GPL 2.0, GPL 3.0
+  https://opengameart.org/content/lpc-helmets
+  https://opengameart.org/content/lpc-expanded-hats-facial-helmets

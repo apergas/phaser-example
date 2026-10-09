@@ -1,11 +1,14 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/quest_line.dart';
 import 'package:rpg/core/config/constants/enum/forest/facing.dart';
 import 'package:rpg/core/config/constants/enum/forest/work_tool.dart';
 import 'package:rpg/layers/domain/rules/rules.dart';
 import 'package:rpg/layers/domain/world/world.dart';
+import 'package:rpg/layers/presentation/features/arena/arena_page.dart';
 import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
 import 'package:rpg/layers/presentation/features/forest/models/forest_effect.dart';
 import 'package:rpg/layers/presentation/features/forest/models/placement_data.dart';
@@ -51,9 +54,10 @@ void main() {
       // then
       final hud = bloc.state.data.hud!;
       expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessageWelcome));
-      expect(hud.questBadge, '0/3');
+      expect(hud.questBadge, '0/11');
       expect(hud.quests[0], QuestItemDataMock.pickUpAxeCurrent);
       expect(hud.quests[1], QuestItemDataMock.gatherWoodPending);
+      expect(hud.quests[3], QuestItemDataMock.buildForgeCurrent);
     },
   );
 
@@ -151,7 +155,7 @@ void main() {
         expect((pose as WorkPose).tool, WorkTool.axe);
         expect(effects.whereType<TreeHitEffect>().length, 5);
         expect(effects, contains(ForestEffectMock.treeFelled));
-        expect(bloc.state.data.hud!.resources, [ResourceItemDataMock.wood(6)]);
+        expect(bloc.state.data.hud!.resources, [ResourceItemDataMock.wood(6), ResourceItemDataMock.gold(0)]);
       },
     );
   });
@@ -172,7 +176,12 @@ void main() {
     wait: Duration.zero,
     verify: (bloc) {
       // then
-      expect(bloc.state.data.hud!.buildItems, [BuildItemDataMock.makeUnaffordable(missingWood: 5)]);
+      expect(bloc.state.data.hud!.buildItems, [
+        BuildItemDataMock.makeUnaffordable(missingWood: 5),
+        BuildItemDataMock.workshopUnaffordable(BlueprintId.forge, missingWood: 15),
+        BuildItemDataMock.workshopUnaffordable(BlueprintId.armory, missingWood: 15),
+        BuildItemDataMock.mageTowerUnaffordable(missingWood: 20),
+      ]);
       expect(bloc.state.data.placement, isNull);
       expect(
         ForestBlocMock.shownMessages(navigationService),
@@ -307,10 +316,13 @@ void main() {
       wait: Duration.zero,
       verify: (bloc) {
         // then
-        expect(badgeBefore, '2/3');
+        expect(badgeBefore, '2/11');
         expect(effects, contains(ForestEffectMock.buildingCompleted));
-        expect(bloc.state.data.hud!.questBadge, '3/3');
-        expect(ForestBlocMock.shownMessages(navigationService).last, Internationalize.forestMessageAllQuestsCompleted);
+        expect(bloc.state.data.hud!.questBadge, '3/11');
+        expect(
+          ForestBlocMock.shownMessages(navigationService).last,
+          Internationalize.forestMessageQuestLineCompleted(line: QuestLine.village),
+        );
       },
     );
   });
@@ -358,5 +370,27 @@ void main() {
       isA<ForestSuccess>().having((state) => state.data.effects, 'effects', [ForestEffectMock.axePickedUp]),
       isA<ForestSuccess>().having((state) => state.data.effects, 'effects', isEmpty),
     ],
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenTheArenaIsRequestedThenItOpensAndCancelsThePlacement',
+    build: () {
+      // given
+      when(navigationService.push(any)).thenReturn(null);
+      return ForestBlocMock.make(ForestScenarioMock.fifteenWood(), navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestBuildRequested(blueprint: BlueprintId.house))
+        ..add(const ForestArenaRequested());
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      verify(navigationService.push(argThat(isA<ArenaPage>()))).called(1);
+      expect(bloc.state.data.placement, isNull);
+    },
   );
 }

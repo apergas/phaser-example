@@ -1,8 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
+import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
+import 'package:rpg/core/config/constants/enum/fight_advice.dart';
+import 'package:rpg/core/config/constants/enum/forest/hero_panel_section.dart';
+import 'package:rpg/core/config/constants/enum/gear_id.dart';
+import 'package:rpg/core/config/constants/enum/gear_slot.dart';
 import 'package:rpg/core/config/constants/enum/quest_id.dart';
+import 'package:rpg/core/config/constants/enum/quest_line.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:rpg/core/config/constants/enum/skill_id.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 
 import '../../../helpers/spanish_translations.dart';
@@ -37,7 +45,20 @@ void main() {
 
     // then
     expect(name, 'Casa');
-    expect(quests, ['Recoge el hacha', 'Consigue al menos 15 de madera', 'Construye una casa']);
+    expect(quests, [
+      'Recoge el hacha',
+      'Consigue al menos 15 de madera',
+      'Construye una casa',
+      'Construye la Herrería',
+      'Gana un nivel de la arena',
+      'Compra la Espada corta',
+      'Construye la Armería',
+      'Construye la Torre de magia',
+      'Aprende una habilidad',
+      'Gana la mitad de los niveles de la arena',
+      'Gana al Jefe bárbaro',
+    ]);
+    expect(QuestLine.values.map((line) => Internationalize.forestQuestLine(line: line)), ['Aldea', 'Héroe']);
   });
 
   test('testWhenFormattingMessagesWithNamesThenInsertsThem', () {
@@ -74,6 +95,7 @@ void main() {
     // given
     final texts = [
       Internationalize.forestResource(resource: Resource.wood),
+      Internationalize.forestResource(resource: Resource.gold),
       Internationalize.forestTool(tool: ToolKind.axe),
       Internationalize.forestBuild,
       Internationalize.forestQuests,
@@ -85,7 +107,7 @@ void main() {
       Internationalize.forestMessageBlockedSite,
       Internationalize.forestMessageNotEnoughResources,
       Internationalize.forestMessageBuildingStarted,
-      Internationalize.forestMessageAllQuestsCompleted,
+      Internationalize.forestMessageQuestLineCompleted(line: QuestLine.village),
       Internationalize.forestPlacementConfirm,
       Internationalize.forestPlacementCancel,
       Internationalize.forestAccessibilityGameWorld,
@@ -98,6 +120,7 @@ void main() {
     expect(untranslated, isEmpty);
     expect(texts, [
       'Madera',
+      'Oro',
       'Hacha',
       'Construir',
       'Misiones',
@@ -109,10 +132,192 @@ void main() {
       'Ahí no cabe. Busca un sitio despejado.',
       'No tienes recursos suficientes.',
       'Manos a la obra…',
-      '¡Has completado todas las misiones!',
+      '¡Has completado las misiones de Aldea!',
       'Construir aquí',
       'Cancelar',
       'Mundo de juego: bosque con árboles, el personaje y los edificios',
     ]);
+  });
+
+  test('testWhenNamingEveryBlueprintThenNoneFallsBackToItsKey', () {
+    // given
+    final names = BlueprintId.values.map((id) => Internationalize.forestBlueprint(id: id)).toList();
+
+    // when
+    final untranslated = names.where((name) => name.contains('forest.')).toList();
+
+    // then
+    expect(untranslated, isEmpty);
+    expect(names, ['Casa', 'Herrería', 'Armería', 'Torre de magia']);
+  });
+
+  test('testWhenNamingEveryGearPieceThenUsesTheSpanishNames', () {
+    // given
+    final names = GearId.values.map((id) => Internationalize.forestGear(id: id)).toList();
+
+    // when
+    final untranslated = names.where((name) => name.startsWith('forest.')).toList();
+
+    // then
+    expect(untranslated, isEmpty);
+    expect(names, [
+      'Hacha de leñador',
+      'Espada corta',
+      'Espada de hierro',
+      'Espada de acero',
+      'Ropa de trabajo',
+      'Armadura de cuero',
+      'Cota de malla',
+      'Armadura de placas',
+    ]);
+  });
+
+  test('testWhenReadingEveryHeroTextThenNoneFallsBackToItsKey', () {
+    // given
+    final texts = [
+      Internationalize.forestHero,
+      Internationalize.forestHeroPower,
+      Internationalize.forestHeroChampion,
+      Internationalize.forestHeroAttack,
+      Internationalize.forestHeroDefense,
+      Internationalize.forestHeroHealth,
+      Internationalize.forestHeroAttackRange(min: 6, max: 8),
+      Internationalize.forestHeroWeaponStats(min: 6, max: 8),
+      Internationalize.forestHeroArmorStats(defense: 3, health: 40),
+      for (final slot in GearSlot.values) Internationalize.forestHeroSlot(slot: slot),
+      for (final section in HeroPanelSection.values) Internationalize.forestHeroSection(section: section),
+      Internationalize.forestHeroEquipped,
+      Internationalize.forestHeroBuy,
+      Internationalize.forestHeroNeedsBuilding(name: 'Herrería'),
+      Internationalize.forestHeroMaxed,
+      Internationalize.forestMessageGearPurchased(name: 'Espada corta'),
+      Internationalize.forestMessageGearNotNextTier,
+    ];
+
+    // when
+    final untranslated = texts.where((text) => text.startsWith('forest.')).toList();
+
+    // then
+    expect(untranslated, isEmpty);
+    expect(texts, [
+      'Héroe',
+      'Poder',
+      'Campeón de la arena',
+      'Ataque',
+      'Defensa',
+      'Vida',
+      '6–8',
+      'Ataque 6–8',
+      'Defensa 3 · Vida 40',
+      'Arma',
+      'Armadura',
+      'Equipo',
+      'Habilidades',
+      'En uso',
+      'Comprar',
+      'Construye la Herrería',
+      'Ya tienes la mejor pieza',
+      'Has comprado: Espada corta',
+      'Antes tienes que comprar la pieza anterior.',
+    ]);
+  });
+
+  test('testWhenNamingEverySkillThenUsesTheSpanishNamesAndDescriptions', () {
+    // given
+    // when
+    final names = SkillId.values.map((id) => Internationalize.forestSkillName(id: id)).toList();
+    final descriptions = SkillId.values.map((id) => Internationalize.forestSkillDescription(id: id)).toList();
+
+    // then
+    expect(names, ['Golpe doble', 'Segundo aliento', 'Esquiva']);
+    expect(descriptions, [
+      'Cada tercer ataque golpea dos veces.',
+      'Una vez por pelea, por debajo del 30 % de vida recupera el 40 %.',
+      'Un 20 % de posibilidades de esquivar cada golpe.',
+    ]);
+  });
+
+  test('testWhenReadingEverySkillTextThenNoneFallsBackToItsKey', () {
+    // given
+    final texts = [
+      Internationalize.forestHeroLearn,
+      Internationalize.forestHeroKnown,
+      Internationalize.forestHeroNeedsBuilding(name: Internationalize.forestBlueprint(id: BlueprintId.mageTower)),
+      Internationalize.forestMessageSkillLearned(name: Internationalize.forestSkillName(id: SkillId.doubleStrike)),
+      Internationalize.forestMessageSkillAlreadyKnown,
+    ];
+
+    // when
+    final untranslated = texts.where((text) => text.startsWith('forest.')).toList();
+
+    // then
+    expect(untranslated, isEmpty);
+    expect(texts, [
+      'Aprender',
+      'Aprendida',
+      'Construye la Torre de magia',
+      'Has aprendido: Golpe doble',
+      'Ya conoces esa habilidad.',
+    ]);
+  });
+
+  test('testWhenFormattingArenaNumbersThenUsesTheSpanishTexts', () {
+    // given
+    const amount = 10;
+
+    // when
+    final reward = Internationalize.arenaReward(amount: amount);
+    final power = Internationalize.arenaPower(power: 19);
+    final heroPower = Internationalize.arenaHeroPower(power: 31);
+    final damage = Internationalize.arenaDamage(amount: 4);
+    final heal = Internationalize.arenaHeal(amount: 12);
+    final group = Internationalize.arenaEnemyCount(count: 3, name: Internationalize.arenaEnemy(kind: EnemyKind.bandit));
+
+    // then
+    expect(reward, '+10 de oro');
+    expect(power, 'Poder 19');
+    expect(heroPower, 'Tu Poder: 31');
+    expect(damage, '−4');
+    expect(heal, '+12');
+    expect(group, '3 × Bandido');
+  });
+
+  test('testWhenNamingArenaLevelsEnemiesAndAdviceThenUsesTheSpanishTexts', () {
+    // given
+    // when
+    final levels = ArenaLevelId.values.map((id) => Internationalize.arenaLevel(id: id)).toList();
+    final enemies = EnemyKind.values.map((kind) => Internationalize.arenaEnemy(kind: kind)).toList();
+    final advice = FightAdvice.values.map((advice) => Internationalize.arenaAdvice(advice: advice)).toList();
+
+    // then
+    expect(levels, [
+      'Bandido novato',
+      'Bandido veterano',
+      'Trío de bandidos',
+      'Bárbaro',
+      'Pareja de bárbaros',
+      'Jefe bárbaro',
+      'Lobo',
+      'Pareja de lobos',
+      'Oso',
+      'Manada de lobos',
+    ]);
+    expect(enemies, ['Bandido', 'Bárbaro', 'Jefe bárbaro', 'Lobo', 'Oso']);
+    expect(advice, [
+      '¡Casi lo tienes! Vuelve a intentarlo.',
+      'Te falta Ataque: visita la Herrería.',
+      'Te falta Defensa: visita la Armería.',
+    ]);
+    expect((Internationalize.arenaFight, Internationalize.arenaVictory), ('Empezar pelea', '¡Victoria!'));
+    expect(Internationalize.arenaChampion, '¡Campeón de la arena!');
+  });
+
+  test('testWhenASkillIsUsedInTheArenaThenItsNameIsShouted', () {
+    // given
+    // when
+    final shouts = SkillId.values.map((id) => Internationalize.arenaSkillUsed(id: id)).toList();
+
+    // then
+    expect(shouts, ['¡Golpe doble!', '¡Segundo aliento!', '¡Esquiva!']);
   });
 }

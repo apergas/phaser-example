@@ -39,6 +39,12 @@ class _FakeGlobalKey_0<T extends _i1.State<_i1.StatefulWidget>>
     : super(parent, parentInvocation);
 }
 
+class _FakeRouteObserver_1<R extends _i1.Route<dynamic>> extends _i2.SmartFake
+    implements _i1.RouteObserver<R> {
+  _FakeRouteObserver_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [NavigationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -55,6 +61,16 @@ class MockNavigationService extends _i2.Mock implements _i3.NavigationService {
       Invocation.getter(#navigatorKey),
     ),
   ) as _i1.GlobalKey<_i1.NavigatorState>);
+
+  @override
+  _i1.RouteObserver<_i1.ModalRoute<void>> get routeObserver =>
+      (super.noSuchMethod(
+        Invocation.getter(#routeObserver),
+        returnValue: _FakeRouteObserver_1<_i1.ModalRoute<void>>(
+          this,
+          Invocation.getter(#routeObserver),
+        ),
+      ) as _i1.RouteObserver<_i1.ModalRoute<void>>);
 
   @override
   _i4.Future<T?>? push<T extends Object?>(

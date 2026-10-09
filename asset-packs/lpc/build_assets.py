@@ -9,8 +9,13 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
   hero-{chop,hammer}.png           128x128 work animations: body slash frames between the tool's
                                    back and front layers (same layout as the LPC generator)
   forest.png + forest.json         JSON-hash atlas (TexturePacker format): trees (pivot = trunk base), decor, stump,
-                                   axe pickup and the house (pivot = bottom centre)
+                                   axe pickup, the house, the forge, the armory and the mage tower
+                                   (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
+  arena.png + arena.json           JSON-hash atlas for the arena: hero, bandit, barbarian and barbarian chief idle
+                                   (64px, axe in hand) and slash (128px) frames in their one facing (pivot = feet), the wolf
+                                   and bear idle, attack and down frames facing left, the grass cell and a fence
+                                   segment
 
 Requires Pillow. Licences and authors: see CREDITS.md next to the outputs.
 """
@@ -26,14 +31,14 @@ OUT = ROOT.parent.parent / "lib" / "core" / "assets" / "images" / "lpc"
 
 # --- Character -------------------------------------------------------------------------------
 
-# Bottom to top, same z-order as the Universal LPC generator (zPos).
+# (folder in sources, layer), bottom to top, same z-order as the Universal LPC generator (zPos).
 CHARACTER_LAYERS = [
-    "body_bodies_male",
-    "feet_boots_basic_male",
-    "legs_pants_male",
-    "torso_clothes_longsleeve_longsleeve_male",
-    "head_heads_human_male",
-    "hair_plain_adult",
+    ("character", "body_bodies_male"),
+    ("character", "feet_boots_basic_male"),
+    ("character", "legs_pants_male"),
+    ("character", "torso_clothes_longsleeve_longsleeve_male"),
+    ("character", "head_heads_human_male"),
+    ("character", "hair_plain_adult"),
 ]
 
 # Clothes ship in a neutral ramp meant to be recoloured. Each ramp is dark -> light.
@@ -63,12 +68,12 @@ WORK_FRAME = 128
 DIRECTIONS = 4
 
 
-def body_sheet(animation: str) -> Image.Image:
+def body_sheet(animation: str, recolours: dict = RECOLOURS, layers: list = CHARACTER_LAYERS) -> Image.Image:
     sheet = None
-    for layer in CHARACTER_LAYERS:
-        image = Image.open(SOURCES / "character" / f"{layer}__{animation}.png").convert("RGBA")
-        if layer in RECOLOURS:
-            image = recolour(image, *RECOLOURS[layer])
+    for folder, layer in layers:
+        image = Image.open(SOURCES / folder / f"{layer}__{animation}.png").convert("RGBA")
+        if layer in recolours:
+            image = recolour(image, *recolours[layer])
         sheet = image if sheet is None else Image.alpha_composite(sheet, image)
     return sheet
 
@@ -152,6 +157,19 @@ HOUSE_ROOF_BOX = (80, 0, 215, 128)  # thatched-roof.png
 HOUSE_DOOR_BOX = (16, 0, 48, 48)  # doors_0.png
 HOUSE_ROOF_OVERLAP = 28
 
+# Forge and armory reuse the house layout. The thatch ships in exactly these nine colours (dark -> light),
+# so recolour() swaps the whole roof; the wall and door keep their own colours.
+ROOF_RAMP = [(43, 28, 29), (48, 33, 36), (98, 53, 28), (112, 86, 55), (137, 103, 56), (154, 114, 57), (183, 149, 67), (227, 198, 84), (237, 226, 108)]
+FORGE_ROOF = [(20, 20, 24), (26, 26, 30), (40, 40, 46), (54, 54, 60), (66, 66, 74), (76, 76, 84), (94, 94, 102), (118, 118, 126), (136, 136, 144)]
+ARMORY_ROOF = [(40, 14, 16), (46, 18, 20), (90, 24, 22), (110, 32, 28), (132, 40, 34), (148, 46, 38), (176, 60, 46), (212, 90, 68), (228, 118, 90)]
+FORGE_WALL_BOX = (0, 256, 96, 352)  # cottage.png, stone wall with timber frame
+CHIMNEY_BOX = (448, 480, 480, 512)  # terrain_atlas.png, cracked stone block
+CHIMNEY_RISE = 18  # pixels the chimney sticks out above the roof
+CHIMNEY_INSET = 20  # distance from the chimney's right edge to the roof's right edge
+MAGE_TOWER_ROOF = [(30, 16, 40), (38, 20, 52), (62, 30, 92), (78, 40, 112), (96, 52, 136), (110, 62, 152), (134, 84, 178), (168, 120, 210), (190, 150, 226)]
+MAGE_TOWER_WALL_BOX = (96, 256, 192, 352)  # cottage.png, stone wall with long diagonal braces
+MAGE_TOWER_ROOF_STRETCH = 1.4  # the violet roof is drawn 40 % taller, like a spire
+
 
 def trim(image: Image.Image, name: str) -> Image.Image:
     """Crops to the visible pixels; fails loudly instead of shipping an empty sprite."""
@@ -200,21 +218,47 @@ def pack(frames: dict, width: int = 1024, padding: int = 2) -> tuple:
     return atlas, positions
 
 
-def build_house() -> Image.Image:
+def build_cottage(
+    wall_box: tuple, roof_colours: list = None, chimney: Image.Image = None, roof_stretch: float = 1
+) -> Image.Image:
+    """Wall, door and thatched roof; optionally a recoloured, taller roof and a chimney sticking out of it."""
     buildings = SOURCES / "buildings"
-    wall = Image.open(buildings / "cottage.png").convert("RGBA").crop(HOUSE_WALL_BOX)
+    wall = Image.open(buildings / "cottage.png").convert("RGBA").crop(wall_box)
     roof = Image.open(buildings / "thatched-roof.png").convert("RGBA").crop(HOUSE_ROOF_BOX)
     roof = roof.crop(roof.getbbox())
+    if roof_colours is not None:
+        roof = recolour(roof, ROOF_RAMP, roof_colours)
+    if roof_stretch != 1:
+        roof = roof.resize((roof.width, round(roof.height * roof_stretch)), Image.NEAREST)
     door = Image.open(buildings / "doors_0.png").convert("RGBA").crop(HOUSE_DOOR_BOX)
     door = door.crop(door.getbbox())
 
+    top = CHIMNEY_RISE if chimney is not None else 0
     width = max(roof.width, wall.width)
-    house = Image.new("RGBA", (width, roof.height + wall.height - HOUSE_ROOF_OVERLAP))
-    wall_x, wall_y = (width - wall.width) // 2, roof.height - HOUSE_ROOF_OVERLAP
-    house.alpha_composite(wall, (wall_x, wall_y))
-    house.alpha_composite(door, (wall_x + (wall.width - door.width) // 2, wall_y + wall.height - door.height))
-    house.alpha_composite(roof, ((width - roof.width) // 2, 0))
-    return house
+    image = Image.new("RGBA", (width, top + roof.height + wall.height - HOUSE_ROOF_OVERLAP))
+    wall_x, wall_y = (width - wall.width) // 2, top + roof.height - HOUSE_ROOF_OVERLAP
+    image.alpha_composite(wall, (wall_x, wall_y))
+    image.alpha_composite(door, (wall_x + (wall.width - door.width) // 2, wall_y + wall.height - door.height))
+    image.alpha_composite(roof, ((width - roof.width) // 2, top))
+    if chimney is not None:
+        image.alpha_composite(chimney, (width - chimney.width - CHIMNEY_INSET, 0))
+    return image
+
+
+def build_house() -> Image.Image:
+    return build_cottage(HOUSE_WALL_BOX)
+
+
+def build_forge(terrain: Image.Image) -> Image.Image:
+    return build_cottage(FORGE_WALL_BOX, FORGE_ROOF, trim(terrain.crop(CHIMNEY_BOX), "chimney"))
+
+
+def build_armory() -> Image.Image:
+    return build_cottage(HOUSE_WALL_BOX, ARMORY_ROOF)
+
+
+def build_mage_tower() -> Image.Image:
+    return build_cottage(MAGE_TOWER_WALL_BOX, MAGE_TOWER_ROOF, roof_stretch=MAGE_TOWER_ROOF_STRETCH)
 
 
 def build_forest() -> None:
@@ -241,9 +285,24 @@ def build_forest() -> None:
     pivots["axe-pickup"] = {"x": 0.5, "y": 0.5}
     frames["house"] = build_house()
     pivots["house"] = {"x": 0.5, "y": 1}
+    frames["forge"] = build_forge(terrain)
+    pivots["forge"] = {"x": 0.5, "y": 1}
+    frames["armory"] = build_armory()
+    pivots["armory"] = {"x": 0.5, "y": 1}
+    frames["mage-tower"] = build_mage_tower()
+    pivots["mage-tower"] = {"x": 0.5, "y": 1}
 
+    write_atlas("forest", frames, pivots)
+
+    ground = Image.new("RGBA", (CELL * len(GROUND_TILES), CELL))
+    for index, (column, row) in enumerate(GROUND_TILES):
+        ground.alpha_composite(terrain.crop((column * CELL, row * CELL, (column + 1) * CELL, (row + 1) * CELL)), (index * CELL, 0))
+    ground.save(OUT / "ground.png")
+
+
+def write_atlas(atlas_name: str, frames: dict, pivots: dict) -> None:
     atlas, positions = pack(frames)
-    atlas.save(OUT / "forest.png")
+    atlas.save(OUT / f"{atlas_name}.png")
     data = {
         "frames": {
             name: {
@@ -256,18 +315,114 @@ def build_forest() -> None:
             }
             for name, (x, y) in positions.items()
         },
-        "meta": {"image": "forest.png", "size": {"w": atlas.width, "h": atlas.height}, "scale": "1"},
+        "meta": {"image": f"{atlas_name}.png", "size": {"w": atlas.width, "h": atlas.height}, "scale": "1"},
     }
-    (OUT / "forest.json").write_text(json.dumps(data, indent=1))
+    (OUT / f"{atlas_name}.json").write_text(json.dumps(data, indent=1))
 
-    ground = Image.new("RGBA", (CELL * len(GROUND_TILES), CELL))
-    for index, (column, row) in enumerate(GROUND_TILES):
-        ground.alpha_composite(terrain.crop((column * CELL, row * CELL, (column + 1) * CELL, (row + 1) * CELL)), (index * CELL, 0))
-    ground.save(OUT / "ground.png")
+
+# --- Arena atlas -----------------------------------------------------------------------------
+
+# Skin ships in the human ramp, dark -> light; body and head share it.
+SKIN_RAMP = [(153, 66, 60), (204, 134, 101), (228, 164, 124), (249, 213, 186), (250, 236, 231)]
+BANDIT_RECOLOURS = {
+    **RECOLOURS,
+    "torso_clothes_longsleeve_longsleeve_male": (CLOTH_RAMP, [(48, 14, 16), (82, 22, 24), (112, 32, 30), (140, 46, 40), (168, 64, 54)]),
+    "legs_pants_male": (CLOTH_RAMP, [(28, 22, 24), (44, 34, 36), (62, 48, 48), (82, 64, 62), (104, 82, 78)]),
+    "hair_plain_adult": (HAIR_RAMP, [(20, 16, 16), (32, 26, 24), (46, 38, 34), (60, 50, 44), (76, 64, 56)]),
+}
+BARBARIAN_SKIN = [(78, 38, 30), (120, 72, 50), (146, 96, 66), (172, 122, 88), (196, 156, 126)]
+# Barbarians: leather armour, shorts, bracers, a long beard and a helmet instead of hair (sources/barbarians). The
+# chief swaps the helmet for the viking one and wears a black beard and red shorts; the arena draws him x1.25.
+BARBARIAN_LAYERS = [
+    ("character", "body_bodies_male"),
+    ("character", "feet_boots_basic_male"),
+    ("barbarians", "legs_shorts_male"),
+    ("barbarians", "torso_armour_leather_male"),
+    ("barbarians", "arms_bracers_male"),
+    ("character", "head_heads_human_male"),
+    ("barbarians", "beards_beard_winter_male"),
+    ("barbarians", "hat_helmet_barbarian_adult"),
+]
+CHIEF_LAYERS = [*BARBARIAN_LAYERS[:-1], ("barbarians", "hat_helmet_barbarian_viking_adult")]
+BARBARIAN_RECOLOURS = {
+    **RECOLOURS,
+    "body_bodies_male": (SKIN_RAMP, BARBARIAN_SKIN),
+    "head_heads_human_male": (SKIN_RAMP, BARBARIAN_SKIN),
+    "legs_shorts_male": (CLOTH_RAMP, [(36, 26, 18), (58, 42, 28), (80, 58, 38), (104, 76, 50), (128, 96, 64)]),
+}
+CHIEF_RECOLOURS = {
+    **BARBARIAN_RECOLOURS,
+    "legs_shorts_male": (CLOTH_RAMP, [(48, 14, 16), (82, 22, 24), (112, 32, 30), (140, 46, 40), (168, 64, 54)]),
+    "beards_beard_winter_male": (HAIR_RAMP, [(20, 16, 16), (32, 26, 24), (46, 38, 34), (60, 50, 44), (76, 64, 56)]),
+}
+# Fighter -> (recolours, LPC row, layers): the hero faces right (row 3), the enemies face left (row 1).
+ARENA_FIGHTERS = {
+    "hero": (RECOLOURS, 3, CHARACTER_LAYERS),
+    "bandit": (BANDIT_RECOLOURS, 1, CHARACTER_LAYERS),
+    "barbarian": (BARBARIAN_RECOLOURS, 1, BARBARIAN_LAYERS),
+    "barbarian-chief": (CHIEF_RECOLOURS, 1, CHIEF_LAYERS),
+}
+ARENA_GRASS = (1, 23)  # (column, row) of terrain_atlas.png, the same grass as the forest ground
+ARENA_FENCE_BOX = (480, 608, 544, 640)  # terrain_atlas.png: a post and a rail, 64x32, tiles horizontally
+IDLE_PIVOT = {"x": 0.5, "y": round(62 / FRAME, 4)}
+SLASH_PIVOT = {"x": 0.5, "y": round((32 + 62) / WORK_FRAME, 4)}
+# Beast -> (sheet in sources/creatures, origin of the side views, cell size, animations). The rows used already face
+# left. Each animation is (row, columns, ground): one frame per column, and ground = the pixel row the paws stand on
+# in that row (the pivot, like the feet of the people). A single column is named without an index ("wolf-down").
+ARENA_BEASTS = {
+    "wolf": (
+        "wolfsheet1.png",
+        (320, 0),
+        (64, 32),
+        {"idle": (9, [0, 1], 32), "attack": (11, [0, 1, 2, 3, 4], 32), "down": (6, [3], 32)},
+    ),
+    "bear": (
+        "bear-grizzly.png",
+        (0, 0),
+        (64, 64),
+        {"idle": (2, [0, 1], 62), "attack": (6, [0, 1, 2], 58), "down": (10, [3], 57)},
+    ),
+}
+
+
+def cells(sheet: Image.Image, row: int, size: int) -> list:
+    return [sheet.crop((column * size, row * size, (column + 1) * size, (row + 1) * size)) for column in range(sheet.width // size)]
+
+
+def add_beasts(frames: dict, pivots: dict) -> None:
+    for beast, (file_name, (origin_x, origin_y), (width, height), animations) in ARENA_BEASTS.items():
+        sheet = Image.open(SOURCES / "creatures" / file_name).convert("RGBA")
+        for animation, (row, columns, ground) in animations.items():
+            for index, column in enumerate(columns):
+                x, y = origin_x + column * width, origin_y + row * height
+                name = f"{beast}-{animation}" if len(columns) == 1 else f"{beast}-{animation}-{index}"
+                cell = sheet.crop((x, y, x + width, y + height))
+                trim(cell, name)
+                frames[name], pivots[name] = cell, {"x": 0.5, "y": round(ground / height, 4)}
+
+
+def build_arena() -> None:
+    terrain = Image.open(SOURCES / "terrain" / "terrain_atlas.png").convert("RGBA")
+    frames, pivots = {}, {}
+    for fighter, (recolours, row, layers) in ARENA_FIGHTERS.items():
+        idle = with_idle_axe(body_sheet("idle", recolours, layers))
+        slash = work_sheet(body_sheet("slash", recolours, layers), "axe")
+        for column, image in enumerate(cells(idle, row, FRAME)):
+            frames[f"{fighter}-idle-{column}"], pivots[f"{fighter}-idle-{column}"] = image, IDLE_PIVOT
+        for column, image in enumerate(cells(slash, row, WORK_FRAME)):
+            frames[f"{fighter}-slash-{column}"], pivots[f"{fighter}-slash-{column}"] = image, SLASH_PIVOT
+    add_beasts(frames, pivots)
+    column, row = ARENA_GRASS
+    frames["arena-grass"] = terrain.crop((column * CELL, row * CELL, (column + 1) * CELL, (row + 1) * CELL))
+    pivots["arena-grass"] = {"x": 0, "y": 0}
+    frames["arena-fence"] = trim(terrain.crop(ARENA_FENCE_BOX), "arena-fence")
+    pivots["arena-fence"] = {"x": 0, "y": 1}
+    write_atlas("arena", frames, pivots)
 
 
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     build_character()
     build_forest()
+    build_arena()
     print(f"Assets written to {OUT}")

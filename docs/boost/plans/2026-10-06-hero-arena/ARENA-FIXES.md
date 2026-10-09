@@ -33,7 +33,7 @@ Ahora no hay espadas en `asset-packs/lpc/sources/`: por eso todos los luchadores
 
 ## 2. Mejoras del héroe sólo con oro
 
-> **Pasa a C7 (decidido el 2026-10-08):** se hace dentro de C7, junto con el equilibrado, para no equilibrar dos veces. Lo de abajo queda como referencia para el plan de C7.
+> **Hecho en C7 (2026-10-09).** Los números finales están en `docs/GAME_DESIGN.md` (sección 3.8).
 
 Hoy cada pieza de equipo cuesta madera **y** oro (`Gear.all`):
 
@@ -67,7 +67,7 @@ Todo esto es de la escena (`FighterComponent`, `ArenaSceneComponent`) y de `Figh
 
 ## 4. Daño: ¿fijo o aleatorio?
 
-> **Pasa a C7 (decidido el 2026-10-08):** el daño por rangos se hace dentro de C7, junto con el equilibrado. Lo de abajo queda como referencia para el plan de C7.
+> **Hecho en C7 (2026-10-09).** Los números finales están en `docs/GAME_DESIGN.md` (sección 3.8).
 
 ### Cómo funciona ahora
 
@@ -114,7 +114,17 @@ Por debajo de `HudOverlay.buttonsBelowWidth` (920 px), los botones (*Misiones*, 
 - Ajustar los tests de 640 × 360 y 640 × 300 de `hud_overlay_test.dart` (comprobar el borde izquierdo en lugar del derecho) y la línea de `CLAUDE.md` que dice "right-aligned".
 - En pantallas anchas (≥ 920 px) no cambia nada.
 
-## 6. Pendientes que ya estaban apuntados
+## 6. Mensajes de misiones repetidos
+
+Las misiones se comprueban en cada `ForestTicked`, y el bosque está en pausa mientras la arena está encima. Al volver, varias misiones del héroe que se miden con la arena (*Gana un nivel de la arena*, *Gana la mitad de los niveles de la arena*, *Gana al Jefe bárbaro*) pueden completarse en el mismo tick, y salen varios mensajes seguidos. Si son las últimas de su línea, "¡Has completado las misiones de Héroe!" sale una vez por cada misión.
+
+**Qué hacer:** en `ForestBloc`, agrupar los `QuestCompletedEventEntity` del mismo tick:
+- si con ellos se completa una línea, un solo mensaje "¡Has completado las misiones de {línea}!";
+- si no, un mensaje por misión (o uno que las junte, por ejemplo "Misiones completadas: …").
+
+Añadir un test del BLoC con dos misiones de la misma línea completadas a la vez (el escenario `GearScenarioMock.withAllWorkshops` con `HeroEntityMock.championWithEveryQuestDone` ya lo provoca) que compruebe que el mensaje de línea completada sale una sola vez.
+
+## 7. Pendientes que ya estaban apuntados
 
 Del cierre de C2 y C3 (sección 5 del README):
 - **Decisiones provisionales de C2**, a revisar con este pulido: la pausa con `RouteObserver`, el panel de victoria sin botón y el umbral ámbar del Poder (×1,25). La de "todos con hacha" la resuelven 1.2 y 1.3.

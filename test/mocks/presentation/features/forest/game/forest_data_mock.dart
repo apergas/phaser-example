@@ -1,6 +1,8 @@
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/decoration_kind.dart';
 import 'package:rpg/core/config/constants/enum/forest/facing.dart';
+import 'package:rpg/core/config/constants/enum/gear_id.dart';
+import 'package:rpg/core/config/constants/enum/skill_id.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 import 'package:rpg/core/config/constants/enum/tree_kind.dart';
 import 'package:rpg/layers/domain/entities/building/building_entity.dart';
@@ -124,6 +126,12 @@ abstract final class ForestDataMock {
     isValid: false,
   );
 
+  static final PlacementData forgePlacement = PlacementData(
+    blueprint: BlueprintId.forge,
+    position: const PositionEntity(x: 300, y: 200),
+    isValid: true,
+  );
+
   static final ForestData initial = ForestData(world: world, player: player);
 
   static final ForestData treeHit = ForestData(
@@ -159,4 +167,18 @@ abstract final class ForestDataMock {
   );
 
   static final ForestData placing = ForestData(world: world, player: player, placement: validPlacement);
+
+  static final ForestData placingForge = ForestData(world: world, player: player, placement: forgePlacement);
+
+  static final ForestData gearPurchased = ForestData(
+    world: world,
+    player: player,
+    effects: const [GearPurchasedEffect(gear: GearId.shortSword)],
+  );
+
+  static final ForestData skillLearned = ForestData(
+    world: world,
+    player: player,
+    effects: const [SkillLearnedEffect(skill: SkillId.doubleStrike)],
+  );
 }

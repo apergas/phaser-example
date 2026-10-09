@@ -6,6 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
+import 'package:rpg/core/config/constants/enum/forest/hero_panel_section.dart';
+import 'package:rpg/core/config/constants/enum/skill_id.dart';
 import 'package:rpg/core/config/di/di.dart';
 import 'package:rpg/core/config/di/di_environment.dart';
 import 'package:rpg/core/config/di/locator.dart';
@@ -15,8 +17,10 @@ import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
 import 'package:rpg/layers/presentation/features/forest/forest_page.dart';
 import 'package:rpg/layers/presentation/features/forest/game/atlas/lpc_assets_loader.dart';
 import 'package:rpg/layers/presentation/features/forest/game/forest_game.dart';
+import 'package:rpg/layers/presentation/features/forest/widgets/hero_panel.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/hud_overlay.dart';
 import 'package:rpg/layers/presentation/features/forest/widgets/placement_bar.dart';
+import 'package:rpg/layers/presentation/features/forest/widgets/skill_tile.dart';
 
 import '../../../../helpers/pump_until.dart';
 import '../../../../helpers/spanish_translations.dart';
@@ -33,6 +37,7 @@ void main() {
 
   late MockLevelRepository levelRepository;
   late MockNavigationService navigationService;
+  late RouteObserver<ModalRoute<void>> routeObserver;
 
   setUpAll(loadSpanishTranslations);
 
@@ -41,6 +46,7 @@ void main() {
     await configureDependencies(environment: DiEnvironment.dev);
     levelRepository = MockLevelRepository();
     navigationService = MockNavigationService();
+    routeObserver = RouteObserver<ModalRoute<void>>();
     locator.allowReassignment = true;
     locator.registerFactory<LevelRepository>(() => levelRepository);
     locator.registerSingleton<NavigationService>(navigationService);
@@ -52,7 +58,7 @@ void main() {
 
   Future<ForestBloc> pumpGame(WidgetTester tester) async {
     when(levelRepository.load()).thenReturn(ForestScenarioMock.fifteenWood());
-    await tester.pumpWidget(MaterialApp(home: const ForestPage()));
+    await tester.pumpWidget(MaterialApp(home: ForestPage(routeObserver: routeObserver)));
     await pumpUntil(tester, () => find.byType(HudOverlay).evaluate().isNotEmpty);
     final game = tester.widget<GameWidget<ForestGame>>(find.byType(GameWidget<ForestGame>)).game!;
     await pumpUntil(tester, () => game.world.isReady);
@@ -64,7 +70,7 @@ void main() {
     when(levelRepository.load()).thenThrow(invalidLevel);
 
     // when
-    await tester.pumpWidget(const MaterialApp(home: ForestPage()));
+    await tester.pumpWidget(MaterialApp(home: ForestPage(routeObserver: routeObserver)));
     await tester.pump();
 
     // then
@@ -76,7 +82,7 @@ void main() {
   testWidgets('testWhenRetryIsTappedThenTheGameIsStartedAgain', (tester) async {
     // given
     when(levelRepository.load()).thenThrow(invalidLevel);
-    await tester.pumpWidget(const MaterialApp(home: ForestPage()));
+    await tester.pumpWidget(MaterialApp(home: ForestPage(routeObserver: routeObserver)));
     await tester.pump();
 
     // when
@@ -91,7 +97,10 @@ void main() {
     when(levelRepository.load()).thenReturn(ForestScenarioMock.empty());
     await tester.pumpWidget(
       MaterialApp(
-        home: DefaultAssetBundle(bundle: bundle, child: const ForestPage()),
+        home: DefaultAssetBundle(
+          bundle: bundle,
+          child: ForestPage(routeObserver: routeObserver),
+        ),
       ),
     );
   }
@@ -139,7 +148,7 @@ void main() {
     when(levelRepository.load()).thenReturn(ForestScenarioMock.fifteenWood());
 
     // when
-    await tester.pumpWidget(const MaterialApp(home: ForestPage()));
+    await tester.pumpWidget(MaterialApp(home: ForestPage(routeObserver: routeObserver)));
 
     // then
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -156,6 +165,39 @@ void main() {
     expect(find.byType(HudOverlay), findsOneWidget);
     expect(find.bySemanticsLabel(Internationalize.forestAccessibilityGameWorld), findsOneWidget);
     expect(find.byType(PlacementBar), findsNothing);
+  });
+
+  testWidgets('testWhenHeroIsTappedThenTheHeroPanelShowsTheHerosPower', (tester) async {
+    // given
+    await pumpGame(tester);
+
+    // when
+    await tester.tap(find.text(Internationalize.forestHero));
+    await tester.pump();
+
+    // then
+    expect(find.byType(HeroPanel), findsOneWidget);
+    expect(find.text(Internationalize.forestHeroPower), findsOneWidget);
+  });
+
+  testWidgets('testWhenTheSkillsTabIsOpenedThenEachSkillAsksForTheMageTower', (tester) async {
+    // given
+    await pumpGame(tester);
+    await tester.tap(find.text(Internationalize.forestHero));
+    await tester.pump();
+
+    // when
+    await tester.tap(find.text(Internationalize.forestHeroSection(section: HeroPanelSection.skills)));
+    await tester.pump();
+
+    // then
+    expect(find.byType(SkillTile), findsNWidgets(SkillId.values.length));
+    expect(
+      find.text(
+        Internationalize.forestHeroNeedsBuilding(name: Internationalize.forestBlueprint(id: BlueprintId.mageTower)),
+      ),
+      findsNWidgets(SkillId.values.length),
+    );
   });
 
   testWidgets('testWhenEscapeIsPressedDuringPlacementThenThePlacementIsCancelled', (tester) async {
@@ -214,12 +256,45 @@ void main() {
     when(levelRepository.load()).thenReturn(ForestScenarioMock.empty());
 
     // when
-    await tester.pumpWidget(const MaterialApp(home: ForestPage()));
+    await tester.pumpWidget(MaterialApp(home: ForestPage(routeObserver: routeObserver)));
     await pumpUntil(tester, () => find.byType(GameWidget<ForestGame>).evaluate().isNotEmpty);
     final game = tester.widget<GameWidget<ForestGame>>(find.byType(GameWidget<ForestGame>)).game!;
     await pumpUntil(tester, () => game.world.isReady);
 
     // then
     expect(game.world.scene, isNotNull);
+  });
+
+  testWidgets('testWhenAPageIsPushedOverTheForestThenTheGamePausesAndResumesOnReturn', (tester) async {
+    // given
+    when(levelRepository.load()).thenReturn(ForestScenarioMock.fifteenWood());
+    await tester.pumpWidget(
+      MaterialApp(
+        navigatorObservers: [routeObserver],
+        home: ForestPage(routeObserver: routeObserver),
+      ),
+    );
+    await pumpUntil(tester, () => find.byType(HudOverlay).evaluate().isNotEmpty);
+    final game = tester.widget<GameWidget<ForestGame>>(find.byType(GameWidget<ForestGame>)).game!;
+    await pumpUntil(tester, () => game.world.isReady);
+    final bloc = tester.element(find.byType(HudOverlay)).read<ForestBloc>();
+    final navigator = tester.state<NavigatorState>(find.byType(Navigator));
+
+    // when
+    navigator.push(MaterialPageRoute<void>(builder: (_) => const SizedBox()));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    final stateWhilePaused = bloc.state;
+    await tester.pump(const Duration(milliseconds: 100));
+    final pausedAfterFrames = game.paused;
+    final ticksWhilePaused = !identical(bloc.state, stateWhilePaused);
+    navigator.pop();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // then
+    expect(pausedAfterFrames, isTrue);
+    expect(ticksWhilePaused, isFalse);
+    expect(game.paused, isFalse);
   });
 }

@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../../core/config/constants/enum/chop_result.dart';
+import '../../../core/config/constants/enum/resource.dart';
 import '../entities/building/blueprint_entity.dart';
 import '../entities/building/building_entity.dart';
 import '../entities/decoration/decoration_entity.dart';
@@ -8,12 +9,15 @@ import '../entities/game/construction_result_entity.dart';
 import '../entities/game/game_event_entity.dart';
 import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
+import '../entities/hero/hero_entity.dart';
 import '../entities/item/ground_item_entity.dart';
 import '../entities/player/activity_entity.dart';
 import '../entities/player/intent_entity.dart';
+import '../entities/player/inventory_entity.dart';
 import '../entities/player/player_entity.dart';
 import '../entities/tree/tree_entity.dart';
 import 'construction.dart';
+import 'extensions/inventory_rules.dart';
 import 'extensions/player_rules.dart';
 import 'navigation.dart';
 import 'pick_up_items.dart';
@@ -29,6 +33,7 @@ class World {
     required List<TreeEntity> trees,
     List<GroundItemEntity> items = const [],
     List<DecorationEntity> decorations = const [],
+    HeroEntity hero = const HeroEntity(),
   }) : this._(
          WorldState(
            width: width,
@@ -37,6 +42,7 @@ class World {
            trees: trees,
            items: items,
            decorations: decorations,
+           hero: hero,
          ),
        );
 
@@ -58,6 +64,8 @@ class World {
   List<DecorationEntity> get decorations => _state.decorations;
 
   List<BuildingEntity> get buildings => _state.buildings.values.toList();
+
+  HeroEntity get hero => _state.hero;
 
   List<ObstacleEntity> get obstacles => _state.obstacles();
 
@@ -91,6 +99,27 @@ class World {
 
   bool canPlace(BlueprintEntity blueprint, PositionEntity position) =>
       Construction.canPlace(_state, blueprint, position);
+
+  InventoryEntity get funds => _state.player.inventory;
+
+  void earn(Map<Resource, int> reward) {
+    var inventory = _state.player.inventory;
+    for (final MapEntry(key: resource, value: quantity) in reward.entries) {
+      if (quantity > 0) inventory = inventory.add(resource, quantity);
+    }
+    _state.player = _state.player.copyWith(inventory: inventory);
+  }
+
+  bool spend(Map<Resource, int> cost) {
+    final remaining = _state.player.inventory.spend(cost);
+    if (remaining == null) return false;
+    _state.player = _state.player.copyWith(inventory: remaining);
+    return true;
+  }
+
+  void updateHero(HeroEntity Function(HeroEntity hero) transform) {
+    _state.hero = transform(_state.hero);
+  }
 
   List<GameEventEntity> advance(double deltaMs) {
     final events = <GameEventEntity>[];

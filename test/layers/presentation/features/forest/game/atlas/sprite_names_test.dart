@@ -36,4 +36,31 @@ void main() {
     expect(frontOffset, 24);
     expect(itemName, 'axe-pickup');
   });
+
+  test('testWhenNamingTheWorkshopsThenUsesTheirFramesAndTheHouseFrontOffset', () {
+    // given
+    const forge = BlueprintId.forge;
+    const armory = BlueprintId.armory;
+
+    // when
+    final names = (SpriteNames.building(forge), SpriteNames.building(armory));
+    final offsets = (RenderConstants.buildingFrontOffset(forge), RenderConstants.buildingFrontOffset(armory));
+
+    // then
+    expect(names, ('forge', 'armory'));
+    expect(offsets, (24, 24));
+  });
+
+  test('testWhenNamingTheMageTowerThenUsesItsFrameAndTheHouseFrontOffset', () {
+    // given
+    const id = BlueprintId.mageTower;
+
+    // when
+    final name = SpriteNames.building(id);
+    final offset = RenderConstants.buildingFrontOffset(id);
+
+    // then
+    expect(name, 'mage-tower');
+    expect(offset, 24);
+  });
 }

@@ -1,1 +1,1 @@
-enum HudMenu { quests, build }
+enum HudMenu { quests, build, hero }

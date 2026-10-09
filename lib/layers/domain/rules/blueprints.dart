@@ -10,7 +10,28 @@ abstract final class Blueprints {
     footprintRadius: 40,
   );
 
-  static const List<BlueprintEntity> all = [house];
+  static const BlueprintEntity forge = BlueprintEntity(
+    id: BlueprintId.forge,
+    cost: {Resource.wood: 25},
+    hitsToBuild: 10,
+    footprintRadius: 40,
+  );
+
+  static const BlueprintEntity armory = BlueprintEntity(
+    id: BlueprintId.armory,
+    cost: {Resource.wood: 25},
+    hitsToBuild: 10,
+    footprintRadius: 40,
+  );
+
+  static const BlueprintEntity mageTower = BlueprintEntity(
+    id: BlueprintId.mageTower,
+    cost: {Resource.wood: 30, Resource.gold: 40},
+    hitsToBuild: 12,
+    footprintRadius: 40,
+  );
+
+  static const List<BlueprintEntity> all = [house, forge, armory, mageTower];
 
   static BlueprintEntity of(BlueprintId id) => all.firstWhere((blueprint) => blueprint.id == id);
 }

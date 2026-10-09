@@ -18,6 +18,11 @@ import '../../../domain/use-cases/game/get_quests_use_case.dart';
 import '../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
 import '../../../domain/use-cases/game/move_player_use_case.dart';
 import '../../../domain/use-cases/game/start_game_use_case.dart';
+import '../../../domain/use-cases/hero/buy_gear_use_case.dart';
+import '../../../domain/use-cases/hero/get_gear_options_use_case.dart';
+import '../../../domain/use-cases/hero/get_hero_status_use_case.dart';
+import '../../../domain/use-cases/hero/get_skill_options_use_case.dart';
+import '../../../domain/use-cases/hero/learn_skill_use_case.dart';
 import 'bloc/forest_bloc.dart';
 import '../../theme/colors/custom_colors.dart';
 import '../../theme/styles/custom_text_styles.dart';
@@ -31,7 +36,9 @@ import 'widgets/hud_panel.dart';
 import 'widgets/placement_bar.dart';
 
 class ForestPage extends StatelessWidget {
-  const ForestPage({super.key});
+  const ForestPage({super.key, required this.routeObserver});
+
+  final RouteObserver<ModalRoute<void>> routeObserver;
 
   @override
   Widget build(BuildContext context) {
@@ -47,21 +54,28 @@ class ForestPage extends StatelessWidget {
         getWorldSnapshotUseCase: locator.get<GetWorldSnapshotUseCase>(),
         getBuildOptionsUseCase: locator.get<GetBuildOptionsUseCase>(),
         getQuestsUseCase: locator.get<GetQuestsUseCase>(),
+        getHeroStatusUseCase: locator.get<GetHeroStatusUseCase>(),
+        getGearOptionsUseCase: locator.get<GetGearOptionsUseCase>(),
+        buyGearUseCase: locator.get<BuyGearUseCase>(),
+        getSkillOptionsUseCase: locator.get<GetSkillOptionsUseCase>(),
+        learnSkillUseCase: locator.get<LearnSkillUseCase>(),
         navigationService: locator.get<NavigationService>(),
       )..add(const ForestStarted()),
-      child: const _ForestView(),
+      child: _ForestView(routeObserver: routeObserver),
     );
   }
 }
 
 class _ForestView extends StatefulWidget {
-  const _ForestView();
+  const _ForestView({required this.routeObserver});
+
+  final RouteObserver<ModalRoute<void>> routeObserver;
 
   @override
   State<_ForestView> createState() => _ForestViewState();
 }
 
-class _ForestViewState extends State<_ForestView> {
+class _ForestViewState extends State<_ForestView> with RouteAware {
   ForestBloc get bloc => context.read<ForestBloc>();
 
   late ForestGame _game = _createGame();
@@ -88,7 +102,21 @@ class _ForestViewState extends State<_ForestView> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != null) widget.routeObserver.subscribe(this, route);
+  }
+
+  @override
+  void didPushNext() => _game.pauseEngine();
+
+  @override
+  void didPopNext() => _game.resumeEngine();
+
+  @override
   void dispose() {
+    widget.routeObserver.unsubscribe(this);
     if (kIsWeb) BrowserContextMenu.enableContextMenu();
     super.dispose();
   }
@@ -156,6 +184,9 @@ class _ForestViewState extends State<_ForestView> {
     return HudOverlay(
       hud: hud,
       onBuildSelected: (blueprint) => bloc.add(ForestBuildRequested(blueprint: blueprint)),
+      onGearSelected: (gear) => bloc.add(ForestGearPurchaseRequested(gear: gear)),
+      onArenaPressed: () => bloc.add(const ForestArenaRequested()),
+      onSkillSelected: (skill) => bloc.add(ForestSkillLearnRequested(skill: skill)),
     );
   }
 

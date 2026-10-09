@@ -11,4 +11,7 @@ abstract final class ParticleMock {
   static math.Random get chipsRandom => math.Random(7);
   static math.Random get seededOne => math.Random(1);
   static math.Random get dustRandom => math.Random(3);
+  static const PositionEntity heroFeet = PositionEntity(x: 150, y: 150);
+
+  static math.Random get sparklesRandom => math.Random(5);
 }

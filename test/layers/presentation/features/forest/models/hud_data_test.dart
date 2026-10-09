@@ -42,4 +42,16 @@ void main() {
     // then
     expect(isEqual, isFalse);
   });
+
+  test('testWhenTheHeroPanelChangesThenTheHudsAreNotEqual', () {
+    // given
+    final first = HudDataMock.mock;
+    final second = HudDataMock.withHeroReadyToBuy;
+
+    // when
+    final isEqual = first == second;
+
+    // then
+    expect(isEqual, isFalse);
+  });
 }

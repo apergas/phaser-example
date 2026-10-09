@@ -4,6 +4,8 @@ import 'package:rpg/layers/data/datasources/level/source/level_local_datasource.
 import 'package:rpg/layers/data/datasources/session/source/game_session_local_datasource.dart';
 import 'package:rpg/layers/domain/repositories/level/level_repository.dart';
 import 'package:rpg/layers/domain/repositories/session/game_session_repository.dart';
+import 'package:rpg/layers/domain/use-cases/arena/get_arena_use_case.dart';
+import 'package:rpg/layers/domain/use-cases/arena/start_fight_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/advance_game_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/can_place_building_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/chop_tree_use_case.dart';
@@ -14,6 +16,10 @@ import 'package:rpg/layers/domain/use-cases/game/get_quests_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/get_world_snapshot_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/move_player_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/start_game_use_case.dart';
+import 'package:rpg/layers/domain/use-cases/hero/buy_gear_use_case.dart';
+import 'package:rpg/layers/domain/use-cases/hero/get_gear_options_use_case.dart';
+import 'package:rpg/layers/domain/use-cases/hero/get_skill_options_use_case.dart';
+import 'package:rpg/layers/domain/use-cases/hero/learn_skill_use_case.dart';
 import 'package:rpg/core/config/di/di.dart';
 import 'package:rpg/core/config/di/di_environment.dart';
 import 'package:rpg/core/config/di/locator.dart';
@@ -69,6 +75,12 @@ void main() {
       locator.isRegistered<GetWorldSnapshotUseCase>(),
       locator.isRegistered<GetBuildOptionsUseCase>(),
       locator.isRegistered<GetQuestsUseCase>(),
+      locator.isRegistered<GetArenaUseCase>(),
+      locator.isRegistered<StartFightUseCase>(),
+      locator.isRegistered<BuyGearUseCase>(),
+      locator.isRegistered<GetGearOptionsUseCase>(),
+      locator.isRegistered<LearnSkillUseCase>(),
+      locator.isRegistered<GetSkillOptionsUseCase>(),
       locator.isRegistered<LevelRepository>(),
       locator.isRegistered<GameSessionRepository>(),
       locator.isRegistered<LevelLocalDatasource>(),

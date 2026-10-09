@@ -78,4 +78,93 @@ void main() {
     expect(chip.isAlive(0.49), isTrue);
     expect(chip.isAlive(0.5), isFalse);
   });
+
+  test('testWhenGearIsBoughtThenTenSparklesRiseAroundTheHerosChest', () {
+    // given
+    const feet = ParticleMock.heroFeet;
+
+    // when
+    final sparkles = ParticleBursts.sparkles(feet: feet, random: ParticleMock.sparklesRandom);
+
+    // then
+    expect(sparkles, hasLength(10));
+    for (final sparkle in sparkles) {
+      expect(sparkle.kind, ParticleKind.sparkle);
+      expect(sparkle.origin.y, 126);
+      expect(sparkle.origin.x, inInclusiveRange(140, 160));
+      expect(_angleDegrees(sparkle.velocityX, sparkle.velocityY), inInclusiveRange(200, 340));
+      expect(sparkle.gravity, 0);
+      expect(sparkle.lifespanSeconds, 0.6);
+    }
+    expect(ParticleBursts.sparklesSortY(feet), 151);
+  });
+
+  test('testWhenASkillIsLearnedThenTheSameSparklesRiseInBlue', () {
+    // given
+    const feet = ParticleMock.heroFeet;
+    final gold = ParticleBursts.sparkles(feet: feet, random: ParticleMock.sparklesRandom);
+
+    // when
+    final blue = ParticleBursts.sparkles(
+      feet: feet,
+      random: ParticleMock.sparklesRandom,
+      kind: ParticleKind.magicSparkle,
+    );
+
+    // then
+    expect(blue.map((sparkle) => sparkle.kind).toSet(), {ParticleKind.magicSparkle});
+    expect(blue.map((sparkle) => sparkle.origin), gold.map((sparkle) => sparkle.origin));
+    expect(blue.map((sparkle) => sparkle.velocityX), gold.map((sparkle) => sparkle.velocityX));
+  });
+
+  test('testWhenTheHeroHitsAnEnemyThenAFewDropsOfBloodFlyAwayFromHim', () {
+    // given
+    const impact = ParticleMock.trunkBase;
+
+    // when
+    final drops = ParticleBursts.bloodDrops(impact: impact, attackerOnLeft: true, random: ParticleMock.seededOne);
+
+    // then
+    expect(drops.length, inInclusiveRange(4, 6));
+    for (final drop in drops) {
+      expect(drop.kind, ParticleKind.bloodDrop);
+      expect(drop.origin, impact);
+      expect(_angleDegrees(drop.velocityX, drop.velocityY), inInclusiveRange(280, 340));
+      expect(drop.gravity, 260);
+      expect(drop.lifespanSeconds, 0.4);
+      expect(drop.alpha(0.4), 0);
+    }
+  });
+
+  test('testWhenAnEnemyHitsTheHeroThenTheBloodFliesTheOtherWay', () {
+    // given
+    const impact = ParticleMock.trunkBase;
+
+    // when
+    final drops = ParticleBursts.bloodDrops(impact: impact, attackerOnLeft: false, random: ParticleMock.seededOne);
+
+    // then
+    for (final drop in drops) {
+      expect(_angleDegrees(drop.velocityX, drop.velocityY), inInclusiveRange(200, 260));
+    }
+  });
+
+  test('testWhenTheHeroBecomesChampionThenGoldAndBlueConfettiBurstsUpAndFalls', () {
+    // given
+    const head = ParticleMock.heroFeet;
+
+    // when
+    final confetti = ParticleBursts.confetti(at: head, random: ParticleMock.sparklesRandom);
+
+    // then
+    expect(confetti, hasLength(24));
+    expect(confetti.map((piece) => piece.kind).toSet(), {ParticleKind.sparkle, ParticleKind.magicSparkle});
+    for (final piece in confetti) {
+      expect(piece.origin.y, 150);
+      expect(piece.origin.x, inInclusiveRange(134, 166));
+      expect(_angleDegrees(piece.velocityX, piece.velocityY), inInclusiveRange(220, 320));
+      expect(piece.gravity, 140);
+      expect(piece.lifespanSeconds, 1.2);
+    }
+  });
 }

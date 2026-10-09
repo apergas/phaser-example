@@ -8,4 +8,16 @@ abstract final class ResourceItemDataMock {
     name: Internationalize.forestResource(resource: Resource.wood),
     amount: amount,
   );
+
+  static ResourceItemData gold(int amount) => ResourceItemData(
+    resource: Resource.gold,
+    name: Internationalize.forestResource(resource: Resource.gold),
+    amount: amount,
+  );
+
+  static ResourceItemData of(Resource resource, int amount) => ResourceItemData(
+    resource: resource,
+    name: Internationalize.forestResource(resource: resource),
+    amount: amount,
+  );
 }

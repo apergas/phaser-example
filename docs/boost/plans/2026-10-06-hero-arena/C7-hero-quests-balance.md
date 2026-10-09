@@ -33,6 +33,11 @@ Guiar al jugador por el modo nuevo con misiones propias y dejar los números (eq
 | `clearHalfArena` | Gana la mitad de los niveles de `ArenaLevels.all`. |
 | `becomeChampion` | Gana `barbarianChief`. |
 
+**Incluido desde `ARENA-FIXES.md` (decidido el 2026-10-08), para equilibrar una sola vez:**
+- **Daño por rangos (sección 4):** las armas y los enemigos llevan `attackMin` / `attackMax` en lugar de un ataque fijo (hacha 3–5, espada corta 5–7…). Cada golpe elige un valor del rango con la semilla y le resta la defensa: `daño = max(1, valor − defensa)`. Desaparece `Rules.damageSpread`. El Poder usa el ataque medio, y el panel *Héroe* y las opciones de compra muestran "Ataque 3–5".
+- **Equipo sólo con oro (sección 2):** `Gear.all` deja de costar madera; el oro sube para compensar. Si F5 (piedra) está en la rama, su piedra va sólo a los edificios, no al equipo (actualizar el cruce de la sección 3.2 del README).
+- Hay que recalcular los resultados exactos de los tests del motor y de las peleas (`combat_test.dart`, mocks de `FightLogEntity`, flujo de la arena).
+
 **Equilibrado:**
 - `test/layers/domain/combat/balance_test.dart` simula cada nivel de `ArenaLevels.all` con 100 semillas para una tabla de "héroe esperado en ese punto" (`BalanceScenarioMock` en `test/mocks/`). Comprueba:
   - con el equipo esperado, se gana entre el **60 % y el 95 %** de las veces;

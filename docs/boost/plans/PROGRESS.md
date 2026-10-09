@@ -4,7 +4,7 @@
 > - Aldea: [`2026-10-04-game-design/`](2026-10-04-game-design/README.md)
 > - Héroe y arena: [`2026-10-06-hero-arena/`](2026-10-06-hero-arena/README.md)
 >
-> Última actualización: 2026-10-07. Se actualiza al cerrar cada fase (`/cerrar-tarea`) y al pasar un plan de ficha a detallado.
+> Última actualización: 2026-10-09. Se actualiza al cerrar cada fase (`/cerrar-tarea`) y al pasar un plan de ficha a detallado.
 
 **Leyenda:**
 - ✅ terminada.
@@ -19,6 +19,7 @@
 | `develop` | Lo integrado de las dos partes y todos los planes (`docs/`). | `main` (publicado en GitHub Pages) |
 | `feature/PROJECT-X-town` | Integración de la aldea: las fases F terminadas. | `develop`, por bloques jugables (README de la aldea, sección 3.0) |
 | `feature/PROJECT-X-arena` | Integración de la arena: todo `develop` más las fases C terminadas. | `develop`, una sola vez, cuando la arena esté completa (README de la arena, sección 3.0) |
+| `feature/PROJECT-X-progress` | Planes y este resumen (sólo `docs/`). | `develop`, por PR |
 
 **Bloques de la aldea** (cada uno pasa a `develop` cuando está completo):
 - **Bloque 1:** F1–F4 (árboles, guardado, rebrote y misiones).
@@ -48,12 +49,13 @@
 | C1 Motor y niveles | ✅ | `feature/PROJECT-X-arena` (#10) | Lógica sin pantalla; 418 tests en verde. |
 | C2 Pantalla de la arena | ✅ | `feature/PROJECT-X-arena` (#42) | Lleva unida C3 y resuelve los cruces; HUD con botones bajo la barra en pantallas estrechas. Decisiones provisionales a revisar en la fase de pruebas. |
 | C3 Herrería y Armería | ✅ | `feature/PROJECT-X-arena` (#41) | Herrería, Armería y panel *Héroe*; el oro llega con C2. |
-| C4 Lobos y oso | 📝 ficha | — | Necesita arte nuevo. Después de C2. |
-| C5 Torre de magia | 📝 ficha | — | Después de C3. |
-| C6 Bárbaros y jefe | 📝 ficha | — | Después de C4. |
-| C7 Misiones y equilibrado | 📝 ficha | — | Al final (después de C1, C3 y C5). |
+| C4 Lobos y oso | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Lobo de Redshrike y oso de tapatilorenzo (CC-BY / OGA-BY, aceptado); niveles de animales y salto hacia el objetivo. |
+| C5 Torre de magia | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Torre de magia, catálogo `Skills`, pestaña *Habilidades* y nombres de las habilidades en la arena. Unida tras C4 con dos conflictos aditivos; 612 tests en verde. |
+| C6 Bárbaros y jefe | 📝 ficha | — | Desbloqueada (C4 terminada). |
+| C7 Misiones y equilibrado | 📝 ficha | — | Desbloqueada (C1, C3 y C5 terminadas); va al final, después de C6. |
 
 ## Siguiente paso
 
-- **Arena:** escribir los planes de C4 (lobos y oso, flujo C) y C5 (Torre de magia, flujo D).
+- **Arena:** escribir el plan de C6 (bárbaros y jefe, flujo C) y después el de C7. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
+- **Planes:** subir `feature/PROJECT-X-progress` y abrir su PR a `develop` (planes de C4 y C5, `ARENA-FIXES.md` y este resumen).
 - **Aldea:** implementar F1 desde `feature/PROJECT-X-town`.

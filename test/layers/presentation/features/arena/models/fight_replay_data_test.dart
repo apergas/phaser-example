@@ -11,7 +11,7 @@ void main() {
 
     // then
     expect((replay.turnIndex, replay.swingingTurn, replay.isFinished), (-1, null, false));
-    expect(replay.durationMs, 400 + 9 * 600);
+    expect(replay.durationMs, 400 + 9 * 800);
     expect(replay.healthOf(FightSide.hero, 0), 30);
     expect(replay.healthOf(FightSide.enemy, 0), 20);
   });
@@ -21,8 +21,8 @@ void main() {
     final replay = FightReplayDataMock.victoryOverBanditStart();
 
     // when
-    final halfway = replay.advanced(699);
-    final landed = replay.advanced(700);
+    final halfway = replay.advanced(799);
+    final landed = replay.advanced(800);
 
     // then
     expect((halfway.turnIndex, halfway.swingingTurn), (-1, 0));
@@ -39,7 +39,7 @@ void main() {
     final ended = replay.advanced(100000);
 
     // then
-    expect((ended.elapsedMs, ended.turnIndex, ended.swingingTurn, ended.isFinished), (5800, 8, null, true));
+    expect((ended.elapsedMs, ended.turnIndex, ended.swingingTurn, ended.isFinished), (7600, 8, null, true));
     expect(ended.healthOf(FightSide.hero, 0), 22);
     expect(ended.healthOf(FightSide.enemy, 0), 0);
   });
@@ -60,7 +60,7 @@ void main() {
     final replay = FightReplayDataMock.allActionsStart();
 
     // when
-    final afterHeal = replay.advanced(400 + 4 * 600 + 300);
+    final afterHeal = replay.advanced(400 + 4 * 800 + 400);
 
     // then
     expect(afterHeal.turnIndex, 4);

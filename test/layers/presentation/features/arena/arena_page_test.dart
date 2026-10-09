@@ -90,7 +90,7 @@ void main() {
 
     // when
     await tester.tap(find.text(Internationalize.arenaFight));
-    for (var frame = 0; frame < 70 && find.byType(ResultPanel).evaluate().isEmpty; frame++) {
+    for (var frame = 0; frame < 90 && find.byType(ResultPanel).evaluate().isEmpty; frame++) {
       await tester.pump(const Duration(milliseconds: 100));
     }
 

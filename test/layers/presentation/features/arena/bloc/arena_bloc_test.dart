@@ -211,14 +211,14 @@ void main() {
       bloc
         ..add(const ArenaStarted())
         ..add(const ArenaFightRequested());
-      ArenaBlocMock.tickFor(bloc, 720);
+      ArenaBlocMock.tickFor(bloc, 880);
     },
     wait: Duration.zero,
     verify: (bloc) {
       // then
       final fighters = bloc.state.data.fighters;
       expect(fighters[0].pose, FighterPose.attack);
-      expect(fighters[0].swingProgress, closeTo(320 / 600, 1e-9));
+      expect(fighters[0].swingProgress, closeTo(480 / 800, 1e-9));
       expect(fighters[1], FighterRenderDataMock.rookieBanditAfterFirstBlow);
       expect(effects, [ArenaEffectMock.banditHitForThree]);
     },
@@ -236,13 +236,13 @@ void main() {
       bloc
         ..add(const ArenaStarted())
         ..add(const ArenaFightRequested());
-      ArenaBlocMock.tickFor(bloc, 1248);
+      ArenaBlocMock.tickFor(bloc, 1536);
     },
     wait: Duration.zero,
     verify: (bloc) {
       // then
       expect(bloc.state.data.selected, ArenaLevelId.wolf);
-      expect(bloc.state.data.fighters[1], FighterRenderDataMock.wolfLeaping(248 / 600));
+      expect(bloc.state.data.fighters[1], FighterRenderDataMock.wolfLeaping(336 / 800));
     },
   );
 
@@ -259,7 +259,7 @@ void main() {
         ..add(const ArenaStarted())
         ..add(const ArenaLevelSelected(levelId: ArenaLevelId.wolfPack))
         ..add(const ArenaFightRequested());
-      ArenaBlocMock.tickFor(bloc, 4848);
+      ArenaBlocMock.tickFor(bloc, 6336);
     },
     wait: Duration.zero,
     verify: (bloc) {
@@ -282,7 +282,7 @@ void main() {
         ..add(const ArenaStarted())
         ..add(const ArenaLevelSelected(levelId: ArenaLevelId.wolfPack))
         ..add(const ArenaFightRequested());
-      ArenaBlocMock.tickFor(bloc, 4848);
+      ArenaBlocMock.tickFor(bloc, 6336);
     },
     wait: Duration.zero,
     verify: (bloc) {
@@ -304,7 +304,7 @@ void main() {
       bloc
         ..add(const ArenaStarted())
         ..add(const ArenaFightRequested());
-      ArenaBlocMock.tickFor(bloc, 6000);
+      ArenaBlocMock.tickFor(bloc, 8000);
     },
     wait: Duration.zero,
     verify: (bloc) {
@@ -479,7 +479,7 @@ void main() {
       bloc
         ..add(const ArenaStarted())
         ..add(const ArenaFightRequested());
-      ArenaBlocMock.tickFor(bloc, 7000);
+      ArenaBlocMock.tickFor(bloc, 9400);
     },
     wait: Duration.zero,
     verify: (bloc) {
@@ -501,7 +501,7 @@ void main() {
       bloc
         ..add(const ArenaStarted())
         ..add(const ArenaFightRequested());
-      ArenaBlocMock.tickFor(bloc, 7000);
+      ArenaBlocMock.tickFor(bloc, 9400);
     },
     wait: Duration.zero,
     verify: (bloc) {
@@ -529,7 +529,7 @@ void main() {
         ..add(const ArenaStarted())
         ..add(const ArenaLevelSelected(levelId: ArenaLevelId.banditVeteran))
         ..add(const ArenaFightRequested());
-      ArenaBlocMock.tickFor(bloc, 15000);
+      ArenaBlocMock.tickFor(bloc, 19000);
     },
     wait: Duration.zero,
     verify: (bloc) {

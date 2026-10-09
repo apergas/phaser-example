@@ -3,7 +3,7 @@ import '../../../../../domain/entities/geometry/position_entity.dart';
 
 abstract final class ArenaRenderConstants {
   static const double leadInMs = 400;
-  static const double turnMs = 600;
+  static const double turnMs = 800;
   static const double impactShare = 0.5;
 
   static const double stageWidth = 480;
@@ -36,6 +36,9 @@ abstract final class ArenaRenderConstants {
     EnemyKind.bear => bearSwipeSequence,
   };
 
+  static const double approachOutShare = 0.35;
+  static const double approachBackShare = 0.65;
+  static const double approachGap = 30;
   static const double leapOutShare = 0.4;
   static const double leapBackShare = 0.6;
   static const double leapGap = 30;

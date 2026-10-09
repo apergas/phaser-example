@@ -20,7 +20,14 @@ abstract final class ArenaFrames {
         name,
         sequenceColumn(leap, fighter.swingProgress),
       ),
-      FighterPose.attack => ArenaSpriteNames.slash(name, PlayerFrames.workColumn(WorkTool.axe, fighter.swingProgress)),
+      FighterPose.attack when isWalking(fighter.swingProgress) => ArenaSpriteNames.walk(
+        name,
+        PlayerFrames.walkColumn(animationSeconds),
+      ),
+      FighterPose.attack => ArenaSpriteNames.slash(
+        name,
+        PlayerFrames.workColumn(WorkTool.axe, strikeProgress(fighter.swingProgress)),
+      ),
       FighterPose.idle || FighterPose.hurt => ArenaSpriteNames.idle(name, PlayerFrames.idleColumn(animationSeconds)),
       FighterPose.down when leap != null => ArenaSpriteNames.down(name),
       FighterPose.down => ArenaSpriteNames.idle(name, 0),
@@ -50,9 +57,22 @@ abstract final class ArenaFrames {
 
   static bool isLeaping(FighterRenderData fighter) => fighter.pose == FighterPose.attack && isBeast(fighter.enemyKind);
 
-  static double leapReach(double progress) {
-    const out = ArenaRenderConstants.leapOutShare;
-    const back = ArenaRenderConstants.leapBackShare;
+  static bool isWalking(double progress) =>
+      progress < ArenaRenderConstants.approachOutShare || progress > ArenaRenderConstants.approachBackShare;
+
+  static double strikeProgress(double progress) {
+    const out = ArenaRenderConstants.approachOutShare;
+    const back = ArenaRenderConstants.approachBackShare;
+    return ((progress - out) / (back - out)).clamp(0, 1).toDouble();
+  }
+
+  static double leapReach(double progress) =>
+      _reach(progress, ArenaRenderConstants.leapOutShare, ArenaRenderConstants.leapBackShare);
+
+  static double approachReach(double progress) =>
+      _reach(progress, ArenaRenderConstants.approachOutShare, ArenaRenderConstants.approachBackShare);
+
+  static double _reach(double progress, double out, double back) {
     if (progress <= 0) return 0;
     if (progress < out) return Easing.sineOut(progress / out);
     if (progress <= back) return 1;
@@ -69,13 +89,16 @@ abstract final class ArenaFrames {
 
   static PositionEntity groundSpot(FighterRenderData fighter) {
     final home = spot(fighter.side, fighter.index);
-    if (!isLeaping(fighter)) return home;
+    if (fighter.pose != FighterPose.attack) return home;
+    final leaping = isBeast(fighter.enemyKind);
+    final gap = leaping ? ArenaRenderConstants.leapGap : ArenaRenderConstants.approachGap;
+    final reach = leaping ? leapReach(fighter.swingProgress) : approachReach(fighter.swingProgress);
     final target = spot(opposite(fighter.side), fighter.targetIndex);
     final dx = target.x - home.x;
     final dy = target.y - home.y;
     final distance = math.sqrt(dx * dx + dy * dy);
-    if (distance <= ArenaRenderConstants.leapGap) return home;
-    final travel = (distance - ArenaRenderConstants.leapGap) / distance * leapReach(fighter.swingProgress);
+    if (distance <= gap) return home;
+    final travel = (distance - gap) / distance * reach;
     return PositionEntity(x: home.x + dx * travel, y: home.y + dy * travel);
   }
 

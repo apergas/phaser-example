@@ -73,8 +73,8 @@ class _HudOverlayState extends State<HudOverlay> {
                 Align(alignment: Alignment.centerLeft, child: resourceBar),
                 Flexible(
                   child: Align(
-                    alignment: Alignment.topRight,
-                    child: _actions(maxWidth: maxWidth, isHeightBounded: true),
+                    alignment: Alignment.topLeft,
+                    child: _actions(maxWidth: maxWidth, isHeightBounded: true, alignLeft: true),
                   ),
                 ),
               ],
@@ -95,27 +95,27 @@ class _HudOverlayState extends State<HudOverlay> {
     );
   }
 
-  Widget _actions({required double maxWidth, bool isHeightBounded = false}) {
+  Widget _actions({required double maxWidth, bool isHeightBounded = false, bool alignLeft = false}) {
     final openMenu = _openMenu;
     final menu = openMenu == null ? null : _menu(menu: openMenu);
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: maxWidth < 0 ? 0 : maxWidth),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: alignLeft ? CrossAxisAlignment.start : CrossAxisAlignment.end,
         spacing: 8,
         children: [
-          _buttons(),
+          _buttons(alignLeft: alignLeft),
           if (menu != null) isHeightBounded ? Flexible(child: menu) : menu,
         ],
       ),
     );
   }
 
-  Widget _buttons() {
+  Widget _buttons({required bool alignLeft}) {
     return FittedBox(
       fit: BoxFit.scaleDown,
-      alignment: Alignment.centerRight,
+      alignment: alignLeft ? Alignment.centerLeft : Alignment.centerRight,
       child: _buttonRow(),
     );
   }

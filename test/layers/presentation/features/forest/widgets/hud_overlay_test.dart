@@ -280,6 +280,8 @@ void main() {
       expect(rect.right, lessThanOrEqualTo(640));
       expect(rect.bottom, lessThanOrEqualTo(360));
     }
+    final firstButton = tester.getRect(find.widgetWithText(HudButton, Internationalize.forestQuests));
+    expect(firstButton.left, resourceBar.left);
   });
 
   testWidgets('testWhenTheScreenIsWideThenTheFourButtonsStayOnTheResourceBarLine', (tester) async {
@@ -320,7 +322,7 @@ void main() {
     final heroButton = tester.getRect(find.widgetWithText(HudButton, Internationalize.forestHero));
     expect(tester.takeException(), isNull);
     expect(panel.top, greaterThanOrEqualTo(heroButton.bottom));
-    expect(panel.left, greaterThanOrEqualTo(0));
+    expect(panel.left, tester.getRect(find.byType(ResourceBar)).left);
     expect(panel.right, lessThanOrEqualTo(640));
     expect(panel.bottom, lessThanOrEqualTo(360));
   });

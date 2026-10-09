@@ -56,8 +56,7 @@ Copiadas de `CLAUDE.md`. Todas las tareas las cumplen implícitamente.
 **Constantes de dibujo:** las de `CLAUDE.md` (zoom 2, hojas de 64/128 px, secuencias de golpe…), en `features/forest/game/render/render_constants.dart`.
 
 **Git:**
-- Commits `[PROJECT-X]: Imperative description`, o `[PROJECT-123]: …` si hay ticket.
-- Ramas `feature/PROJECT-X-<descripcion>`.
+- **Código de la fase en vez de `PROJECT-X` (decidido el 2026-10-09):** commits `[PROJECT-F1]: Imperative description` (o `[PROJECT-C4]`, `[PROJECT-C4-C5]` si un commit abarca dos fases), sin repetir el código en la descripción. Ramas `feature/PROJECT-F1-<descripcion>` y títulos de PR igual. `[PROJECT-X]` sólo para lo que no es de ninguna fase (unir `develop`, tareas del repositorio) y para las ramas de integración `feature/PROJECT-X-town` y `feature/PROJECT-X-arena`. Los commits anteriores a esta regla no se cambian.
 - **Sin ninguna atribución a IA:** ni `Co-Authored-By` de una IA ni menciones a Claude o Anthropic. El hook de git lo rechaza.
 
 **Cierre de fase:** una fase sólo está terminada cuando pasan:
@@ -149,7 +148,7 @@ Las fases de la aldea no van directamente a `develop`. Se acumulan en **`feature
 - **La documentación va con el código (decidido el 2026-10-09):** planes, casillas, desviaciones y `PROGRESS.md` se actualizan en la misma rama de la tarea o fase, en un commit propio, y entran con ella en `feature/PROJECT-X-town`. No hay rama ni PR aparte, como en la arena.
 - **Si `develop` cambia por otra vía** (un arreglo urgente, la arena): `git merge develop` en `feature/PROJECT-X-town`. Siempre `merge`, nunca `rebase`, para no cambiar los identificadores de los commits.
 
-- **Rama por tarea:** `feature/PROJECT-X-<fase>-<tarea>`, por ejemplo `feature/PROJECT-X-f1-domain`. Sale de `feature/PROJECT-X-town`; PR a `feature/PROJECT-X-town` (sección 3.0). Antes de abrir el PR, `git merge` de `feature/PROJECT-X-town` en la rama.
+- **Rama por tarea:** `feature/PROJECT-<fase>-<tarea>`, por ejemplo `feature/PROJECT-F1-domain`. Sale de `feature/PROJECT-X-town`; PR a `feature/PROJECT-X-town` (sección 3.0). Antes de abrir el PR, `git merge` de `feature/PROJECT-X-town` en la rama.
 - **Cada tarea deja `develop` en verde:** al ser una sola app, una tarea que cambia una API del dominio adapta en el mismo PR todo lo que la usa (BLoC, widgets, componentes y tests). No se dejan APIs `@Deprecated` a medias.
 - **Persistencia (a partir de F2):**
   - Cada fase que añade estado lo añade también al guardado y sube `SaveDBO.currentVersion`.

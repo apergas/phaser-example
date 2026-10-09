@@ -8,7 +8,7 @@ import 'package:rpg/layers/presentation/features/arena/game/render/arena_render_
 import 'package:rpg/layers/presentation/features/forest/game/render/render_constants.dart';
 
 void main() {
-  test('testWhenNamingFightersThenTheChiefBorrowsTheBarbarianArtAndTheBeastsHaveTheirOwn', () {
+  test('testWhenNamingFightersThenEveryKindHasItsOwnArt', () {
     // given
     const kinds = EnemyKind.values;
 
@@ -16,7 +16,7 @@ void main() {
     final names = [ArenaSpriteNames.fighter(null), for (final kind in kinds) ArenaSpriteNames.fighter(kind)];
 
     // then
-    expect(names, ['hero', 'bandit', 'barbarian', 'barbarian', 'wolf', 'bear']);
+    expect(names, ['hero', 'bandit', 'barbarian', 'barbarian-chief', 'wolf', 'bear']);
     expect(ArenaSpriteNames.idle('bandit', 1), 'bandit-idle-1');
     expect(ArenaSpriteNames.slash('hero', 5), 'hero-slash-5');
   });

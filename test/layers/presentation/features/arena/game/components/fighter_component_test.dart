@@ -23,7 +23,7 @@ void main() {
     expect(fighter.frameName, 'bandit-idle-0');
   });
 
-  testWithFlameGame('testWhenTheChiefIsShownThenItIsTheBarbarianBigger', (game) async {
+  testWithFlameGame('testWhenTheChiefIsShownThenItUsesItsOwnArtBigger', (game) async {
     // given
     final chief = FighterComponent(assets: ArenaAssetsMock.create(), fighter: FighterRenderDataMock.chiefIdle);
 
@@ -32,7 +32,7 @@ void main() {
 
     // then
     expect(chief.scale, Vector2.all(1.25));
-    expect(chief.frameName, 'barbarian-idle-0');
+    expect(chief.frameName, 'barbarian-chief-idle-0');
     expect(chief.healthBar.position, Vector2(300, 105));
   });
 

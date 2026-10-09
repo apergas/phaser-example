@@ -35,7 +35,7 @@ void main() {
 
     // then
     expect(names, ['bandit-idle-1', 'bandit-idle-0', 'bandit-idle-0']);
-    expect(ArenaFrames.frameName(FighterRenderDataMock.chiefIdle, 0), 'barbarian-idle-0');
+    expect(ArenaFrames.frameName(FighterRenderDataMock.chiefIdle, 0), 'barbarian-chief-idle-0');
   });
 
   test('testWhenPlacingFightersThenTheHeroFacesTheEnemiesFromTheLeft', () {

@@ -18,7 +18,7 @@
 |---|---|---|
 | `develop` | Lo integrado de las dos partes y todos los planes (`docs/`). | `main` (publicado en GitHub Pages) |
 | `feature/PROJECT-X-town` | Integración de la aldea: las fases F terminadas. | `develop`, por bloques jugables (README de la aldea, sección 3.0) |
-| `feature/PROJECT-X-arena` | Integración de la arena: todo `develop` más las fases C terminadas. | `develop`, una sola vez, cuando la arena esté completa (README de la arena, sección 3.0) |
+| `feature/PROJECT-X-arena` | Integración de la arena: C0–C7 ya en `develop` (#53); ahora lleva el pulido (C8). | `develop` |
 
 **Bloques de la aldea** (cada uno pasa a `develop` cuando está completo):
 - **Bloque 1:** F1–F4 (árboles, guardado, rebrote y misiones).
@@ -51,9 +51,10 @@
 | C4 Lobos y oso | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Lobo de Redshrike y oso de tapatilorenzo (CC-BY / OGA-BY, aceptado); niveles de animales y salto hacia el objetivo. |
 | C5 Torre de magia | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Torre de magia, catálogo `Skills`, pestaña *Habilidades* y nombres de las habilidades en la arena. Unida tras C4 con dos conflictos aditivos; 612 tests en verde. |
 | C6 Bárbaros y jefe | ✅ | `feature/PROJECT-X-arena` (#51) | Bárbaros y jefe con capas LPC reales (cuero, barba, casco; jefe con casco vikingo), hacha de siempre; anillo bajo el objetivo y caídos al 50 %; *Campeón de la arena* con confeti e insignia en el panel *Héroe*. 630 tests en verde; prueba manual en Chrome y Android. |
-| C7 Misiones y equilibrado | ✅ | `feature/PROJECT-X-arena` (#52) | Daño por rangos, línea de misiones *Héroe*, equipo sólo con oro y test de equilibrado con los números finales (tabla en `GAME_DESIGN.md` 3.8). 639 tests en verde. |
+| C7 Misiones y equilibrado | ✅ | `develop` (#52, #53) | Daño por rangos, línea de misiones *Héroe*, equipo sólo con oro y test de equilibrado con los números finales (tabla en `GAME_DESIGN.md` 3.8). 639 tests en verde. |
+| C8 Pulido de la arena | 🟢 plan listo | `feature/PROJECT-X-arena` (sin PR por ahora) | Lo de `ARENA-FIXES.md`: armas y veterano propios, luchadores que se acercan a golpear (turnos de 800 ms), HUD del móvil a la izquierda, mensajes de misiones agrupados y pendientes de C2/C3. Plan ensayado: 645 tests. |
 
 ## Siguiente paso
 
-- **Arena:** hoja de ruta completa (C0–C7). PR de `feature/PROJECT-X-arena` a `develop` abierta el 2026-10-09, antes del pulido (decisión del usuario); la prueba manual completa en Android e iOS queda pendiente en la PR. El pulido de `ARENA-FIXES.md` (más los mensajes de misiones repetidos) se hará más adelante, en ramas desde `develop`. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
+- **Arena:** C0–C7 en `develop` (#53, 2026-10-09). Ahora C8, el pulido de `ARENA-FIXES.md`, en `feature/PROJECT-X-arena` (sin PR por ahora). Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
 - **Aldea:** implementar F1 desde `feature/PROJECT-X-town`.

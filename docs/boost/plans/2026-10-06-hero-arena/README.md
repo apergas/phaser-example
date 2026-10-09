@@ -72,6 +72,7 @@ Para trabajar en una tarea **no hace falta leer el proyecto**. Lee sólo esto:
 | **C5** Torre de magia y habilidades | ✅ [C5-mage-tower.md](C5-mage-tower.md) | D | C3 | Edificio *Torre de magia*; catálogo `Skills`; `LearnSkillUseCase`; pestaña *Habilidades* del panel *Héroe*. Los efectos en la pelea ya los aplica el motor de C1. |
 | **C6** Bárbaros y jefe | ✅ [C6-barbarians.md](C6-barbarians.md) | C | C4 | Arte de bárbaros y jefe; peleas de grupo bien colocadas (hasta 3 enemigos); pantalla de victoria final. |
 | **C7** Misiones del héroe y equilibrado | ✅ [C7-hero-quests-balance.md](C7-hero-quests-balance.md) | D | C1, C3, C5 | Línea de misiones *Héroe*; daño por rangos; equipo sólo con oro; test de equilibrado (victorias, escalón anterior y oro) y números finales. |
+| **C8** Pulido de la arena | 🟢 [C8-arena-polish.md](C8-arena-polish.md) | C | C0–C7 | Lo de [`ARENA-FIXES.md`](ARENA-FIXES.md): veterano y armas propios, luchadores que se acercan a golpear, HUD del móvil a la izquierda, mensajes de misiones agrupados y pendientes de C2/C3. |
 
 ### Flujos de trabajo (dos desarrolladores)
 

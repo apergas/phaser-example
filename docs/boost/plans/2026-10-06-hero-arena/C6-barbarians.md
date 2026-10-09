@@ -123,7 +123,7 @@ Lo que este plan fija o añade sobre la ficha (todo lo demás de la ficha se man
   - frames `barbarian-idle-{0,1}`, `barbarian-slash-{0..5}` (dibujo nuevo) y `barbarian-chief-idle-{0,1}`, `barbarian-chief-slash-{0..5}` (nuevos) en `arena.json`;
   - `ArenaSpriteNames.enemy(EnemyKind.barbarianChief) == 'barbarian-chief'`.
 
-- [ ] **Step 1: Ramas**
+- [x] **Step 1: Ramas**
 
 ```bash
 git switch feature/PROJECT-C6-barbarians && git pull
@@ -133,7 +133,7 @@ cd ../phaser-example-c6-art && flutter pub get
 
 (TC6.2 a la vez, en otro worktree: `git worktree add ../phaser-example-c6-champion -b feature/PROJECT-C6-champion feature/PROJECT-C6-barbarians`, y allí `flutter pub get`.)
 
-- [ ] **Step 2: Descargar las capas y comprobarlas**
+- [x] **Step 2: Descargar las capas y comprobarlas**
 
 ```bash
 mkdir -p asset-packs/lpc/sources/barbarians && cd asset-packs/lpc/sources/barbarians
@@ -166,7 +166,7 @@ fc3c6c52ccaf07041d6b51dba201299b00996e87888f18a54ae6db372388c226  torso_armour_l
 
 Si un sha256 no coincide, para: el repositorio puede haber cambiado una capa. No se ejecuta nada de lo descargado.
 
-- [ ] **Step 3: Créditos de las fuentes**
+- [x] **Step 3: Créditos de las fuentes**
 
 Crea `asset-packs/lpc/sources/barbarians/CREDITS-barbarians.txt`:
 
@@ -207,7 +207,7 @@ hat_helmet_barbarian_viking_adult <- hat/helmet/barbarian_viking/adult
   https://opengameart.org/content/lpc-expanded-hats-facial-helmets
 ```
 
-- [ ] **Step 4: Tests que fallan**
+- [x] **Step 4: Tests que fallan**
 
 En `test/layers/presentation/features/arena/game/atlas/arena_sprite_names_test.dart`, el primer test pasa a:
 
@@ -254,7 +254,7 @@ En `test/layers/presentation/features/arena/game/components/fighter_component_te
 Run: `flutter test test/layers/presentation/features/arena`
 Expected: FAIL en los cuatro tests nombrados (el nombre del jefe sigue siendo `'barbarian'`).
 
-- [ ] **Step 5: Nombre del jefe**
+- [x] **Step 5: Nombre del jefe**
 
 En `lib/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart`:
 
@@ -267,7 +267,7 @@ En `lib/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart`:
 Run: `flutter test test/layers/presentation/features/arena`
 Expected: sólo falla `testWhenReadingTheArenaAtlasThenEveryFrameTheSceneAsksForExists` (el atlas real aún no tiene los frames del jefe).
 
-- [ ] **Step 6: Generar el atlas**
+- [x] **Step 6: Generar el atlas**
 
 En `asset-packs/lpc/build_assets.py`:
 
@@ -360,7 +360,7 @@ Expected: `Assets written to …`; sólo cambian `asset-packs/lpc/build_assets.p
 Run: `flutter test test/layers/presentation/features/arena`
 Expected: PASS.
 
-- [ ] **Step 7: Créditos y guía**
+- [x] **Step 7: Créditos y guía**
 
 En `lib/core/assets/images/lpc/CREDITS.md`, sección *Arena*, el primer párrafo pasa a:
 
@@ -402,7 +402,7 @@ En `CLAUDE.md`, *Rendering constants*, el trozo `the barbarian chief is the barb
 barbarians wear their own LPC layers (leather armour, beard, helmet) and the barbarian chief has his own frames (viking helmet, black beard) drawn ×1.25
 ```
 
-- [ ] **Step 8: Verificación completa**
+- [x] **Step 8: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart \
@@ -416,7 +416,7 @@ flutter test
 
 Expected: `git diff` sin salida, `No issues found!` y **612 tests** en verde.
 
-- [ ] **Step 9: Commit y unión a la rama de fase**
+- [x] **Step 9: Commit y unión a la rama de fase**
 
 ```bash
 git add asset-packs/lpc lib/core/assets/images/lpc lib/layers/presentation/features/arena/game/atlas test/layers/presentation/features/arena
@@ -462,7 +462,7 @@ git switch feature/PROJECT-C6-barbarians && git merge --no-ff feature/PROJECT-C6
   ```
   - mocks `HeroEntityMock.chiefChallenger` / `newChampion` / `champion`, `HeroStatusEntityMock.champion`, `FightResultEntityMock.championshipOverBandit()`.
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 En el worktree de TC6.2 (`../phaser-example-c6-champion`, rama `feature/PROJECT-C6-champion`) o, si va después de TC6.1:
 
@@ -470,7 +470,7 @@ En el worktree de TC6.2 (`../phaser-example-c6-champion`, rama `feature/PROJECT-
 git switch feature/PROJECT-C6-barbarians && git switch -c feature/PROJECT-C6-champion
 ```
 
-- [ ] **Step 2: Datos de prueba**
+- [x] **Step 2: Datos de prueba**
 
 Al final de `HeroEntityMock` (`test/mocks/domain/entities/hero/hero_entity_mock.dart`):
 
@@ -539,7 +539,7 @@ abstract final class HeroStatusEntityMock {
       FightPlayedEntity(log: FightLogEntityMock.victoryOverBandit(), isFirstChampionship: true);
 ```
 
-- [ ] **Step 3: Tests que fallan**
+- [x] **Step 3: Tests que fallan**
 
 Al final de `test/layers/domain/use-cases/arena/start_fight_use_case_test.dart`:
 
@@ -637,7 +637,7 @@ En `test/layers/domain/entities/combat/fight_result_entity_test.dart`, antes de 
 Run: `flutter test test/layers/domain`
 Expected: no compila (`isFirstChampionship`, `isChampion`, `ArenaLevels.championship` no existen).
 
-- [ ] **Step 4: Implementación**
+- [x] **Step 4: Implementación**
 
 `FightPlayedEntity` (`lib/layers/domain/entities/combat/fight_result_entity.dart`):
 
@@ -734,14 +734,14 @@ class HeroStatusEntity {
 Run: `flutter test test/layers/domain`
 Expected: PASS.
 
-- [ ] **Step 5: Guía**
+- [x] **Step 5: Guía**
 
 En `CLAUDE.md`:
 - en `entities/<feature>/`: `HeroStatusEntity` pasa a `HeroStatusEntity` with `isChampion`, y `FightPlayedEntity` with an optional `FightAdvice` pasa a `FightPlayedEntity` with an optional `FightAdvice` and `isFirstChampionship`;
 - en `world/`, la lista de `ArenaRules` pasa a `` `ArenaRules`: `isUnlocked`, `hasCleared`, `isChampion` (the hero has beaten `ArenaLevels.championship`, the barbarian chief), `rewardFor`, `afterFight` ``;
 - en `use-cases/`, el paréntesis de `StartFightUseCase` termina en `; isFirstChampionship when the hero beats the chief for the first time)`.
 
-- [ ] **Step 6: Verificación completa**
+- [x] **Step 6: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/layers/domain/entities/combat/fight_result_entity.dart lib/layers/domain/rules/arena_levels.dart \
@@ -758,7 +758,7 @@ flutter test
 
 Expected: `di.config.dart` sin cambios, `No issues found!` y **618 tests** en verde (612 + 6).
 
-- [ ] **Step 7: Commit y unión a la rama de fase**
+- [x] **Step 7: Commit y unión a la rama de fase**
 
 ```bash
 git add lib/layers/domain test/mocks/domain test/layers/domain
@@ -806,7 +806,7 @@ Si TC6.1 y TC6.2 se hicieron a la vez, la segunda unión puede chocar en `CLAUDE
   static const double targetRingStroke = 1;
   ```
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 ```bash
 git switch feature/PROJECT-C6-barbarians && git pull
@@ -814,7 +814,7 @@ git switch feature/PROJECT-C6-barbarians && git pull
 
 (TC6.3 se hace directamente en la rama de fase, con TC6.1 y TC6.2 ya unidas.)
 
-- [ ] **Step 2: Tests que fallan**
+- [x] **Step 2: Tests que fallan**
 
 Al final de `test/layers/presentation/features/arena/game/components/fighter_component_test.dart`:
 
@@ -901,7 +901,7 @@ En `test/layers/presentation/features/arena/bloc/arena_bloc_test.dart`, antes de
 Run: `flutter test test/layers/presentation/features/arena`
 Expected: no compila (`ring`, `isTargeted`, `TargetRingComponent` no existen).
 
-- [ ] **Step 3: El anillo**
+- [x] **Step 3: El anillo**
 
 Crea `lib/layers/presentation/features/arena/game/components/target_ring_component.dart`:
 
@@ -977,7 +977,7 @@ y en `_place()`, tras colocar la sombra:
 
 En `ArenaSceneComponent`: `add(created.ring);` justo después de `add(created.shadow);` en `_reconcile`, y `fighter.ring.removeFromParent();` justo después de `fighter.shadow.removeFromParent();` en `_removeFighter`.
 
-- [ ] **Step 4: El BLoC marca el objetivo**
+- [x] **Step 4: El BLoC marca el objetivo**
 
 En `ArenaBloc` (`arena_bloc.dart`):
 
@@ -1017,7 +1017,7 @@ En `ArenaBloc` (`arena_bloc.dart`):
 
 y en el `FighterRenderData` que devuelve, tras `targetIndex: …`, `isTargeted: isTargeted,`.
 
-- [ ] **Step 5: Mocks**
+- [x] **Step 5: Mocks**
 
 En `test/mocks/presentation/features/arena/fighter_render_data_mock.dart`, añade `isTargeted: true,` como último argumento de `rookieBanditIdle`, `veteranBanditIdle`, `wolfIdle`, `rookieBanditHurt` y `wolfLeaping` (son el enemigo 0 con vida: el BLoC los marca). Ejemplo:
 
@@ -1036,7 +1036,7 @@ En `test/mocks/presentation/features/arena/fighter_render_data_mock.dart`, añad
 Run: `flutter test test/layers/presentation/features/arena`
 Expected: PASS (sin el Step 5 fallan cinco tests del BLoC que comparan luchadores).
 
-- [ ] **Step 6: Guía**
+- [x] **Step 6: Guía**
 
 En `CLAUDE.md`, *Rendering constants*, el final del paréntesis de la arena `and they lie on their own `down` frame instead of tipping over).` pasa a:
 
@@ -1044,7 +1044,7 @@ En `CLAUDE.md`, *Rendering constants*, el final del paréntesis de la arena `and
 and they lie on their own `down` frame instead of tipping over; the hero's target, the first enemy still standing, has a ring under its feet (`TargetRingComponent`, `FighterRenderData.isTargeted`), and fallen fighters are drawn at half alpha).
 ```
 
-- [ ] **Step 7: Verificación completa**
+- [x] **Step 7: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/layers/presentation/features/arena \
@@ -1059,7 +1059,7 @@ flutter test
 
 Expected: `No issues found!` y **622 tests** en verde (618 + 4).
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add lib/layers/presentation/features/arena test/mocks/presentation/features/arena test/layers/presentation/features/arena
@@ -1104,13 +1104,13 @@ git commit -m "[PROJECT-C6]: Ring the hero's target and dim the fallen"
   final bool isChampion;                  // HeroPanelData, this.isChampion = false
   ```
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 ```bash
 git switch feature/PROJECT-C6-barbarians && git pull
 ```
 
-- [ ] **Step 2: Tests que fallan**
+- [x] **Step 2: Tests que fallan**
 
 Mocks:
 - `ArenaEffectMock`, tras `won`: `static const ChampionEffect champion = ChampionEffect();`
@@ -1328,7 +1328,7 @@ En `internationalize_test.dart`:
 Run: `flutter test`
 Expected: no compila (`ChampionEffect`, `confetti`, `arenaChampion`, `forestHeroChampion`, `HeroPanelData.isChampion` no existen).
 
-- [ ] **Step 3: Textos**
+- [x] **Step 3: Textos**
 
 `es.json`: en `arena`, tras `"victory": "¡Victoria!",`, `"champion": "¡Campeón de la arena!",`; en `forest.hero`, tras `"health": "Vida",`, `"champion": "Campeón de la arena",`.
 
@@ -1346,7 +1346,7 @@ tras `forestHeroPower`, y
 
 tras `arenaVictory`.
 
-- [ ] **Step 4: Efecto y confeti**
+- [x] **Step 4: Efecto y confeti**
 
 Al final de `arena_effect.dart`:
 
@@ -1424,7 +1424,7 @@ y el método, antes de `_floatSkillName`:
   }
 ```
 
-- [ ] **Step 5: El BLoC de la arena corona al campeón**
+- [x] **Step 5: El BLoC de la arena corona al campeón**
 
 En `ArenaBloc`:
 
@@ -1455,7 +1455,7 @@ En `_result`, el título de la victoria:
         title: _isFirstChampionship ? Internationalize.arenaChampion : Internationalize.arenaVictory,
 ```
 
-- [ ] **Step 6: Insignia del panel *Héroe***
+- [x] **Step 6: Insignia del panel *Héroe***
 
 `HeroPanelData`: campo `final bool isChampion;` tras `skills`, parámetro `this.isChampion = false,` al final del constructor, y:
 
@@ -1513,14 +1513,14 @@ En `_result`, el título de la victoria:
 Run: `flutter test`
 Expected: PASS.
 
-- [ ] **Step 7: Guía**
+- [x] **Step 7: Guía**
 
 En `CLAUDE.md`:
 - `particles/`: `and blood drops: `ParticleKind.bloodDrop`, `ParticleBursts.bloodDrops`)` pasa a `blood drops: `ParticleKind.bloodDrop`, `ParticleBursts.bloodDrops`, and the champion confetti, `ParticleBursts.confetti`, gold and blue sparkles that fall)`;
 - `widgets/`: `HeroPanel` (tabs *Equipo* … pasa a `HeroPanel` (a *Campeón de la arena* badge next to the title once the chief is beaten; tabs *Equipo* …;
 - `features/arena/`: tras `and refreshes the list with `GetArenaUseCase` when the replay ends` añade `; a first championship adds a `ChampionEffect` (confetti over the hero) after `FightEndedEffect` and titles the result *¡Campeón de la arena!*`.
 
-- [ ] **Step 8: Verificación completa**
+- [x] **Step 8: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/core/assets/i18n/internationalize.dart lib/layers/presentation/features/arena \
@@ -1543,7 +1543,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `No issues found!`, **630 tests** en verde (622 + 8) y los de Chrome en verde.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add lib test

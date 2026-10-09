@@ -66,7 +66,7 @@ Abre el fichero de la fase (`F<n>-*.md` o `C<n>-*.md`):
 - **Ficha** (aviso "Plan detallado: pendiente"):
   1. Usa `boost:writing-plans` para convertir la ficha en un plan con tareas T<n>.x. Lee sólo los ficheros que lista la ficha.
   2. Respeta las *Global Constraints* del README y las convenciones del plugin `flutter-arch-conventions` (y sus skills de generación para entidades, DBOs, *mappers*, repositorios, casos de uso y BLoC).
-  3. Haz un commit del plan en una rama `feature/PROJECT-X-<fase>-plan` (`f<n>` o `c<n>`). Con la confirmación del usuario, abre un PR de documentación y crea un issue por tarea (labels `phase:<fase>`, `stream:*`; milestone de la fase; cuerpo con enlace a la sección del plan y `Depende de: #n`).
+  3. Haz un commit del plan en la rama que acabas de crear, junto con `docs/boost/plans/PROGRESS.md` (la fase pasa de 📝 a 🟢) y el icono de la tabla de fases del README. No hay rama ni PR aparte para el plan. Con la confirmación del usuario, crea un issue por tarea (labels `phase:<fase>`, `stream:*`; milestone de la fase; cuerpo con enlace a la sección del plan y `Depende de: #n`).
   4. Al escribirlo, revisa la sección 6 del README de la aldea (o la 3 del de la arena): si alguna fase del otro plan ya está en `develop`, la nota *Si la arena ya está* / el cruce correspondiente forma parte de tu tarea.
   5. Cierra el issue de la ficha, o conviértelo en el issue de la primera tarea.
   6. Vuelve al paso 2.

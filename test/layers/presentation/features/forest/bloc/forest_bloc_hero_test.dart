@@ -244,6 +244,41 @@ void main() {
   );
 
   blocTest<ForestBloc, ForestState>(
+    'testWhenSeveralHeroQuestsCloseTheLineInTheSameTickThenOnlyTheLineMessageIsShownOnce',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        GearScenarioMock.withAllWorkshops(hero: HeroEntityMock.championWithEveryQuestDone),
+        navigationService: navigationService,
+      );
+    },
+    act: (bloc) async {
+      // when
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestTicked(deltaMs: ForestBlocMock.frameMs));
+      await ForestBlocMock.processEvents();
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      final messages = ForestBlocMock.shownMessages(navigationService);
+      final lineDone = Internationalize.forestMessageQuestLineCompleted(line: QuestLine.hero);
+      expect(messages.where((message) => message == lineDone), hasLength(1));
+      expect(
+        messages.where(
+          (message) =>
+              message ==
+              Internationalize.forestMessageQuestCompleted(
+                title: Internationalize.forestQuestTitle(id: QuestId.becomeChampion),
+              ),
+        ),
+        isEmpty,
+      );
+    },
+  );
+
+  blocTest<ForestBloc, ForestState>(
     'testWhenAHeroQuestIsCompletedWhileOthersAreStillPendingThenShowsTheQuestMessage',
     build: () {
       // given

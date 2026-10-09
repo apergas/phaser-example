@@ -15,6 +15,8 @@ import '../../../../../core/config/constants/enum/gear_option_state.dart';
 import '../../../../../core/config/constants/enum/gear_slot.dart';
 import '../../../../../core/config/constants/enum/learn_skill_result.dart';
 import '../../../../../core/config/constants/enum/player_activity.dart';
+import '../../../../../core/config/constants/enum/quest_id.dart';
+import '../../../../../core/config/constants/enum/quest_line.dart';
 import '../../../../../core/config/constants/enum/resource.dart';
 import '../../../../../core/config/constants/enum/skill_id.dart';
 import '../../../../../core/config/constants/enum/skill_option_state.dart';
@@ -152,9 +154,14 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     }
     final effects = <ForestEffect>[];
     final fromX = _getPlayerStatusUseCase().position.x;
-    for (final gameEvent in _advanceGameUseCase(deltaMs: event.deltaMs)) {
+    final gameEvents = _advanceGameUseCase(deltaMs: event.deltaMs);
+    for (final gameEvent in gameEvents) {
       _react(gameEvent, fromX: fromX, effects: effects);
     }
+    _announceQuests([
+      for (final gameEvent in gameEvents)
+        if (gameEvent is QuestCompletedEventEntity) gameEvent.questId,
+    ]);
     emit(ForestSuccess(data: _buildData(effects: effects)));
   }
 
@@ -307,15 +314,25 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
           Internationalize.forestMessageBuildingCompleted(name: Internationalize.forestBlueprint(id: blueprint)),
         );
         effects.add(BuildingCompletedEffect(buildingId: buildingId));
-      case QuestCompletedEventEntity(:final questId):
-        final quests = _getQuestsUseCase();
-        final line = quests.firstWhere((quest) => quest.id == questId).line;
-        final lineDone = quests.where((quest) => quest.line == line).every((quest) => quest.isCompleted);
-        _showMessage(
-          lineDone
-              ? Internationalize.forestMessageQuestLineCompleted(line: line)
-              : Internationalize.forestMessageQuestCompleted(title: Internationalize.forestQuestTitle(id: questId)),
-        );
+      case QuestCompletedEventEntity():
+        break;
+    }
+  }
+
+  void _announceQuests(List<QuestId> completed) {
+    if (completed.isEmpty) return;
+    final quests = _getQuestsUseCase();
+    for (final line in QuestLine.values) {
+      final ofLine = quests.where((quest) => quest.line == line);
+      final done = completed.where((id) => ofLine.any((quest) => quest.id == id)).toList();
+      if (done.isEmpty) continue;
+      if (ofLine.every((quest) => quest.isCompleted)) {
+        _showMessage(Internationalize.forestMessageQuestLineCompleted(line: line));
+        continue;
+      }
+      for (final id in done) {
+        _showMessage(Internationalize.forestMessageQuestCompleted(title: Internationalize.forestQuestTitle(id: id)));
+      }
     }
   }
 

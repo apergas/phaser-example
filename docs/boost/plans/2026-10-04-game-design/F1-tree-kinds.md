@@ -65,7 +65,7 @@
   - prioridad `RenderDepth.overlay`: siempre por encima de árboles y edificios;
   - la animación se lleva a mano en `update` (como `GroundItemComponent`), sin efectos de Flame. El `opacity` de `HasPaint` en `TextComponent` sustituye el color del texto por el de su `Paint`, así que el alfa se aplica rehaciendo el `TextPaint`.
 - **El texto lo compone la escena, no el BLoC:** el efecto sólo lleva el número (`wood`), como pide la ficha.
-- **Ramas:** `feature/PROJECT-X-f1-domain` y `feature/PROJECT-X-f1-presentation`, cada una desde `develop`. T1.2 empieza cuando T1.1 está fusionada.
+- **Ramas:** `feature/PROJECT-F1-domain` y `feature/PROJECT-F1-presentation`, cada una desde `develop`. T1.2 empieza cuando T1.1 está fusionada.
 - **Si la arena ya está (README, sección 6):** si C2 ya creó un componente de texto flotante, T1.2 lo reutiliza en lugar de crear `FloatingTextComponent` (ver la nota al principio de T1.2). Si no, C2 reutilizará este.
 
 ## Reparto
@@ -127,7 +127,7 @@
 - [ ] **Step 1: Crear la rama**
 
 ```bash
-git switch develop && git pull && git switch -c feature/PROJECT-X-f1-domain
+git switch develop && git pull && git switch -c feature/PROJECT-F1-domain
 ```
 
 - [ ] **Step 2: Test de `TreeStatsEntity`, que debe fallar**
@@ -558,7 +558,7 @@ Expected:
 ```bash
 git add lib test
 git add CLAUDE.md
-git commit -m "[PROJECT-X]: Take tree wood and hits from the kind table"
+git commit -m "[PROJECT-F1]: Take tree wood and hits from the kind table"
 ```
 
 Después, `/cerrar-tarea`: abre el PR con `Closes #<issue F1>` (o el número que le dé `/siguiente-tarea` a T1.1).
@@ -612,7 +612,7 @@ Después, `/cerrar-tarea`: abre el PR con `Closes #<issue F1>` (o el número que
 - [ ] **Step 1: Rama**
 
 ```bash
-git switch develop && git pull && git switch -c feature/PROJECT-X-f1-presentation
+git switch develop && git pull && git switch -c feature/PROJECT-F1-presentation
 ```
 
 - [ ] **Step 2: Texto "+N", primero el test**
@@ -989,7 +989,7 @@ Prueba manual en Chrome (`flutter run -d chrome`), en el emulador (`flutter run 
 ```bash
 git add lib test
 git add CLAUDE.md
-git commit -m "[PROJECT-X]: Float the wood gained over each felled tree"
+git commit -m "[PROJECT-F1]: Float the wood gained over each felled tree"
 ```
 
 Después, `/cerrar-tarea`. Con esto se cierra el milestone F1.

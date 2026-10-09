@@ -48,11 +48,11 @@ Confirma la elección con el usuario antes de asignarla.
 
 ```bash
 gh issue edit <n> --repo apergas/phaser-example --add-assignee @me
-gh issue comment <n> --repo apergas/phaser-example --body "En curso: rama feature/PROJECT-X-<fase>-<tarea>"
+gh issue comment <n> --repo apergas/phaser-example --body "En curso: rama feature/PROJECT-<fase>-<tarea>"
 # Aldea (fases F*): sale de la rama de integración de la aldea
-git switch feature/PROJECT-X-town && git pull && git switch -c feature/PROJECT-X-<fase>-<tarea>
+git switch feature/PROJECT-X-town && git pull && git switch -c feature/PROJECT-<fase>-<tarea>   # p. ej. feature/PROJECT-F1-domain
 # Arena (fases C*): sale de la rama de integración de la arena
-# git switch feature/PROJECT-X-arena && git pull && git switch -c feature/PROJECT-X-<fase>-<tarea>
+# git switch feature/PROJECT-X-arena && git pull && git switch -c feature/PROJECT-<fase>-<tarea>   # p. ej. feature/PROJECT-C6-barbarians
 flutter pub get
 ```
 
@@ -79,6 +79,6 @@ Reglas:
 - Marca los checkboxes del plan según avances.
 - Los ficheros calientes, los generados y el atlas siguen las reglas de la sección 3 del README.
 - Revisa la arquitectura con el agente `flutter-arch-conventions:flutter-arch-reviewer` antes de cerrar.
-- Commits `[PROJECT-X]: Imperative description`, **sin ninguna atribución a IA**.
+- Commits `[PROJECT-<fase>]: Imperative description` (`[PROJECT-C6]: Add the barbarian chief`; `[PROJECT-C4-C5]` si abarca dos fases), sin repetir el código en la descripción y **sin ninguna atribución a IA**. `[PROJECT-X]` sólo para lo que no es de ninguna fase (unir `develop`).
 
 Al terminar, usa `/cerrar-tarea`.

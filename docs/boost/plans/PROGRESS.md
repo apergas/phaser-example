@@ -30,7 +30,7 @@
 | Fase | Estado | Dónde está | Notas |
 |---|---|---|---|
 | F0 Generalizar recursos, herramientas y edificios | ✅ | `develop` (#6), anterior a `town` | Incluye el arreglo de las líneas del suelo. |
-| F1 Árboles con personalidad | 🟢 plan listo | — | Rama `feature/PROJECT-X-f1-…` desde `feature/PROJECT-X-town`. |
+| F1 Árboles con personalidad | 🟢 plan listo | — | Ramas `feature/PROJECT-F1-…` desde `feature/PROJECT-X-town`. |
 | F2 Guardado automático | 📝 ficha | — | Antes de empezar: decidir cómo queda la sesión en el datasource (entidad frente a DBO). |
 | F3 Rebrote de árboles | 📝 ficha | — | Después de F1. |
 | F4 Misiones, capítulo 1 | 📝 ficha | — | Después de F3. |

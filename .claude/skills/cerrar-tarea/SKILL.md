@@ -37,7 +37,7 @@ Lee el apartado *Cómo probarlo* de la tarea, o de la fase si es la última tare
 - Actualiza la fila de la fase en `docs/boost/plans/PROGRESS.md` con la tarea terminada (estado, dónde está, notas y fecha de última actualización) y su apartado *Siguiente paso*. Si es la última tarea de la fase, cambia además su icono a ✅, aquí y en la tabla de fases del README.
 - Si la tarea cambia una excepción documentada (E1–E11) o la estructura descrita en `CLAUDE.md`, actualízalo y añádelo con un `git add CLAUDE.md` aparte.
 
-Todo esto (plan, README y `PROGRESS.md`) va en **la misma rama de la tarea**, en un commit propio (por ejemplo `[PROJECT-X]: Update the roadmap progress after TC6.1`): no hay rama ni PR aparte para la documentación. Mensaje `[PROJECT-X]: <imperative description>`, en un comando `git commit` independiente. **Sin ninguna atribución a IA**: el hook lo rechaza. Comprueba con `git log -1` que el commit existe.
+Todo esto (plan, README y `PROGRESS.md`) va en **la misma rama de la tarea**, en un commit propio (por ejemplo `[PROJECT-C6]: Update the roadmap progress after TC6.1`): no hay rama ni PR aparte para la documentación. Mensaje `[PROJECT-<fase>]: <imperative description>` (`[PROJECT-C6]`, `[PROJECT-F1]`; `[PROJECT-C4-C5]` si abarca dos fases), sin repetir el código en la descripción, en un comando `git commit` independiente. **Sin ninguna atribución a IA**: el hook lo rechaza. Comprueba con `git log -1` que el commit existe.
 
 ## 4. PR y tracker
 
@@ -46,7 +46,7 @@ Confirma con el usuario antes de hacer *push* y abrir el PR.
 ```bash
 git fetch origin && git merge origin/feature/PROJECT-X-town   # arena (C*): origin/feature/PROJECT-X-arena
 git push -u origin HEAD
-gh pr create --repo apergas/phaser-example --base feature/PROJECT-X-town --title "[PROJECT-X]: <title>" --body "<resumen>
+gh pr create --repo apergas/phaser-example --base feature/PROJECT-X-town --title "[PROJECT-<fase>]: <title>" --body "<resumen>
 
 Cómo probarlo:
 <pasos de la tarea>

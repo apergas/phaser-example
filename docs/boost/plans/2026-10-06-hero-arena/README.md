@@ -71,7 +71,7 @@ Para trabajar en una tarea **no hace falta leer el proyecto**. Lee sólo esto:
 | **C4** Lobos y oso | ✅ [C4-beasts.md](C4-beasts.md) | C | C2 | Arte LPC nuevo de animales; `EnemyKind.wolf` / `bear`; niveles 2, 4, 5 y 8. |
 | **C5** Torre de magia y habilidades | ✅ [C5-mage-tower.md](C5-mage-tower.md) | D | C3 | Edificio *Torre de magia*; catálogo `Skills`; `LearnSkillUseCase`; pestaña *Habilidades* del panel *Héroe*. Los efectos en la pelea ya los aplica el motor de C1. |
 | **C6** Bárbaros y jefe | ✅ [C6-barbarians.md](C6-barbarians.md) | C | C4 | Arte de bárbaros y jefe; peleas de grupo bien colocadas (hasta 3 enemigos); pantalla de victoria final. |
-| **C7** Misiones del héroe y equilibrado | 🟢 [C7-hero-quests-balance.md](C7-hero-quests-balance.md) | D | C1, C3, C5 | Línea de misiones *Héroe*; consejo tras una derrota; test de equilibrado (Poder contra porcentaje de victorias) y números finales. |
+| **C7** Misiones del héroe y equilibrado | 🟢 [C7-hero-quests-balance.md](C7-hero-quests-balance.md) | D | C1, C3, C5 | Línea de misiones *Héroe*; daño por rangos; equipo sólo con oro; test de equilibrado (victorias, escalón anterior y oro) y números finales. |
 
 ### Flujos de trabajo (dos desarrolladores)
 

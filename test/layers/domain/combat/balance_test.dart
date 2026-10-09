@@ -54,7 +54,7 @@ void main() {
     expect(ids, levels.map((level) => level.id));
   });
 
-  test('testWhenTheHeroHasTheExpectedGearThenEachLevelIsWonMostButNotAllOfTheTime', () {
+  test('testWhenTheHeroHasTheExpectedGearThenEachLevelAfterTheFirstIsWonMostButNotAllOfTheTime', () {
     // given
     final later = levels.skip(1);
 

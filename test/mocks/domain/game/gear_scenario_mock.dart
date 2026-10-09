@@ -11,6 +11,7 @@ import '../world/world_mock.dart';
 abstract final class GearScenarioMock {
   static const PositionEntity forgeSite = PositionEntity(x: 300, y: 100);
   static const PositionEntity armorySite = PositionEntity(x: 500, y: 100);
+  static const PositionEntity mageTowerSite = PositionEntity(x: 700, y: 100);
   static const double buildMs = 10000;
 
   static World withoutWorkshops({Map<Resource, int> funds = const {}, HeroEntity hero = HeroEntityMock.mock}) {
@@ -30,15 +31,23 @@ abstract final class GearScenarioMock {
     return world..earn(funds);
   }
 
+  static World withAllWorkshops({Map<Resource, int> funds = const {}, HeroEntity hero = HeroEntityMock.mock}) {
+    final world = WorldMock.withHero(hero);
+    _build(world, Blueprints.forge, forgeSite);
+    _build(world, Blueprints.armory, armorySite);
+    _build(world, Blueprints.mageTower, mageTowerSite, ms: buildMs * 2);
+    return world..earn(funds);
+  }
+
   static World withForgeUnderConstruction({Map<Resource, int> funds = const {}}) {
     final world = WorldMock.make()..earn(Blueprints.forge.cost);
     world.orderConstruction(Blueprints.forge, forgeSite);
     return world..earn(funds);
   }
 
-  static void _build(World world, BlueprintEntity blueprint, PositionEntity site) {
+  static void _build(World world, BlueprintEntity blueprint, PositionEntity site, {double ms = buildMs}) {
     world.earn(blueprint.cost);
     world.orderConstruction(blueprint, site);
-    world.advanceFor(buildMs);
+    world.advanceFor(ms);
   }
 }

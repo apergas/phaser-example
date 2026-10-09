@@ -293,7 +293,6 @@ son deterministas.
 - **Postura antes de pelear** (S): *Agresiva* (+Ataque, −Defensa) o *Prudente*. Es una sola decisión, sin
   micro-gestión.
 - **Equipo visible en el bosque** (S–M): el héroe tala con la espada o la armadura que lleva puestas.
-- **Misiones de héroe** (S): "Gana el nivel 3", "Compra la Cota de malla", "Aprende una habilidad".
 - **Torneo / jefe del día** (M): un nivel con semilla diaria, como el "mapa del día" de la sección 3.5.
 - **Guardias** (L): con aldeanos (sección 3.3), reclutar guardias que suman Poder en la arena o defienden la aldea.
 

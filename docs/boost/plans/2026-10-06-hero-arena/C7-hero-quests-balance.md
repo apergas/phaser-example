@@ -149,7 +149,7 @@ Los parches se ensayaron en el orden TC7.1 → TC7.2 → TC7.3. Si TC7.1 y TC7.2
   ```
   - mocks nuevos: `ArenaEffectMock.banditHitForThree` / `banditHitForFive` / `heroHitForOne` / `heroHitForThree`, `FighterRenderDataMock.rookieBanditAfterFirstBlow`.
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 ```bash
 git switch feature/PROJECT-X-arena && git pull
@@ -157,7 +157,7 @@ git switch -c feature/PROJECT-C7-hero-quests-balance   # si no existe ya
 flutter pub get
 ```
 
-- [ ] **Step 2: Tests y mocks (rojo)**
+- [x] **Step 2: Tests y mocks (rojo)**
 
 Aplica este parche (sólo `test/`):
 
@@ -607,7 +607,7 @@ index ba05338..8f52477 100644
 Run: `flutter test test/layers/domain/combat test/layers/domain/entities/hero`
 Expected: no compila (`attackMin`, `forestHeroAttackRange`… no existen).
 
-- [ ] **Step 3: Código (verde)**
+- [x] **Step 3: Código (verde)**
 
 Aplica este parche (sólo `lib/`):
 
@@ -1083,13 +1083,13 @@ index 399d9c2..154a2be 100644
 Run: `flutter test`
 Expected: **631 tests** en verde.
 
-- [ ] **Step 4: Guía**
+- [x] **Step 4: Guía**
 
 En `CLAUDE.md`:
 - `entities/<feature>/`: `hero (`CombatStatsEntity`` pasa a `hero (`CombatStatsEntity` with an attack range, `attackMin`–`attackMax``.
 - `combat/`: tras `one per hit, plus one per enemy attack when the hero can dodge)` añade `; each blow picks a value in the attacker's `attackMin`–`attackMax` with its `next()` and deals `max(1, value − defense)`, capped at the health left`.
 
-- [ ] **Step 5: Verificación completa**
+- [x] **Step 5: Verificación completa**
 
 ```bash
 dart run build_runner build --delete-conflicting-outputs && git diff --exit-code -- lib/core/config/di/di.config.dart '*.mocks.dart'
@@ -1099,7 +1099,7 @@ flutter test
 
 Expected: sin cambios en generados, `No issues found!`, 631 en verde.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib test
@@ -1148,11 +1148,11 @@ git commit -m "[PROJECT-C7]: Roll each blow from the attacker's attack range"
   ```
   - mocks nuevos: `QuestProgressEntityMock.buildForgeCurrent`, `QuestItemDataMock.buildForgeCurrent` / `withBothLines`.
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 Sigue en `feature/PROJECT-C7-hero-quests-balance` (con TC7.1 hecha, como en el ensayo).
 
-- [ ] **Step 2: Tests y mocks (rojo)**
+- [x] **Step 2: Tests y mocks (rojo)**
 
 ```diff
 diff --git a/test/core/assets/i18n/internationalize_test.dart b/test/core/assets/i18n/internationalize_test.dart
@@ -1522,7 +1522,7 @@ index a2b98e0..ead361e 100644
 Run: `flutter test test/layers/domain/quests`
 Expected: no compila (`QuestLine`, `line` no existen).
 
-- [ ] **Step 3: Código (verde)**
+- [x] **Step 3: Código (verde)**
 
 ```diff
 diff --git a/lib/core/assets/i18n/internationalize.dart b/lib/core/assets/i18n/internationalize.dart
@@ -1934,13 +1934,13 @@ index 0d7f4fe..c7317f0 100644
 Run: `flutter test`
 Expected: **633 tests** en verde.
 
-- [ ] **Step 4: Guía**
+- [x] **Step 4: Guía**
 
 En `CLAUDE.md`:
 - `quests/` (`Quest`, `Quests`, `QuestLog` with sticky completion) pasa a `quests/` (`Quest` with its `QuestLine`, `Quests` (village line, then the hero line), `QuestLog` with sticky completion and one current quest per line).
 - `QuestPanel` + `QuestRow` pasa a `QuestPanel` (one section per `QuestLine`) + `QuestRow`.
 
-- [ ] **Step 5: Verificación completa**
+- [x] **Step 5: Verificación completa**
 
 ```bash
 dart run build_runner build --delete-conflicting-outputs && git diff --exit-code -- lib/core/config/di/di.config.dart '*.mocks.dart'
@@ -1948,7 +1948,7 @@ flutter analyze
 flutter test
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib test
@@ -1984,11 +1984,11 @@ git commit -m "[PROJECT-C7]: Add the hero quest line next to the village one"
   - `Gear.all` y `ArenaLevels.all` con los números de las decisiones 6 y 7;
   - `ArenaResultDataMock.championHundredFiftyGold` / `victoryFiftyGold` (antes `championHundredGold` / `victoryThirtyThreeGold`).
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 Sigue en `feature/PROJECT-C7-hero-quests-balance` (con TC7.1 y TC7.2 hechas).
 
-- [ ] **Step 2: Test de equilibrado y mocks (rojo)**
+- [x] **Step 2: Test de equilibrado y mocks (rojo)**
 
 ```diff
 diff --git a/test/layers/domain/combat/balance_test.dart b/test/layers/domain/combat/balance_test.dart
@@ -2442,7 +2442,7 @@ index 8cdb5b1..0847651 100644
 Run: `flutter test test/layers/domain/combat/balance_test.dart`
 Expected: FAIL (con los números de TC7.1 hay niveles que se ganan siempre o nunca, y el oro no alcanza).
 
-- [ ] **Step 3: Números (verde)**
+- [x] **Step 3: Números (verde)**
 
 ```diff
 diff --git a/lib/layers/domain/rules/arena_levels.dart b/lib/layers/domain/rules/arena_levels.dart
@@ -2654,7 +2654,7 @@ index fb12335..2da05ce 100644
 Run: `flutter test`
 Expected: **637 tests** en verde.
 
-- [ ] **Step 4: Documentación**
+- [x] **Step 4: Documentación**
 
 `docs/GAME_DESIGN.md`:
 
@@ -2760,7 +2760,7 @@ README de la arena, sección 3.2, fila *Piedra (F5) ↔ coste del equipo (C3)*: 
 - tras la línea **Arena fights are deterministic:** añade:
   `- **Arena balance:** `test/layers/domain/combat/balance_test.dart` plays every arena level with 100 seeds for the expected hero of `BalanceScenarioMock` (60–95 % of wins, the first level may always be won; under 50 % one step behind; the gold of earlier first wins plus three repeats pays the expected gear). Any change to `Gear`, `Skills`, `ArenaLevels` or building costs must keep it green; the final table lives in `docs/GAME_DESIGN.md` 3.8.`
 
-- [ ] **Step 5: Verificación completa**
+- [x] **Step 5: Verificación completa**
 
 ```bash
 dart run build_runner build --delete-conflicting-outputs && git diff --exit-code -- lib/core/config/di/di.config.dart '*.mocks.dart'
@@ -2771,7 +2771,7 @@ flutter test --platform chrome test/core/utils test/layers/data test/core/config
 
 Expected: `No issues found!`, **637** en verde y los de Chrome en verde.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib test docs

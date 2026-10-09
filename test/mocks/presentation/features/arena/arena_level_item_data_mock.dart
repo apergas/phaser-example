@@ -32,7 +32,7 @@ abstract final class ArenaLevelItemDataMock {
     enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.bandit),
     powerText: Internationalize.arenaPower(power: 41),
     tone: PowerTone.hard,
-    rewardText: Internationalize.arenaReward(amount: 20),
+    rewardText: Internationalize.arenaReward(amount: 30),
     status: ArenaLevelItemStatus.locked,
   );
 
@@ -42,7 +42,7 @@ abstract final class ArenaLevelItemDataMock {
     enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.bandit),
     powerText: Internationalize.arenaPower(power: 41),
     tone: PowerTone.hard,
-    rewardText: Internationalize.arenaReward(amount: 20),
+    rewardText: Internationalize.arenaReward(amount: 30),
     status: ArenaLevelItemStatus.open,
   );
 
@@ -50,9 +50,9 @@ abstract final class ArenaLevelItemDataMock {
     id: ArenaLevelId.banditTrio,
     name: Internationalize.arenaLevel(id: ArenaLevelId.banditTrio),
     enemiesText: Internationalize.arenaEnemyCount(count: 3, name: Internationalize.arenaEnemy(kind: EnemyKind.bandit)),
-    powerText: Internationalize.arenaPower(power: 78),
+    powerText: Internationalize.arenaPower(power: 123),
     tone: PowerTone.hard,
-    rewardText: Internationalize.arenaReward(amount: 40),
+    rewardText: Internationalize.arenaReward(amount: 75),
     status: ArenaLevelItemStatus.locked,
   );
 
@@ -60,9 +60,9 @@ abstract final class ArenaLevelItemDataMock {
     id: ArenaLevelId.wolf,
     name: Internationalize.arenaLevel(id: ArenaLevelId.wolf),
     enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.wolf),
-    powerText: Internationalize.arenaPower(power: 30),
+    powerText: Internationalize.arenaPower(power: 29),
     tone: PowerTone.easy,
-    rewardText: Internationalize.arenaReward(amount: 15),
+    rewardText: Internationalize.arenaReward(amount: 20),
     status: ArenaLevelItemStatus.locked,
   );
 
@@ -70,9 +70,9 @@ abstract final class ArenaLevelItemDataMock {
     id: ArenaLevelId.wolf,
     name: Internationalize.arenaLevel(id: ArenaLevelId.wolf),
     enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.wolf),
-    powerText: Internationalize.arenaPower(power: 30),
+    powerText: Internationalize.arenaPower(power: 29),
     tone: PowerTone.easy,
-    rewardText: Internationalize.arenaReward(amount: 15),
+    rewardText: Internationalize.arenaReward(amount: 20),
     status: ArenaLevelItemStatus.open,
   );
 
@@ -83,9 +83,9 @@ abstract final class ArenaLevelItemDataMock {
       Internationalize.arenaEnemy(kind: EnemyKind.barbarianChief),
       Internationalize.arenaEnemyCount(count: 2, name: Internationalize.arenaEnemy(kind: EnemyKind.barbarian)),
     ].join(', '),
-    powerText: Internationalize.arenaPower(power: 173),
+    powerText: Internationalize.arenaPower(power: 210),
     tone: PowerTone.hard,
-    rewardText: Internationalize.arenaReward(amount: 100),
+    rewardText: Internationalize.arenaReward(amount: 150),
     status: ArenaLevelItemStatus.locked,
   );
 }

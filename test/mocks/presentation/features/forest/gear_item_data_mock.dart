@@ -51,10 +51,7 @@ abstract final class GearItemDataMock {
     id: GearId.leatherArmor,
     name: Internationalize.forestGear(id: GearId.leatherArmor),
     statsText: Internationalize.forestHeroArmorStats(defense: 3, health: 40),
-    costText: [
-      Internationalize.forestAmount(resource: Resource.wood, amount: 15),
-      Internationalize.forestAmount(resource: Resource.gold, amount: 15),
-    ].join(', '),
+    costText: Internationalize.forestAmount(resource: Resource.gold, amount: 40),
     reasonText: Internationalize.forestHeroNeedsBuilding(
       name: Internationalize.forestBlueprint(id: BlueprintId.armory),
     ),
@@ -65,10 +62,7 @@ abstract final class GearItemDataMock {
     id: GearId.shortSword,
     name: Internationalize.forestGear(id: GearId.shortSword),
     statsText: Internationalize.forestHeroWeaponStats(min: 6, max: 8),
-    costText: [
-      Internationalize.forestAmount(resource: Resource.wood, amount: 20),
-      Internationalize.forestAmount(resource: Resource.gold, amount: 10),
-    ].join(', '),
+    costText: Internationalize.forestAmount(resource: Resource.gold, amount: 30),
     reasonText: reasonText,
     canBuy: canBuy,
   );

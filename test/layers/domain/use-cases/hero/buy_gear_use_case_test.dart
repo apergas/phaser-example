@@ -39,7 +39,7 @@ void main() {
     // then
     expect(result, BuyGearResult.missingBuilding);
     expect(world.hero, HeroEntityMock.mock);
-    expect(world.funds.amount(Resource.gold), 10);
+    expect(world.funds.amount(Resource.gold), 30);
   });
 
   test('testWhenTheForgeIsStillBeingBuiltThenTheSwordNeedsTheBuilding', () {
@@ -73,7 +73,7 @@ void main() {
 
     // then
     expect(result, BuyGearResult.notNextTier);
-    expect(world.funds.amount(Resource.gold), 10);
+    expect(world.funds.amount(Resource.gold), 30);
   });
 
   test('testWhenBuyingTheEquippedGearAgainThenItIsNotTheNextTier', () {
@@ -97,7 +97,7 @@ void main() {
     // then
     expect(result, BuyGearResult.notEnoughResources);
     expect(world.hero, HeroEntityMock.mock);
-    expect((world.funds.amount(Resource.wood), world.funds.amount(Resource.gold)), (20, 5));
+    expect((world.funds.amount(Resource.wood), world.funds.amount(Resource.gold)), (0, 25));
   });
 
   test('testWhenSeveralChecksFailThenTheyAreReportedInOrder', () {

@@ -43,6 +43,17 @@ abstract final class ParticleBursts {
   static const double sparkleAlphaEnd = 0;
   static const double sparkleScaleStart = 1;
   static const double sparkleScaleEnd = 0.4;
+  static const int confettiPieces = 24;
+  static const double confettiAngleMin = 220;
+  static const double confettiAngleMax = 320;
+  static const double confettiSpeedMin = 60;
+  static const double confettiSpeedMax = 120;
+  static const double confettiSpreadX = 16;
+  static const double confettiGravity = 140;
+  static const double confettiLifespanSeconds = 1.2;
+  static const double confettiAlphaStart = 1;
+  static const double confettiAlphaEnd = 0;
+  static const double confettiScale = 1;
   static const int bloodDropsMin = 4;
   static const int bloodDropsMax = 6;
   static const double bloodAngleAwayFromLeftMin = 280;
@@ -123,6 +134,26 @@ abstract final class ParticleBursts {
         alphaEnd: sparkleAlphaEnd,
         scaleStart: sparkleScaleStart,
         scaleEnd: sparkleScaleEnd,
+      );
+    });
+  }
+
+  static List<Particle> confetti({required PositionEntity at, required math.Random random}) {
+    return List.generate(confettiPieces, (index) {
+      final speed = _between(random, confettiSpeedMin, confettiSpeedMax);
+      final angle = _between(random, confettiAngleMin, confettiAngleMax) * math.pi / 180;
+      return Particle(
+        kind: index.isEven ? ParticleKind.sparkle : ParticleKind.magicSparkle,
+        origin: PositionEntity(x: at.x + _between(random, -confettiSpreadX, confettiSpreadX), y: at.y),
+        velocityX: speed * math.cos(angle),
+        velocityY: speed * math.sin(angle),
+        gravity: confettiGravity,
+        rotationDegrees: 0,
+        lifespanSeconds: confettiLifespanSeconds,
+        alphaStart: confettiAlphaStart,
+        alphaEnd: confettiAlphaEnd,
+        scaleStart: confettiScale,
+        scaleEnd: confettiScale,
       );
     });
   }

@@ -163,6 +163,7 @@ void main() {
     final texts = [
       Internationalize.forestHero,
       Internationalize.forestHeroPower,
+      Internationalize.forestHeroChampion,
       Internationalize.forestHeroAttack,
       Internationalize.forestHeroDefense,
       Internationalize.forestHeroHealth,
@@ -186,6 +187,7 @@ void main() {
     expect(texts, [
       'Héroe',
       'Poder',
+      'Campeón de la arena',
       'Ataque',
       'Defensa',
       'Vida',
@@ -291,6 +293,7 @@ void main() {
       'Te falta Defensa: visita la Armería.',
     ]);
     expect((Internationalize.arenaFight, Internationalize.arenaVictory), ('Empezar pelea', '¡Victoria!'));
+    expect(Internationalize.arenaChampion, '¡Campeón de la arena!');
   });
 
   test('testWhenASkillIsUsedInTheArenaThenItsNameIsShouted', () {

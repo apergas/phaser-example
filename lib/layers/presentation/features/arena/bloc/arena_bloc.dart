@@ -43,6 +43,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
 
   ArenaEntity? _arena;
   FightAdvice? _advice;
+  bool _isFirstChampionship = false;
 
   ArenaBloc({
     required this._getArenaUseCase,
@@ -115,8 +116,9 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
     final selected = state.data.selected;
     if (state is! ArenaSuccess || selected == null || !state.data.canFight) return;
     switch (_startFightUseCase(levelId: selected)) {
-      case FightPlayedEntity(:final log, :final advice):
+      case FightPlayedEntity(:final log, :final advice, :final isFirstChampionship):
         _advice = advice;
+        _isFirstChampionship = isFirstChampionship;
         final replay = FightReplayData.start(log);
         emit(
           ArenaSuccess(
@@ -159,6 +161,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
       if (playTurns)
         for (var turn = previous.turnIndex + 1; turn <= next.turnIndex; turn++) ..._effectsFor(next, turn),
       if (next.isFinished) FightEndedEffect(isVictory: next.log.isVictory),
+      if (next.isFinished && _isFirstChampionship) const ChampionEffect(),
     ];
     var data = state.data.copyWith(replay: () => next, fighters: _replayFighters(next), effects: effects);
     if (next.isFinished) {
@@ -201,7 +204,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
     if (log.isVictory) {
       return ArenaResultData(
         isVictory: true,
-        title: Internationalize.arenaVictory,
+        title: _isFirstChampionship ? Internationalize.arenaChampion : Internationalize.arenaVictory,
         detail: Internationalize.arenaReward(amount: log.reward[Resource.gold] ?? 0),
       );
     }

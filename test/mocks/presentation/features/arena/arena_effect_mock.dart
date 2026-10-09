@@ -18,6 +18,7 @@ abstract final class ArenaEffectMock {
   static const SkillUsedEffect secondWindUsed = SkillUsedEffect(skill: SkillId.secondWind);
 
   static const FightEndedEffect won = FightEndedEffect(isVictory: true);
+  static const ChampionEffect champion = ChampionEffect();
 
   static const FightEndedEffect lost = FightEndedEffect(isVictory: false);
 

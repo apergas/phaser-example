@@ -22,6 +22,16 @@ abstract final class HeroPanelDataMock {
     skills: SkillItemDataMock.withoutTower,
   );
 
+  static HeroPanelData get newChampion => HeroPanelData(
+    power: 31,
+    attack: 4,
+    defense: 1,
+    health: 30,
+    rows: [GearRowDataMock.weaponNeedsForge, GearRowDataMock.armorNeedsArmory],
+    skills: SkillItemDataMock.withoutTower,
+    isChampion: true,
+  );
+
   static HeroPanelData get readyToBuySword => HeroPanelData(
     power: 31,
     attack: 4,

@@ -10,6 +10,7 @@ class HeroPanelData {
   final int health;
   final List<GearRowData> rows;
   final List<SkillItemData> skills;
+  final bool isChampion;
 
   const HeroPanelData({
     required this.power,
@@ -18,6 +19,7 @@ class HeroPanelData {
     required this.health,
     required this.rows,
     this.skills = const [],
+    this.isChampion = false,
   });
 
   @override
@@ -29,11 +31,14 @@ class HeroPanelData {
           other.defense == defense &&
           other.health == health &&
           const ListEquality<GearRowData>().equals(other.rows, rows) &&
-          const ListEquality<SkillItemData>().equals(other.skills, skills);
+          const ListEquality<SkillItemData>().equals(other.skills, skills) &&
+          other.isChampion == isChampion;
 
   @override
-  int get hashCode => Object.hash(power, attack, defense, health, Object.hashAll(rows), Object.hashAll(skills));
+  int get hashCode =>
+      Object.hash(power, attack, defense, health, Object.hashAll(rows), Object.hashAll(skills), isChampion);
 
   @override
-  String toString() => 'HeroPanelData(power: $power, $attack/$defense/$health, rows: $rows, skills: $skills)';
+  String toString() =>
+      'HeroPanelData(power: $power, $attack/$defense/$health, rows: $rows, skills: $skills, isChampion: $isChampion)';
 }

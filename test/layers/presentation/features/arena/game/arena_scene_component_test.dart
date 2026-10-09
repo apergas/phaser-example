@@ -114,4 +114,16 @@ void main() {
     expect(scene.fighters['enemy-0']!.healthBar.displayedFraction, 0);
     expect(scene.fighters['hero-0']!.healthBar.displayedFraction, closeTo(22 / 30, 1e-9));
   });
+
+  testWithFlameGame('testWhenTheHeroIsCrownedThenConfettiBurstsOverItsHead', (game) async {
+    // given
+    final scene = await _mountedScene(game);
+
+    // when
+    scene.show(ArenaDataMock.crowned);
+    await game.ready();
+
+    // then
+    expect(scene.children.whereType<ParticleBurstComponent>(), hasLength(1));
+  });
 }

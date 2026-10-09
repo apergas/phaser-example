@@ -65,9 +65,34 @@ class _HeroPanelState extends State<HeroPanel> {
   }
 
   Widget _title() {
-    return Text(
-      Internationalize.forestHero.toUpperCase(),
-      style: CustomTextStyles.system13w700.copyWith(color: CustomColors.hudMuted, letterSpacing: 0.78),
+    return Row(
+      spacing: 8,
+      children: [
+        Expanded(
+          child: Text(
+            Internationalize.forestHero.toUpperCase(),
+            style: CustomTextStyles.system13w700.copyWith(color: CustomColors.hudMuted, letterSpacing: 0.78),
+          ),
+        ),
+        if (widget.hero.isChampion) _championBadge(),
+      ],
+    );
+  }
+
+  Widget _championBadge() {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: CustomColors.hudAccentSoft,
+        border: Border.all(color: CustomColors.hudAccent),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        child: Text(
+          Internationalize.forestHeroChampion,
+          style: CustomTextStyles.system13w700.copyWith(color: CustomColors.hudAccent),
+        ),
+      ),
     );
   }
 

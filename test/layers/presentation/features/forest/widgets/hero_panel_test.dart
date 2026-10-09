@@ -37,6 +37,36 @@ void main() {
     expect(find.text(Internationalize.forestHeroSection(section: HeroPanelSection.gear)), findsNothing);
   });
 
+  testWidgets('testWhenTheHeroIsChampionThenTheBadgeIsShownNextToTheTitle', (tester) async {
+    // given
+    final champion = HeroPanelDataMock.newChampion;
+
+    // when
+    await tester.pumpHud(
+      Center(
+        child: HeroPanel(hero: champion, onBuy: (_) {}),
+      ),
+    );
+
+    // then
+    expect(find.text(Internationalize.forestHeroChampion), findsOneWidget);
+  });
+
+  testWidgets('testWhenTheHeroIsNotChampionThenThereIsNoBadge', (tester) async {
+    // given
+    final hero = HeroPanelDataMock.newHero;
+
+    // when
+    await tester.pumpHud(
+      Center(
+        child: HeroPanel(hero: hero, onBuy: (_) {}),
+      ),
+    );
+
+    // then
+    expect(find.text(Internationalize.forestHeroChampion), findsNothing);
+  });
+
   testWidgets('testWhenBuyIsTappedThenReportsThePiece', (tester) async {
     // given
     final bought = <GearId>[];

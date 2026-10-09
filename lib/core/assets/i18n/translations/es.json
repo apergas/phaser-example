@@ -74,6 +74,7 @@
       "attack": "Ataque",
       "defense": "Defensa",
       "health": "Vida",
+      "champion": "Campeón de la arena",
       "weaponStats": "Ataque {attack}",
       "armorStats": "Defensa {defense} · Vida {health}",
       "slot": {
@@ -136,6 +137,7 @@
     "skip": "Saltar",
     "retry": "Reintentar",
     "victory": "¡Victoria!",
+    "champion": "¡Campeón de la arena!",
     "defeat": "Derrota",
     "damage": "−{amount}",
     "heal": "+{amount}",

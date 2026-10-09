@@ -343,6 +343,54 @@ void main() {
   );
 
   blocTest<ArenaBloc, ArenaState>(
+    'testWhenTheChiefFallsForTheFirstTimeThenTheHeroIsCrownedChampion',
+    build: () {
+      // given
+      world = WorldMock.withHero(HeroEntityMock.chiefChallenger);
+      return ArenaBlocMock.make(world, navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      effects = ArenaBlocMock.collectEffects(bloc);
+      bloc
+        ..add(const ArenaStarted())
+        ..add(const ArenaLevelSelected(levelId: ArenaLevelId.barbarianChief))
+        ..add(const ArenaFightRequested())
+        ..add(const ArenaReplaySkipped());
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(effects, [ArenaEffectMock.won, ArenaEffectMock.champion]);
+      expect(bloc.state.data.result, ArenaResultDataMock.championHundredGold);
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
+    'testWhenAChampionBeatsTheChiefAgainThenItIsAnOrdinaryVictory',
+    build: () {
+      // given
+      world = WorldMock.withHero(HeroEntityMock.champion);
+      return ArenaBlocMock.make(world, navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      effects = ArenaBlocMock.collectEffects(bloc);
+      bloc
+        ..add(const ArenaStarted())
+        ..add(const ArenaLevelSelected(levelId: ArenaLevelId.barbarianChief))
+        ..add(const ArenaFightRequested())
+        ..add(const ArenaReplaySkipped());
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(effects, [ArenaEffectMock.won]);
+      expect(bloc.state.data.result, ArenaResultDataMock.victoryThirtyThreeGold);
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
     'testWhenTheReplayIsRunningThenSelectingAndFightingAreIgnored',
     build: () {
       // given

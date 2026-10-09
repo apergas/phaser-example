@@ -74,3 +74,13 @@ final class SkillUsedEffect extends ArenaEffect {
   @override
   int get hashCode => Object.hash(SkillUsedEffect, skill);
 }
+
+final class ChampionEffect extends ArenaEffect {
+  const ChampionEffect();
+
+  @override
+  bool operator ==(Object other) => other is ChampionEffect;
+
+  @override
+  int get hashCode => (ChampionEffect).hashCode;
+}

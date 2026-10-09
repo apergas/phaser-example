@@ -28,6 +28,17 @@ void main() {
     expect(blueprints, (BlueprintEntityMock.forge, BlueprintEntityMock.armory));
   });
 
+  test('testWhenAskingForTheMageTowerThenItCostsWoodAndGoldAndTakesTwelveHits', () {
+    // given
+    const id = BlueprintId.mageTower;
+
+    // when
+    final blueprint = Blueprints.of(id);
+
+    // then
+    expect(blueprint, BlueprintEntityMock.mageTower);
+  });
+
   test('testWhenListingBlueprintsThenEveryIdAppearsOnceInDeclarationOrder', () {
     // given
     final ids = Blueprints.all.map((blueprint) => blueprint.id).toList();

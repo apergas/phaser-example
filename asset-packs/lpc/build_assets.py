@@ -9,7 +9,8 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
   hero-{chop,hammer}.png           128x128 work animations: body slash frames between the tool's
                                    back and front layers (same layout as the LPC generator)
   forest.png + forest.json         JSON-hash atlas (TexturePacker format): trees (pivot = trunk base), decor, stump,
-                                   axe pickup, the house, the forge and the armory (pivot = bottom centre)
+                                   axe pickup, the house, the forge, the armory and the mage tower
+                                   (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
   arena.png + arena.json           JSON-hash atlas for the arena: hero, bandit and barbarian idle (64px, axe in
                                    hand) and slash (128px) frames in their one facing (pivot = feet), the wolf
@@ -165,6 +166,9 @@ FORGE_WALL_BOX = (0, 256, 96, 352)  # cottage.png, stone wall with timber frame
 CHIMNEY_BOX = (448, 480, 480, 512)  # terrain_atlas.png, cracked stone block
 CHIMNEY_RISE = 18  # pixels the chimney sticks out above the roof
 CHIMNEY_INSET = 20  # distance from the chimney's right edge to the roof's right edge
+MAGE_TOWER_ROOF = [(30, 16, 40), (38, 20, 52), (62, 30, 92), (78, 40, 112), (96, 52, 136), (110, 62, 152), (134, 84, 178), (168, 120, 210), (190, 150, 226)]
+MAGE_TOWER_WALL_BOX = (96, 256, 192, 352)  # cottage.png, stone wall with long diagonal braces
+MAGE_TOWER_ROOF_STRETCH = 1.4  # the violet roof is drawn 40 % taller, like a spire
 
 
 def trim(image: Image.Image, name: str) -> Image.Image:
@@ -214,14 +218,18 @@ def pack(frames: dict, width: int = 1024, padding: int = 2) -> tuple:
     return atlas, positions
 
 
-def build_cottage(wall_box: tuple, roof_colours: list = None, chimney: Image.Image = None) -> Image.Image:
-    """Wall, door and thatched roof; optionally a recoloured roof and a chimney sticking out of it."""
+def build_cottage(
+    wall_box: tuple, roof_colours: list = None, chimney: Image.Image = None, roof_stretch: float = 1
+) -> Image.Image:
+    """Wall, door and thatched roof; optionally a recoloured, taller roof and a chimney sticking out of it."""
     buildings = SOURCES / "buildings"
     wall = Image.open(buildings / "cottage.png").convert("RGBA").crop(wall_box)
     roof = Image.open(buildings / "thatched-roof.png").convert("RGBA").crop(HOUSE_ROOF_BOX)
     roof = roof.crop(roof.getbbox())
     if roof_colours is not None:
         roof = recolour(roof, ROOF_RAMP, roof_colours)
+    if roof_stretch != 1:
+        roof = roof.resize((roof.width, round(roof.height * roof_stretch)), Image.NEAREST)
     door = Image.open(buildings / "doors_0.png").convert("RGBA").crop(HOUSE_DOOR_BOX)
     door = door.crop(door.getbbox())
 
@@ -247,6 +255,10 @@ def build_forge(terrain: Image.Image) -> Image.Image:
 
 def build_armory() -> Image.Image:
     return build_cottage(HOUSE_WALL_BOX, ARMORY_ROOF)
+
+
+def build_mage_tower() -> Image.Image:
+    return build_cottage(MAGE_TOWER_WALL_BOX, MAGE_TOWER_ROOF, roof_stretch=MAGE_TOWER_ROOF_STRETCH)
 
 
 def build_forest() -> None:
@@ -277,6 +289,8 @@ def build_forest() -> None:
     pivots["forge"] = {"x": 0.5, "y": 1}
     frames["armory"] = build_armory()
     pivots["armory"] = {"x": 0.5, "y": 1}
+    frames["mage-tower"] = build_mage_tower()
+    pivots["mage-tower"] = {"x": 0.5, "y": 1}
 
     write_atlas("forest", frames, pivots)
 

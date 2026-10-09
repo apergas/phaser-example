@@ -77,6 +77,10 @@ import 'package:rpg/layers/domain/use-cases/hero/get_gear_options_use_case.dart'
     as _i459;
 import 'package:rpg/layers/domain/use-cases/hero/get_hero_status_use_case.dart'
     as _i108;
+import 'package:rpg/layers/domain/use-cases/hero/get_skill_options_use_case.dart'
+    as _i481;
+import 'package:rpg/layers/domain/use-cases/hero/learn_skill_use_case.dart'
+    as _i874;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -195,6 +199,16 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i108.GetHeroStatusUseCase>(
       () => _i108.GetHeroStatusUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i481.GetSkillOptionsUseCase>(
+      () => _i481.GetSkillOptionsUseCase(
+        sessionRepository: gh<_i745.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i874.LearnSkillUseCase>(
+      () => _i874.LearnSkillUseCase(
         sessionRepository: gh<_i745.GameSessionRepository>(),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/decoration_kind.dart';
 import 'package:rpg/core/config/constants/enum/forest/facing.dart';
 import 'package:rpg/core/config/constants/enum/gear_id.dart';
+import 'package:rpg/core/config/constants/enum/skill_id.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 import 'package:rpg/core/config/constants/enum/tree_kind.dart';
 import 'package:rpg/layers/domain/entities/building/building_entity.dart';
@@ -173,5 +174,11 @@ abstract final class ForestDataMock {
     world: world,
     player: player,
     effects: const [GearPurchasedEffect(gear: GearId.shortSword)],
+  );
+
+  static final ForestData skillLearned = ForestData(
+    world: world,
+    player: player,
+    effects: const [SkillLearnedEffect(skill: SkillId.doubleStrike)],
   );
 }

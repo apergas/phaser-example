@@ -5,6 +5,8 @@ import 'package:flame/components.dart';
 
 import '../../../../../core/assets/i18n/internationalize.dart';
 import '../../../../../core/config/constants/enum/fight_side.dart';
+import '../../../../../core/config/constants/enum/skill_id.dart';
+import '../../../../domain/entities/geometry/position_entity.dart';
 import '../../../theme/colors/custom_colors.dart';
 import '../../forest/game/components/floating_text_component.dart';
 import '../../forest/game/particles/particle_burst_component.dart';
@@ -15,6 +17,7 @@ import '../models/fighter_render_data.dart';
 import 'atlas/arena_assets.dart';
 import 'components/arena_ground_component.dart';
 import 'components/fighter_component.dart';
+import 'render/arena_render_constants.dart';
 
 class ArenaSceneComponent extends Component {
   final ArenaAssets _assets;
@@ -64,9 +67,11 @@ class ArenaSceneComponent extends Component {
       case HitEffect(:final side, :final index, :final damage):
         _onHit(side, index, damage);
       case DodgeEffect(:final side, :final index):
-        _float(side, index, Internationalize.arenaDodge, FloatingTextComponent.defaultColor);
+        _float(side, index, Internationalize.arenaSkillUsed(id: SkillId.dodge), FloatingTextComponent.defaultColor);
       case HealEffect(:final side, :final index, :final amount):
         _float(side, index, Internationalize.arenaHeal(amount: amount), CustomColors.success);
+      case SkillUsedEffect(:final skill):
+        _floatSkillName(skill);
       case FightEndedEffect():
         for (final fighter in _fighters.values) {
           fighter.healthBar.snap();
@@ -95,6 +100,18 @@ class ArenaSceneComponent extends Component {
           random: _random,
         ),
         sortY: fighter.position.y,
+      ),
+    );
+  }
+
+  void _floatSkillName(SkillId skill) {
+    final hero = _fighters[FighterRenderData.keyOf(FightSide.hero, 0)];
+    if (hero == null) return;
+    final head = hero.headPoint;
+    add(
+      FloatingTextComponent(
+        text: Internationalize.arenaSkillUsed(id: skill),
+        at: PositionEntity(x: head.x, y: head.y - ArenaRenderConstants.skillNameLift),
       ),
     );
   }

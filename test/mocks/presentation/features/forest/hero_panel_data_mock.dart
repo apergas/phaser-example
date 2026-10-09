@@ -1,6 +1,7 @@
 import 'package:rpg/layers/presentation/features/forest/models/hero_panel_data.dart';
 
 import 'gear_row_data_mock.dart';
+import 'skill_item_data_mock.dart';
 
 abstract final class HeroPanelDataMock {
   static HeroPanelData get newHero => HeroPanelData(
@@ -9,6 +10,7 @@ abstract final class HeroPanelDataMock {
     defense: 1,
     health: 30,
     rows: [GearRowDataMock.weaponNeedsForge, GearRowDataMock.armorNeedsArmory],
+    skills: SkillItemDataMock.withoutTower,
   );
 
   static HeroPanelData get newHeroCopy => HeroPanelData(
@@ -17,6 +19,7 @@ abstract final class HeroPanelDataMock {
     defense: 1,
     health: 30,
     rows: [GearRowDataMock.weaponNeedsForge, GearRowDataMock.armorNeedsArmory],
+    skills: SkillItemDataMock.withoutTower,
   );
 
   static HeroPanelData get readyToBuySword => HeroPanelData(
@@ -25,5 +28,15 @@ abstract final class HeroPanelDataMock {
     defense: 1,
     health: 30,
     rows: [GearRowDataMock.weaponReadyToBuy, GearRowDataMock.armorNeedsArmory],
+    skills: SkillItemDataMock.withoutTower,
+  );
+
+  static HeroPanelData get readyToLearnDoubleStrike => HeroPanelData(
+    power: 31,
+    attack: 4,
+    defense: 1,
+    health: 30,
+    rows: [GearRowDataMock.weaponNeedsForge, GearRowDataMock.armorNeedsArmory],
+    skills: SkillItemDataMock.readyToLearnDoubleStrike,
   );
 }

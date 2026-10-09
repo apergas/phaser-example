@@ -9,6 +9,7 @@ import 'package:rpg/core/config/constants/enum/gear_id.dart';
 import 'package:rpg/core/config/constants/enum/gear_slot.dart';
 import 'package:rpg/core/config/constants/enum/quest_id.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:rpg/core/config/constants/enum/skill_id.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
 
 import '../../../helpers/spanish_translations.dart';
@@ -133,7 +134,7 @@ void main() {
 
     // then
     expect(untranslated, isEmpty);
-    expect(names, ['Casa', 'Herrería', 'Armería']);
+    expect(names, ['Casa', 'Herrería', 'Armería', 'Torre de magia']);
   });
 
   test('testWhenNamingEveryGearPieceThenUsesTheSpanishNames', () {
@@ -203,6 +204,45 @@ void main() {
     ]);
   });
 
+  test('testWhenNamingEverySkillThenUsesTheSpanishNamesAndDescriptions', () {
+    // given
+    // when
+    final names = SkillId.values.map((id) => Internationalize.forestSkillName(id: id)).toList();
+    final descriptions = SkillId.values.map((id) => Internationalize.forestSkillDescription(id: id)).toList();
+
+    // then
+    expect(names, ['Golpe doble', 'Segundo aliento', 'Esquiva']);
+    expect(descriptions, [
+      'Cada tercer ataque golpea dos veces.',
+      'Una vez por pelea, por debajo del 30 % de vida recupera el 40 %.',
+      'Un 20 % de posibilidades de esquivar cada golpe.',
+    ]);
+  });
+
+  test('testWhenReadingEverySkillTextThenNoneFallsBackToItsKey', () {
+    // given
+    final texts = [
+      Internationalize.forestHeroLearn,
+      Internationalize.forestHeroKnown,
+      Internationalize.forestHeroNeedsBuilding(name: Internationalize.forestBlueprint(id: BlueprintId.mageTower)),
+      Internationalize.forestMessageSkillLearned(name: Internationalize.forestSkillName(id: SkillId.doubleStrike)),
+      Internationalize.forestMessageSkillAlreadyKnown,
+    ];
+
+    // when
+    final untranslated = texts.where((text) => text.startsWith('forest.')).toList();
+
+    // then
+    expect(untranslated, isEmpty);
+    expect(texts, [
+      'Aprender',
+      'Aprendida',
+      'Construye la Torre de magia',
+      'Has aprendido: Golpe doble',
+      'Ya conoces esa habilidad.',
+    ]);
+  });
+
   test('testWhenFormattingArenaNumbersThenUsesTheSpanishTexts', () {
     // given
     const amount = 10;
@@ -251,5 +291,14 @@ void main() {
       'Te falta Defensa: visita la Armería.',
     ]);
     expect((Internationalize.arenaFight, Internationalize.arenaVictory), ('Empezar pelea', '¡Victoria!'));
+  });
+
+  test('testWhenASkillIsUsedInTheArenaThenItsNameIsShouted', () {
+    // given
+    // when
+    final shouts = SkillId.values.map((id) => Internationalize.arenaSkillUsed(id: id)).toList();
+
+    // then
+    expect(shouts, ['¡Golpe doble!', '¡Segundo aliento!', '¡Esquiva!']);
   });
 }

@@ -62,4 +62,6 @@ abstract final class HeroEntityMock {
     armorTier: 3,
     clearedLevels: {ArenaLevelId.barbarian},
   );
+
+  static const HeroEntity withDoubleStrike = HeroEntity(skills: {SkillId.doubleStrike});
 }

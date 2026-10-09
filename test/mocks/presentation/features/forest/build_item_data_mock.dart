@@ -37,4 +37,20 @@ abstract final class BuildItemDataMock {
   static List<BuildItemData> get everyBlueprintUnaffordable => [
     for (final id in BlueprintId.values) workshopUnaffordable(id, missingWood: 25),
   ];
+
+  static BuildItemData mageTowerUnaffordable({required int missingWood}) => BuildItemData(
+    blueprint: BlueprintId.mageTower,
+    name: Internationalize.forestBlueprint(id: BlueprintId.mageTower),
+    costText: [
+      Internationalize.forestAmount(resource: Resource.wood, amount: 30),
+      Internationalize.forestAmount(resource: Resource.gold, amount: 40),
+    ].join(', '),
+    missingText: Internationalize.forestMissing(
+      amounts: [
+        Internationalize.forestAmount(resource: Resource.wood, amount: missingWood),
+        Internationalize.forestAmount(resource: Resource.gold, amount: 40),
+      ].join(', '),
+    ),
+    isEnabled: false,
+  );
 }

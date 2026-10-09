@@ -23,4 +23,10 @@ abstract final class BuildOptionEntityMock {
     cost: const {Resource.wood: 25},
     missing: {Resource.wood: missingWood},
   );
+
+  static BuildOptionEntity mageTower({required int missingWood}) => BuildOptionEntity(
+    blueprint: BlueprintId.mageTower,
+    cost: const {Resource.wood: 30, Resource.gold: 40},
+    missing: {Resource.wood: missingWood, Resource.gold: 40},
+  );
 }

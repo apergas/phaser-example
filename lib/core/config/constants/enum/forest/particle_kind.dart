@@ -1,1 +1,1 @@
-enum ParticleKind { woodChip, dust, sparkle, bloodDrop }
+enum ParticleKind { woodChip, dust, sparkle, bloodDrop, magicSparkle }

@@ -103,12 +103,16 @@ abstract final class ParticleBursts {
     });
   }
 
-  static List<Particle> sparkles({required PositionEntity feet, required math.Random random}) {
+  static List<Particle> sparkles({
+    required PositionEntity feet,
+    required math.Random random,
+    ParticleKind kind = ParticleKind.sparkle,
+  }) {
     return List.generate(sparklesPerPurchase, (_) {
       final speed = _between(random, sparkleSpeedMin, sparkleSpeedMax);
       final angle = _between(random, sparkleAngleMin, sparkleAngleMax) * math.pi / 180;
       return Particle(
-        kind: ParticleKind.sparkle,
+        kind: kind,
         origin: PositionEntity(x: feet.x + _between(random, -sparkleSpreadX, sparkleSpreadX), y: feet.y - sparkleLift),
         velocityX: speed * math.cos(angle),
         velocityY: speed * math.sin(angle),

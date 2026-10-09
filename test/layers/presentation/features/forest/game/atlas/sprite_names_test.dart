@@ -50,4 +50,17 @@ void main() {
     expect(names, ('forge', 'armory'));
     expect(offsets, (24, 24));
   });
+
+  test('testWhenNamingTheMageTowerThenUsesItsFrameAndTheHouseFrontOffset', () {
+    // given
+    const id = BlueprintId.mageTower;
+
+    // when
+    final name = SpriteNames.building(id);
+    final offset = RenderConstants.buildingFrontOffset(id);
+
+    // then
+    expect(name, 'mage-tower');
+    expect(offset, 24);
+  });
 }

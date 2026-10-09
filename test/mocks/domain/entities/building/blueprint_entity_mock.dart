@@ -36,4 +36,11 @@ abstract final class BlueprintEntityMock {
     hitsToBuild: 10,
     footprintRadius: 40,
   );
+
+  static const BlueprintEntity mageTower = BlueprintEntity(
+    id: BlueprintId.mageTower,
+    cost: {Resource.wood: 30, Resource.gold: 40},
+    hitsToBuild: 12,
+    footprintRadius: 40,
+  );
 }

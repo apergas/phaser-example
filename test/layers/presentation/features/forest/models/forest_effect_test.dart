@@ -41,4 +41,18 @@ void main() {
     expect(first.hashCode, ForestEffectMock.shortSwordPurchasedCopy.hashCode);
     expect(otherGear, isFalse);
   });
+
+  test('testWhenComparingLearnedSkillsThenOnlyTheSameSkillIsEqual', () {
+    // given
+    const first = ForestEffectMock.doubleStrikeLearned;
+
+    // when
+    final sameSkill = first == ForestEffectMock.doubleStrikeLearnedCopy;
+    final otherSkill = first == ForestEffectMock.dodgeLearned;
+
+    // then
+    expect(sameSkill, isTrue);
+    expect(first.hashCode, ForestEffectMock.doubleStrikeLearnedCopy.hashCode);
+    expect(otherSkill, isFalse);
+  });
 }

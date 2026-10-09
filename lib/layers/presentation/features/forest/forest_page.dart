@@ -21,6 +21,8 @@ import '../../../domain/use-cases/game/start_game_use_case.dart';
 import '../../../domain/use-cases/hero/buy_gear_use_case.dart';
 import '../../../domain/use-cases/hero/get_gear_options_use_case.dart';
 import '../../../domain/use-cases/hero/get_hero_status_use_case.dart';
+import '../../../domain/use-cases/hero/get_skill_options_use_case.dart';
+import '../../../domain/use-cases/hero/learn_skill_use_case.dart';
 import 'bloc/forest_bloc.dart';
 import '../../theme/colors/custom_colors.dart';
 import '../../theme/styles/custom_text_styles.dart';
@@ -55,6 +57,8 @@ class ForestPage extends StatelessWidget {
         getHeroStatusUseCase: locator.get<GetHeroStatusUseCase>(),
         getGearOptionsUseCase: locator.get<GetGearOptionsUseCase>(),
         buyGearUseCase: locator.get<BuyGearUseCase>(),
+        getSkillOptionsUseCase: locator.get<GetSkillOptionsUseCase>(),
+        learnSkillUseCase: locator.get<LearnSkillUseCase>(),
         navigationService: locator.get<NavigationService>(),
       )..add(const ForestStarted()),
       child: _ForestView(routeObserver: routeObserver),
@@ -182,6 +186,7 @@ class _ForestViewState extends State<_ForestView> with RouteAware {
       onBuildSelected: (blueprint) => bloc.add(ForestBuildRequested(blueprint: blueprint)),
       onGearSelected: (gear) => bloc.add(ForestGearPurchaseRequested(gear: gear)),
       onArenaPressed: () => bloc.add(const ForestArenaRequested()),
+      onSkillSelected: (skill) => bloc.add(ForestSkillLearnRequested(skill: skill)),
     );
   }
 

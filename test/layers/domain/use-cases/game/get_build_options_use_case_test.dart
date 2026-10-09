@@ -30,6 +30,7 @@ void main() {
       BuildOptionEntityMock.unaffordable,
       BuildOptionEntityMock.workshop(BlueprintId.forge, missingWood: 15),
       BuildOptionEntityMock.workshop(BlueprintId.armory, missingWood: 15),
+      BuildOptionEntityMock.mageTower(missingWood: 20),
     ]);
   });
 
@@ -45,6 +46,7 @@ void main() {
       BuildOptionEntityMock.mock,
       BuildOptionEntityMock.workshop(BlueprintId.forge, missingWood: 10),
       BuildOptionEntityMock.workshop(BlueprintId.armory, missingWood: 10),
+      BuildOptionEntityMock.mageTower(missingWood: 15),
     ]);
   });
 
@@ -60,6 +62,7 @@ void main() {
       BuildOptionEntityMock.mock,
       BuildOptionEntityMock.workshop(BlueprintId.forge, missingWood: 8),
       BuildOptionEntityMock.workshop(BlueprintId.armory, missingWood: 8),
+      BuildOptionEntityMock.mageTower(missingWood: 13),
     ]);
   });
 }

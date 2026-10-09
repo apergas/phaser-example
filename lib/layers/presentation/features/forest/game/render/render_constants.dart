@@ -28,6 +28,7 @@ abstract final class RenderConstants {
     BlueprintId.house => 24,
     BlueprintId.forge => 24,
     BlueprintId.armory => 24,
+    BlueprintId.mageTower => 24,
   };
 
   static const double cameraLerp = 0.1;

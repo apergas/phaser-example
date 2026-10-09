@@ -12,6 +12,7 @@ import '../../../../../core/config/constants/enum/fight_action.dart';
 import '../../../../../core/config/constants/enum/fight_advice.dart';
 import '../../../../../core/config/constants/enum/fight_side.dart';
 import '../../../../../core/config/constants/enum/resource.dart';
+import '../../../../../core/config/constants/enum/skill_id.dart';
 import '../../../../../core/error-handling/exceptions/app_exceptions.dart';
 import '../../../../../core/error-handling/exceptions/custom_exception.dart';
 import '../../../../../core/services/navigation/source/navigation_service.dart';
@@ -156,7 +157,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
   }) {
     final effects = <ArenaEffect>[
       if (playTurns)
-        for (var turn = previous.turnIndex + 1; turn <= next.turnIndex; turn++) _effectFor(next, turn),
+        for (var turn = previous.turnIndex + 1; turn <= next.turnIndex; turn++) ..._effectsFor(next, turn),
       if (next.isFinished) FightEndedEffect(isVictory: next.log.isVictory),
     ];
     var data = state.data.copyWith(replay: () => next, fighters: _replayFighters(next), effects: effects);
@@ -166,6 +167,16 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
       data = _withArena(data, arena).copyWith(result: () => _result(next));
     }
     emit(ArenaSuccess(data: data));
+  }
+
+  List<ArenaEffect> _effectsFor(FightReplayData replay, int turnIndex) {
+    final effect = _effectFor(replay, turnIndex);
+    return switch (replay.log.turns[turnIndex].action) {
+      FightAction.hit => [effect],
+      FightAction.doubleStrike => [effect, const SkillUsedEffect(skill: SkillId.doubleStrike)],
+      FightAction.dodge => [effect],
+      FightAction.secondWind => [effect, const SkillUsedEffect(skill: SkillId.secondWind)],
+    };
   }
 
   ArenaEffect _effectFor(FightReplayData replay, int turnIndex) {

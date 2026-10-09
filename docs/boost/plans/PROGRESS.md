@@ -51,9 +51,9 @@
 | C4 Lobos y oso | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Lobo de Redshrike y oso de tapatilorenzo (CC-BY / OGA-BY, aceptado); niveles de animales y salto hacia el objetivo. |
 | C5 Torre de magia | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Torre de magia, catálogo `Skills`, pestaña *Habilidades* y nombres de las habilidades en la arena. Unida tras C4 con dos conflictos aditivos; 612 tests en verde. |
 | C6 Bárbaros y jefe | ✅ | `feature/PROJECT-X-arena` (#51) | Bárbaros y jefe con capas LPC reales (cuero, barba, casco; jefe con casco vikingo), hacha de siempre; anillo bajo el objetivo y caídos al 50 %; *Campeón de la arena* con confeti e insignia en el panel *Héroe*. 630 tests en verde; prueba manual en Chrome y Android. |
-| C7 Misiones y equilibrado | ✅ | `feature/PROJECT-C7-hero-quests-balance` (falta la PR) | Daño por rangos, línea de misiones *Héroe*, equipo sólo con oro y test de equilibrado con los números finales (tabla en `GAME_DESIGN.md` 3.8). 639 tests en verde. |
+| C7 Misiones y equilibrado | ✅ | `feature/PROJECT-X-arena` (#52) | Daño por rangos, línea de misiones *Héroe*, equipo sólo con oro y test de equilibrado con los números finales (tabla en `GAME_DESIGN.md` 3.8). 639 tests en verde. |
 
 ## Siguiente paso
 
-- **Arena:** PR de C7 a `feature/PROJECT-X-arena`. Con eso la hoja de ruta de la arena está completa: después, el pulido de `ARENA-FIXES.md` (más los mensajes de misiones repetidos) y la PR de `feature/PROJECT-X-arena` a `develop`. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
+- **Arena:** hoja de ruta completa (C0–C7 en `feature/PROJECT-X-arena`). Siguiente: el pulido de `ARENA-FIXES.md` (más los mensajes de misiones repetidos) y, después, la PR de `feature/PROJECT-X-arena` a `develop` con la prueba manual en web, Android e iOS. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
 - **Aldea:** implementar F1 desde `feature/PROJECT-X-town`.

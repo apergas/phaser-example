@@ -98,7 +98,7 @@ Todo en `feature/PROJECT-X-arena`, una tarea detrás de otra, en el orden de la 
   - Create (descargados): `asset-packs/lpc/sources/tools/sword-{bronze,iron,steel}_{bg,fg,idle_bg,idle_fg,walk_bg,walk_fg}.png`, `asset-packs/lpc/sources/barbarians/*__walk.png`
   - Modify (generados): `lib/core/assets/images/lpc/arena.png`, `arena.json`
 
-- [ ] **Step 1: Descargar las espadas y las hojas de andar de los bárbaros**
+- [x] **Step 1: Descargar las espadas y las hojas de andar de los bárbaros**
 
 ```bash
 B=https://raw.githubusercontent.com/liberatedpixelcup/Universal-LPC-Spritesheet-Character-Generator/58ce1aa479e4df32845a73a5d0afc221c3a893c2/spritesheets
@@ -152,7 +152,7 @@ ff32f0b0907f9abd529996028d2d049e07d8ba7b8ef3d64bcda4ec44f3a863fd  hat_helmet_bar
 
 Si un sha256 no coincide, para. No se ejecuta nada de lo descargado.
 
-- [ ] **Step 2: Tests y mocks (rojo)**
+- [x] **Step 2: Tests y mocks (rojo)**
 
 ```diff
 diff --git a/test/core/assets/i18n/internationalize_test.dart b/test/core/assets/i18n/internationalize_test.dart
@@ -410,7 +410,7 @@ index b178561..7bb1287 100644
 Run: `flutter test test/layers/presentation/features/arena`
 Expected: no compila (`GearId` en `FighterRenderData`, `heroWith`, `walk`, `banditVeteran` no existen).
 
-- [ ] **Step 3: Script, código y textos**
+- [x] **Step 3: Script, código y textos**
 
 ```diff
 diff --git a/CLAUDE.md b/CLAUDE.md
@@ -775,7 +775,7 @@ index 1ceb034..0823697 100644
  }
 ```
 
-- [ ] **Step 4: Generar el atlas (verde)**
+- [x] **Step 4: Generar el atlas (verde)**
 
 ```bash
 cd asset-packs/lpc && python3 build_assets.py && cd ../.. && git status --short
@@ -784,7 +784,7 @@ flutter test
 
 Expected: sólo cambian `arena.png` (1024 × 1370) y `arena.json` además de lo anterior; **642 tests** en verde. Abre `arena.png` y comprueba el héroe con el hacha y las tres espadas, el veterano (camisa azul, espada) y los bárbaros andando.
 
-- [ ] **Step 5: Verificación y commit**
+- [x] **Step 5: Verificación y commit**
 
 ```bash
 dart run build_runner build --delete-conflicting-outputs && git diff --exit-code -- lib/core/config/di/di.config.dart '*.mocks.dart'
@@ -807,7 +807,7 @@ git commit -m "[PROJECT-C8]: Arm the arena fighters and give the veteran his own
   - Modify: `test/layers/presentation/features/arena/game/render/arena_frames_test.dart`
   - Modify: `test/layers/presentation/features/arena/models/fight_replay_data_test.dart`
 
-- [ ] **Step 1: Tests (rojo)**
+- [x] **Step 1: Tests (rojo)**
 
 ```diff
 diff --git a/test/layers/presentation/features/arena/arena_page_test.dart b/test/layers/presentation/features/arena/arena_page_test.dart
@@ -1018,7 +1018,7 @@ index de56a87..ce671ca 100644
 Run: `flutter test test/layers/presentation/features/arena`
 Expected: FAIL (los tiempos son de turnos de 600 ms y las personas no se mueven).
 
-- [ ] **Step 2: Código (verde)**
+- [x] **Step 2: Código (verde)**
 
 ```diff
 diff --git a/CLAUDE.md b/CLAUDE.md
@@ -1136,7 +1136,7 @@ index 29eb036..e76f2b1 100644
 
 Run: `flutter test` → **642** en verde.
 
-- [ ] **Step 3: Verificación y commit**
+- [x] **Step 3: Verificación y commit**
 
 ```bash
 flutter analyze
@@ -1154,7 +1154,7 @@ git commit -m "[PROJECT-C8]: Walk up to the target, strike and walk back"
   - Modify: `lib/layers/presentation/features/forest/widgets/hud_overlay.dart`
   - Modify: `test/layers/presentation/features/forest/widgets/hud_overlay_test.dart`
 
-- [ ] **Step 1: Tests (rojo)**
+- [x] **Step 1: Tests (rojo)**
 
 ```diff
 diff --git a/test/layers/presentation/features/forest/widgets/hud_overlay_test.dart b/test/layers/presentation/features/forest/widgets/hud_overlay_test.dart
@@ -1183,7 +1183,7 @@ index a6863ba..53cbc36 100644
 
 Run: `flutter test test/layers/presentation/features/forest/widgets/hud_overlay_test.dart` → FAIL (botones a la derecha).
 
-- [ ] **Step 2: Código (verde)**
+- [x] **Step 2: Código (verde)**
 
 ```diff
 diff --git a/CLAUDE.md b/CLAUDE.md
@@ -1251,7 +1251,7 @@ index 88467e3..88f1f29 100644
 
 Run: `flutter test` → **642** en verde.
 
-- [ ] **Step 3: Verificación y commit**
+- [x] **Step 3: Verificación y commit**
 
 ```bash
 flutter analyze
@@ -1269,7 +1269,7 @@ git commit -m "[PROJECT-C8]: Align the narrow HUD buttons with the resource bar"
   - Modify: `lib/layers/presentation/features/forest/bloc/forest_bloc.dart`
   - Modify: `test/layers/presentation/features/forest/bloc/forest_bloc_hero_test.dart`
 
-- [ ] **Step 1: Test (rojo)**
+- [x] **Step 1: Test (rojo)**
 
 ```diff
 diff --git a/test/layers/presentation/features/forest/bloc/forest_bloc_hero_test.dart b/test/layers/presentation/features/forest/bloc/forest_bloc_hero_test.dart
@@ -1322,7 +1322,7 @@ index 0935eb7..6d40649 100644
 
 Run: `flutter test test/layers/presentation/features/forest/bloc/forest_bloc_hero_test.dart` → FAIL (el mensaje de línea sale varias veces).
 
-- [ ] **Step 2: Código (verde)**
+- [x] **Step 2: Código (verde)**
 
 ```diff
 diff --git a/CLAUDE.md b/CLAUDE.md
@@ -1406,7 +1406,7 @@ index 91a217e..0843eca 100644
 
 Run: `flutter test` → **643** en verde.
 
-- [ ] **Step 3: Verificación y commit**
+- [x] **Step 3: Verificación y commit**
 
 ```bash
 flutter analyze
@@ -1429,7 +1429,7 @@ git commit -m "[PROJECT-C8]: Announce the quests completed in one tick together"
   - Modify: `test/mocks/presentation/features/arena/arena_data_mock.dart`
   - Modify: `test/mocks/presentation/features/arena/arena_effect_mock.dart`
 
-- [ ] **Step 1: Tests (rojo)**
+- [x] **Step 1: Tests (rojo)**
 
 ```diff
 diff --git a/test/layers/presentation/features/arena/bloc/arena_bloc_test.dart b/test/layers/presentation/features/arena/bloc/arena_bloc_test.dart
@@ -1552,7 +1552,7 @@ index d3ec224..ab2f9a2 100644
 
 Run: `flutter test test/layers/presentation/features/arena` → FAIL (el error no se captura y el "−0" flota).
 
-- [ ] **Step 2: Código y documentación (verde)**
+- [x] **Step 2: Código y documentación (verde)**
 
 ```diff
 diff --git a/docs/boost/plans/2026-10-06-hero-arena/ARENA-FIXES.md b/docs/boost/plans/2026-10-06-hero-arena/ARENA-FIXES.md
@@ -1659,7 +1659,7 @@ index f8c824a..8dc2fb2 100644
 
 Run: `flutter test` → **645** en verde.
 
-- [ ] **Step 3: Verificación y commit**
+- [x] **Step 3: Verificación y commit**
 
 ```bash
 dart run build_runner build --delete-conflicting-outputs && git diff --exit-code -- lib/core/config/di/di.config.dart '*.mocks.dart'

@@ -6,27 +6,30 @@ import '../entities/gear/gear_entity.dart';
 
 abstract final class Gear {
   static const List<GearEntity> all = [
-    GearEntity(id: GearId.woodcutterAxe, slot: GearSlot.weapon, tier: 0, cost: {}, attack: 4),
+    GearEntity(id: GearId.woodcutterAxe, slot: GearSlot.weapon, tier: 0, cost: {}, attackMin: 3, attackMax: 5),
     GearEntity(
       id: GearId.shortSword,
       slot: GearSlot.weapon,
       tier: 1,
       cost: {Resource.wood: 20, Resource.gold: 10},
-      attack: 7,
+      attackMin: 6,
+      attackMax: 8,
     ),
     GearEntity(
       id: GearId.ironSword,
       slot: GearSlot.weapon,
       tier: 2,
       cost: {Resource.wood: 30, Resource.gold: 40},
-      attack: 10,
+      attackMin: 9,
+      attackMax: 11,
     ),
     GearEntity(
       id: GearId.steelSword,
       slot: GearSlot.weapon,
       tier: 3,
       cost: {Resource.wood: 40, Resource.gold: 120},
-      attack: 14,
+      attackMin: 12,
+      attackMax: 16,
     ),
     GearEntity(id: GearId.workClothes, slot: GearSlot.armor, tier: 0, cost: {}, defense: 1, health: 30),
     GearEntity(

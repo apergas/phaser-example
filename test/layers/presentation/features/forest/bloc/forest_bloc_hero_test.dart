@@ -109,7 +109,7 @@ void main() {
         ForestBlocMock.shownMessages(navigationService),
         contains(Internationalize.forestMessageGearPurchased(name: Internationalize.forestGear(id: GearId.shortSword))),
       );
-      expect((hero.attack, hero.power), (7, 40));
+      expect((hero.attack, hero.power), (Internationalize.forestHeroAttackRange(min: 6, max: 8), 40));
       expect(hero.rows.first.equipped, GearItemDataMock.shortSwordEquipped);
     },
   );
@@ -140,7 +140,7 @@ void main() {
           Internationalize.forestHeroNeedsBuilding(name: Internationalize.forestBlueprint(id: BlueprintId.armory)),
         ),
       );
-      expect(bloc.state.data.hud!.hero.attack, 4);
+      expect(bloc.state.data.hud!.hero.attack, Internationalize.forestHeroAttackRange(min: 3, max: 5));
     },
   );
 

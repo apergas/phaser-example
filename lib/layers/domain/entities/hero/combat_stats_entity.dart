@@ -1,18 +1,25 @@
 class CombatStatsEntity {
-  final int attack;
+  final int attackMin;
+  final int attackMax;
   final int defense;
   final int health;
 
-  const CombatStatsEntity({required this.attack, required this.defense, required this.health})
-    : assert(attack >= 0),
-      assert(defense >= 0),
-      assert(health > 0);
+  const CombatStatsEntity({
+    required this.attackMin,
+    required this.attackMax,
+    required this.defense,
+    required this.health,
+  }) : assert(attackMin >= 0),
+       assert(attackMax >= attackMin),
+       assert(defense >= 0),
+       assert(health > 0);
 
-  int get power => attack * 3 + defense * 4 + health ~/ 2;
+  int get power => (attackMin + attackMax) * 3 ~/ 2 + defense * 4 + health ~/ 2;
 
-  CombatStatsEntity copyWith({int? attack, int? defense, int? health}) {
+  CombatStatsEntity copyWith({int? attackMin, int? attackMax, int? defense, int? health}) {
     return CombatStatsEntity(
-      attack: attack ?? this.attack,
+      attackMin: attackMin ?? this.attackMin,
+      attackMax: attackMax ?? this.attackMax,
       defense: defense ?? this.defense,
       health: health ?? this.health,
     );
@@ -20,11 +27,16 @@ class CombatStatsEntity {
 
   @override
   bool operator ==(Object other) =>
-      other is CombatStatsEntity && other.attack == attack && other.defense == defense && other.health == health;
+      other is CombatStatsEntity &&
+      other.attackMin == attackMin &&
+      other.attackMax == attackMax &&
+      other.defense == defense &&
+      other.health == health;
 
   @override
-  int get hashCode => Object.hash(attack, defense, health);
+  int get hashCode => Object.hash(attackMin, attackMax, defense, health);
 
   @override
-  String toString() => 'CombatStatsEntity(attack: $attack, defense: $defense, health: $health)';
+  String toString() =>
+      'CombatStatsEntity(attackMin: $attackMin, attackMax: $attackMax, defense: $defense, health: $health)';
 }

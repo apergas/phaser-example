@@ -9,7 +9,6 @@ abstract final class Rules {
   static const double playerRadius = 8;
   static const double treeTrunkRadius = 12;
   static const double powerPerSkill = 0.1;
-  static const double damageSpread = 0.15;
   static const int maxFightRounds = 30;
   static const double dodgeChance = 0.2;
   static const double secondWindThreshold = 0.3;

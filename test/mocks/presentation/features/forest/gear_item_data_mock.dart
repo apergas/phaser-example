@@ -8,14 +8,14 @@ abstract final class GearItemDataMock {
   static GearItemData get woodcutterAxe => GearItemData(
     id: GearId.woodcutterAxe,
     name: Internationalize.forestGear(id: GearId.woodcutterAxe),
-    statsText: Internationalize.forestHeroWeaponStats(attack: 4),
+    statsText: Internationalize.forestHeroWeaponStats(min: 3, max: 5),
     canBuy: false,
   );
 
   static GearItemData get shortSwordEquipped => GearItemData(
     id: GearId.shortSword,
     name: Internationalize.forestGear(id: GearId.shortSword),
-    statsText: Internationalize.forestHeroWeaponStats(attack: 7),
+    statsText: Internationalize.forestHeroWeaponStats(min: 6, max: 8),
     canBuy: false,
   );
 
@@ -36,7 +36,7 @@ abstract final class GearItemDataMock {
   static GearItemData get steelSword => GearItemData(
     id: GearId.steelSword,
     name: Internationalize.forestGear(id: GearId.steelSword),
-    statsText: Internationalize.forestHeroWeaponStats(attack: 14),
+    statsText: Internationalize.forestHeroWeaponStats(min: 12, max: 16),
     canBuy: false,
   );
 
@@ -64,7 +64,7 @@ abstract final class GearItemDataMock {
   static GearItemData _shortSword({required String? reasonText, required bool canBuy}) => GearItemData(
     id: GearId.shortSword,
     name: Internationalize.forestGear(id: GearId.shortSword),
-    statsText: Internationalize.forestHeroWeaponStats(attack: 7),
+    statsText: Internationalize.forestHeroWeaponStats(min: 6, max: 8),
     costText: [
       Internationalize.forestAmount(resource: Resource.wood, amount: 20),
       Internationalize.forestAmount(resource: Resource.gold, amount: 10),

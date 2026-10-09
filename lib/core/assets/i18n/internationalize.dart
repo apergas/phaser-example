@@ -92,8 +92,10 @@ class Internationalize {
   static String get forestHeroAttack => '$_forest.hero.attack'.tr();
   static String get forestHeroDefense => '$_forest.hero.defense'.tr();
   static String get forestHeroHealth => '$_forest.hero.health'.tr();
-  static String forestHeroWeaponStats({required int attack}) =>
-      '$_forest.hero.weaponStats'.tr(namedArgs: {'attack': '$attack'});
+  static String forestHeroAttackRange({required int min, required int max}) =>
+      '$_forest.hero.attackRange'.tr(namedArgs: {'min': '$min', 'max': '$max'});
+  static String forestHeroWeaponStats({required int min, required int max}) =>
+      '$_forest.hero.weaponStats'.tr(namedArgs: {'min': '$min', 'max': '$max'});
   static String forestHeroArmorStats({required int defense, required int health}) =>
       '$_forest.hero.armorStats'.tr(namedArgs: {'defense': '$defense', 'health': '$health'});
   static String forestHeroSlot({required GearSlot slot}) => switch (slot) {

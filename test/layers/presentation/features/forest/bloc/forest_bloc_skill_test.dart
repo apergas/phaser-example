@@ -91,7 +91,7 @@ void main() {
           Internationalize.forestMessageSkillLearned(name: Internationalize.forestSkillName(id: SkillId.doubleStrike)),
         ),
       );
-      expect((hero.attack, hero.power), (4, 34));
+      expect((hero.attack, hero.power), (Internationalize.forestHeroAttackRange(min: 3, max: 5), 34));
       expect(hero.skills, SkillItemDataMock.afterLearningDoubleStrike);
     },
   );

@@ -75,7 +75,8 @@
       "defense": "Defensa",
       "health": "Vida",
       "champion": "Campeón de la arena",
-      "weaponStats": "Ataque {attack}",
+      "attackRange": "{min}–{max}",
+      "weaponStats": "Ataque {min}–{max}",
       "armorStats": "Defensa {defense} · Vida {health}",
       "slot": {
         "weapon": "Arma",

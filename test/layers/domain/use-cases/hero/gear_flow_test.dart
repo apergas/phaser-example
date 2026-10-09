@@ -43,7 +43,7 @@ void main() {
     final after = heroStatus();
     expect(ironSwordBefore, BuyGearResult.notNextTier);
     expect(result, BuyGearResult.ok);
-    expect((before.stats.attack, after.stats.attack), (4, 7));
+    expect((before.stats.attackMin, after.stats.attackMax), (3, 8));
     expect((before.power, after.power), (31, 40));
     expect(options().first, GearOptionEntityMock.equipped(GearId.shortSword));
     expect(options()[1].state, GearOptionState.unaffordable);

@@ -9,7 +9,8 @@ class GearEntity {
   final GearSlot slot;
   final int tier;
   final Map<Resource, int> cost;
-  final int attack;
+  final int attackMin;
+  final int attackMax;
   final int defense;
   final int health;
 
@@ -18,11 +19,13 @@ class GearEntity {
     required this.slot,
     required this.tier,
     required this.cost,
-    this.attack = 0,
+    this.attackMin = 0,
+    this.attackMax = 0,
     this.defense = 0,
     this.health = 0,
   }) : assert(tier >= 0),
-       assert(attack >= 0),
+       assert(attackMin >= 0),
+       assert(attackMax >= attackMin),
        assert(defense >= 0),
        assert(health >= 0);
 
@@ -31,7 +34,8 @@ class GearEntity {
     GearSlot? slot,
     int? tier,
     Map<Resource, int>? cost,
-    int? attack,
+    int? attackMin,
+    int? attackMax,
     int? defense,
     int? health,
   }) {
@@ -40,7 +44,8 @@ class GearEntity {
       slot: slot ?? this.slot,
       tier: tier ?? this.tier,
       cost: cost ?? this.cost,
-      attack: attack ?? this.attack,
+      attackMin: attackMin ?? this.attackMin,
+      attackMax: attackMax ?? this.attackMax,
       defense: defense ?? this.defense,
       health: health ?? this.health,
     );
@@ -53,11 +58,12 @@ class GearEntity {
       other.slot == slot &&
       other.tier == tier &&
       const MapEquality<Resource, int>().equals(other.cost, cost) &&
-      other.attack == attack &&
+      other.attackMin == attackMin &&
+      other.attackMax == attackMax &&
       other.defense == defense &&
       other.health == health;
 
   @override
   int get hashCode =>
-      Object.hash(id, slot, tier, const MapEquality<Resource, int>().hash(cost), attack, defense, health);
+      Object.hash(id, slot, tier, const MapEquality<Resource, int>().hash(cost), attackMin, attackMax, defense, health);
 }

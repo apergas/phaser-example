@@ -400,7 +400,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     final options = _getGearOptionsUseCase();
     return HeroPanelData(
       power: status.power,
-      attack: status.stats.attack,
+      attack: Internationalize.forestHeroAttackRange(min: status.stats.attackMin, max: status.stats.attackMax),
       defense: status.stats.defense,
       health: status.stats.health,
       rows: [
@@ -430,7 +430,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       id: gear.id,
       name: Internationalize.forestGear(id: gear.id),
       statsText: switch (gear.slot) {
-        GearSlot.weapon => Internationalize.forestHeroWeaponStats(attack: gear.attack),
+        GearSlot.weapon => Internationalize.forestHeroWeaponStats(min: gear.attackMin, max: gear.attackMax),
         GearSlot.armor => Internationalize.forestHeroArmorStats(defense: gear.defense, health: gear.health),
       },
       costText: option.state == GearOptionState.equipped ? null : _amounts(gear.cost),

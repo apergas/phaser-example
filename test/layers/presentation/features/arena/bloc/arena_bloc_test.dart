@@ -218,8 +218,8 @@ void main() {
       final fighters = bloc.state.data.fighters;
       expect(fighters[0].pose, FighterPose.attack);
       expect(fighters[0].swingProgress, closeTo(320 / 600, 1e-9));
-      expect(fighters[1], FighterRenderDataMock.rookieBanditHurt);
-      expect(effects, [ArenaEffectMock.banditHitForFour]);
+      expect(fighters[1], FighterRenderDataMock.rookieBanditAfterFirstBlow);
+      expect(effects, [ArenaEffectMock.banditHitForThree]);
     },
   );
 

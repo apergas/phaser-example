@@ -19,7 +19,8 @@ extension HeroRules on HeroEntity {
     final weapon = equipped(GearSlot.weapon);
     final armor = equipped(GearSlot.armor);
     return CombatStatsEntity(
-      attack: weapon.attack + armor.attack,
+      attackMin: weapon.attackMin + armor.attackMin,
+      attackMax: weapon.attackMax + armor.attackMax,
       defense: weapon.defense + armor.defense,
       health: weapon.health + armor.health,
     );

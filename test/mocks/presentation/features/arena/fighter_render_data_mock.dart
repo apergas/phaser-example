@@ -53,6 +53,16 @@ abstract final class FighterRenderDataMock {
     isTargeted: true,
   );
 
+  static const FighterRenderData rookieBanditAfterFirstBlow = FighterRenderData(
+    side: FightSide.enemy,
+    index: 0,
+    enemyKind: EnemyKind.bandit,
+    health: 17,
+    maxHealth: 20,
+    pose: FighterPose.hurt,
+    isTargeted: true,
+  );
+
   static const FighterRenderData rookieBanditDown = FighterRenderData(
     side: FightSide.enemy,
     index: 0,
@@ -94,7 +104,7 @@ abstract final class FighterRenderDataMock {
     side: FightSide.enemy,
     index: 0,
     enemyKind: EnemyKind.wolf,
-    health: 19,
+    health: 20,
     maxHealth: 22,
     pose: FighterPose.attack,
     swingProgress: swingProgress,

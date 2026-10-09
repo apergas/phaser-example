@@ -103,18 +103,22 @@ class _HeroPanelState extends State<HeroPanel> {
       runSpacing: 4,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        _stat(label: Internationalize.forestHeroPower, value: hero.power, style: CustomTextStyles.system18w600),
+        _stat(label: Internationalize.forestHeroPower, value: '${hero.power}', style: CustomTextStyles.system18w600),
         _stat(label: Internationalize.forestHeroAttack, value: hero.attack, style: CustomTextStyles.system15w600),
-        _stat(label: Internationalize.forestHeroDefense, value: hero.defense, style: CustomTextStyles.system15w600),
-        _stat(label: Internationalize.forestHeroHealth, value: hero.health, style: CustomTextStyles.system15w600),
+        _stat(
+          label: Internationalize.forestHeroDefense,
+          value: '${hero.defense}',
+          style: CustomTextStyles.system15w600,
+        ),
+        _stat(label: Internationalize.forestHeroHealth, value: '${hero.health}', style: CustomTextStyles.system15w600),
       ],
     );
   }
 
-  Widget _stat({required String label, required int value, required TextStyle style}) {
+  Widget _stat({required String label, required String value, required TextStyle style}) {
     return Semantics(
       label: label,
-      value: '$value',
+      value: value,
       excludeSemantics: true,
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -122,7 +126,7 @@ class _HeroPanelState extends State<HeroPanel> {
         children: [
           Text(label, style: CustomTextStyles.system13w500.copyWith(color: CustomColors.hudMuted)),
           Text(
-            '$value',
+            value,
             style: style.copyWith(color: CustomColors.hudAccent, fontFeatures: const [FontFeature.tabularFigures()]),
           ),
         ],

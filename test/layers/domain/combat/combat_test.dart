@@ -24,6 +24,20 @@ void main() {
       expect(log, FightLogEntityMock.victoryOverBanditBeforeReward());
     });
 
+    test('testWhenAttackIsARangeThenEveryBlowPicksAValueInsideIt', () {
+      // given
+      const level = ArenaLevelEntityMock.duel;
+
+      // when
+      final log = Combat.resolve(level: level, heroStats: CombatStatsEntityMock.heroBase, skills: const {}, seed: 0);
+
+      // then
+      final heroDamage = log.turns.where((turn) => turn.actor == FightSide.hero).map((turn) => turn.damage).toSet();
+      final enemyDamage = log.turns.where((turn) => turn.actor == FightSide.enemy).map((turn) => turn.damage).toList();
+      expect(heroDamage, {3, 4, 5});
+      expect(enemyDamage.take(4).every((damage) => damage >= 6 && damage <= 8), isTrue);
+    });
+
     test('testWhenResolvingTwiceWithTheSameSeedThenTheLogsAreEqual', () {
       // given
       const level = ArenaLevelEntityMock.banditTrio;
@@ -207,8 +221,8 @@ void main() {
         ),
       );
       expect(log.turns[9].targetHealthAfter, 5);
-      expect(log.turns[16].targetHealthAfter, 1);
-      expect((log.outcome, log.rounds), (FightOutcome.defeat, 9));
+      expect(log.turns[16].targetHealthAfter, 0);
+      expect((log.outcome, log.rounds), (FightOutcome.defeat, 8));
     });
 
     test('testWhenNobodyCanHurtTheOtherThenTheFightStopsAtTheRoundLimitAsADefeat', () {

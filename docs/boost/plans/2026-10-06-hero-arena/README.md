@@ -39,7 +39,7 @@ Se aplican **todas** las *Global Constraints* del README del plan de la aldea (a
 - Textos de la arena bajo la clave `arena.*` de `es.json`; los del héroe en el HUD del bosque, bajo `forest.hero.*`.
 
 **Arte:**
-- A diferencia del plan de la aldea, **este plan sí puede traer arte LPC nuevo** (animales, ropa de bárbaro, espadas), siempre en `asset-packs/lpc/sources/`, procesado por `build_assets.py` y acreditado en `lib/core/assets/images/lpc/CREDITS.md`. Una pieza sin licencia compatible (CC-BY-SA 3.0, GPL 3.0, OGA-BY 3.0) no entra.
+- A diferencia del plan de la aldea, **este plan sí puede traer arte LPC nuevo** (animales, ropa de bárbaro, espadas), siempre en `asset-packs/lpc/sources/`, procesado por `build_assets.py` y acreditado en `lib/core/assets/images/lpc/CREDITS.md`. Una pieza sin licencia compatible (CC-BY-SA 3.0, GPL 3.0, OGA-BY 3.0 o CC-BY 3.0/4.0, que sólo pide atribución) no entra. CC-BY se acepta desde C4 (lobo y oso), confirmado en `CREDITS.md` y `CLAUDE.md`.
 - Si una pieza no existe, se usa `recolour()` sobre arte ya disponible y se apunta como desviación.
 - El arte de la arena va en un atlas propio, `lib/core/assets/images/lpc/arena.{png,json}`, para no generar conflictos con `forest.{png,json}`. Las mismas reglas: nunca se resuelve un conflicto a mano, se regenera.
 
@@ -68,8 +68,8 @@ Para trabajar en una tarea **no hace falta leer el proyecto**. Lee sólo esto:
 | **C1** Motor de combate y niveles | ✅ [C1-combat-engine.md](C1-combat-engine.md) | C | C0 | `Combat.resolve`, `ArenaLevels` con los niveles de humanos, `GetArenaUseCase`, `StartFightUseCase`: pelear, cobrar y desbloquear. Sólo dominio. |
 | **C2** Pantalla de la arena | ✅ [C2-arena-screen.md](C2-arena-screen.md) | C | C0 (C1 para pelear de verdad) | `ArenaPage` + `ArenaBloc` + escena Flame que reproduce el `FightLogEntity`; botón *Arena* en el HUD del bosque; bandidos con el arte del héroe recoloreado. |
 | **C3** Herrería y Armería | ✅ [C3-forge-armory.md](C3-forge-armory.md) | D | C0 | Dos edificios nuevos; comprar armas y armaduras (`BuyGearUseCase`); panel *Héroe* en el HUD del bosque con Poder, atributos y equipo. |
-| **C4** Lobos y oso | 📝 [C4-beasts.md](C4-beasts.md) | C | C2 | Arte LPC nuevo de animales; `EnemyKind.wolf` / `bear`; niveles 2, 4, 5 y 8. |
-| **C5** Torre de magia y habilidades | 📝 [C5-mage-tower.md](C5-mage-tower.md) | D | C3 | Edificio *Torre de magia*; catálogo `Skills`; `LearnSkillUseCase`; pestaña *Habilidades* del panel *Héroe*. Los efectos en la pelea ya los aplica el motor de C1. |
+| **C4** Lobos y oso | ✅ [C4-beasts.md](C4-beasts.md) | C | C2 | Arte LPC nuevo de animales; `EnemyKind.wolf` / `bear`; niveles 2, 4, 5 y 8. |
+| **C5** Torre de magia y habilidades | ✅ [C5-mage-tower.md](C5-mage-tower.md) | D | C3 | Edificio *Torre de magia*; catálogo `Skills`; `LearnSkillUseCase`; pestaña *Habilidades* del panel *Héroe*. Los efectos en la pelea ya los aplica el motor de C1. |
 | **C6** Bárbaros y jefe | 📝 [C6-barbarians.md](C6-barbarians.md) | C | C4 | Arte de bárbaros y jefe; peleas de grupo bien colocadas (hasta 3 enemigos); pantalla de victoria final. |
 | **C7** Misiones del héroe y equilibrado | 📝 [C7-hero-quests-balance.md](C7-hero-quests-balance.md) | D | C1, C3, C5 | Línea de misiones *Héroe*; consejo tras una derrota; test de equilibrado (Poder contra porcentaje de victorias) y números finales. |
 
@@ -198,3 +198,11 @@ Aquí se apunta todo lo que se haga distinto de lo que dicen los planes: qué, p
     - hay tests del BLoC para `notEnoughResources` y para que saltarse un nivel no emita el efecto de compra.
   - **Sin oro en el juego hasta C2:** con C3 sola no hay forma de ganar oro. La compra se prueba a mano con las dos fases juntas.
   - **Aviso para C5:** `HeroPanel(sections:)` ya pinta pestañas. Falta pasar `sections` desde `HudOverlay`, y añadir un `assert(sections.isNotEmpty)` y el reinicio de `_section` en `didUpdateWidget`.
+- **C4 (2026-10-08):**
+  - **Ramas:** TC4.1 (`-c4-art`) y TC4.2 (`-c4-levels`) se hicieron a la vez, cada una en su worktree, y se unieron en `feature/PROJECT-X-c4-beasts` sin conflictos. TC4.3 (`-c4-leap`) se hizo encima.
+  - **Sin PR a la rama de integración:** la fase se unió a `feature/PROJECT-X-arena` con `git merge --no-ff` (`[PROJECT-X]: Merge the C4 beasts phase into the arena`), no con una PR como C0–C3. Por eso sus issues (#37, #48, #49) se cierran a mano.
+  - **Licencias:** el oso es CC-BY 4.0 (también CC0 según su autor) y el lobo OGA-BY 3.0 / CC-BY 3.0-4.0 / GPL. Se acepta CC-BY, que sólo pide atribución; `CREDITS.md` lo dice en la cabecera y `CLAUDE.md` en *Constraints*.
+- **C5 (2026-10-08, unida a la arena el 2026-10-09):**
+  - **Ramas:** TC5.1, TC5.4 y TC5.5 en la rama de fase; TC5.2 (`-c5-skills-domain`) y TC5.3 (`-c5-skills-tab`) a la vez, cada una en su worktree, unidas sin conflictos.
+  - **Sin PR a la rama de integración:** como C4, se unió con `git merge --no-ff` (`[PROJECT-X]: Merge the C5 mage tower phase into the arena`). Llegó segunda y resolvió los cruces con C4: sólo dos conflictos, los dos aditivos (`CLAUDE.md`, línea de `rules/`: catálogos de C5 más la regla de desbloqueo de C4; `hero_entity_mock.dart`: mocks de las dos fases). Los atlas se regeneraron con `build_assets.py` y salen idénticos. Ningún sitio de C4 usaba `arenaDodge`.
+  - **Verificación tras la unión:** `build_runner` sin cambios, `flutter analyze` limpio, `flutter test` con 612 tests en verde (597 de C5 + 15 de C4) y los tests de Chrome en verde.

@@ -91,7 +91,7 @@ final class _Fight {
     final target = enemyHealth.indexWhere((health) => health > 0);
     if (target < 0) return;
     final damage = _damage(
-      attack: heroStats.attack,
+      attacker: heroStats,
       defense: level.enemies[target].stats.defense,
       healthLeft: enemyHealth[target],
     );
@@ -123,7 +123,7 @@ final class _Fight {
     final dodged = skills.contains(SkillId.dodge) && random.next() < Rules.dodgeChance;
     final damage = dodged
         ? 0
-        : _damage(attack: level.enemies[index].stats.attack, defense: heroStats.defense, healthLeft: heroHealth);
+        : _damage(attacker: level.enemies[index].stats, defense: heroStats.defense, healthLeft: heroHealth);
     heroHealth -= damage;
     turns.add(
       FightTurnEntity(
@@ -158,8 +158,8 @@ final class _Fight {
     );
   }
 
-  int _damage({required int attack, required int defense, required int healthLeft}) {
-    final spread = 1 + (random.next() * 2 - 1) * Rules.damageSpread;
-    return math.min(healthLeft, math.max(1, ((attack - defense) * spread).round()));
+  int _damage({required CombatStatsEntity attacker, required int defense, required int healthLeft}) {
+    final attack = attacker.attackMin + (random.next() * (attacker.attackMax - attacker.attackMin + 1)).floor();
+    return math.min(healthLeft, math.max(1, attack - defense));
   }
 }

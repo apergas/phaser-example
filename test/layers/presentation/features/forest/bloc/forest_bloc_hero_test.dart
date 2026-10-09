@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
 import 'package:rpg/core/config/constants/enum/gear_id.dart';
+import 'package:rpg/core/config/constants/enum/quest_id.dart';
+import 'package:rpg/core/config/constants/enum/quest_line.dart';
 import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
 import 'package:rpg/layers/presentation/features/forest/models/forest_effect.dart';
 
@@ -109,7 +111,7 @@ void main() {
         ForestBlocMock.shownMessages(navigationService),
         contains(Internationalize.forestMessageGearPurchased(name: Internationalize.forestGear(id: GearId.shortSword))),
       );
-      expect((hero.attack, hero.power), (7, 40));
+      expect((hero.attack, hero.power), (Internationalize.forestHeroAttackRange(min: 6, max: 8), 40));
       expect(hero.rows.first.equipped, GearItemDataMock.shortSwordEquipped);
     },
   );
@@ -140,7 +142,7 @@ void main() {
           Internationalize.forestHeroNeedsBuilding(name: Internationalize.forestBlueprint(id: BlueprintId.armory)),
         ),
       );
-      expect(bloc.state.data.hud!.hero.attack, 4);
+      expect(bloc.state.data.hud!.hero.attack, Internationalize.forestHeroAttackRange(min: 3, max: 5));
     },
   );
 
@@ -212,6 +214,60 @@ void main() {
     verify: (bloc) {
       // then
       expect(bloc.state.data.hud!.hero.isChampion, isTrue);
+    },
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenTheLastHeroQuestIsCompletedThenShowsTheHeroLineFinalMessage',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        GearScenarioMock.withAllWorkshops(hero: HeroEntityMock.championWithEveryQuestDone),
+        navigationService: navigationService,
+      );
+    },
+    act: (bloc) async {
+      // when
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestTicked(deltaMs: ForestBlocMock.frameMs));
+      await ForestBlocMock.processEvents();
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(
+        ForestBlocMock.shownMessages(navigationService).last,
+        Internationalize.forestMessageQuestLineCompleted(line: QuestLine.hero),
+      );
+    },
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenAHeroQuestIsCompletedWhileOthersAreStillPendingThenShowsTheQuestMessage',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        GearScenarioMock.withForgeAndArmory(hero: HeroEntityMock.champion),
+        navigationService: navigationService,
+      );
+    },
+    act: (bloc) async {
+      // when
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestTicked(deltaMs: ForestBlocMock.frameMs));
+      await ForestBlocMock.processEvents();
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(
+        ForestBlocMock.shownMessages(navigationService).last,
+        Internationalize.forestMessageQuestCompleted(
+          title: Internationalize.forestQuestTitle(id: QuestId.becomeChampion),
+        ),
+      );
     },
   );
 }

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../../../core/config/constants/enum/quest_id.dart';
+import '../../../core/config/constants/enum/quest_line.dart';
 import '../entities/game/game_event_entity.dart';
 import '../entities/game/quest_progress_entity.dart';
 import '../world/world.dart';
@@ -22,21 +23,19 @@ class QuestLog {
   }
 
   List<QuestProgressEntity> status(World world) {
-    QuestId? currentId;
+    final current = <QuestLine, QuestId>{};
     for (final quest in _quests) {
-      if (!_completed.contains(quest.id)) {
-        currentId = quest.id;
-        break;
-      }
+      if (!_completed.contains(quest.id)) current.putIfAbsent(quest.line, () => quest.id);
     }
     return [
       for (final quest in _quests)
         QuestProgressEntity(
           id: quest.id,
+          line: quest.line,
           progress: _completed.contains(quest.id) ? quest.target : min(quest.progress(world), quest.target),
           target: quest.target,
           isCompleted: _completed.contains(quest.id),
-          isCurrent: quest.id == currentId,
+          isCurrent: current[quest.line] == quest.id,
         ),
     ];
   }

@@ -88,4 +88,19 @@ abstract final class HeroEntityMock {
     clearedLevels: {ArenaLevelId.barbarianPair, ArenaLevelId.barbarianChief},
     fightsFought: 12,
   );
+
+  static const HeroEntity championWithEveryQuestDone = HeroEntity(
+    weaponTier: 3,
+    armorTier: 3,
+    skills: {SkillId.doubleStrike, SkillId.secondWind, SkillId.dodge},
+    clearedLevels: {
+      ArenaLevelId.banditRookie,
+      ArenaLevelId.banditVeteran,
+      ArenaLevelId.banditTrio,
+      ArenaLevelId.barbarian,
+      ArenaLevelId.barbarianPair,
+      ArenaLevelId.barbarianChief,
+    },
+    fightsFought: 12,
+  );
 }

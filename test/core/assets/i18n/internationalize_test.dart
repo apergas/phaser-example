@@ -8,6 +8,7 @@ import 'package:rpg/core/config/constants/enum/forest/hero_panel_section.dart';
 import 'package:rpg/core/config/constants/enum/gear_id.dart';
 import 'package:rpg/core/config/constants/enum/gear_slot.dart';
 import 'package:rpg/core/config/constants/enum/quest_id.dart';
+import 'package:rpg/core/config/constants/enum/quest_line.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
 import 'package:rpg/core/config/constants/enum/skill_id.dart';
 import 'package:rpg/core/config/constants/enum/tool_kind.dart';
@@ -44,7 +45,20 @@ void main() {
 
     // then
     expect(name, 'Casa');
-    expect(quests, ['Recoge el hacha', 'Consigue al menos 15 de madera', 'Construye una casa']);
+    expect(quests, [
+      'Recoge el hacha',
+      'Consigue al menos 15 de madera',
+      'Construye una casa',
+      'Construye la Herrería',
+      'Gana un nivel de la arena',
+      'Compra la Espada corta',
+      'Construye la Armería',
+      'Construye la Torre de magia',
+      'Aprende una habilidad',
+      'Gana la mitad de los niveles de la arena',
+      'Gana al Jefe bárbaro',
+    ]);
+    expect(QuestLine.values.map((line) => Internationalize.forestQuestLine(line: line)), ['Aldea', 'Héroe']);
   });
 
   test('testWhenFormattingMessagesWithNamesThenInsertsThem', () {
@@ -93,7 +107,7 @@ void main() {
       Internationalize.forestMessageBlockedSite,
       Internationalize.forestMessageNotEnoughResources,
       Internationalize.forestMessageBuildingStarted,
-      Internationalize.forestMessageAllQuestsCompleted,
+      Internationalize.forestMessageQuestLineCompleted(line: QuestLine.village),
       Internationalize.forestPlacementConfirm,
       Internationalize.forestPlacementCancel,
       Internationalize.forestAccessibilityGameWorld,
@@ -118,7 +132,7 @@ void main() {
       'Ahí no cabe. Busca un sitio despejado.',
       'No tienes recursos suficientes.',
       'Manos a la obra…',
-      '¡Has completado todas las misiones!',
+      '¡Has completado las misiones de Aldea!',
       'Construir aquí',
       'Cancelar',
       'Mundo de juego: bosque con árboles, el personaje y los edificios',
@@ -167,7 +181,8 @@ void main() {
       Internationalize.forestHeroAttack,
       Internationalize.forestHeroDefense,
       Internationalize.forestHeroHealth,
-      Internationalize.forestHeroWeaponStats(attack: 7),
+      Internationalize.forestHeroAttackRange(min: 6, max: 8),
+      Internationalize.forestHeroWeaponStats(min: 6, max: 8),
       Internationalize.forestHeroArmorStats(defense: 3, health: 40),
       for (final slot in GearSlot.values) Internationalize.forestHeroSlot(slot: slot),
       for (final section in HeroPanelSection.values) Internationalize.forestHeroSection(section: section),
@@ -191,7 +206,8 @@ void main() {
       'Ataque',
       'Defensa',
       'Vida',
-      'Ataque 7',
+      '6–8',
+      'Ataque 6–8',
       'Defensa 3 · Vida 40',
       'Arma',
       'Armadura',

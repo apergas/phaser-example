@@ -13,7 +13,14 @@ void main() {
     final hits = effects.whereType<HitEffect>().toSet();
 
     // then
-    expect(hits, {ArenaEffectMock.banditHitForFour, ArenaEffectMock.heroHitForTwo});
+    expect(hits, {
+      ArenaEffectMock.banditHitForThree,
+      ArenaEffectMock.heroHitForOne,
+      ArenaEffectMock.banditHitForFive,
+      ArenaEffectMock.heroHitForThree,
+      ArenaEffectMock.banditHitForFour,
+      ArenaEffectMock.heroHitForTwo,
+    });
     expect(ArenaEffectMock.won, isNot(ArenaEffectMock.lost));
     expect(ArenaEffectMock.heroDodged.side, FightSide.hero);
     expect(ArenaEffectMock.heroHealedTwelve.hashCode, ArenaEffectMock.heroHealedTwelve.hashCode);

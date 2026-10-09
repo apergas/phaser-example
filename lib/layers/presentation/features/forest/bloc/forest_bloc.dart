@@ -308,10 +308,12 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         );
         effects.add(BuildingCompletedEffect(buildingId: buildingId));
       case QuestCompletedEventEntity(:final questId):
-        final allDone = _getQuestsUseCase().every((quest) => quest.isCompleted);
+        final quests = _getQuestsUseCase();
+        final line = quests.firstWhere((quest) => quest.id == questId).line;
+        final lineDone = quests.where((quest) => quest.line == line).every((quest) => quest.isCompleted);
         _showMessage(
-          allDone
-              ? Internationalize.forestMessageAllQuestsCompleted
+          lineDone
+              ? Internationalize.forestMessageQuestLineCompleted(line: line)
               : Internationalize.forestMessageQuestCompleted(title: Internationalize.forestQuestTitle(id: questId)),
         );
     }
@@ -400,7 +402,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     final options = _getGearOptionsUseCase();
     return HeroPanelData(
       power: status.power,
-      attack: status.stats.attack,
+      attack: Internationalize.forestHeroAttackRange(min: status.stats.attackMin, max: status.stats.attackMax),
       defense: status.stats.defense,
       health: status.stats.health,
       rows: [
@@ -430,7 +432,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       id: gear.id,
       name: Internationalize.forestGear(id: gear.id),
       statsText: switch (gear.slot) {
-        GearSlot.weapon => Internationalize.forestHeroWeaponStats(attack: gear.attack),
+        GearSlot.weapon => Internationalize.forestHeroWeaponStats(min: gear.attackMin, max: gear.attackMax),
         GearSlot.armor => Internationalize.forestHeroArmorStats(defense: gear.defense, health: gear.health),
       },
       costText: option.state == GearOptionState.equipped ? null : _amounts(gear.cost),
@@ -466,6 +468,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
 
   QuestItemData _questItem(QuestProgressEntity quest) {
     return QuestItemData(
+      line: quest.line,
       title: Internationalize.forestQuestTitle(id: quest.id),
       progressText: switch (quest) {
         QuestProgressEntity(isCompleted: true) => Internationalize.forestQuestDone,

@@ -28,7 +28,7 @@ void main() {
     expect((halfway.turnIndex, halfway.swingingTurn), (-1, 0));
     expect(halfway.healthOf(FightSide.enemy, 0), 20);
     expect((landed.turnIndex, landed.swingingTurn, landed.swingProgress), (0, 0, 0.5));
-    expect(landed.healthOf(FightSide.enemy, 0), 16);
+    expect(landed.healthOf(FightSide.enemy, 0), 17);
   });
 
   test('testWhenAdvancedPastTheEndThenStopsThereWithEveryTurnPlayed', () {

@@ -28,10 +28,10 @@ abstract final class FightTurnEntityMock {
       );
 
   static List<FightTurnEntity> victoryOverBandit() => [
-    heroHits(round: 1, damage: 4, enemyHealthAfter: 16),
-    enemyHits(round: 1, damage: 2, heroHealthAfter: 28),
-    heroHits(round: 2, damage: 4, enemyHealthAfter: 12),
-    enemyHits(round: 2, damage: 2, heroHealthAfter: 26),
+    heroHits(round: 1, damage: 3, enemyHealthAfter: 17),
+    enemyHits(round: 1, damage: 1, heroHealthAfter: 29),
+    heroHits(round: 2, damage: 5, enemyHealthAfter: 12),
+    enemyHits(round: 2, damage: 3, heroHealthAfter: 26),
     heroHits(round: 3, damage: 4, enemyHealthAfter: 8),
     enemyHits(round: 3, damage: 2, heroHealthAfter: 24),
     heroHits(round: 4, damage: 4, enemyHealthAfter: 4),
@@ -84,10 +84,10 @@ abstract final class FightTurnEntityMock {
   ];
 
   static List<FightTurnEntity> almostBeatDuelist() => [
-    heroHits(round: 1, damage: 4, enemyHealthAfter: 20),
-    enemyHits(round: 1, damage: 7, heroHealthAfter: 23),
-    heroHits(round: 2, damage: 4, enemyHealthAfter: 16),
-    enemyHits(round: 2, damage: 7, heroHealthAfter: 16),
+    heroHits(round: 1, damage: 3, enemyHealthAfter: 21),
+    enemyHits(round: 1, damage: 6, heroHealthAfter: 24),
+    heroHits(round: 2, damage: 5, enemyHealthAfter: 16),
+    enemyHits(round: 2, damage: 8, heroHealthAfter: 16),
     heroHits(round: 3, damage: 4, enemyHealthAfter: 12),
     enemyHits(round: 3, damage: 7, heroHealthAfter: 9),
     heroHits(round: 4, damage: 4, enemyHealthAfter: 8),
@@ -98,12 +98,12 @@ abstract final class FightTurnEntityMock {
 
   static List<FightTurnEntity> defeatByBruteFullyGeared() => [
     heroHits(round: 1, damage: 7, enemyHealthAfter: 48),
-    enemyHits(round: 1, damage: 21, heroHealthAfter: 54),
-    heroHits(round: 2, damage: 9, enemyHealthAfter: 39),
-    enemyHits(round: 2, damage: 24, heroHealthAfter: 30),
-    heroHits(round: 3, damage: 8, enemyHealthAfter: 31),
-    enemyHits(round: 3, damage: 24, heroHealthAfter: 6),
-    heroHits(round: 4, damage: 8, enemyHealthAfter: 23),
+    enemyHits(round: 1, damage: 22, heroHealthAfter: 53),
+    heroHits(round: 2, damage: 10, enemyHealthAfter: 38),
+    enemyHits(round: 2, damage: 24, heroHealthAfter: 29),
+    heroHits(round: 3, damage: 7, enemyHealthAfter: 31),
+    enemyHits(round: 3, damage: 23, heroHealthAfter: 6),
+    heroHits(round: 4, damage: 7, enemyHealthAfter: 24),
     enemyHits(round: 4, damage: 6, heroHealthAfter: 0),
   ];
 }

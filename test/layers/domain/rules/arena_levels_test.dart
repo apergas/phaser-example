@@ -90,7 +90,12 @@ void main() {
       [EnemyKind.bear],
       [EnemyKind.wolf, EnemyKind.wolf, EnemyKind.wolf],
     ]);
-    expect(levels.map((level) => (level.power, level.reward[Resource.gold])), [(30, 15), (60, 25), (59, 35), (84, 55)]);
+    expect(levels.map((level) => (level.power, level.reward[Resource.gold])), [
+      (29, 20),
+      (68, 40),
+      (62, 55),
+      (135, 100),
+    ]);
   });
 
   test('testWhenFindingByIdThenItReturnsThatLevel', () {
@@ -101,6 +106,6 @@ void main() {
     final level = ArenaLevels.byId(id);
 
     // then
-    expect((level.id, level.enemies.length, level.power), (ArenaLevelId.barbarianChief, 3, 173));
+    expect((level.id, level.enemies.length, level.power), (ArenaLevelId.barbarianChief, 3, 210));
   });
 }

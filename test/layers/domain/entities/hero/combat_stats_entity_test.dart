@@ -19,7 +19,7 @@ void main() {
     const stats = CombatStatsEntityMock.heroBase;
 
     // when
-    final copy = stats.copyWith(attack: 7, defense: 3, health: 40);
+    final copy = stats.copyWith(attackMin: 6, attackMax: 8, defense: 3, health: 40);
 
     // then
     expect(copy, CombatStatsEntityMock.heroWithShortSwordAndLeather);

@@ -218,8 +218,8 @@ void main() {
       final fighters = bloc.state.data.fighters;
       expect(fighters[0].pose, FighterPose.attack);
       expect(fighters[0].swingProgress, closeTo(320 / 600, 1e-9));
-      expect(fighters[1], FighterRenderDataMock.rookieBanditHurt);
-      expect(effects, [ArenaEffectMock.banditHitForFour]);
+      expect(fighters[1], FighterRenderDataMock.rookieBanditAfterFirstBlow);
+      expect(effects, [ArenaEffectMock.banditHitForThree]);
     },
   );
 
@@ -362,7 +362,7 @@ void main() {
     verify: (bloc) {
       // then
       expect(effects, [ArenaEffectMock.won, ArenaEffectMock.champion]);
-      expect(bloc.state.data.result, ArenaResultDataMock.championHundredGold);
+      expect(bloc.state.data.result, ArenaResultDataMock.championHundredFiftyGold);
     },
   );
 
@@ -386,7 +386,7 @@ void main() {
     verify: (bloc) {
       // then
       expect(effects, [ArenaEffectMock.won]);
-      expect(bloc.state.data.result, ArenaResultDataMock.victoryThirtyThreeGold);
+      expect(bloc.state.data.result, ArenaResultDataMock.victoryFiftyGold);
     },
   );
 
@@ -528,13 +528,13 @@ void main() {
         ..add(const ArenaStarted())
         ..add(const ArenaLevelSelected(levelId: ArenaLevelId.banditVeteran))
         ..add(const ArenaFightRequested());
-      ArenaBlocMock.tickFor(bloc, 12000);
+      ArenaBlocMock.tickFor(bloc, 15000);
     },
     wait: Duration.zero,
     verify: (bloc) {
       // then
-      expect(effects[10], ArenaEffectMock.heroHealedTwelve);
-      expect(effects[11], ArenaEffectMock.secondWindUsed);
+      expect(effects[12], ArenaEffectMock.heroHealedTwelve);
+      expect(effects[13], ArenaEffectMock.secondWindUsed);
       expect(effects.last, ArenaEffectMock.lost);
     },
   );

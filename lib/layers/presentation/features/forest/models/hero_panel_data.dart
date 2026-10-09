@@ -5,7 +5,7 @@ import 'skill_item_data.dart';
 
 class HeroPanelData {
   final int power;
-  final int attack;
+  final String attack;
   final int defense;
   final int health;
   final List<GearRowData> rows;

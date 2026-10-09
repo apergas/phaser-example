@@ -40,7 +40,7 @@ void main() {
       expect(data.player!.position, ForestScenarioMock.playerStart);
       expect(data.player!.facing, Facing.down);
       expect(data.player!.pose, PlayerPoseMock.idleWithoutAxe);
-      expect(data.hud!.questBadge, '0/3');
+      expect(data.hud!.questBadge, '0/11');
       expect(data.placement, isNull);
       expect(data.effects, isEmpty);
     },

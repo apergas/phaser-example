@@ -90,7 +90,7 @@ void main() {
 
     // then
     final played = result as FightPlayedEntity;
-    expect((played.log.isVictory, played.log.rounds, played.advice), (false, 6, FightAdvice.needAttack));
+    expect((played.log.isVictory, played.log.rounds, played.advice), (false, 7, FightAdvice.needAttack));
     expect(played.log.reward, isEmpty);
     expect(session.world.funds.amount(Resource.gold), 0);
     expect(session.world.hero, HeroEntityMock.wolfHunterAfterAnotherFight);

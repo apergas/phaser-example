@@ -1,0 +1,1 @@
+enum QuestLine { village, hero }

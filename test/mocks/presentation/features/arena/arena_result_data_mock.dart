@@ -9,16 +9,16 @@ abstract final class ArenaResultDataMock {
     detail: Internationalize.arenaReward(amount: 10),
   );
 
-  static ArenaResultData get championHundredGold => ArenaResultData(
+  static ArenaResultData get championHundredFiftyGold => ArenaResultData(
     isVictory: true,
     title: Internationalize.arenaChampion,
-    detail: Internationalize.arenaReward(amount: 100),
+    detail: Internationalize.arenaReward(amount: 150),
   );
 
-  static ArenaResultData get victoryThirtyThreeGold => ArenaResultData(
+  static ArenaResultData get victoryFiftyGold => ArenaResultData(
     isVictory: true,
     title: Internationalize.arenaVictory,
-    detail: Internationalize.arenaReward(amount: 33),
+    detail: Internationalize.arenaReward(amount: 50),
   );
 
   static ArenaResultData get defeatNeedAttack => ArenaResultData(

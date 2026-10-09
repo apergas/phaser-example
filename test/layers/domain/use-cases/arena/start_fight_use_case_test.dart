@@ -95,4 +95,43 @@ void main() {
     expect(session.world.funds.amount(Resource.gold), 0);
     expect(session.world.hero, HeroEntityMock.wolfHunterAfterAnotherFight);
   });
+
+  test('testWhenTheHeroBeatsTheChiefForTheFirstTimeThenTheFightCrownsAChampion', () {
+    // given
+    final session = GameSessionEntityMock.playing(WorldMock.withHero(HeroEntityMock.chiefChallenger));
+    when(sessionRepository.current()).thenReturn(session);
+
+    // when
+    final result = sut(levelId: ArenaLevelId.barbarianChief);
+
+    // then
+    final played = result as FightPlayedEntity;
+    expect((played.log.isVictory, played.isFirstChampionship), (true, true));
+    expect(session.world.hero, HeroEntityMock.newChampion);
+  });
+
+  test('testWhenAChampionBeatsTheChiefAgainThenTheFightIsNotAFirstChampionship', () {
+    // given
+    final session = GameSessionEntityMock.playing(WorldMock.withHero(HeroEntityMock.champion));
+    when(sessionRepository.current()).thenReturn(session);
+
+    // when
+    final result = sut(levelId: ArenaLevelId.barbarianChief);
+
+    // then
+    final played = result as FightPlayedEntity;
+    expect((played.log.isVictory, played.isFirstChampionship), (true, false));
+  });
+
+  test('testWhenTheHeroWinsAnotherLevelForTheFirstTimeThenItIsNotAChampionship', () {
+    // given
+    final session = GameSessionEntityMock.playing(WorldMock.withHero(HeroEntityMock.mock));
+    when(sessionRepository.current()).thenReturn(session);
+
+    // when
+    final result = sut(levelId: ArenaLevelId.banditRookie);
+
+    // then
+    expect((result as FightPlayedEntity).isFirstChampionship, false);
+  });
 }

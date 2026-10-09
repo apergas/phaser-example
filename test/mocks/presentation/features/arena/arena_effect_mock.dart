@@ -19,6 +19,8 @@ abstract final class ArenaEffectMock {
 
   static const FightEndedEffect won = FightEndedEffect(isVictory: true);
 
+  static const ChampionEffect champion = ChampionEffect();
+
   static const FightEndedEffect lost = FightEndedEffect(isVictory: false);
 
   static const List<ArenaEffect> victoryOverBandit = [

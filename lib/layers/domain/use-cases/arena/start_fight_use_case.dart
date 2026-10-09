@@ -23,6 +23,10 @@ final class StartFightUseCase {
     final log = fight.isVictory ? fight.copyWith(reward: hero.rewardFor(level)) : fight;
     if (log.isVictory) world.earn(log.reward);
     world.updateHero((current) => current.afterFight(log));
-    return FightPlayedEntity(log: log, advice: Combat.adviceFor(log));
+    return FightPlayedEntity(
+      log: log,
+      advice: Combat.adviceFor(log),
+      isFirstChampionship: log.isVictory && level.id == ArenaLevels.championship && !hero.isChampion,
+    );
   }
 }

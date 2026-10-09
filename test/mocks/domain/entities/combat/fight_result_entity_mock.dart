@@ -8,6 +8,9 @@ abstract final class FightResultEntityMock {
 
   static FightPlayedEntity victoryOverBandit() => FightPlayedEntity(log: FightLogEntityMock.victoryOverBandit());
 
+  static FightPlayedEntity championshipOverBandit() =>
+      FightPlayedEntity(log: FightLogEntityMock.victoryOverBandit(), isFirstChampionship: true);
+
   static FightPlayedEntity almostBeatDuelist() =>
       FightPlayedEntity(log: FightLogEntityMock.almostBeatDuelist(), advice: FightAdvice.almostThere);
 }

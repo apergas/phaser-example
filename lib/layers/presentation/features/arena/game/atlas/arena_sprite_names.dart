@@ -8,7 +8,7 @@ abstract final class ArenaSpriteNames {
   static String enemy(EnemyKind kind) => switch (kind) {
     EnemyKind.bandit => 'bandit',
     EnemyKind.barbarian => 'barbarian',
-    EnemyKind.barbarianChief => 'barbarian',
+    EnemyKind.barbarianChief => 'barbarian-chief',
     EnemyKind.wolf => 'wolf',
     EnemyKind.bear => 'bear',
   };

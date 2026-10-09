@@ -53,4 +53,16 @@ void main() {
     // then
     expect(status, HeroStatusEntityMock.withTwoSkills);
   });
+
+  test('testWhenTheHeroHasBeatenTheChiefThenStatusSaysItIsAChampion', () {
+    // given
+    when(sessionRepository.current())
+        .thenReturn(GameSessionEntityMock.playing(WorldMock.withHero(HeroEntityMock.champion)));
+
+    // when
+    final status = sut();
+
+    // then
+    expect(status, HeroStatusEntityMock.champion);
+  });
 }

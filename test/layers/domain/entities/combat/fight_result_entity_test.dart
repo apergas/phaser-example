@@ -27,6 +27,17 @@ void main() {
     expect(equal, isFalse);
   });
 
+  test('testWhenOnlyOneFightCrownsAChampionThenTheyAreNotEqual', () {
+    // given
+    final result = FightResultEntityMock.victoryOverBandit();
+
+    // when
+    final equal = result == FightResultEntityMock.championshipOverBandit();
+
+    // then
+    expect(equal, isFalse);
+  });
+
   test('testWhenComparingALockedFightWithAPlayedOneThenTheyAreNotEqual', () {
     // given
     const FightResultEntity locked = FightResultEntityMock.locked;

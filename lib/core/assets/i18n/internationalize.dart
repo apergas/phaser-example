@@ -88,6 +88,7 @@ class Internationalize {
   static String get forestRetry => '$_forest.retry'.tr();
   static String get forestHero => '$_forest.hero.title'.tr();
   static String get forestHeroPower => '$_forest.hero.power'.tr();
+  static String get forestHeroChampion => '$_forest.hero.champion'.tr();
   static String get forestHeroAttack => '$_forest.hero.attack'.tr();
   static String get forestHeroDefense => '$_forest.hero.defense'.tr();
   static String get forestHeroHealth => '$_forest.hero.health'.tr();
@@ -148,6 +149,7 @@ class Internationalize {
   static String get arenaSkip => '$_arena.skip'.tr();
   static String get arenaRetry => '$_arena.retry'.tr();
   static String get arenaVictory => '$_arena.victory'.tr();
+  static String get arenaChampion => '$_arena.champion'.tr();
   static String get arenaDefeat => '$_arena.defeat'.tr();
   static String arenaDamage({required int amount}) => '$_arena.damage'.tr(namedArgs: {'amount': '$amount'});
   static String arenaHeal({required int amount}) => '$_arena.heal'.tr(namedArgs: {'amount': '$amount'});

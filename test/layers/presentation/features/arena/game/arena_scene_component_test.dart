@@ -7,6 +7,7 @@ import 'package:rpg/core/assets/i18n/internationalize.dart';
 import 'package:rpg/core/config/constants/enum/skill_id.dart';
 import 'package:rpg/layers/presentation/features/arena/game/arena_scene_component.dart';
 import 'package:rpg/layers/presentation/features/arena/game/components/arena_ground_component.dart';
+import 'package:rpg/layers/presentation/features/arena/game/components/target_ring_component.dart';
 import 'package:rpg/layers/presentation/features/forest/game/components/floating_text_component.dart';
 import 'package:rpg/layers/presentation/features/forest/game/particles/particle_burst_component.dart';
 
@@ -37,6 +38,7 @@ void main() {
     // then
     expect(scene.children.whereType<ArenaGroundComponent>(), hasLength(1));
     expect(scene.fighters.keys, ['hero-0', 'enemy-0']);
+    expect(scene.children.whereType<TargetRingComponent>().where((ring) => ring.isShown), hasLength(1));
   });
 
   testWithFlameGame('testWhenTheLevelChangesThenFightersThatLeftAreRemoved', (game) async {
@@ -49,6 +51,7 @@ void main() {
 
     // then
     expect(scene.fighters.keys, ['hero-0']);
+    expect(scene.children.whereType<TargetRingComponent>(), hasLength(1));
   });
 
   testWithFlameGame('testWhenABlowLandsThenTheDamageFloatsAndBloodSplashes', (game) async {
@@ -110,5 +113,17 @@ void main() {
     // then
     expect(scene.fighters['enemy-0']!.healthBar.displayedFraction, 0);
     expect(scene.fighters['hero-0']!.healthBar.displayedFraction, closeTo(22 / 30, 1e-9));
+  });
+
+  testWithFlameGame('testWhenTheHeroIsCrownedThenConfettiBurstsOverItsHead', (game) async {
+    // given
+    final scene = await _mountedScene(game);
+
+    // when
+    scene.show(ArenaDataMock.crowned);
+    await game.ready();
+
+    // then
+    expect(scene.children.whereType<ParticleBurstComponent>(), hasLength(1));
   });
 }

@@ -32,4 +32,17 @@ void main() {
     expect(first.hashCode, ArenaEffectMock.doubleStrikeUsedCopy.hashCode);
     expect(otherSkill, isFalse);
   });
+
+  test('testWhenComparingChampionEffectsThenTheyAreAllEqual', () {
+    // given
+    const champion = ArenaEffectMock.champion;
+
+    // when
+    final equal = champion == const ChampionEffect();
+
+    // then
+    expect(equal, isTrue);
+    expect(champion.hashCode, const ChampionEffect().hashCode);
+    expect(champion, isNot(ArenaEffectMock.won));
+  });
 }

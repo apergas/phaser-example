@@ -57,6 +57,7 @@ class ArenaSceneComponent extends Component {
       final created = FighterComponent(assets: _assets, fighter: fighter);
       _fighters[fighter.key] = created;
       add(created.shadow);
+      add(created.ring);
       add(created.healthBar);
       add(created);
     }
@@ -72,6 +73,8 @@ class ArenaSceneComponent extends Component {
         _float(side, index, Internationalize.arenaHeal(amount: amount), CustomColors.success);
       case SkillUsedEffect(:final skill):
         _floatSkillName(skill);
+      case ChampionEffect():
+        _celebrate();
       case FightEndedEffect():
         for (final fighter in _fighters.values) {
           fighter.healthBar.snap();
@@ -81,6 +84,7 @@ class ArenaSceneComponent extends Component {
 
   void _removeFighter(FighterComponent fighter) {
     fighter.shadow.removeFromParent();
+    fighter.ring.removeFromParent();
     fighter.healthBar.removeFromParent();
     fighter.removeFromParent();
   }
@@ -100,6 +104,17 @@ class ArenaSceneComponent extends Component {
           random: _random,
         ),
         sortY: fighter.position.y,
+      ),
+    );
+  }
+
+  void _celebrate() {
+    final hero = _fighters[FighterRenderData.keyOf(FightSide.hero, 0)];
+    if (hero == null) return;
+    add(
+      ParticleBurstComponent(
+        particles: ParticleBursts.confetti(at: hero.headPoint, random: _random),
+        sortY: hero.position.y + ParticleBursts.sortYOffset,
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:rpg/layers/presentation/features/forest/models/forest_effect.dar
 
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
+import '../../../../../mocks/domain/entities/hero/hero_entity_mock.dart';
 import '../../../../../mocks/domain/game/gear_scenario_mock.dart';
 import '../../../../../mocks/domain/world/funds_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_bloc_mock.dart';
@@ -191,6 +192,26 @@ void main() {
         ForestBlocMock.shownMessages(navigationService),
         contains(Internationalize.forestMessageNotEnoughResources),
       );
+    },
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenTheHeroHasBeatenTheChiefThenTheHeroPanelShowsTheChampionBadge',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        GearScenarioMock.withoutWorkshops(hero: HeroEntityMock.champion),
+        navigationService: navigationService,
+      );
+    },
+    act: (bloc) {
+      // when
+      bloc.add(const ForestStarted());
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(bloc.state.data.hud!.hero.isChampion, isTrue);
     },
   );
 }

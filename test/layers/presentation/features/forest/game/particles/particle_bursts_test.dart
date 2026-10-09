@@ -148,4 +148,23 @@ void main() {
       expect(_angleDegrees(drop.velocityX, drop.velocityY), inInclusiveRange(200, 260));
     }
   });
+
+  test('testWhenTheHeroBecomesChampionThenGoldAndBlueConfettiBurstsUpAndFalls', () {
+    // given
+    const head = ParticleMock.heroFeet;
+
+    // when
+    final confetti = ParticleBursts.confetti(at: head, random: ParticleMock.sparklesRandom);
+
+    // then
+    expect(confetti, hasLength(24));
+    expect(confetti.map((piece) => piece.kind).toSet(), {ParticleKind.sparkle, ParticleKind.magicSparkle});
+    for (final piece in confetti) {
+      expect(piece.origin.y, 150);
+      expect(piece.origin.x, inInclusiveRange(134, 166));
+      expect(_angleDegrees(piece.velocityX, piece.velocityY), inInclusiveRange(220, 320));
+      expect(piece.gravity, 140);
+      expect(piece.lifespanSeconds, 1.2);
+    }
+  });
 }

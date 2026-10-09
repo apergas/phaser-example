@@ -59,12 +59,33 @@ The stump (`stump` frame) comes from the LPC Tile Atlas above.
 ## Arena (`arena.png`)
 
 Fighters composed by `build_assets.py` from the same character layers and axe as `hero-*.png`
-(see *Character* above), each kept in one facing. The bandit and the barbarian are recolours of
-those layers (clothes, hair and, for the barbarian, skin); the barbarian chief is the barbarian
-drawn bigger. Same authors and licences as the character layers.
+(see *Character* above), each kept in one facing. The bandit is a recolour of those layers
+(clothes and hair). Same authors and licences as the character layers. The barbarian and the
+barbarian chief add their own layers (see *Barbarians* below).
 
 The grass (`arena-grass`) and the fence (`arena-fence`) come from the LPC Tile Atlas (see
 *Ground and decor* above). CC-BY-SA 3.0 / GPL 3.0.
+
+### Barbarians (`barbarian-*`, `barbarian-chief-*` frames in `arena.png`)
+
+The character body, head and boots (skin recoloured) with layers of the [Universal LPC Spritesheet
+Character Generator](https://github.com/liberatedpixelcup/Universal-LPC-Spritesheet-Character-Generator)
+in `asset-packs/lpc/sources/barbarians/` (see `CREDITS-barbarians.txt` there). The chief wears the
+viking helmet, a recoloured black beard and red shorts.
+
+| Layer | Authors | Licences |
+|---|---|---|
+| Shorts (recoloured) | JaidynReiman, ElizaWy, bluecarrot16, Johannes Sjölund (wulax), Stephen Challener (Redshrike) | OGA-BY 3.0, GPL 3.0 |
+| Leather armour | Johannes Sjölund (wulax), bluecarrot16, JaidynReiman | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
+| Bracers | Matthew Krohn (makrohn), Johannes Sjölund (wulax), JaidynReiman | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
+| Winter beard | bluecarrot16 | CC0 |
+| Barbarian and viking helmets | bluecarrot16, JaidynReiman, Napsio (Vitruvian Studio) | CC-BY 3.0, CC-BY 4.0, OGA-BY 3.0, GPL 2.0, GPL 3.0 |
+
+Sources: <https://opengameart.org/content/lpc-expanded-pants>,
+<https://opengameart.org/content/lpc-medieval-fantasy-character-sprites>,
+<https://opengameart.org/content/lpc-expanded-armor>, <https://opengameart.org/content/lpc-santa>,
+<https://opengameart.org/content/lpc-helmets>,
+<https://opengameart.org/content/lpc-expanded-hats-facial-helmets>
 
 ### Wolf and bear (`wolf-*`, `bear-*` frames in `arena.png`)
 

@@ -23,7 +23,7 @@ void main() {
     expect(fighter.frameName, 'bandit-idle-0');
   });
 
-  testWithFlameGame('testWhenTheChiefIsShownThenItIsTheBarbarianBigger', (game) async {
+  testWithFlameGame('testWhenTheChiefIsShownThenItUsesItsOwnArtBigger', (game) async {
     // given
     final chief = FighterComponent(assets: ArenaAssetsMock.create(), fighter: FighterRenderDataMock.chiefIdle);
 
@@ -32,7 +32,7 @@ void main() {
 
     // then
     expect(chief.scale, Vector2.all(1.25));
-    expect(chief.frameName, 'barbarian-idle-0');
+    expect(chief.frameName, 'barbarian-chief-idle-0');
     expect(chief.healthBar.position, Vector2(300, 105));
   });
 
@@ -89,5 +89,41 @@ void main() {
     // then
     expect((wolf.frameName, wolf.tipsOver), ('wolf-down', false));
     expect((bandit.frameName, bandit.tipsOver), ('bandit-idle-0', true));
+  });
+
+  testWithFlameGame('testWhenTheEnemyIsTheHerosTargetThenARingIsDrawnUnderItsFeet', (game) async {
+    // given
+    final bandit = FighterComponent(assets: ArenaAssetsMock.create(), fighter: FighterRenderDataMock.rookieBanditIdle);
+
+    // when
+    await game.ensureAdd(bandit);
+
+    // then
+    expect(bandit.ring.isShown, isTrue);
+    expect(bandit.ring.position, Vector2(300, 170));
+    expect(bandit.ring.size, Vector2(30, 11));
+  });
+
+  testWithFlameGame('testWhenTheTargetFallsThenTheRingIsHidden', (game) async {
+    // given
+    final bandit = FighterComponent(assets: ArenaAssetsMock.create(), fighter: FighterRenderDataMock.rookieBanditIdle);
+    await game.ensureAdd(bandit);
+
+    // when
+    bandit.show(FighterRenderDataMock.rookieBanditDown);
+
+    // then
+    expect(bandit.ring.isShown, isFalse);
+  });
+
+  testWithFlameGame('testWhenTheFighterIsNotTheTargetThenNoRingIsDrawn', (game) async {
+    // given
+    final hero = FighterComponent(assets: ArenaAssetsMock.create(), fighter: FighterRenderDataMock.heroIdle);
+
+    // when
+    await game.ensureAdd(hero);
+
+    // then
+    expect(hero.ring.isShown, isFalse);
   });
 }

@@ -407,6 +407,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         for (final slot in GearSlot.values) _gearRow(slot, options.where((option) => option.gear.slot == slot)),
       ],
       skills: [for (final option in _getSkillOptionsUseCase()) _skillItem(option)],
+      isChampion: status.isChampion,
     );
   }
 

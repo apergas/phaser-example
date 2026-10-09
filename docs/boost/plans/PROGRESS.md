@@ -50,10 +50,10 @@
 | C3 Herrería y Armería | ✅ | `feature/PROJECT-X-arena` (#41) | Herrería, Armería y panel *Héroe*; el oro llega con C2. |
 | C4 Lobos y oso | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Lobo de Redshrike y oso de tapatilorenzo (CC-BY / OGA-BY, aceptado); niveles de animales y salto hacia el objetivo. |
 | C5 Torre de magia | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Torre de magia, catálogo `Skills`, pestaña *Habilidades* y nombres de las habilidades en la arena. Unida tras C4 con dos conflictos aditivos; 612 tests en verde. |
-| C6 Bárbaros y jefe | 📝 ficha | — | Desbloqueada (C4 terminada). |
+| C6 Bárbaros y jefe | ✅ | `feature/PROJECT-C6-barbarians` (#51, lista para unir) | Bárbaros y jefe con capas LPC reales (cuero, barba, casco; jefe con casco vikingo), hacha de siempre; anillo bajo el objetivo y caídos al 50 %; *Campeón de la arena* con confeti e insignia en el panel *Héroe*. 630 tests en verde; prueba manual en Chrome y Android. |
 | C7 Misiones y equilibrado | 📝 ficha | — | Desbloqueada (C1, C3 y C5 terminadas); va al final, después de C6. |
 
 ## Siguiente paso
 
-- **Arena:** escribir el plan de C6 (bárbaros y jefe, flujo C) y después el de C7. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
+- **Arena:** unir la #51 (C6) a `feature/PROJECT-X-arena`; escribir el plan de C7 (misiones del héroe y equilibrado). Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
 - **Aldea:** implementar F1 desde `feature/PROJECT-X-town`.

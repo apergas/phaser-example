@@ -17,9 +17,10 @@ final class ForestTicked extends ForestEvent {
 final class ForestMapClicked extends ForestEvent {
   final PositionEntity position;
   final String? treeId;
+  final String? buildingId;
   final bool isSecondary;
 
-  const ForestMapClicked({required this.position, this.treeId, this.isSecondary = false});
+  const ForestMapClicked({required this.position, this.treeId, this.buildingId, this.isSecondary = false});
 }
 
 final class ForestPointerMoved extends ForestEvent {

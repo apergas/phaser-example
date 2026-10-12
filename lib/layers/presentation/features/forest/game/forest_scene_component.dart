@@ -70,6 +70,18 @@ class ForestSceneComponent extends Component {
     return best?.treeId;
   }
 
+  String? buildingAt(Vector2 point) {
+    BuildingComponent? best;
+    for (final building in _buildings.values) {
+      if (!building.containsPoint(point)) continue;
+      if (best == null || building.priority > best.priority) best = building;
+    }
+    if (best == null) return null;
+    final front = best;
+    final isHidden = _trees.values.any((tree) => tree.priority > front.priority && tree.containsPoint(point));
+    return isHidden ? null : front.buildingId;
+  }
+
   void _build(WorldSnapshotEntity world) {
     _isBuilt = true;
     add(GroundComponent(tile: _assets.ground, worldWidth: world.width, worldHeight: world.height));

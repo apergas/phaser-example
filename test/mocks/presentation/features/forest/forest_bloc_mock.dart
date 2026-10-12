@@ -3,6 +3,7 @@ import 'package:rpg/layers/domain/entities/game/game_session_entity.dart';
 import 'package:rpg/layers/domain/use-cases/game/advance_game_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/can_place_building_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/chop_tree_use_case.dart';
+import 'package:rpg/layers/domain/use-cases/game/resume_construction_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/construct_building_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/get_build_options_use_case.dart';
 import 'package:rpg/layers/domain/use-cases/game/get_player_status_use_case.dart';
@@ -50,6 +51,7 @@ abstract final class ForestBlocMock {
       chopTreeUseCase: ChopTreeUseCase(sessionRepository: sessionRepository),
       canPlaceBuildingUseCase: CanPlaceBuildingUseCase(sessionRepository: sessionRepository),
       constructBuildingUseCase: ConstructBuildingUseCase(sessionRepository: sessionRepository),
+      resumeConstructionUseCase: ResumeConstructionUseCase(sessionRepository: sessionRepository),
       advanceGameUseCase: AdvanceGameUseCase(sessionRepository: sessionRepository),
       getPlayerStatusUseCase: GetPlayerStatusUseCase(sessionRepository: sessionRepository),
       getWorldSnapshotUseCase: GetWorldSnapshotUseCase(sessionRepository: sessionRepository),

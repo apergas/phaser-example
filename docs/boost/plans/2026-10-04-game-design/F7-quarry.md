@@ -1,6 +1,6 @@
 # F7 · Cantera — Implementation Plan
 
-> **Plan detallado (2026-10-17), sin tests (regla del usuario); lo que falta de test está en *Para T1*.** Escrito leyendo la ficha (decisiones de abajo, que no cambian), el código de `feature/PROJECT-X-town` tras F6 y la versión iOS ya hecha (`$IOS`, merge `ad3be22`). Una sola rama, un commit por tarea (TF7.1–TF7.5) y el cierre.
+> **Implementado el 2026-10-17 sin tests (regla del usuario); lo que falta de test está en *Para T1*.** Una sola rama `feature/PROJECT-F7-quarry`: el plan primero (escrito leyendo la ficha, el código tras F6 y la versión iOS, merge `ad3be22`), un commit por tarea (TF7.1–TF7.5) y el cierre. El código se aplicó tal como está en el plan, sin cambios. Desvíos respecto a iOS: la regla es una jerarquía `sealed` en vez de un `enum` con valor asociado (decisión 1); `cargoFor` en lugar de `cargo(for:)` (decisión 6); `Work.intervalMs` recibe también el *intent* (decisión 8); `PlacementData` sin `copyWith` como en iOS; en la web el motivo solo sale en el *snackbar*, porque no hay barra (decisión 11). Cifras, orden de los rechazos y `forest.png` (idéntico byte a byte al de iOS en `ad3be22`; solo se añade `quarry`), iguales a iOS.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use boost:subagent-driven-development (recommended) or boost:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Read the **Global Constraints** in [README.md](README.md) first; they apply to every task.
 

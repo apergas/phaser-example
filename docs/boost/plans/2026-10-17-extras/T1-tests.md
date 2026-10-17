@@ -65,3 +65,9 @@ Desde el 2026-10-17 (a mitad de C9, tras TC9.3) el desarrollo sigue **sin tests*
   - `StumpEntityMock` (`fresh`, `almostSapling`, `sapling`, `ready`); `stump_entity_test.dart` y `stump_rules_test.dart` (`isSapling` en 60 000, `grown` limitado a 180 000);
   - `world_regrowth_test.dart` (ticks de 50 ms): pino `tree-37` talado en 5500 brota en 65 500 y vuelve en 185 500; `elapsedMs` 0 en el tick de la tala; espera con el jugador a < 20 (a 22 no); una casa a < 52 borra el tocón; los tocones no bloquean ni el paso ni `canPlace`; el árbol que vuelve sale el último;
   - `forest_bloc_test.dart`: `TreeSproutedEffect` / `TreeRegrownEffect` sin *snackbar*; `growth_motion_test.dart`; `stump_component_test.dart` (50 × 41, 18 × 30, crecimiento 0,35 → 1 en 600 ms); `forest_scene_component_test.dart` (reconcilia tocones y brotes por id, la tala ya no añade decoración); `lpc_atlas_test.dart`: frame `sapling`.
+- **F4** (sin tests; cambia el resultado de los de misiones y del panel). Detalle en la sección *Para T1* de [F4-quests-chapter-1.md](../2026-10-04-game-design/F4-quests-chapter-1.md):
+  - `architecture_test.dart`: `world/stats_recording.dart` en `_worldInternals`;
+  - `StatsEntityMock`; `stats_entity_test.dart`, `stats_rules_test.dart` y `stats_recording_test.dart` (talados, por tipo desde el tocón, edificios terminados, rebrotados; en el mismo tick que el evento); `building_rules_test.dart`: `completeCount`;
+  - `quests_test.dart` / `quest_log_test.dart`: 10 → 15 misiones, aldea 2 → 7, las cinco nuevas en su orden y fuera de orden, `gatherFortyWood` pegajosa;
+  - `forest_bloc_test.dart`: insignia `x/15`, recorte por línea (plegada "N hechas", la actual, dos pendientes), aviso de línea completa con la séptima de la aldea; `hud_data_mock.dart` / `quest_item_data_mock.dart` con menos filas;
+  - `quest_row_test.dart`: fila plegada; `internationalize_test.dart`: los cinco títulos y el plural "1 hecha" / "3 hechas".

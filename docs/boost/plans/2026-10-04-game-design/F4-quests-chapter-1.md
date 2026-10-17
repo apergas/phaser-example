@@ -1,5 +1,7 @@
 # F4 · Misiones, capítulo 1 — Implementation Plan
 
+> **Implementado el 2026-10-17 sin tests (regla del usuario); lo que falta de test está en *Para T1*.** Una sola rama `feature/PROJECT-F4-quests-chapter-1`, un commit por tarea (TF4.1–TF4.4). Desvíos respecto a iOS: `StatsEntity` no comprueba en el constructor los valores por tipo (decisión 1) y la fila plegada la arma el bloc, no `QuestItemData` (decisión 6); sin misión del hacha, la aldea tiene 7 misiones y el total 15.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use boost:subagent-driven-development (recommended) or boost:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Read the **Global Constraints** in [README.md](README.md) first; they apply to every task.
 
 | | |
@@ -235,8 +237,7 @@ Esperado: `No issues found!`.
 - [ ] **Step 2: `building_rules.dart`** — en `BuildingListRules`, tras `hasComplete`:
 
 ```dart
-  int completeCount(BlueprintId id) =>
-      where((building) => building.blueprint.id == id && building.isComplete).length;
+  int completeCount(BlueprintId id) => where((building) => building.blueprint.id == id && building.isComplete).length;
 ```
 
 - [ ] **Step 3: `quests.dart`** — imports `../../../core/config/constants/enum/tree_kind.dart` y `../world/extensions/stats_rules.dart`; tras la misión `buildHouse`:

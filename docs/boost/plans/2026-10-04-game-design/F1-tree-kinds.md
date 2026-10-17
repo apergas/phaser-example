@@ -1,5 +1,7 @@
 # F1 · Árboles con personalidad — Implementation Plan
 
+> **Implementado el 2026-10-17 sin tests (regla del usuario); los pasos de test pasan a T1.** Una sola rama `feature/PROJECT-F1-tree-kinds`, dos commits (T1.1, T1.2). Los pasos de test quedan sin marcar (T1.1: 2, 4, 6; T1.2: 3, 5, 7) y los comandos `flutter test` de los demás se omitieron. Desvíos: `FloatingTextComponent` ya existía (arena), se reutiliza y su prioridad pasa a `RenderDepth.floatingText` (`overlay + 1`) para dibujarse sobre el fantasma; el *mapper* lanza `UnknownTreeKindException` si falta el tipo en la tabla en vez de `!`; no hubo que tocar `CLAUDE.md` por paso, se actualizó al cerrar.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use boost:subagent-driven-development (recommended) or boost:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Read the **Global Constraints** in [README.md](README.md) first; they apply to every task.
 
 | | |
@@ -132,7 +134,7 @@
   LevelDBOMock.mixedForest                         // oak, pine and round, with level wood that must be ignored
   ```
 
-- [ ] **Step 1: Crear la rama**
+- [x] **Step 1: Crear la rama**
 
 ```bash
 git switch develop && git pull && git switch -c feature/PROJECT-F1-domain
@@ -208,7 +210,7 @@ void main() {
 Run: `flutter test test/layers/domain/entities/tree/tree_stats_entity_test.dart`
 Expected: FAIL de compilación (`tree_stats_entity.dart` no existe).
 
-- [ ] **Step 3: Implementar `TreeStatsEntity`**
+- [x] **Step 3: Implementar `TreeStatsEntity`**
 
 `lib/layers/domain/entities/tree/tree_stats_entity.dart`:
 
@@ -321,7 +323,7 @@ for (final (name, kind, hits, wood) in const [
 Run: `flutter test test/layers/domain/rules test/layers/domain/world/world_chopping_test.dart`
 Expected: FAIL de compilación (`Rules.treeKindStats` no existe).
 
-- [ ] **Step 5: Añadir la tabla a `Rules`**
+- [x] **Step 5: Añadir la tabla a `Rules`**
 
 `lib/layers/domain/rules/rules.dart` (fichero caliente: `hitsToFellTree` se queda de momento, se borra en el paso 8; la tabla va al final):
 
@@ -482,7 +484,7 @@ expect(snapshot.trees.fold<int>(0, (total, tree) => total + tree.woodYield), 411
 Run: `flutter test test/layers/data test/core/config/di/di_test.dart`
 Expected: FAIL en los valores: el mapper aún copia `dbo.wood` y `Rules.hitsToFellTree` (por ejemplo `Expected: <411> Actual: <388>`, `Expected: [6, 9, 4] Actual: [6, 5, 6]`). `level_local_datasource_impl_test.dart` sigue en verde.
 
-- [ ] **Step 7: `TreeMapperDBO` toma la madera y los golpes de la tabla**
+- [x] **Step 7: `TreeMapperDBO` toma la madera y los golpes de la tabla**
 
 `lib/layers/data/repositories/level/mappers/tree_mapper_dbo.dart`:
 
@@ -517,7 +519,7 @@ Los imports no cambian.
 Run: `flutter test test/layers/data test/core/config/di/di_test.dart`
 Expected: PASS, incluido `level_local_datasource_impl_test.dart` con su total de `TreeDBO.wood` en 388.
 
-- [ ] **Step 8: Borrar `Rules.hitsToFellTree`**
+- [x] **Step 8: Borrar `Rules.hitsToFellTree`**
 
 En `lib/layers/domain/rules/rules.dart` se borra la línea `static const int hitsToFellTree = 5;`.
 
@@ -538,7 +540,7 @@ Expected: sin resultados.
 Run: `flutter test`
 Expected: PASS (todos, incluido `architecture_test.dart`: `TreeStatsEntity` sólo tiene campos `final`).
 
-- [ ] **Step 9: `CLAUDE.md`**
+- [x] **Step 9: `CLAUDE.md`**
 
 - En *Architecture*, la línea de `domain/`: "`rules/` (`Rules` tuning, `Blueprints` catalogue)" pasa a "`rules/` (`Rules` tuning, including `treeKindStats`: wood and hits per `TreeKind`; `Blueprints` catalogue)".
 - En *Architecture*, la lista de entidades: "Geometry, tree, item, …" pasa a "Geometry, tree (`TreeEntity`, `TreeStatsEntity`), item, …".
@@ -546,7 +548,7 @@ Expected: PASS (todos, incluido `architecture_test.dart`: `TreeStatsEntity` sól
 
 Se añade con un `git add CLAUDE.md` aparte.
 
-- [ ] **Step 10: Verificación completa**
+- [x] **Step 10: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/layers/domain/entities/tree/tree_stats_entity.dart lib/layers/domain/rules/rules.dart lib/layers/data/repositories/level/mappers/tree_mapper_dbo.dart test/layers/domain/entities/tree/tree_stats_entity_test.dart test/layers/domain/rules/rules_test.dart test/layers/domain/world/world_chopping_test.dart test/layers/domain/use-cases/game/game_flow_test.dart test/layers/data/repositories/level/mappers/tree_mapper_dbo_test.dart test/layers/data/repositories/level/mappers/level_mapper_dbo_test.dart test/layers/data/repositories/level/level_repository_impl_test.dart test/layers/presentation/features/forest/bloc/forest_bloc_test.dart test/core/config/di/di_test.dart test/mocks/domain/entities/tree/tree_stats_entity_mock.dart test/mocks/domain/entities/tree/tree_entity_mock.dart test/mocks/domain/world/world_mock.dart test/mocks/data/datasources/level/tree_dbo_mock.dart test/mocks/data/datasources/level/level_dbo_mock.dart
@@ -561,7 +563,7 @@ Expected:
 - `flutter analyze` termina en `No issues found!`;
 - los dos `flutter test` en verde. En Chrome, el total de entidades también es 411 y el de `TreeDBO.wood` sigue en 388.
 
-- [ ] **Step 11: Commit y PR**
+- [x] **Step 11: Commit y PR**
 
 ```bash
 git add lib test
@@ -617,13 +619,13 @@ Después, `/cerrar-tarea`: abre el PR con `Closes #<issue F1>` (o el número que
   }
   ```
 
-- [ ] **Step 1: Rama**
+- [x] **Step 1: Rama**
 
 ```bash
 git switch develop && git pull && git switch -c feature/PROJECT-F1-presentation
 ```
 
-- [ ] **Step 2: Texto "+N", primero el test**
+- [x] **Step 2: Texto "+N", primero el test**
 
 En `test/core/assets/i18n/internationalize_test.dart`, detrás de `testWhenFormattingAmountsThenNamesTheResource`:
 
@@ -737,7 +739,7 @@ blocTest<ForestBloc, ForestState>(
 Run: `flutter test test/layers/presentation/features/forest/models test/layers/presentation/features/forest/bloc`
 Expected: FAIL de compilación (`TreeFelledEffect` no tiene `wood`).
 
-- [ ] **Step 4: `TreeFelledEffect.wood` y `ForestBloc._react`**
+- [x] **Step 4: `TreeFelledEffect.wood` y `ForestBloc._react`**
 
 `lib/layers/presentation/features/forest/models/forest_effect.dart`:
 
@@ -839,7 +841,7 @@ void main() {
 Run: `flutter test test/layers/presentation/features/forest/game/components/floating_text_component_test.dart`
 Expected: FAIL de compilación (`floating_text_component.dart` no existe).
 
-- [ ] **Step 6: Implementar `FloatingTextComponent`**
+- [x] **Step 6: Implementar `FloatingTextComponent`**
 
 `lib/layers/presentation/features/forest/game/components/floating_text_component.dart`:
 
@@ -937,7 +939,7 @@ testWithFlameGame('testWhenATreeIsFelledThenTheWoodGainedFloatsOverItsTrunk', (g
 Run: `flutter test test/layers/presentation/features/forest/game/forest_scene_component_test.dart`
 Expected: FAIL (`Bad state: No element`: la escena todavía no añade el texto).
 
-- [ ] **Step 8: `ForestSceneComponent._onTreeFelled` añade el texto**
+- [x] **Step 8: `ForestSceneComponent._onTreeFelled` añade el texto**
 
 `lib/layers/presentation/features/forest/game/forest_scene_component.dart`:
 - nuevos imports: `'../../../../../core/assets/i18n/internationalize.dart'` y `'components/floating_text_component.dart'`;
@@ -968,13 +970,13 @@ void _onTreeFelled(String treeId, double fromX, int wood) {
 Run: `flutter test test/layers/presentation/features/forest/game`
 Expected: PASS.
 
-- [ ] **Step 9: `CLAUDE.md`**
+- [x] **Step 9: `CLAUDE.md`**
 
 En *Architecture*, en `features/forest/game/`, la lista de `components/` "(ground, atlas sprites, shadows, trees with pixel-accurate taps, items, buildings by stage, placement ghost, animated player)" pasa a "(ground, atlas sprites, shadows, trees with pixel-accurate taps, items, buildings by stage, placement ghost, animated player, `FloatingTextComponent` for rising texts such as the "+N" of a felled tree)".
 
 Se añade con un `git add CLAUDE.md` aparte.
 
-- [ ] **Step 10: Verificación completa**
+- [x] **Step 10: Verificación completa**
 
 ```bash
 dart format --line-length 120 lib/layers/presentation/features/forest/game/components/floating_text_component.dart lib/layers/presentation/features/forest/models/forest_effect.dart lib/layers/presentation/features/forest/bloc/forest_bloc.dart lib/layers/presentation/features/forest/game/forest_scene_component.dart lib/core/assets/i18n/internationalize.dart test/layers/presentation/features/forest/game/components/floating_text_component_test.dart test/layers/presentation/features/forest/game/forest_scene_component_test.dart test/layers/presentation/features/forest/models/forest_effect_test.dart test/layers/presentation/features/forest/bloc/forest_bloc_test.dart test/core/assets/i18n/internationalize_test.dart test/mocks/presentation/features/forest/forest_effect_mock.dart test/mocks/presentation/features/forest/game/forest_data_mock.dart test/mocks/presentation/features/forest/forest_scenario_mock.dart
@@ -992,7 +994,7 @@ Prueba manual en Chrome (`flutter run -d chrome`), en el emulador (`flutter run 
 - el texto se dibuja por encima de los árboles cercanos y no tapa el HUD;
 - la misión de 15 de madera se completa.
 
-- [ ] **Step 11: Commit**
+- [x] **Step 11: Commit**
 
 ```bash
 git add lib test
@@ -1001,3 +1003,14 @@ git commit -m "[PROJECT-F1]: Float the wood gained over each felled tree"
 ```
 
 Después, `/cerrar-tarea`. Con esto se cierra el milestone F1.
+
+---
+
+## Para T1
+
+Pasos de test sin ejecutar (T1.1: pasos 2, 4 y 6; T1.2: pasos 3, 5 y 7), más lo que se rompe:
+
+- `Rules.hitsToFellTree` ya no existe: `world_chopping_test.dart`, `game_flow_test.dart` y `forest_bloc_test.dart` pasan a `TreeEntityMock.mock.hitsToFell` (paso 8 de T1.1).
+- `TreeMapperDBO` ya no copia `TreeDBO.wood`: `tree_mapper_dbo_test.dart`, `level_mapper_dbo_test.dart`, `level_repository_impl_test.dart` y `di_test.dart` (388 → 411).
+- `TreeFelledEffect` exige `wood`: `ForestEffectMock`, `ForestDataMock.treeFelled`, `forest_effect_test.dart`, `forest_bloc_test.dart` y `forest_scene_component_test.dart` no compilan hasta añadirlo.
+- Nuevos: `tree_stats_entity_test.dart`, `rules_test.dart`, `floating_text_component_test.dart` (el componente ya tiene test de la arena; ajustar a la prioridad `floatingText`), clave `forestFloatingWoodGained` en `internationalize_test.dart`.

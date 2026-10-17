@@ -43,7 +43,7 @@
 | [F7 Cantera](2026-10-04-game-design/F7-quarry.md) | 📝 ficha | — | Bloque 2. |
 | [F8 Taller y mejoras de herramientas](2026-10-04-game-design/F8-workshop.md) | 📝 ficha | — | Bloque 2. |
 | [F2 Guardado de la partida](2026-10-04-game-design/F2-autosave.md) | 📝 ficha | — | Bloque 3: va la última. |
-| F9–F15 Comida, aldeanos, granja, estaciones, eras, mercader | 💭 esbozo | — | Se replanifican al terminar F2. |
+| F9–F15 Comida, aldeanos, granja, estaciones, eras, mercader | 💭 en espera | — | No se planifican hasta terminar todo, T1 incluida; se hablan entonces. |
 
 ## Arreglos y mejoras
 

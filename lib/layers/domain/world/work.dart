@@ -3,11 +3,13 @@ import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
 import '../entities/player/intent_entity.dart';
 import 'construction.dart';
+import 'depositing.dart';
+import 'mining.dart';
 import 'woodcutting.dart';
 import 'world_state.dart';
 
 abstract interface class Work<I extends IntentEntity> {
-  double get intervalMs;
+  double intervalMs(WorldState state, I intent);
 
   ObstacleEntity? target(WorldState state, I intent);
 
@@ -22,7 +24,7 @@ final class BoundWork<I extends IntentEntity> {
   final Work<I> _work;
   final I _intent;
 
-  double get intervalMs => _work.intervalMs;
+  double intervalMs(WorldState state) => _work.intervalMs(state, _intent);
 
   ObstacleEntity? target(WorldState state) => _work.target(state, _intent);
 
@@ -35,4 +37,6 @@ final class BoundWork<I extends IntentEntity> {
 BoundWork<IntentEntity> workFor(IntentEntity intent) => switch (intent) {
   ChopIntentEntity() => BoundWork<ChopIntentEntity>(const Woodcutting(), intent),
   ConstructIntentEntity() => BoundWork<ConstructIntentEntity>(const Construction(), intent),
+  MineIntentEntity() => BoundWork<MineIntentEntity>(const Mining(), intent),
+  DepositIntentEntity() => BoundWork<DepositIntentEntity>(const Depositing(), intent),
 };

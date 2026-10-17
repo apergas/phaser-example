@@ -1,6 +1,7 @@
-import 'package:meta/meta.dart';
-
 import '../../../core/config/constants/enum/chop_result.dart';
+import '../../../core/config/constants/enum/construction_rejection.dart';
+import '../../../core/config/constants/enum/deposit_result.dart';
+import '../../../core/config/constants/enum/mine_result.dart';
 import '../../../core/config/constants/enum/resource.dart';
 import '../../../core/config/constants/enum/resume_construction_result.dart';
 import '../entities/building/blueprint_entity.dart';
@@ -17,9 +18,12 @@ import '../entities/player/activity_entity.dart';
 import '../entities/player/intent_entity.dart';
 import '../entities/player/inventory_entity.dart';
 import '../entities/player/player_entity.dart';
+import '../entities/rock/rock_entity.dart';
 import '../entities/tree/stump_entity.dart';
 import '../entities/tree/tree_entity.dart';
 import 'construction.dart';
+import 'depositing.dart';
+import 'mining.dart';
 import 'extensions/inventory_rules.dart';
 import 'extensions/player_rules.dart';
 import 'navigation.dart';
@@ -38,6 +42,8 @@ class World {
     required List<TreeEntity> trees,
     List<GroundItemEntity> items = const [],
     List<DecorationEntity> decorations = const [],
+    List<RockEntity> rocks = const [],
+    List<BuildingEntity> buildings = const [],
     HeroEntity hero = const HeroEntity(),
   }) : this._(
          WorldState(
@@ -47,6 +53,8 @@ class World {
            trees: trees,
            items: items,
            decorations: decorations,
+           rocks: rocks,
+           buildings: buildings,
            hero: hero,
          ),
        );
@@ -72,7 +80,11 @@ class World {
 
   List<StumpEntity> get stumps => _state.stumps.values.toList();
 
+  List<RockEntity> get rocks => _state.rocks.values.toList();
+
   StatsEntity get stats => _state.stats;
+
+  InventoryEntity get stock => _state.stock;
 
   HeroEntity get hero => _state.hero;
 
@@ -81,7 +93,7 @@ class World {
   double get workProgress {
     final activity = player.activity;
     if (activity is! WorkingActivityEntity) return 0;
-    return activity.elapsedMs / workFor(activity.intent).intervalMs;
+    return activity.elapsedMs / workFor(activity.intent).intervalMs(_state);
   }
 
   PositionEntity? get playerTarget => switch (player.activity) {
@@ -95,6 +107,18 @@ class World {
   ChopResult orderChop(String treeId) {
     final result = Woodcutting.check(_state, treeId);
     if (result == ChopResult.ok) _navigation.goWorkOn(ChopIntentEntity(treeId: treeId));
+    return result;
+  }
+
+  MineResult orderMine(String rockId) {
+    final result = Mining.check(_state, rockId);
+    if (result == MineResult.ok) _navigation.goWorkOn(MineIntentEntity(rockId: rockId));
+    return result;
+  }
+
+  DepositResult orderDeposit(String buildingId) {
+    final result = Depositing.check(_state, buildingId);
+    if (result == DepositResult.ok) _navigation.goWorkOn(DepositIntentEntity(buildingId: buildingId));
     return result;
   }
 
@@ -114,25 +138,16 @@ class World {
     return ResumeConstructionResult.ok;
   }
 
-  bool canPlace(BlueprintEntity blueprint, PositionEntity position) =>
-      Construction.canPlace(_state, blueprint, position);
+  ConstructionRejection? placementRejection(BlueprintEntity blueprint, PositionEntity position) =>
+      Construction.rejection(_state, blueprint, position);
 
-  InventoryEntity get funds => _state.player.inventory;
+  InventoryEntity get funds => _state.stock;
 
   void earn(Map<Resource, int> reward) {
-    var inventory = _state.player.inventory;
-    for (final MapEntry(key: resource, value: quantity) in reward.entries) {
-      if (quantity > 0) inventory = inventory.add(resource, quantity);
-    }
-    _state.player = _state.player.copyWith(inventory: inventory);
+    _state.stock = _state.stock.adding(reward);
   }
 
-  bool spend(Map<Resource, int> cost) {
-    final remaining = _state.player.inventory.spend(cost);
-    if (remaining == null) return false;
-    _state.player = _state.player.copyWith(inventory: remaining);
-    return true;
-  }
+  bool spend(Map<Resource, int> cost) => _state.pay(cost);
 
   void updateHero(HeroEntity Function(HeroEntity hero) transform) {
     _state.hero = transform(_state.hero);
@@ -154,7 +169,6 @@ class World {
     return events;
   }
 
-  @visibleForTesting
   void updatePlayer(PlayerEntity Function(PlayerEntity player) transform) {
     _state.player = transform(_state.player);
   }
@@ -166,11 +180,12 @@ class World {
       return;
     }
     final elapsed = activity.elapsedMs + deltaMs;
-    if (elapsed < work.intervalMs) {
+    final intervalMs = work.intervalMs(_state);
+    if (elapsed < intervalMs) {
       _state.player = _state.player.continueWork(elapsed);
       return;
     }
-    _state.player = _state.player.continueWork(elapsed - work.intervalMs);
+    _state.player = _state.player.continueWork(elapsed - intervalMs);
     if (work.impact(_state, events)) _state.player = _state.player.stop();
   }
 }

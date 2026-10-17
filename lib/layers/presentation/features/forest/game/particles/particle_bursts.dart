@@ -7,6 +7,7 @@ import 'particle.dart';
 abstract final class ParticleBursts {
   static const int chipsPerHit = 8;
   static const double impactHeight = 10;
+  static const double stoneImpactHeight = 14;
   static const int dustPerHammer = 6;
   static const double dustLift = 4;
   static const double chipAngleLeftMin = 200;
@@ -73,14 +74,41 @@ abstract final class ParticleBursts {
     required bool playerOnLeft,
     required math.Random random,
   }) {
+    return _chips(
+      ParticleKind.woodChip,
+      origin: PositionEntity(x: trunkBase.x, y: trunkBase.y - impactHeight),
+      playerOnLeft: playerOnLeft,
+      random: random,
+    );
+  }
+
+  static List<Particle> stoneChips({
+    required PositionEntity rockBase,
+    required bool playerOnLeft,
+    required math.Random random,
+  }) {
+    return _chips(
+      ParticleKind.stoneChip,
+      origin: PositionEntity(x: rockBase.x, y: rockBase.y - stoneImpactHeight),
+      playerOnLeft: playerOnLeft,
+      random: random,
+    );
+  }
+
+  static List<Particle> _chips(
+    ParticleKind kind, {
+    required PositionEntity origin,
+    required bool playerOnLeft,
+    required math.Random random,
+  }) {
     final minAngle = playerOnLeft ? chipAngleLeftMin : chipAngleRightMin;
     final maxAngle = playerOnLeft ? chipAngleLeftMax : chipAngleRightMax;
     return List.generate(chipsPerHit, (_) {
       final speed = _between(random, chipSpeedMin, chipSpeedMax);
       final angle = _between(random, minAngle, maxAngle) * math.pi / 180;
       return Particle(
-        kind: ParticleKind.woodChip,
-        origin: PositionEntity(x: trunkBase.x, y: trunkBase.y - impactHeight),
+        kind: kind,
+        origin: origin,
         velocityX: speed * math.cos(angle),
         velocityY: speed * math.sin(angle),
         gravity: chipGravity,

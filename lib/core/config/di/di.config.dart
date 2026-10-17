@@ -30,6 +30,8 @@ import 'package:farming/layers/data/datasources/session/source/game_session_loca
     as _i576;
 import 'package:farming/layers/data/repositories/level/level_repository_impl.dart'
     as _i571;
+import 'package:farming/layers/data/repositories/level/mappers/building_mapper_dbo.dart'
+    as _i959;
 import 'package:farming/layers/data/repositories/level/mappers/decoration_mapper_dbo.dart'
     as _i188;
 import 'package:farming/layers/data/repositories/level/mappers/ground_item_mapper_dbo.dart'
@@ -38,6 +40,8 @@ import 'package:farming/layers/data/repositories/level/mappers/level_mapper_dbo.
     as _i459;
 import 'package:farming/layers/data/repositories/level/mappers/position_mapper_dbo.dart'
     as _i453;
+import 'package:farming/layers/data/repositories/level/mappers/rock_mapper_dbo.dart'
+    as _i1063;
 import 'package:farming/layers/data/repositories/level/mappers/tree_mapper_dbo.dart'
     as _i553;
 import 'package:farming/layers/data/repositories/session/game_session_repository_impl.dart'
@@ -52,20 +56,30 @@ import 'package:farming/layers/domain/use-cases/arena/start_fight_use_case.dart'
     as _i630;
 import 'package:farming/layers/domain/use-cases/game/advance_game_use_case.dart'
     as _i961;
+import 'package:farming/layers/domain/use-cases/game/buy_upgrade_use_case.dart'
+    as _i62;
 import 'package:farming/layers/domain/use-cases/game/can_place_building_use_case.dart'
     as _i1071;
 import 'package:farming/layers/domain/use-cases/game/chop_tree_use_case.dart'
     as _i803;
 import 'package:farming/layers/domain/use-cases/game/construct_building_use_case.dart'
     as _i349;
+import 'package:farming/layers/domain/use-cases/game/deposit_use_case.dart'
+    as _i867;
 import 'package:farming/layers/domain/use-cases/game/get_build_options_use_case.dart'
     as _i109;
 import 'package:farming/layers/domain/use-cases/game/get_player_status_use_case.dart'
     as _i465;
 import 'package:farming/layers/domain/use-cases/game/get_quests_use_case.dart'
     as _i94;
+import 'package:farming/layers/domain/use-cases/game/get_stock_use_case.dart'
+    as _i401;
+import 'package:farming/layers/domain/use-cases/game/get_upgrade_options_use_case.dart'
+    as _i1066;
 import 'package:farming/layers/domain/use-cases/game/get_world_snapshot_use_case.dart'
     as _i579;
+import 'package:farming/layers/domain/use-cases/game/mine_rock_use_case.dart'
+    as _i50;
 import 'package:farming/layers/domain/use-cases/game/move_player_use_case.dart'
     as _i844;
 import 'package:farming/layers/domain/use-cases/game/resume_construction_use_case.dart'
@@ -93,25 +107,29 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.factory<_i284.AppExceptionHandler>(() => _i284.AppExceptionHandler());
+    gh.factory<_i959.BuildingMapperDBO>(() => _i959.BuildingMapperDBO());
     gh.factory<_i188.DecorationMapperDBO>(() => _i188.DecorationMapperDBO());
     gh.factory<_i875.GroundItemMapperDBO>(() => _i875.GroundItemMapperDBO());
     gh.factory<_i453.PositionMapperDBO>(() => _i453.PositionMapperDBO());
+    gh.factory<_i1063.RockMapperDBO>(() => _i1063.RockMapperDBO());
     gh.factory<_i553.TreeMapperDBO>(() => _i553.TreeMapperDBO());
     gh.singleton<_i500.NavigationService>(() => _i769.NavifyImpl());
-    gh.factory<_i459.LevelMapperDBO>(
-      () => _i459.LevelMapperDBO(
-        positionMapperDBO: gh<_i453.PositionMapperDBO>(),
-        treeMapperDBO: gh<_i553.TreeMapperDBO>(),
-        decorationMapperDBO: gh<_i188.DecorationMapperDBO>(),
-        groundItemMapperDBO: gh<_i875.GroundItemMapperDBO>(),
-      ),
-    );
     gh.lazySingleton<_i576.GameSessionLocalDatasource>(
       () => _i23.GameSessionLocalDatasourceImpl(),
     );
     gh.singleton<_i195.Logger>(() => _i189.CustomLoggerImpl());
     gh.factory<_i1028.LevelLocalDatasource>(
       () => const _i783.LevelLocalDatasourceImpl(),
+    );
+    gh.factory<_i459.LevelMapperDBO>(
+      () => _i459.LevelMapperDBO(
+        positionMapperDBO: gh<_i453.PositionMapperDBO>(),
+        treeMapperDBO: gh<_i553.TreeMapperDBO>(),
+        decorationMapperDBO: gh<_i188.DecorationMapperDBO>(),
+        groundItemMapperDBO: gh<_i875.GroundItemMapperDBO>(),
+        rockMapperDBO: gh<_i1063.RockMapperDBO>(),
+        buildingMapperDBO: gh<_i959.BuildingMapperDBO>(),
+      ),
     );
     gh.factory<_i663.GameSessionRepository>(
       () => _i623.GameSessionRepositoryImpl(
@@ -144,6 +162,11 @@ extension GetItInjectableX on _i174.GetIt {
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );
+    gh.factory<_i62.BuyUpgradeUseCase>(
+      () => _i62.BuyUpgradeUseCase(
+        sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
     gh.factory<_i1071.CanPlaceBuildingUseCase>(
       () => _i1071.CanPlaceBuildingUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
@@ -156,6 +179,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i349.ConstructBuildingUseCase>(
       () => _i349.ConstructBuildingUseCase(
+        sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i867.DepositUseCase>(
+      () => _i867.DepositUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );
@@ -174,8 +202,23 @@ extension GetItInjectableX on _i174.GetIt {
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );
+    gh.factory<_i401.GetStockUseCase>(
+      () => _i401.GetStockUseCase(
+        sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i1066.GetUpgradeOptionsUseCase>(
+      () => _i1066.GetUpgradeOptionsUseCase(
+        sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
     gh.factory<_i579.GetWorldSnapshotUseCase>(
       () => _i579.GetWorldSnapshotUseCase(
+        sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i50.MineRockUseCase>(
+      () => _i50.MineRockUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );

@@ -1,1 +1,1 @@
-enum ToolKind { axe }
+enum ToolKind { axe, pickaxe }

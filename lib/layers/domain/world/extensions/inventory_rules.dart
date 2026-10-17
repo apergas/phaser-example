@@ -1,8 +1,24 @@
+import 'dart:math';
+
 import '../../../../core/config/constants/enum/resource.dart';
 import '../../../../core/config/constants/enum/tool_kind.dart';
 import '../../entities/player/inventory_entity.dart';
+import '../../rules/rules.dart';
+import 'resource_rules.dart';
 
 extension InventoryRules on InventoryEntity {
+  int get load =>
+      Resource.values.where((resource) => resource.takesCargo).fold(0, (sum, resource) => sum + amount(resource));
+
+  int get freeLoad => max(0, Rules.carryCapacity - load);
+
+  bool get isLoadFull => freeLoad == 0;
+
+  Map<Resource, int> get cargo => {
+    for (final resource in Resource.values)
+      if (resource.takesCargo && amount(resource) > 0) resource: amount(resource),
+  };
+
   int amount(Resource resource) => resources[resource] ?? 0;
 
   InventoryEntity add(Resource resource, int quantity) {
@@ -12,6 +28,24 @@ extension InventoryRules on InventoryEntity {
     if (quantity == 0) return this;
     return copyWith(resources: {...resources, resource: amount(resource) + quantity});
   }
+
+  InventoryEntity adding(Map<Resource, int> amounts) {
+    var inventory = this;
+    for (final resource in Resource.values) {
+      final quantity = amounts[resource] ?? 0;
+      if (quantity > 0) inventory = inventory.add(resource, quantity);
+    }
+    return inventory;
+  }
+
+  Map<Resource, int> cargoFor(Set<Resource> accepted) => {
+    for (final MapEntry(key: resource, value: quantity) in cargo.entries)
+      if (accepted.contains(resource)) resource: quantity,
+  };
+
+  InventoryEntity unloading(Set<Resource> accepted) => copyWith(
+    resources: {...resources}..removeWhere((resource, _) => resource.takesCargo && accepted.contains(resource)),
+  );
 
   Map<Resource, int> missing(Map<Resource, int> cost) {
     for (final MapEntry(key: resource, value: quantity) in cost.entries) {
@@ -37,4 +71,18 @@ extension InventoryRules on InventoryEntity {
   InventoryEntity addTool(ToolKind tool) => copyWith(tools: {...tools, tool});
 
   bool hasTool(ToolKind tool) => tools.contains(tool);
+
+  int toolLevel(ToolKind tool) => toolLevels[tool] ?? 1;
+
+  InventoryEntity withToolLevel(ToolKind tool, int level) {
+    if (level < 1) {
+      throw ArgumentError.value(level, 'level', 'A ${tool.name} level starts at 1');
+    }
+    return copyWith(toolLevels: {...toolLevels, tool: level});
+  }
+
+  int hitsNeeded(ToolKind tool, int hits) {
+    if (toolLevel(tool) == 1) return hits;
+    return max(1, (hits * Rules.upgradedHitsPercent + 99) ~/ 100);
+  }
 }

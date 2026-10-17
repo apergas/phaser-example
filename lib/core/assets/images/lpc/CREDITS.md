@@ -20,7 +20,8 @@ Clothes and hair recoloured.
 | Basic boots | JaidynReiman, bluecarrot16, Nila122 | OGA-BY 3.0, CC-BY-SA 3.0, GPL 2.0, GPL 3.0 |
 | Axe and hammer (tools) | bluecarrot16, JaidynReiman, Pierre Vigier (pvigier), Tuomo Untinen (reemax) | OGA-BY 3.0, CC-BY 4.0, CC-BY-SA 3.0+, GPL 2.0+ |
 
-The axe pickup sprite in `forest.png` is cropped from the axe tool sheet.
+The axe pickup sprite in `forest.png` is cropped from the axe tool sheet. The pickaxe pickup sprite
+(`pickaxe-pickup`) is that same axe, mirrored and recoloured grey (there is no LPC pickaxe among the sources).
 
 Sources: <https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles>,
 <https://opengameart.org/content/lpc-hand-tools>,
@@ -44,7 +45,7 @@ Daniel Eddeland, Johann Charlot, Skyler Robert Colladay.
 CC-BY-SA 3.0 / GPL 3.0 — <https://opengameart.org/content/lpc-tile-atlas>. Full list in
 `asset-packs/lpc/sources/terrain/Attribution.txt`.
 
-## House, forge, armory and mage tower (`house`, `forge`, `armory`, `mage-tower` frames in `forest.png`)
+## House, forge, armory, mage tower, storehouse and workshop (`house`, `forge`, `armory`, `mage-tower`, `storehouse`, `workshop` frames in `forest.png`)
 
 Assembled from "[LPC] Thatched-roof Cottage" (timber-frame and stone walls, thatched roof) and
 "[LPC] Windows & Doors" (door), both by bluecarrot16. CC-BY-SA 3.0 / GPL 3.0 —
@@ -53,8 +54,15 @@ Assembled from "[LPC] Thatched-roof Cottage" (timber-frame and stone walls, that
 The forge and armory roofs are recoloured (dark grey, red); the forge chimney is a stone block
 from the LPC Tile Atlas above.
 The mage tower roof is recoloured violet and stretched 40 % taller.
+The storehouse (`storehouse` frame) is the same cottage with the ochre wall and the thatched roof, with two
+closed chests of the LPC Tile Atlas above beside the door.
+The workshop (`workshop` frame) is the cottage with the forge's stone wall and the thatched roof recoloured green.
 
 The stump (`stump` frame) comes from the LPC Tile Atlas above.
+The camp (`camp` frame) is that stump in front of three logs cut from a tree trunk of the LPC Tile Atlas above.
+The quarry (`quarry` frame) is the large boulder between two cracked stone blocks behind two pieces of the arena
+fence, all from the LPC Tile Atlas above.
+The large rock (`rock-large` frame) is a grey boulder of the LPC Tile Atlas above.
 The sapling (`sapling` frame) is a young plant from the farming crops of the LPC Tile Atlas above (Daniel Eddeland).
 
 ## Arena (`arena.png`)

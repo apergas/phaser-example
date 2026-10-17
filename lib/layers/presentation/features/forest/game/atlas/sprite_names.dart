@@ -7,6 +7,7 @@ import '../../../../../../core/utils/kebab_case.dart';
 abstract final class SpriteNames {
   static const String stump = 'stump';
   static const String sapling = 'sapling';
+  static const String rock = 'rock-large';
 
   static String tree(TreeKind kind) => 'tree-${kind.name.toKebabCase()}';
 
@@ -17,9 +18,14 @@ abstract final class SpriteNames {
     BlueprintId.forge => 'forge',
     BlueprintId.armory => 'armory',
     BlueprintId.mageTower => 'mage-tower',
+    BlueprintId.camp => 'camp',
+    BlueprintId.storehouse => 'storehouse',
+    BlueprintId.quarry => 'quarry',
+    BlueprintId.workshop => 'workshop',
   };
 
   static String item(ToolKind kind) => switch (kind) {
     ToolKind.axe => 'axe-pickup',
+    ToolKind.pickaxe => 'pickaxe-pickup',
   };
 }

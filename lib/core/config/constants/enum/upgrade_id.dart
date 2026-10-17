@@ -1,0 +1,1 @@
+enum UpgradeId { ironAxe, ironPickaxe }

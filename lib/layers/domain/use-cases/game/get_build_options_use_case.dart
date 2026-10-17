@@ -12,13 +12,14 @@ final class GetBuildOptionsUseCase {
   const GetBuildOptionsUseCase({required this._sessionRepository});
 
   List<BuildOptionEntity> call() {
-    final inventory = _sessionRepository.current().world.player.inventory;
+    final funds = _sessionRepository.current().world.funds;
     return Blueprints.all
+        .where((blueprint) => blueprint.isBuildable)
         .map(
           (blueprint) => BuildOptionEntity(
             blueprint: blueprint.id,
             cost: blueprint.cost,
-            missing: inventory.missing(blueprint.cost),
+            missing: funds.missing(blueprint.cost),
           ),
         )
         .toList();

@@ -1,5 +1,8 @@
+import 'package:collection/collection.dart';
+
 import '../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../../core/config/constants/enum/quest_id.dart';
+import '../../../../core/config/constants/enum/resource.dart';
 import '../../../../core/config/constants/enum/tool_kind.dart';
 import '../tree/tree_entity.dart';
 
@@ -119,4 +122,45 @@ final class TreeRegrownEventEntity extends GameEventEntity {
 
   @override
   int get hashCode => Object.hash(TreeRegrownEventEntity, tree);
+}
+
+final class RockHitEventEntity extends GameEventEntity {
+  final String rockId;
+
+  const RockHitEventEntity({required this.rockId});
+
+  @override
+  bool operator ==(Object other) => other is RockHitEventEntity && other.rockId == rockId;
+
+  @override
+  int get hashCode => Object.hash(RockHitEventEntity, rockId);
+}
+
+final class RockBrokenEventEntity extends GameEventEntity {
+  final String rockId;
+  final int stone;
+
+  const RockBrokenEventEntity({required this.rockId, required this.stone});
+
+  @override
+  bool operator ==(Object other) => other is RockBrokenEventEntity && other.rockId == rockId && other.stone == stone;
+
+  @override
+  int get hashCode => Object.hash(RockBrokenEventEntity, rockId, stone);
+}
+
+final class DepositedEventEntity extends GameEventEntity {
+  final String buildingId;
+  final Map<Resource, int> load;
+
+  const DepositedEventEntity({required this.buildingId, required this.load});
+
+  @override
+  bool operator ==(Object other) =>
+      other is DepositedEventEntity &&
+      other.buildingId == buildingId &&
+      const MapEquality<Resource, int>().equals(other.load, load);
+
+  @override
+  int get hashCode => Object.hash(DepositedEventEntity, buildingId, const MapEquality<Resource, int>().hash(load));
 }

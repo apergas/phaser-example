@@ -30,29 +30,39 @@
         "other": "{count} hechas"
       },
       "missing": "Faltan {amounts}",
-      "arena": "Arena"
+      "arena": "Arena",
+      "stock": "Almacén",
+      "carry": "Carga {amount}/{capacity}",
+      "workshop": "Taller"
     },
     "resource": {
       "wood": "Madera",
       "gold": "Oro",
-      "mana": "Maná"
+      "mana": "Maná",
+      "stone": "Piedra"
     },
     "tool": {
-      "axe": "Hacha"
+      "axe": "Hacha",
+      "pickaxe": "Pico"
     },
     "amount": {
       "wood": "{amount} de madera",
       "gold": "{amount} de oro",
-      "mana": "{amount} de maná"
+      "mana": "{amount} de maná",
+      "stone": "{amount} de piedra"
     },
     "blueprint": {
       "house": "Casa",
       "forge": "Herrería",
       "armory": "Armería",
-      "mageTower": "Torre de magia"
+      "mageTower": "Torre de magia",
+      "camp": "Campamento",
+      "storehouse": "Almacén",
+      "quarry": "Cantera",
+      "workshop": "Taller"
     },
     "quest": {
-      "gatherWood": "Consigue al menos 15 de madera",
+      "gatherWood": "Lleva 15 de madera al almacén",
       "buildHouse": "Construye una casa",
       "buildForge": "Construye la Herrería",
       "winFirstFight": "Gana un nivel de la arena",
@@ -64,9 +74,13 @@
       "becomeChampion": "Gana al Jefe bárbaro",
       "fellTenTrees": "Tala 10 árboles",
       "fellAnOak": "Tala un roble",
-      "gatherFortyWood": "Ten 40 de madera a la vez",
+      "gatherFortyWood": "Ten 40 de madera en el almacén",
       "buildTwoHouses": "Ten 2 casas terminadas",
-      "seeATreeRegrow": "Ve rebrotar un árbol"
+      "seeATreeRegrow": "Ve rebrotar un árbol",
+      "gatherTwentyStone": "Ten 20 de piedra en el almacén",
+      "buildQuarry": "Construye una cantera",
+      "buildWorkshop": "Construye el Taller",
+      "upgradeAxe": "Compra el Hacha de hierro"
     },
     "questLine": {
       "village": "Aldea",
@@ -75,14 +89,21 @@
     "message": {
       "welcome": "Tala árboles para reunir madera y construir tu aldea.",
       "needAxe": "Necesitas un hacha para talar.",
+      "needPickaxe": "Necesitas un pico para picar.",
       "blockedPath": "Hay algo en medio. Acércate por otro lado.",
       "pickedUpAxe": "¡Hacha recogida! Haz clic en un árbol para talarlo.",
       "pickedUpAxeTouch": "¡Hacha recogida! Toca un árbol para talarlo.",
+      "pickedUpPickaxe": "¡Pico recogido! Haz clic en una roca para picarla.",
+      "pickedUpPickaxeTouch": "¡Pico recogido! Toca una roca para picarla.",
       "blockedSite": "Ahí no cabe. Busca un sitio despejado.",
       "notEnoughResources": "No tienes recursos suficientes.",
       "buildingStarted": "Manos a la obra…",
       "questLineCompleted": "¡Has completado las misiones de {line}!",
       "woodGained": "+{wood} de madera",
+      "stoneGained": "+{amount} de piedra",
+      "carryFull": "Llevas la carga llena. Déjala en el campamento o en un almacén.",
+      "deposited": "Guardado en el almacén: {amounts}",
+      "nothingToDeposit": "No llevas nada que guardar.",
       "placing": "Elige dónde construir: {name}. Clic derecho o Esc para cancelar.",
       "placingTouch": "Elige dónde construir: {name}. Arrastra el dedo para moverlo y toca Construir aquí o Cancelar.",
       "buildingCompleted": "Construcción terminada: {name}",
@@ -91,7 +112,9 @@
       "gearNotNextTier": "Antes tienes que comprar la pieza anterior.",
       "skillLearned": "Has aprendido: {name}",
       "skillUpgraded": "Has mejorado: {name} (Nv {level})",
-      "skillMaxLevel": "Esa habilidad ya está al nivel máximo."
+      "skillMaxLevel": "Esa habilidad ya está al nivel máximo.",
+      "upgradePurchased": "Has mejorado tu herramienta: {name}",
+      "upgradeOwned": "Ya tienes esa mejora."
     },
     "hero": {
       "title": "Héroe",
@@ -151,16 +174,31 @@
         "descriptionLevel3": "Un 30 % de posibilidades de esquivar cada golpe."
       }
     },
+    "upgrade": {
+      "title": "Mejoras de herramientas",
+      "ironAxe": {
+        "name": "Hacha de hierro",
+        "effect": "Talas con un {percent} % menos de golpes"
+      },
+      "ironPickaxe": {
+        "name": "Pico de hierro",
+        "effect": "Picas con un {percent} % menos de golpes"
+      },
+      "owned": "Comprada",
+      "needsWorkshop": "Construye el Taller"
+    },
     "placement": {
       "confirm": "Construir aquí",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "needsRock": "La cantera tiene que ir junto a una roca."
     },
     "accessibility": {
       "gameWorld": "Mundo de juego: bosque con árboles, el personaje y los edificios"
     },
     "retry": "Reintentar",
     "floating": {
-      "woodGained": "+{wood}"
+      "woodGained": "+{wood}",
+      "stoneGained": "+{amount}"
     }
   },
   "arena": {

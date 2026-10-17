@@ -21,6 +21,7 @@ import 'components/ground_component.dart';
 import 'components/ground_item_component.dart';
 import 'components/placement_ghost_component.dart';
 import 'components/player_component.dart';
+import 'components/rock_component.dart';
 import 'components/stump_component.dart';
 import 'components/tree_component.dart';
 import 'particles/particle_burst_component.dart';
@@ -34,6 +35,7 @@ class ForestSceneComponent extends Component {
   final Map<String, GroundItemComponent> _items = {};
   final Map<String, BuildingComponent> _buildings = {};
   final Map<String, StumpComponent> _stumps = {};
+  final Map<String, RockComponent> _rocks = {};
   final Set<String> _sprouting = {};
   final Set<String> _regrowing = {};
   final List<AtlasSpriteComponent> _clutter = [];
@@ -50,6 +52,8 @@ class ForestSceneComponent extends Component {
   Map<String, BuildingComponent> get buildings => Map.unmodifiable(_buildings);
 
   Map<String, StumpComponent> get stumps => Map.unmodifiable(_stumps);
+
+  Map<String, RockComponent> get rocks => Map.unmodifiable(_rocks);
 
   List<AtlasSpriteComponent> get clutter => List.unmodifiable(_clutter);
 
@@ -77,6 +81,18 @@ class ForestSceneComponent extends Component {
       if (best == null || tree.priority > best.priority) best = tree;
     }
     return best?.treeId;
+  }
+
+  String? rockAt(Vector2 point) {
+    RockComponent? best;
+    for (final rock in _rocks.values) {
+      if (!rock.containsPoint(point)) continue;
+      if (best == null || rock.priority > best.priority) best = rock;
+    }
+    if (best == null) return null;
+    final front = best;
+    final isHidden = _trees.values.any((tree) => tree.priority > front.priority && tree.containsPoint(point));
+    return isHidden ? null : front.rockId;
   }
 
   String? buildingAt(Vector2 point) {
@@ -121,6 +137,12 @@ class ForestSceneComponent extends Component {
         _sprouting.add(stumpId);
       case TreeRegrownEffect(:final treeId):
         _regrowing.add(treeId);
+      case RockHitEffect(:final rockId, :final fromX):
+        _onRockHit(rockId, fromX);
+      case RockBrokenEffect(:final rockId, :final stone):
+        _onRockBroken(rockId, stone);
+      case UpgradePurchasedEffect():
+        _sparkleOnPlayer(ParticleKind.sparkle);
     }
   }
 
@@ -148,6 +170,30 @@ class ForestSceneComponent extends Component {
       FloatingTextComponent(
         text: Internationalize.forestFloatingWoodGained(wood: wood),
         at: tree.base,
+      ),
+    );
+  }
+
+  void _onRockHit(String rockId, double fromX) {
+    final rock = _rocks[rockId];
+    if (rock == null) return;
+    rock.hit(fromX);
+    add(
+      ParticleBurstComponent(
+        particles: ParticleBursts.stoneChips(rockBase: rock.base, playerOnLeft: fromX < rock.base.x, random: _random),
+        sortY: ParticleBursts.chipsSortY(rock.base),
+      ),
+    );
+  }
+
+  void _onRockBroken(String rockId, int stone) {
+    final rock = _rocks.remove(rockId);
+    if (rock == null) return;
+    rock.shatter();
+    add(
+      FloatingTextComponent(
+        text: Internationalize.forestFloatingStoneGained(amount: stone),
+        at: rock.base,
       ),
     );
   }
@@ -221,6 +267,14 @@ class ForestSceneComponent extends Component {
     }
     _sprouting.clear();
     _regrowing.clear();
+
+    final rockIds = {for (final rock in world.rocks) rock.id};
+    for (final id in _rocks.keys.where((id) => !rockIds.contains(id)).toList()) {
+      _rocks.remove(id)!.removeFromParent();
+    }
+    for (final rock in world.rocks) {
+      _rocks.putIfAbsent(rock.id, () => _added(RockComponent(assets: _assets, rock: rock)));
+    }
 
     final itemIds = {for (final item in world.items) item.id};
     for (final id in _items.keys.where((id) => !itemIds.contains(id)).toList()) {

@@ -39,10 +39,10 @@
 | [F1 Árboles con personalidad](2026-10-04-game-design/F1-tree-kinds.md) | ✅ | `feature/PROJECT-F1-tree-kinds` | Bloque 1. Sin tests (T1). |
 | [F3 Rebrote de árboles](2026-10-04-game-design/F3-regrowth.md) | ✅ | `feature/PROJECT-F3-regrowth` | Bloque 1. Sin tests (T1). |
 | [F4 Misiones, capítulo 1](2026-10-04-game-design/F4-quests-chapter-1.md) | ✅ | `feature/PROJECT-F4-quests-chapter-1` | Bloque 1. Sin tests (T1). |
-| [F5 Piedra y pico](2026-10-04-game-design/F5-stone.md) | 📝 ficha | — | Bloque 2. |
-| [F6 Almacén y capacidad de carga](2026-10-04-game-design/F6-storehouse.md) | 📝 ficha | — | Bloque 2. |
-| [F7 Cantera](2026-10-04-game-design/F7-quarry.md) | 📝 ficha | — | Bloque 2. |
-| [F8 Taller y mejoras de herramientas](2026-10-04-game-design/F8-workshop.md) | 📝 ficha | — | Bloque 2. |
+| [F5 Piedra y pico](2026-10-04-game-design/F5-stone.md) | ✅ | `feature/PROJECT-F5-stone` | Bloque 2. Sin tests (T1). |
+| [F6 Almacén y capacidad de carga](2026-10-04-game-design/F6-storehouse.md) | ✅ | `feature/PROJECT-F6-storehouse` | Bloque 2. Sin tests (T1). |
+| [F7 Cantera](2026-10-04-game-design/F7-quarry.md) | ✅ | `feature/PROJECT-F7-quarry` | Bloque 2. Sin tests (T1). |
+| [F8 Taller y mejoras de herramientas](2026-10-04-game-design/F8-workshop.md) | ✅ | `feature/PROJECT-F8-workshop` | Bloque 2. Sin tests (T1). |
 | [F2 Guardado de la partida](2026-10-04-game-design/F2-autosave.md) | 📝 ficha | — | Bloque 3: va la última. |
 | F9–F15 Comida, aldeanos, granja, estaciones, eras, mercader | 💭 en espera | — | No se planifican hasta terminar todo, T1 incluida; se hablan entonces. |
 

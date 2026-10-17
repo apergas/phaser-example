@@ -1,1 +1,1 @@
-enum WorkTool { axe, hammer }
+enum WorkTool { axe, hammer, pickaxe }

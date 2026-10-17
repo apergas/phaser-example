@@ -1,1 +1,1 @@
-enum Resource { wood, gold, mana }
+enum Resource { wood, gold, mana, stone }

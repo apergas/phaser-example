@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import '../../../core/config/constants/enum/chop_result.dart';
 import '../../../core/config/constants/enum/resource.dart';
 import '../../../core/config/constants/enum/tool_kind.dart';
@@ -19,11 +21,12 @@ final class Woodcutting implements Work<ChopIntentEntity> {
   static ChopResult check(WorldState state, String treeId) {
     if (!state.trees.containsKey(treeId)) return ChopResult.unknownTree;
     if (!state.player.inventory.hasTool(ToolKind.axe)) return ChopResult.noAxe;
+    if (state.player.inventory.isLoadFull) return ChopResult.carryFull;
     return ChopResult.ok;
   }
 
   @override
-  double get intervalMs => Rules.chopIntervalMs;
+  double intervalMs(WorldState state, ChopIntentEntity intent) => Rules.chopIntervalMs;
 
   @override
   ObstacleEntity? target(WorldState state, ChopIntentEntity intent) => state.trees[intent.treeId]?.footprint;
@@ -41,15 +44,17 @@ final class Woodcutting implements Work<ChopIntentEntity> {
   bool impact(WorldState state, ChopIntentEntity intent, List<GameEventEntity> events) {
     final tree = state.trees[intent.treeId]?.hit();
     if (tree == null) return true;
-    events.add(TreeHitEventEntity(treeId: tree.id, hitsRemaining: tree.hitsRemaining));
-    if (!tree.isFelled) {
+    final hitsRemaining = max(0, state.player.inventory.hitsNeeded(ToolKind.axe, tree.hitsToFell) - tree.hitsTaken);
+    events.add(TreeHitEventEntity(treeId: tree.id, hitsRemaining: hitsRemaining));
+    if (hitsRemaining > 0) {
       state.trees[tree.id] = tree;
       return false;
     }
     state.trees.remove(tree.id);
     state.stumps[tree.id] = StumpEntity(id: tree.id, kind: tree.kind, position: tree.position);
-    state.player = state.player.withInventory(state.player.inventory.add(Resource.wood, tree.woodYield));
-    events.add(TreeFelledEventEntity(treeId: tree.id, wood: tree.woodYield));
+    final wood = min(tree.woodYield, state.player.inventory.freeLoad);
+    state.player = state.player.withInventory(state.player.inventory.add(Resource.wood, wood));
+    events.add(TreeFelledEventEntity(treeId: tree.id, wood: wood));
     return true;
   }
 }

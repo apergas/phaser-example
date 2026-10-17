@@ -25,3 +25,27 @@ final class ConstructIntentEntity extends IntentEntity {
   @override
   int get hashCode => Object.hash(ConstructIntentEntity, buildingId);
 }
+
+final class MineIntentEntity extends IntentEntity {
+  final String rockId;
+
+  const MineIntentEntity({required this.rockId});
+
+  @override
+  bool operator ==(Object other) => other is MineIntentEntity && other.rockId == rockId;
+
+  @override
+  int get hashCode => Object.hash(MineIntentEntity, rockId);
+}
+
+final class DepositIntentEntity extends IntentEntity {
+  final String buildingId;
+
+  const DepositIntentEntity({required this.buildingId});
+
+  @override
+  bool operator ==(Object other) => other is DepositIntentEntity && other.buildingId == buildingId;
+
+  @override
+  int get hashCode => Object.hash(DepositIntentEntity, buildingId);
+}

@@ -7,6 +7,7 @@ import '../../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../../../core/config/constants/enum/buy_gear_result.dart';
 import '../../../../../core/config/constants/enum/chop_result.dart';
 import '../../../../../core/config/constants/enum/construction_rejection.dart';
+import '../../../../../core/config/constants/enum/deposit_result.dart';
 import '../../../../../core/config/constants/enum/forest/facing.dart';
 import '../../../../../core/config/constants/enum/forest/quest_item_status.dart';
 import '../../../../../core/config/constants/enum/forest/work_tool.dart';
@@ -14,6 +15,7 @@ import '../../../../../core/config/constants/enum/gear_id.dart';
 import '../../../../../core/config/constants/enum/gear_option_state.dart';
 import '../../../../../core/config/constants/enum/gear_slot.dart';
 import '../../../../../core/config/constants/enum/learn_skill_result.dart';
+import '../../../../../core/config/constants/enum/mine_result.dart';
 import '../../../../../core/config/constants/enum/player_activity.dart';
 import '../../../../../core/config/constants/enum/quest_id.dart';
 import '../../../../../core/config/constants/enum/quest_line.dart';
@@ -22,6 +24,9 @@ import '../../../../../core/config/constants/enum/skill_id.dart';
 import '../../../../../core/config/constants/enum/skill_option_state.dart';
 import '../../../../../core/config/constants/enum/tool_kind.dart';
 import '../../../../../core/config/constants/enum/resume_construction_result.dart';
+import '../../../../../core/config/constants/enum/upgrade_id.dart';
+import '../../../../../core/config/constants/enum/upgrade_option_state.dart';
+import '../../../../../core/config/constants/enum/upgrade_result.dart';
 import '../../../../../core/error-handling/exceptions/app_exceptions.dart';
 import '../../../../../core/error-handling/exceptions/custom_exception.dart';
 import '../../../../../core/services/navigation/source/navigation_service.dart';
@@ -35,17 +40,25 @@ import '../../../../domain/entities/gear/gear_entity.dart';
 import '../../../../domain/entities/gear/gear_option_entity.dart';
 import '../../../../domain/entities/geometry/position_entity.dart';
 import '../../../../domain/entities/hero/skill_option_entity.dart';
+import '../../../../domain/entities/upgrade/upgrade_option_entity.dart';
 import '../../../../domain/rules/gear.dart';
+import '../../../../domain/rules/rules.dart';
 import '../../../../domain/rules/skills.dart';
+import '../../../../domain/rules/upgrades.dart';
 import '../../../../domain/use-cases/game/advance_game_use_case.dart';
+import '../../../../domain/use-cases/game/buy_upgrade_use_case.dart';
 import '../../../../domain/use-cases/game/can_place_building_use_case.dart';
 import '../../../../domain/use-cases/game/chop_tree_use_case.dart';
 import '../../../../domain/use-cases/game/resume_construction_use_case.dart';
 import '../../../../domain/use-cases/game/construct_building_use_case.dart';
+import '../../../../domain/use-cases/game/deposit_use_case.dart';
 import '../../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_player_status_use_case.dart';
 import '../../../../domain/use-cases/game/get_quests_use_case.dart';
+import '../../../../domain/use-cases/game/get_stock_use_case.dart';
+import '../../../../domain/use-cases/game/get_upgrade_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
+import '../../../../domain/use-cases/game/mine_rock_use_case.dart';
 import '../../../../domain/use-cases/game/move_player_use_case.dart';
 import '../../../../domain/use-cases/game/start_game_use_case.dart';
 import '../../../../domain/use-cases/hero/buy_gear_use_case.dart';
@@ -57,6 +70,7 @@ import '../../../../domain/world/extensions/hero_rules.dart';
 import '../../../../domain/world/extensions/inventory_rules.dart';
 import '../../arena/arena_page.dart';
 import '../models/build_item_data.dart';
+import '../models/carry_item_data.dart';
 import '../models/forest_effect.dart';
 import '../models/gear_item_data.dart';
 import '../models/gear_row_data.dart';
@@ -69,6 +83,7 @@ import '../models/quest_item_data.dart';
 import '../models/resource_item_data.dart';
 import '../models/skill_item_data.dart';
 import '../models/tool_item_data.dart';
+import '../models/upgrade_item_data.dart';
 
 part 'forest_event.dart';
 part 'forest_state.dart';
@@ -77,19 +92,24 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final StartGameUseCase _startGameUseCase;
   final MovePlayerUseCase _movePlayerUseCase;
   final ChopTreeUseCase _chopTreeUseCase;
+  final MineRockUseCase _mineRockUseCase;
   final CanPlaceBuildingUseCase _canPlaceBuildingUseCase;
   final ConstructBuildingUseCase _constructBuildingUseCase;
   final ResumeConstructionUseCase _resumeConstructionUseCase;
+  final DepositUseCase _depositUseCase;
   final AdvanceGameUseCase _advanceGameUseCase;
   final GetPlayerStatusUseCase _getPlayerStatusUseCase;
   final GetWorldSnapshotUseCase _getWorldSnapshotUseCase;
   final GetBuildOptionsUseCase _getBuildOptionsUseCase;
+  final GetStockUseCase _getStockUseCase;
   final GetQuestsUseCase _getQuestsUseCase;
   final GetHeroStatusUseCase _getHeroStatusUseCase;
   final GetGearOptionsUseCase _getGearOptionsUseCase;
   final BuyGearUseCase _buyGearUseCase;
   final GetSkillOptionsUseCase _getSkillOptionsUseCase;
   final LearnSkillUseCase _learnSkillUseCase;
+  final GetUpgradeOptionsUseCase _getUpgradeOptionsUseCase;
+  final BuyUpgradeUseCase _buyUpgradeUseCase;
   final NavigationService _navigationService;
   final bool _isTouchInput;
 
@@ -102,19 +122,24 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._startGameUseCase,
     required this._movePlayerUseCase,
     required this._chopTreeUseCase,
+    required this._mineRockUseCase,
     required this._canPlaceBuildingUseCase,
     required this._constructBuildingUseCase,
     required this._resumeConstructionUseCase,
+    required this._depositUseCase,
     required this._advanceGameUseCase,
     required this._getPlayerStatusUseCase,
     required this._getWorldSnapshotUseCase,
     required this._getBuildOptionsUseCase,
+    required this._getStockUseCase,
     required this._getQuestsUseCase,
     required this._getHeroStatusUseCase,
     required this._getGearOptionsUseCase,
     required this._buyGearUseCase,
     required this._getSkillOptionsUseCase,
     required this._learnSkillUseCase,
+    required this._getUpgradeOptionsUseCase,
+    required this._buyUpgradeUseCase,
     required this._navigationService,
     required this._isTouchInput,
   }) : super(const ForestInitial()) {
@@ -129,6 +154,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         ForestGearPurchaseRequested() => _onGearPurchaseRequested(event, emit),
         ForestSkillLearnRequested() => _onSkillLearnRequested(event, emit),
         ForestArenaRequested() => _onArenaRequested(event, emit),
+        ForestUpgradeRequested() => _onUpgradeRequested(event, emit),
       };
     });
   }
@@ -165,6 +191,9 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     for (final gameEvent in gameEvents) {
       _react(gameEvent, fromX: fromX, effects: effects);
     }
+    if (gameEvents.any(_isGathering) && _getPlayerStatusUseCase().inventory.isLoadFull) {
+      _showMessage(Internationalize.forestMessageCarryFull);
+    }
     _announceQuests([
       for (final gameEvent in gameEvents)
         if (gameEvent is QuestCompletedEventEntity) gameEvent.questId,
@@ -183,7 +212,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         _place(placement.blueprint, event.position, effects: effects);
       }
     } else if (!event.isSecondary) {
-      _orderAt(event.position, treeId: event.treeId, buildingId: event.buildingId);
+      _orderAt(event.position, treeId: event.treeId, buildingId: event.buildingId, rockId: event.rockId);
     }
     emit(ForestSuccess(data: _buildData(effects: effects)));
   }
@@ -213,25 +242,59 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     emit(ForestSuccess(data: _buildData(effects: const [])));
   }
 
-  void _orderAt(PositionEntity position, {required String? treeId, required String? buildingId}) {
-    if (buildingId != null && _resumeConstructionUseCase(buildingId: buildingId) == ResumeConstructionResult.ok) {
+  void _orderAt(
+    PositionEntity position, {
+    required String? treeId,
+    required String? buildingId,
+    required String? rockId,
+  }) {
+    if (buildingId != null && _orderAtBuilding(buildingId)) return;
+    if (rockId != null) {
+      switch (_mineRockUseCase(rockId: rockId)) {
+        case MineResult.ok || MineResult.unknownRock:
+          break;
+        case MineResult.noPickaxe:
+          _showMessage(Internationalize.forestMessageNeedPickaxe);
+        case MineResult.carryFull:
+          _showMessage(Internationalize.forestMessageCarryFull);
+      }
       return;
     }
     if (treeId == null) {
       _movePlayerUseCase(x: position.x, y: position.y);
       return;
     }
-    if (_chopTreeUseCase(treeId: treeId) == ChopResult.noAxe) {
-      _showMessage(Internationalize.forestMessageNeedAxe);
+    switch (_chopTreeUseCase(treeId: treeId)) {
+      case ChopResult.ok || ChopResult.unknownTree:
+        break;
+      case ChopResult.noAxe:
+        _showMessage(Internationalize.forestMessageNeedAxe);
+      case ChopResult.carryFull:
+        _showMessage(Internationalize.forestMessageCarryFull);
+    }
+  }
+
+  bool _orderAtBuilding(String buildingId) {
+    switch (_depositUseCase(buildingId: buildingId)) {
+      case DepositResult.ok:
+        return true;
+      case DepositResult.unknownBuilding:
+        return false;
+      case DepositResult.notADropOff:
+        return _resumeConstructionUseCase(buildingId: buildingId) == ResumeConstructionResult.ok;
+      case DepositResult.emptyLoad:
+        _showMessage(Internationalize.forestMessageNothingToDeposit);
+        return true;
     }
   }
 
   void _movePlacement(PositionEntity position) {
     final placement = _placement;
     if (placement == null) return;
-    _placement = placement.copyWith(
+    _placement = PlacementData(
+      blueprint: placement.blueprint,
       position: position,
-      isValid: _canPlaceBuildingUseCase(blueprint: placement.blueprint, x: position.x, y: position.y),
+      invalidReason: _canPlaceBuildingUseCase(blueprint: placement.blueprint, x: position.x, y: position.y),
     );
   }
 
@@ -242,7 +305,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       return;
     }
     final position = _lastPosition ?? _getPlayerStatusUseCase().position;
-    _placement = PlacementData(blueprint: blueprint, position: position, isValid: false);
+    _placement = PlacementData(blueprint: blueprint, position: position, invalidReason: ConstructionRejection.blocked);
     _movePlacement(position);
     final name = Internationalize.forestBlueprint(id: blueprint);
     _showMessage(
@@ -258,11 +321,11 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         _placement = null;
         _showMessage(Internationalize.forestMessageBuildingStarted);
         effects.add(BuildingPlacedEffect(building: building));
-      case ConstructionRejectedEntity(reason: ConstructionRejection.blocked):
-        _showMessage(Internationalize.forestMessageBlockedSite);
       case ConstructionRejectedEntity(reason: ConstructionRejection.notEnoughResources):
         _placement = null;
         _showMessage(Internationalize.forestMessageNotEnoughResources);
+      case ConstructionRejectedEntity(:final reason):
+        _showMessage(Internationalize.forestPlacementRejection(rejection: reason));
     }
   }
 
@@ -316,12 +379,37 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     }
   }
 
+  Future<void> _onUpgradeRequested(ForestUpgradeRequested event, Emitter<ForestState> emit) async {
+    if (state is! ForestSuccess) return;
+    final effects = <ForestEffect>[];
+    _buyUpgrade(event.upgrade, effects: effects);
+    emit(ForestSuccess(data: _buildData(effects: effects)));
+  }
+
+  void _buyUpgrade(UpgradeId id, {required List<ForestEffect> effects}) {
+    switch (_buyUpgradeUseCase(id: id)) {
+      case UpgradeResult.ok:
+        _showMessage(Internationalize.forestMessageUpgradePurchased(name: Internationalize.forestUpgradeName(id: id)));
+        effects.add(UpgradePurchasedEffect(upgrade: id));
+      case UpgradeResult.notEnoughResources:
+        _showMessage(Internationalize.forestMessageNotEnoughResources);
+      case UpgradeResult.noWorkshop:
+        _showMessage(Internationalize.forestUpgradeNeedsWorkshop);
+      case UpgradeResult.alreadyOwned:
+        _showMessage(Internationalize.forestMessageUpgradeOwned);
+    }
+  }
+
   void _react(GameEventEntity gameEvent, {required double fromX, required List<ForestEffect> effects}) {
     switch (gameEvent) {
       case ItemPickedUpEventEntity(:final itemId, :final kind):
         _showMessage(switch (kind) {
           ToolKind.axe =>
             _isTouchInput ? Internationalize.forestMessagePickedUpAxeTouch : Internationalize.forestMessagePickedUpAxe,
+          ToolKind.pickaxe =>
+            _isTouchInput
+                ? Internationalize.forestMessagePickedUpPickaxeTouch
+                : Internationalize.forestMessagePickedUpPickaxe,
         });
         effects.add(ItemPickedUpEffect(itemId: itemId));
       case PlayerBlockedEventEntity():
@@ -344,8 +432,18 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         effects.add(TreeSproutedEffect(stumpId: stumpId));
       case TreeRegrownEventEntity(:final tree):
         effects.add(TreeRegrownEffect(treeId: tree.id));
+      case RockHitEventEntity(:final rockId):
+        effects.add(RockHitEffect(rockId: rockId, fromX: fromX));
+      case RockBrokenEventEntity(:final rockId, :final stone):
+        _showMessage(Internationalize.forestMessageStoneGained(amount: stone));
+        effects.add(RockBrokenEffect(rockId: rockId, stone: stone));
+      case DepositedEventEntity(:final load):
+        _showMessage(Internationalize.forestMessageDeposited(amounts: _amounts(load)));
     }
   }
+
+  bool _isGathering(GameEventEntity gameEvent) =>
+      gameEvent is TreeFelledEventEntity || gameEvent is RockBrokenEventEntity;
 
   void _announceQuests(List<QuestId> completed) {
     if (completed.isEmpty) return;
@@ -391,25 +489,30 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     final dx = status.position.x - lastPosition.x;
     final dy = status.position.y - lastPosition.y;
     final isMoving = dx != 0 || dy != 0;
-    final isWorking = status.activity == PlayerActivity.chopping || status.activity == PlayerActivity.constructing;
+    final tool = _workTool(status.activity);
     final target = status.target;
     var facing = _facing;
-    if (isWorking && target != null) {
+    if (tool != null && target != null) {
       facing = _facingFor(target.x - status.position.x, target.y - status.position.y);
     } else if (isMoving) {
       facing = _facingFor(dx, dy);
     }
 
-    final PlayerPose pose = switch ((isWorking, isMoving)) {
-      (true, _) => WorkPose(
-        tool: status.activity == PlayerActivity.chopping ? WorkTool.axe : WorkTool.hammer,
-        swingProgress: status.swingProgress,
-      ),
-      (false, true) => WalkPose(withAxe: status.inventory.hasTool(ToolKind.axe)),
-      (false, false) => IdlePose(withAxe: status.inventory.hasTool(ToolKind.axe)),
+    final PlayerPose pose = switch ((tool, isMoving)) {
+      (final WorkTool tool, _) => WorkPose(tool: tool, swingProgress: status.swingProgress),
+      (null, true) => WalkPose(withAxe: status.inventory.hasTool(ToolKind.axe)),
+      (null, false) => IdlePose(withAxe: status.inventory.hasTool(ToolKind.axe)),
     };
     return PlayerRenderData(position: status.position, facing: facing, pose: pose);
   }
+
+  WorkTool? _workTool(PlayerActivity activity) => switch (activity) {
+    PlayerActivity.idle || PlayerActivity.walking => null,
+    PlayerActivity.chopping => WorkTool.axe,
+    PlayerActivity.constructing => WorkTool.hammer,
+    PlayerActivity.mining => WorkTool.pickaxe,
+    PlayerActivity.depositing => null,
+  };
 
   Facing _facingFor(double dx, double dy) {
     if (dx.abs() > dy.abs()) return dx < 0 ? Facing.left : Facing.right;
@@ -417,26 +520,32 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   }
 
   HudData _hudData(PlayerStatusEntity status, List<QuestProgressEntity> quests) {
+    final stock = _getStockUseCase();
     return HudData(
-      resources: [
+      stock: [
         for (final resource in Resource.values)
           ResourceItemData(
             resource: resource,
             name: Internationalize.forestResource(resource: resource),
-            amount: status.inventory.amount(resource),
+            amount: stock.amount(resource),
           ),
       ],
+      carry: CarryItemData(
+        text: Internationalize.forestCarry(amount: status.inventory.load, capacity: Rules.carryCapacity),
+        isFull: status.inventory.isLoadFull,
+      ),
       tools: [
         for (final tool in ToolKind.values)
           ToolItemData(
             tool: tool,
-            name: Internationalize.forestTool(tool: tool),
+            name: _toolName(tool, level: status.inventory.toolLevel(tool)),
             isOwned: status.inventory.hasTool(tool),
           ),
       ],
       questBadge: '${quests.where((quest) => quest.isCompleted).length}/${quests.length}',
       quests: _questRows(quests),
       buildItems: [for (final option in _getBuildOptionsUseCase()) _buildItem(option)],
+      upgradeItems: [for (final option in _getUpgradeOptionsUseCase()) _upgradeItem(option)],
       isBuildLocked: _placement != null,
       hero: _heroPanel(),
     );
@@ -571,6 +680,29 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       costText: _amounts(option.cost),
       missingText: option.isAffordable ? null : Internationalize.forestMissing(amounts: _amounts(option.missing)),
       isEnabled: option.isAffordable,
+    );
+  }
+
+  String _toolName(ToolKind tool, {required int level}) {
+    final upgrade = Upgrades.reached(tool, level);
+    return upgrade == null
+        ? Internationalize.forestTool(tool: tool)
+        : Internationalize.forestUpgradeName(id: upgrade.id);
+  }
+
+  UpgradeItemData _upgradeItem(UpgradeOptionEntity option) {
+    final upgrade = option.upgrade;
+    return UpgradeItemData(
+      id: upgrade.id,
+      name: Internationalize.forestUpgradeName(id: upgrade.id),
+      effectText: Internationalize.forestUpgradeEffect(id: upgrade.id, percent: 100 - Rules.upgradedHitsPercent),
+      costText: option.state == UpgradeOptionState.owned ? Internationalize.forestUpgradeOwned : _amounts(upgrade.cost),
+      reasonText: switch (option.state) {
+        UpgradeOptionState.needsBuilding => Internationalize.forestUpgradeNeedsWorkshop,
+        UpgradeOptionState.unaffordable => Internationalize.forestMissing(amounts: _amounts(option.missing)),
+        UpgradeOptionState.available || UpgradeOptionState.owned => null,
+      },
+      canBuy: option.canBuy,
     );
   }
 

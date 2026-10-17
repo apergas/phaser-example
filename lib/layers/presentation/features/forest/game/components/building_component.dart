@@ -45,6 +45,7 @@ class BuildingComponent extends AtlasSpriteComponent {
         priority: RenderDepth.bySortY(front.y),
       ) {
     progress = building.progress;
+    _isComplete = building.isComplete;
   }
 
   static PositionEntity _frontOf(BuildingEntity building) => PositionEntity(

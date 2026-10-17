@@ -143,7 +143,7 @@ git switch develop && git pull && git switch -c feature/PROJECT-F1-domain
 `test/mocks/domain/entities/tree/tree_stats_entity_mock.dart`:
 
 ```dart
-import 'package:rpg/layers/domain/entities/tree/tree_stats_entity.dart';
+import 'package:farming/layers/domain/entities/tree/tree_stats_entity.dart';
 
 abstract final class TreeStatsEntityMock {
   static const TreeStatsEntity oak = TreeStatsEntity(woodYield: 8, hitsToFell: 7);
@@ -243,8 +243,8 @@ Expected: PASS (3 tests).
 
 ```dart
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/tree_kind.dart';
-import 'package:rpg/layers/domain/rules/rules.dart';
+import 'package:farming/core/config/constants/enum/tree_kind.dart';
+import 'package:farming/layers/domain/rules/rules.dart';
 
 import '../../../mocks/domain/entities/tree/tree_stats_entity_mock.dart';
 
@@ -276,7 +276,7 @@ void main() {
 }
 ```
 
-En `test/mocks/domain/entities/tree/tree_entity_mock.dart` se añade (con `import 'package:rpg/layers/domain/rules/rules.dart';`):
+En `test/mocks/domain/entities/tree/tree_entity_mock.dart` se añade (con `import 'package:farming/layers/domain/rules/rules.dart';`):
 
 ```dart
 static TreeEntity ofKind(TreeKind kind) {
@@ -285,14 +285,14 @@ static TreeEntity ofKind(TreeKind kind) {
 }
 ```
 
-En `test/mocks/domain/world/world_mock.dart` se añade (con `import 'package:rpg/core/config/constants/enum/tree_kind.dart';`):
+En `test/mocks/domain/world/world_mock.dart` se añade (con `import 'package:farming/core/config/constants/enum/tree_kind.dart';`):
 
 ```dart
 static World withAxeAndTreeOfKind(TreeKind kind) =>
     make(player: PlayerEntityMock.withAxe, trees: [TreeEntityMock.ofKind(kind)]);
 ```
 
-En `test/layers/domain/world/world_chopping_test.dart`, detrás de `testWhenChoppingLongEnoughThenTreeFallsAndWoodIsAdded` (con `import 'package:rpg/core/config/constants/enum/tree_kind.dart';`):
+En `test/layers/domain/world/world_chopping_test.dart`, detrás de `testWhenChoppingLongEnoughThenTreeFallsAndWoodIsAdded` (con `import 'package:farming/core/config/constants/enum/tree_kind.dart';`):
 
 ```dart
 for (final (name, kind, hits, wood) in const [
@@ -365,7 +365,7 @@ Expected: PASS.
 
 - [ ] **Step 6: Tests del mapper, del repositorio y del total de madera, que deben fallar**
 
-`test/mocks/data/datasources/level/tree_dbo_mock.dart` (con `import 'package:rpg/core/config/constants/enum/tree_kind.dart';` e `import 'package:rpg/core/utils/kebab_case.dart';`):
+`test/mocks/data/datasources/level/tree_dbo_mock.dart` (con `import 'package:farming/core/config/constants/enum/tree_kind.dart';` e `import 'package:farming/core/utils/kebab_case.dart';`):
 
 ```dart
 static TreeDBO ofKind(TreeKind kind) => TreeDBO(id: 'tree-1', kind: kind.name.toKebabCase(), x: 1, y: 2, wood: 6);
@@ -392,9 +392,9 @@ static const LevelDBO mixedForest = LevelDBO(
 
 ```dart
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/tree_kind.dart';
-import 'package:rpg/layers/data/repositories/level/mappers/tree_mapper_dbo.dart';
-import 'package:rpg/layers/domain/rules/rules.dart';
+import 'package:farming/core/config/constants/enum/tree_kind.dart';
+import 'package:farming/layers/data/repositories/level/mappers/tree_mapper_dbo.dart';
+import 'package:farming/layers/domain/rules/rules.dart';
 
 import '../../../../../mocks/data/datasources/level/tree_dbo_mock.dart';
 
@@ -680,7 +680,7 @@ static TreeFelledEffect get pineFelled => TreeFelledEffect(treeId: 'tree-1', fro
 effects: const [TreeFelledEffect(treeId: 'tree-1', fromX: 90, wood: 5)],
 ```
 
-`test/mocks/presentation/features/forest/forest_scenario_mock.dart` (con `import 'package:rpg/core/config/constants/enum/tree_kind.dart';`), detrás de `axeInHandWithTree`:
+`test/mocks/presentation/features/forest/forest_scenario_mock.dart` (con `import 'package:farming/core/config/constants/enum/tree_kind.dart';`), detrás de `axeInHandWithTree`:
 
 ```dart
 static World axeInHandWithPine() => WorldMock.make(
@@ -704,7 +704,7 @@ test('testWhenFelledEffectsDifferOnlyInWoodThenTheyAreNotEqual', () {
 });
 ```
 
-`test/layers/presentation/features/forest/bloc/forest_bloc_test.dart` (con `import 'package:rpg/core/config/constants/enum/tree_kind.dart';`), detrás del grupo `testWhenChoppingThenFacesTheTreeSwingsAndReportsHitsAndTheFall`, cuyo `contains(ForestEffectMock.treeFelled)` ya comprueba la madera (6):
+`test/layers/presentation/features/forest/bloc/forest_bloc_test.dart` (con `import 'package:farming/core/config/constants/enum/tree_kind.dart';`), detrás del grupo `testWhenChoppingThenFacesTheTreeSwingsAndReportsHitsAndTheFall`, cuyo `contains(ForestEffectMock.treeFelled)` ya comprueba la madera (6):
 
 ```dart
 blocTest<ForestBloc, ForestState>(
@@ -780,10 +780,10 @@ Expected: PASS.
 import 'package:flame/components.dart';
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/presentation/features/forest/game/components/floating_text_component.dart';
-import 'package:rpg/layers/presentation/features/forest/game/render/render_depth.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/presentation/features/forest/game/components/floating_text_component.dart';
+import 'package:farming/layers/presentation/features/forest/game/render/render_depth.dart';
 
 import '../../../../../../helpers/spanish_translations.dart';
 
@@ -914,7 +914,7 @@ Expected: PASS (2 tests).
 - [ ] **Step 7: La escena muestra el "+N", primero el test**
 
 `test/layers/presentation/features/forest/game/forest_scene_component_test.dart`:
-- nuevos imports: `package:rpg/core/assets/i18n/internationalize.dart`, `package:rpg/layers/presentation/features/forest/game/components/floating_text_component.dart` y `'../../../../../helpers/spanish_translations.dart'`;
+- nuevos imports: `package:farming/core/assets/i18n/internationalize.dart`, `package:farming/layers/presentation/features/forest/game/components/floating_text_component.dart` y `'../../../../../helpers/spanish_translations.dart'`;
 - al principio de `main()`: `setUpAll(loadSpanishTranslations);`;
 - detrás de `testWhenATreeIsFelledThenFallsLeavesAStumpAndIsNoLongerTappable`:
 

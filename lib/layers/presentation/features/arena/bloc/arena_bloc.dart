@@ -60,7 +60,6 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
         ArenaLevelSelected() => _onLevelSelected(event, emit),
         ArenaFightRequested() => _onFightRequested(event, emit),
         ArenaReplayTicked() => _onReplayTicked(event, emit),
-        ArenaReplaySkipped() => _onReplaySkipped(event, emit),
         ArenaClosed() => _onClosed(event, emit),
       };
     });
@@ -144,25 +143,13 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
     _emitReplay(replay, replay.advanced(event.deltaMs), emit);
   }
 
-  Future<void> _onReplaySkipped(ArenaReplaySkipped event, Emitter<ArenaState> emit) async {
-    final replay = state.data.replay;
-    if (state is! ArenaSuccess || replay == null || replay.isFinished) return;
-    _emitReplay(replay, replay.skipped(), emit, playTurns: false);
-  }
-
   Future<void> _onClosed(ArenaClosed event, Emitter<ArenaState> emit) async {
     _navigationService.pop();
   }
 
-  void _emitReplay(
-    FightReplayData previous,
-    FightReplayData next,
-    Emitter<ArenaState> emit, {
-    bool playTurns = true,
-  }) {
+  void _emitReplay(FightReplayData previous, FightReplayData next, Emitter<ArenaState> emit) {
     final effects = <ArenaEffect>[
-      if (playTurns)
-        for (var turn = previous.turnIndex + 1; turn <= next.turnIndex; turn++) ..._effectsFor(next, turn),
+      for (var turn = previous.turnIndex + 1; turn <= next.turnIndex; turn++) ..._effectsFor(next, turn),
       if (next.isFinished) FightEndedEffect(isVictory: next.log.isVictory),
       if (next.isFinished && _isFirstChampionship) const ChampionEffect(),
     ];

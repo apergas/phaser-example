@@ -174,7 +174,6 @@ class Internationalize {
   static String get arenaLocked => '$_arena.locked'.tr();
   static String get arenaFight => '$_arena.fight'.tr();
   static String get arenaBack => '$_arena.back'.tr();
-  static String get arenaSkip => '$_arena.skip'.tr();
   static String get arenaRetry => '$_arena.retry'.tr();
   static String get arenaVictory => '$_arena.victory'.tr();
   static String get arenaChampion => '$_arena.champion'.tr();

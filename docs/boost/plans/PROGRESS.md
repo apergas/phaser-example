@@ -26,7 +26,7 @@
 | Reanudar obras | ✅ | `feature/PROJECT-X-arena` (#54) | 655 tests. |
 | [X Alineación con iOS](2026-10-06-hero-arena/X-ios-alignment.md) | ✅ | `feature/PROJECT-X-arena` (#60) | *Farming*, `com.apergas.farming`, icono, textos táctiles. 658 tests. Probada en Chrome y Android; iOS sin probar. |
 | [C9 Maná](2026-10-06-hero-arena/C9-mana.md) | ✅ | `feature/PROJECT-C9-mana` (PR a arena) | Maná en los niveles 6–10 y en las habilidades. Tests hasta TC9.3 (666); TC9.4 sin tests (ver T1). |
-| [C10 Pelea sin saltar](2026-10-06-hero-arena/C10-no-skip.md) | 📝 ficha | — | Sin *Saltar* durante la repetición. |
+| [C10 Pelea sin saltar](2026-10-06-hero-arena/C10-no-skip.md) | ✅ | `feature/PROJECT-C10-no-skip` | Sin *Saltar* durante la repetición. Sin tests (T1). |
 | [C11 Habilidades de los enemigos](2026-10-06-hero-arena/C11-enemy-skills.md) | 📝 ficha | — | Probabilidades 1,5–3,5 % en los niveles 6–10. |
 | [C12 Niveles de habilidad](2026-10-06-hero-arena/C12-skill-levels.md) | 📝 ficha | — | Tres niveles por habilidad. |
 
@@ -43,7 +43,7 @@
 | [F7 Cantera](2026-10-04-game-design/F7-quarry.md) | 📝 ficha | — | Bloque 2. |
 | [F8 Taller y mejoras de herramientas](2026-10-04-game-design/F8-workshop.md) | 📝 ficha | — | Bloque 2. |
 | [F2 Guardado de la partida](2026-10-04-game-design/F2-autosave.md) | 📝 ficha | — | Bloque 3: va la última. |
-| F9–F15 Comida, aldeanos, granja, estaciones, eras, mercader | 💭 esbozo | — | Se replanifican al terminar F2. |
+| F9–F15 Comida, aldeanos, granja, estaciones, eras, mercader | 💭 en espera | — | No se planifican hasta terminar todo, T1 incluida; se hablan entonces. |
 
 ## Arreglos y mejoras
 
@@ -59,7 +59,8 @@
 | Orden | Qué | Rama |
 |---|---|---|
 | 1 | C9 → C10 → C11 → C12 | desde `feature/PROJECT-X-arena` |
-| 2 | Unir la arena a `develop`, con prueba manual en web, Android e iOS | `feature/PROJECT-X-arena` → `develop` |
+| 2 | Prueba manual del bloque de la arena (web, Android e iOS; las *Prueba manual* de X–C12) y unir la arena a `develop` | `feature/PROJECT-X-arena` → `develop` |
 | 3 | Empezar con el hacha (antes de F4) | desde `feature/PROJECT-X-town` |
 | 4 | F1 → F3 → F4 (bloque 1) → F5 → F6 → F7 → F8 (bloque 2) → F2 (bloque 3) | desde `feature/PROJECT-X-town`, tras `git merge develop` |
-| 5 | T1 Tests | desde `develop`, con todo unido |
+| 5 | Prueba manual del bloque de la aldea (web, Android e iOS; las *Prueba manual* de F1–F8, F2 y los arreglos) | `feature/PROJECT-X-town` |
+| 6 | T1 Tests | desde `develop`, con todo unido |

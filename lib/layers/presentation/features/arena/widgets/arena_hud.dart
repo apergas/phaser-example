@@ -26,7 +26,6 @@ class ArenaHud extends StatelessWidget {
   final ArenaResultData? result;
   final ValueChanged<ArenaLevelId> onLevelSelected;
   final VoidCallback onFight;
-  final VoidCallback onSkip;
   final VoidCallback onBack;
 
   const ArenaHud({
@@ -39,7 +38,6 @@ class ArenaHud extends StatelessWidget {
     required this.result,
     required this.onLevelSelected,
     required this.onFight,
-    required this.onSkip,
     required this.onBack,
   });
 
@@ -68,7 +66,7 @@ class ArenaHud extends StatelessWidget {
         Positioned(
           right: _margin,
           bottom: _margin,
-          child: FightButton(isReplaying: isReplaying, canFight: canFight, onFight: onFight, onSkip: onSkip),
+          child: FightButton(isReplaying: isReplaying, canFight: canFight, onFight: onFight),
         ),
         if (shownResult != null && !isReplaying)
           Positioned(

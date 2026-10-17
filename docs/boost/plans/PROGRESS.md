@@ -52,6 +52,7 @@
 | [Rayas negras en el suelo de la arena](2026-10-17-extras/arena-ground-seams.md) | ✅ | `feature/PROJECT-X-arena` (#61) |
 | [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | 📝 ficha | — |
 | [Armadura visible en la arena](2026-10-17-extras/hero-armour.md) | 💭 esbozo | — |
+| [T1 Tests](2026-10-17-extras/T1-tests.md) | 📝 ficha | — (la última; desde TC9.4 no se escriben tests) |
 
 ## Siguiente paso
 
@@ -61,3 +62,4 @@
 | 2 | Unir la arena a `develop`, con prueba manual en web, Android e iOS | `feature/PROJECT-X-arena` → `develop` |
 | 3 | Empezar con el hacha (antes de F4) | desde `feature/PROJECT-X-town` |
 | 4 | F1 → F3 → F4 (bloque 1) → F5 → F6 → F7 → F8 (bloque 2) → F2 (bloque 3) | desde `feature/PROJECT-X-town`, tras `git merge develop` |
+| 5 | T1 Tests | desde `develop`, con todo unido |

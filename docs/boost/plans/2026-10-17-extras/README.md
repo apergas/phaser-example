@@ -10,3 +10,4 @@ Fallos y mejoras vistos jugando que no son de ninguna fase de las hojas de ruta.
 | [arena-ground-seams.md](arena-ground-seams.md) | Rayas negras en el suelo de la arena |
 | [start-with-axe.md](start-with-axe.md) | Empezar con el hacha en la mano, sin la misión de recogerla |
 | [hero-armour.md](hero-armour.md) | El héroe lleva puesta su armadura en la arena |
+| [T1-tests.md](T1-tests.md) | Fase final de tests (commits `[PROJECT-T1]`) |

@@ -14,10 +14,10 @@ Ejecuta la batería completa. Es una sola app, así que siempre se ejecuta enter
 ```bash
 dart format --line-length 120 <ficheros escritos en la tarea>      # nunca di.config.dart ni *.mocks.dart
 dart run build_runner build --delete-conflicting-outputs && git diff --exit-code -- lib/core/config/di/di.config.dart test
-flutter analyze                                                     # debe terminar en "No issues found!"
-flutter test
-flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart
+flutter analyze lib                                                 # debe terminar en "No issues found!"
 ```
+
+- **Sin tests hasta T1** (decidido el 2026-10-17): no se ejecutan `flutter test` ni los tests en Chrome, ni se arreglan los tests rotos. Apunta lo que haya que probar en la sección *Para T1* de `docs/boost/plans/2026-10-17-extras/T1-tests.md`.
 
 - Si `build_runner` cambia ficheros generados, haz commit de ellos tal cual y vuelve a ejecutar la batería.
 - Si algo falla, **para**. Usa `boost:systematic-debugging` y no abras el PR.

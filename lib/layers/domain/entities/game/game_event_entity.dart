@@ -1,6 +1,7 @@
 import '../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../../core/config/constants/enum/quest_id.dart';
 import '../../../../core/config/constants/enum/tool_kind.dart';
+import '../tree/tree_entity.dart';
 
 sealed class GameEventEntity {
   const GameEventEntity();
@@ -94,4 +95,28 @@ final class QuestCompletedEventEntity extends GameEventEntity {
 
   @override
   int get hashCode => Object.hash(QuestCompletedEventEntity, questId);
+}
+
+final class TreeSproutedEventEntity extends GameEventEntity {
+  final String stumpId;
+
+  const TreeSproutedEventEntity({required this.stumpId});
+
+  @override
+  bool operator ==(Object other) => other is TreeSproutedEventEntity && other.stumpId == stumpId;
+
+  @override
+  int get hashCode => Object.hash(TreeSproutedEventEntity, stumpId);
+}
+
+final class TreeRegrownEventEntity extends GameEventEntity {
+  final TreeEntity tree;
+
+  const TreeRegrownEventEntity({required this.tree});
+
+  @override
+  bool operator ==(Object other) => other is TreeRegrownEventEntity && other.tree == tree;
+
+  @override
+  int get hashCode => Object.hash(TreeRegrownEventEntity, tree);
 }

@@ -340,6 +340,10 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         effects.add(BuildingCompletedEffect(buildingId: buildingId));
       case QuestCompletedEventEntity():
         break;
+      case TreeSproutedEventEntity():
+        break;
+      case TreeRegrownEventEntity():
+        break;
     }
   }
 

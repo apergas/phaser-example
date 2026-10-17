@@ -35,7 +35,8 @@
       "arena": "Arena",
       "stock": "Almacén",
       "carry": "Carga {amount}/{capacity}",
-      "workshop": "Taller"
+      "workshop": "Taller",
+      "game": "Partida"
     },
     "resource": {
       "wood": "Madera",
@@ -203,7 +204,12 @@
       "stoneGained": "+{amount}"
     },
     "game": {
-      "saved": "Partida guardada"
+      "save": "Guardar",
+      "saved": "Partida guardada",
+      "newGame": "Nueva partida",
+      "newGameConfirm": "Se perderá la partida actual. ¿Empezar de nuevo?",
+      "confirm": "Empezar",
+      "cancel": "Cancelar"
     }
   },
   "arena": {

@@ -215,6 +215,8 @@ class _ForestViewState extends State<_ForestView> with RouteAware {
       onArenaPressed: () => bloc.add(const ForestArenaRequested()),
       onSkillSelected: (skill) => bloc.add(ForestSkillLearnRequested(skill: skill)),
       onUpgradeSelected: (upgrade) => bloc.add(ForestUpgradeRequested(upgrade: upgrade)),
+      onSaveRequested: () => bloc.add(const ForestSaveRequested()),
+      onNewGameRequested: () => bloc.add(const ForestNewGameRequested()),
     );
   }
 

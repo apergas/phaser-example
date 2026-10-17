@@ -14,6 +14,7 @@ abstract final class CustomIcons {
   static const String arena = '$_path/arena.svg';
   static const String lock = '$_path/lock.svg';
   static const String workshop = '$_path/workshop.svg';
+  static const String save = '$_path/save.svg';
 
   static String resource(Resource resource) => switch (resource) {
     Resource.wood => wood,

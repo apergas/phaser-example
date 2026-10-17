@@ -10,6 +10,7 @@ import '../../../../../core/config/constants/enum/upgrade_id.dart';
 import '../../../theme/images/custom_icons.dart';
 import '../models/hud_data.dart';
 import 'build_menu.dart';
+import 'game_panel.dart';
 import 'hero_panel.dart';
 import 'hud_button.dart';
 import 'quest_panel.dart';
@@ -18,7 +19,7 @@ import 'upgrade_menu.dart';
 
 class HudOverlay extends StatefulWidget {
   static const double narrowWidth = 1100;
-  static const double buttonsBelowWidth = 1700;
+  static const double buttonsBelowWidth = 1820;
   static const double _margin = 12;
 
   final HudData hud;
@@ -27,6 +28,8 @@ class HudOverlay extends StatefulWidget {
   final VoidCallback onArenaPressed;
   final ValueChanged<SkillId> onSkillSelected;
   final ValueChanged<UpgradeId> onUpgradeSelected;
+  final VoidCallback onSaveRequested;
+  final VoidCallback onNewGameRequested;
 
   const HudOverlay({
     super.key,
@@ -36,6 +39,8 @@ class HudOverlay extends StatefulWidget {
     required this.onArenaPressed,
     required this.onSkillSelected,
     required this.onUpgradeSelected,
+    required this.onSaveRequested,
+    required this.onNewGameRequested,
   });
 
   @override
@@ -154,6 +159,12 @@ class _HudOverlayState extends State<HudOverlay> {
           onPressed: () => _toggle(HudMenu.hero),
         ),
         HudButton(label: Internationalize.forestArena, icon: CustomIcons.arena, onPressed: _onArenaPressed),
+        HudButton(
+          label: Internationalize.forestGame,
+          icon: CustomIcons.save,
+          isActive: _openMenu == HudMenu.game,
+          onPressed: () => _toggle(HudMenu.game),
+        ),
       ],
     );
   }
@@ -169,6 +180,7 @@ class _HudOverlayState extends State<HudOverlay> {
         sections: HeroPanelSection.values,
       ),
       HudMenu.upgrades => UpgradeMenu(items: widget.hud.upgradeItems, onBuy: widget.onUpgradeSelected),
+      HudMenu.game => GamePanel(onSave: _onSaveRequested, onNewGame: _onNewGameRequested),
     };
   }
 
@@ -184,5 +196,15 @@ class _HudOverlayState extends State<HudOverlay> {
   void _onBuildSelected(BlueprintId blueprint) {
     setState(() => _openMenu = null);
     widget.onBuildSelected(blueprint);
+  }
+
+  void _onSaveRequested() {
+    setState(() => _openMenu = null);
+    widget.onSaveRequested();
+  }
+
+  void _onNewGameRequested() {
+    setState(() => _openMenu = null);
+    widget.onNewGameRequested();
   }
 }

@@ -22,7 +22,7 @@ final class Depositing implements Work<DepositIntentEntity> {
   }
 
   @override
-  double get intervalMs => Rules.depositIntervalMs;
+  double intervalMs(WorldState state, DepositIntentEntity intent) => Rules.depositIntervalMs;
 
   @override
   ObstacleEntity? target(WorldState state, DepositIntentEntity intent) {

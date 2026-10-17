@@ -95,7 +95,7 @@ class World {
   double get workProgress {
     final activity = player.activity;
     if (activity is! WorkingActivityEntity) return 0;
-    return activity.elapsedMs / workFor(activity.intent).intervalMs;
+    return activity.elapsedMs / workFor(activity.intent).intervalMs(_state);
   }
 
   PositionEntity? get playerTarget => switch (player.activity) {
@@ -183,11 +183,12 @@ class World {
       return;
     }
     final elapsed = activity.elapsedMs + deltaMs;
-    if (elapsed < work.intervalMs) {
+    final intervalMs = work.intervalMs(_state);
+    if (elapsed < intervalMs) {
       _state.player = _state.player.continueWork(elapsed);
       return;
     }
-    _state.player = _state.player.continueWork(elapsed - work.intervalMs);
+    _state.player = _state.player.continueWork(elapsed - intervalMs);
     if (work.impact(_state, events)) _state.player = _state.player.stop();
   }
 }

@@ -8,6 +8,7 @@ import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
 import '../entities/player/intent_entity.dart';
 import '../rules/rules.dart';
+import 'extensions/building_rules.dart';
 import 'extensions/inventory_rules.dart';
 import 'extensions/player_rules.dart';
 import 'extensions/rock_rules.dart';
@@ -25,7 +26,12 @@ final class Mining implements Work<MineIntentEntity> {
   }
 
   @override
-  double get intervalMs => Rules.mineIntervalMs;
+  double intervalMs(WorldState state, MineIntentEntity intent) {
+    final rock = state.rocks[intent.rockId];
+    if (rock == null) return Rules.mineIntervalMs;
+    final isBoosted = state.buildings.values.any((building) => building.boostsMining(rock.position));
+    return isBoosted ? Rules.quarryMineIntervalMs : Rules.mineIntervalMs;
+  }
 
   @override
   ObstacleEntity? target(WorldState state, MineIntentEntity intent) => state.rocks[intent.rockId]?.footprint;

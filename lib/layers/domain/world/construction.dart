@@ -45,7 +45,7 @@ final class Construction implements Work<ConstructIntentEntity> {
   }
 
   @override
-  double get intervalMs => Rules.hammerIntervalMs;
+  double intervalMs(WorldState state, ConstructIntentEntity intent) => Rules.hammerIntervalMs;
 
   @override
   ObstacleEntity? target(WorldState state, ConstructIntentEntity intent) {

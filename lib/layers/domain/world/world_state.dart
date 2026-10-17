@@ -2,6 +2,7 @@ import 'dart:math';
 
 import '../entities/building/building_entity.dart';
 import '../entities/decoration/decoration_entity.dart';
+import '../entities/game/stats_entity.dart';
 import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
 import '../entities/hero/hero_entity.dart';
@@ -34,6 +35,7 @@ class WorldState {
   final Map<String, GroundItemEntity> items;
   final Map<String, BuildingEntity> buildings = {};
   final Map<String, StumpEntity> stumps = {};
+  StatsEntity stats = const StatsEntity();
   final Map<String, int> _idCounters = {};
 
   List<ObstacleEntity> obstacles() => [

@@ -47,6 +47,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
   FightAdvice? _advice;
   bool _isFirstChampionship = false;
   GearId _heroWeapon = GearId.woodcutterAxe;
+  GearId _heroArmor = GearId.workClothes;
 
   ArenaBloc({
     required this._getArenaUseCase,
@@ -275,6 +276,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
     final status = _getHeroStatusUseCase();
     final heroHealth = status.stats.health;
     _heroWeapon = Gear.of(GearSlot.weapon, status.hero.weaponTier).id;
+    _heroArmor = Gear.of(GearSlot.armor, status.hero.armorTier).id;
     final level = arena.levels.firstWhereOrNull((entry) => entry.level.id == selected)?.level;
     return [
       FighterRenderData(
@@ -285,6 +287,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
         maxHealth: heroHealth,
         pose: FighterPose.idle,
         weapon: _heroWeapon,
+        armor: _heroArmor,
       ),
       if (level != null)
         for (final (index, enemy) in level.enemies.indexed)
@@ -349,6 +352,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
       targetIndex: pose == FighterPose.attack ? turn?.targetIndex ?? 0 : 0,
       isTargeted: isTargeted,
       weapon: side == FightSide.hero ? _heroWeapon : null,
+      armor: side == FightSide.hero ? _heroArmor : null,
     );
   }
 }

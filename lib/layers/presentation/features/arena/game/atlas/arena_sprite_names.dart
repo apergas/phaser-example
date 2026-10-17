@@ -14,19 +14,10 @@ abstract final class ArenaSpriteNames {
     EnemyKind.banditVeteran => 'bandit-veteran',
   };
 
-  static String heroWith(GearId? weapon) => switch (weapon) {
-    GearId.shortSword => 'hero-short-sword',
-    GearId.ironSword => 'hero-iron-sword',
-    GearId.steelSword => 'hero-steel-sword',
-    null ||
-    GearId.woodcutterAxe ||
-    GearId.workClothes ||
-    GearId.leatherArmor ||
-    GearId.chainMail ||
-    GearId.plateArmor => hero,
-  };
+  static String heroWith(GearId? weapon, GearId? armor) => '$hero${_weaponSuffix(weapon)}${_armorSuffix(armor)}';
 
-  static String fighter(EnemyKind? kind, {GearId? weapon}) => kind == null ? heroWith(weapon) : enemy(kind);
+  static String fighter(EnemyKind? kind, {GearId? weapon, GearId? armor}) =>
+      kind == null ? heroWith(weapon, armor) : enemy(kind);
 
   static String idle(String fighter, int column) => '$fighter-idle-$column';
 
@@ -37,4 +28,28 @@ abstract final class ArenaSpriteNames {
   static String attack(String fighter, int column) => '$fighter-attack-$column';
 
   static String down(String fighter) => '$fighter-down';
+
+  static String _weaponSuffix(GearId? weapon) => switch (weapon) {
+    GearId.shortSword => '-short-sword',
+    GearId.ironSword => '-iron-sword',
+    GearId.steelSword => '-steel-sword',
+    null ||
+    GearId.woodcutterAxe ||
+    GearId.workClothes ||
+    GearId.leatherArmor ||
+    GearId.chainMail ||
+    GearId.plateArmor => '',
+  };
+
+  static String _armorSuffix(GearId? armor) => switch (armor) {
+    GearId.leatherArmor => '-leather',
+    GearId.chainMail => '-chain-mail',
+    GearId.plateArmor => '-plate',
+    null ||
+    GearId.woodcutterAxe ||
+    GearId.shortSword ||
+    GearId.ironSword ||
+    GearId.steelSword ||
+    GearId.workClothes => '',
+  };
 }

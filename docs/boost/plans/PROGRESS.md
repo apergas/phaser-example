@@ -20,7 +20,7 @@ El juego se migró a SwiftUI + SpriteKit en `/Users/axelperezgaspar/farming-ios`
 | | Flutter (este repo) | iOS (`$IOS`, `develop` @ `ad3be22` + `feature/PROJECT-F8-workshop` @ `0234537`) |
 |---|---|---|
 | Base (bosque, construcción, héroe, arena C0–C8) | ✅ | ✅ portada (M0–M7) |
-| Reanudar una obra a medias | ✅ `a16317c`, en `bugfix/PROJECT-X-resume-construction`, PR #54 abierto | ✅ (D18), con la guarda de no reiniciar la obra en curso |
+| Reanudar una obra a medias | ✅ `a16317c`, en `feature/PROJECT-X-arena` (#54) | ✅ (D18), con la guarda de no reiniciar la obra en curso |
 | Nombre *Farming*, icono del roble, textos táctiles | — ([X](2026-10-06-hero-arena/X-ios-alignment.md)) | ✅ |
 | C9 Maná | — | ✅ |
 | C10 Pelea sin saltar | — | ✅ |
@@ -44,9 +44,8 @@ Lo que **no** se trae de iOS: lo propio de Swift/SpriteKit (cambio de eje Y, ais
 |---|---|---|
 | `main` | Lo publicado en GitHub Pages. | — |
 | `develop` | Lo integrado (hoy, C0–C7, #53) y todos los planes. | `main`, cuando lo decida el usuario |
-| `feature/PROJECT-X-arena` | Integración de la arena: C8 (`a3af0e0`). Recibe el arreglo de las obras, la alineación X y C9–C12. | `develop`, una vez, al terminar C12 |
+| `feature/PROJECT-X-arena` | Integración de la arena: C8 y el arreglo de las obras (#54). Recibe la alineación X y C9–C12. | `develop`, una vez, al terminar C12 |
 | `feature/PROJECT-X-town` | Integración de la aldea (hoy en `d7cb944`, por detrás de `develop`). Antes de F1, `git merge develop` (con la arena dentro). | `develop`, por bloques |
-| `bugfix/PROJECT-X-resume-construction` | El arreglo de reanudar obras (`a16317c`). | `feature/PROJECT-X-arena` (#54) |
 | `feature/PROJECT-X-ios-alignment` | Estos planes y la fase X. | `feature/PROJECT-X-arena` |
 
 **Bloques de la aldea** (cada uno pasa a `develop` cuando está completo):
@@ -81,7 +80,7 @@ Lo que **no** se trae de iOS: lo propio de Swift/SpriteKit (cambio de eje Y, ais
 | C6 Bárbaros y jefe | ✅ | `develop` (#51) | Bárbaros y jefe con capas LPC, anillo bajo el objetivo, *Campeón de la arena*. |
 | C7 Misiones y equilibrado | ✅ | `develop` (#52, #53) | Daño por rangos, línea *Héroe*, equipo solo con oro, test de equilibrado. 639 tests. |
 | C8 Pulido de la arena | ✅ | `feature/PROJECT-X-arena` (sin PR) | Lo de `ARENA-FIXES.md`. 649 tests. |
-| Reanudar obras | ✅ | `bugfix/PROJECT-X-resume-construction` (#54) | Tocar una obra a medias vuelve a martillearla sin pagar. 655 tests. Falta unir el PR #54 a `feature/PROJECT-X-arena`. |
+| Reanudar obras | ✅ | `feature/PROJECT-X-arena` (#54) | Tocar una obra a medias vuelve a martillearla sin pagar. 655 tests. |
 | X Alineación con iOS | 📝 ficha | — | Nombre `Farming`, ids `com.apergas.farming`, paquete `farming`, icono, arranque `#0E150E`, textos táctiles y no reiniciar la obra en curso. |
 | C9 Maná | 📝 ficha | — | Hecha en iOS (`f8f7792`). Maná en los niveles 6–10 (20/25/30/35/50) y en las habilidades (20/30/45); balance por recurso. |
 | C10 Pelea sin saltar | 📝 ficha | — | Hecha en iOS (`cec553e`). Sin *Saltar* ni botón durante la repetición. |
@@ -105,11 +104,10 @@ Lo que **no** se trae de iOS: lo propio de Swift/SpriteKit (cambio de eje Y, ais
 
 ## Siguiente paso
 
-1. Unir el PR #54 (`bugfix/PROJECT-X-resume-construction` → `feature/PROJECT-X-arena`).
-2. **X** Alineación con iOS, en `feature/PROJECT-X-ios-alignment` (ya creada con estos planes; `git merge feature/PROJECT-X-arena` tras unir #54).
-3. **C9 → C10 → C11 → C12**, cada una desde `feature/PROJECT-X-arena`.
-4. PR de `feature/PROJECT-X-arena` a `develop`, con la prueba manual completa en web, Android e iOS.
-5. `git merge develop` en `feature/PROJECT-X-town` y **F1 → F3 → F4** (bloque 1) → **F5 → F6 → F7 → F8** (bloque 2) → **F2** (bloque 3).
+1. **X** Alineación con iOS (#55), en `feature/PROJECT-X-ios-alignment` (ya creada, con estos planes y el arreglo de #54).
+2. **C9 → C10 → C11 → C12**, cada una desde `feature/PROJECT-X-arena`.
+3. PR de `feature/PROJECT-X-arena` a `develop`, con la prueba manual completa en web, Android e iOS.
+4. `git merge develop` en `feature/PROJECT-X-town` y **F1 → F3 → F4** (bloque 1) → **F5 → F6 → F7 → F8** (bloque 2) → **F2** (bloque 3).
 
 **Tracker de GitHub** (al día el 2026-10-17):
 - Issues nuevos en *Gameplay roadmap*: X #55, C9 #56, C10 #57, C11 #58, C12 #59, con labels y milestones `phase:C9`–`phase:C12`. El campo *Phase* del proyecto llega solo hasta C7: añadir C9–C12 a mano en la web (cambiar sus opciones por la API borra los valores de las tarjetas).

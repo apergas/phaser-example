@@ -81,7 +81,7 @@ Lo que **no** se trae de iOS: lo propio de Swift/SpriteKit (cambio de eje Y, ais
 | C7 Misiones y equilibrado | ✅ | `develop` (#52, #53) | Daño por rangos, línea *Héroe*, equipo solo con oro, test de equilibrado. 639 tests. |
 | C8 Pulido de la arena | ✅ | `feature/PROJECT-X-arena` (sin PR) | Lo de `ARENA-FIXES.md`. 649 tests. |
 | Reanudar obras | ✅ | `feature/PROJECT-X-arena` (#54) | Tocar una obra a medias vuelve a martillearla sin pagar. 655 tests. |
-| X Alineación con iOS | 📝 ficha | — | Nombre `Farming`, ids `com.apergas.farming`, paquete `farming`, icono, arranque `#0E150E`, textos táctiles y no reiniciar la obra en curso. |
+| X Alineación con iOS | 🟢 plan listo | `feature/PROJECT-X-ios-alignment` (#55) | Nombre `Farming`, ids `com.apergas.farming`, paquete `farming`, icono, arranque `#0E150E`, textos táctiles y no reiniciar la obra en curso. |
 | C9 Maná | 📝 ficha | — | Hecha en iOS (`f8f7792`). Maná en los niveles 6–10 (20/25/30/35/50) y en las habilidades (20/30/45); balance por recurso. |
 | C10 Pelea sin saltar | 📝 ficha | — | Hecha en iOS (`cec553e`). Sin *Saltar* ni botón durante la repetición. |
 | C11 Habilidades de los enemigos | 📝 ficha | — | Hecha en iOS (`283d176`). Probabilidades 1,5/2/2,5/3/3,5 % en los niveles 6–10; orden de tiradas fijo. |

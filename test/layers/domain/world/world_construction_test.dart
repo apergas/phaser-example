@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:rpg/core/config/constants/enum/resume_construction_result.dart';
 import 'package:rpg/layers/domain/entities/game/construction_result_entity.dart';
 import 'package:rpg/layers/domain/entities/game/game_event_entity.dart';
 import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
@@ -106,5 +107,51 @@ void main() {
 
     // then
     expect(world.player.position.x, lessThan(260));
+  });
+  test('testWhenLeavingASiteAndResumingThenKeepsProgressAndFinishesWithoutCharging', () {
+    // given
+    final world = WorldMock.withSeventeenWood();
+    world.orderConstruction(_house, const PositionEntity(x: 300, y: 100));
+    world.advanceFor(3000 + Rules.hammerIntervalMs * 3);
+    world.movePlayerTo(const PositionEntity(x: 200, y: 250));
+    world.advanceFor(3000);
+    final hitsBefore = world.buildings.single.hitsDone;
+
+    // when
+    final result = world.orderResumeConstruction('building-1');
+    final events = world.advanceFor(3000 + Rules.hammerIntervalMs * _house.hitsToBuild);
+
+    // then
+    expect(hitsBefore, inInclusiveRange(1, _house.hitsToBuild - 1));
+    expect(result, ResumeConstructionResult.ok);
+    expect(events.whereType<BuildingHammeredEventEntity>().length, _house.hitsToBuild - hitsBefore);
+    expect(world.buildings.single.isComplete, isTrue);
+    expect(world.player.inventory.amount(Resource.wood), 2);
+  });
+
+  test('testWhenResumingAnUnknownBuildingThenReturnsUnknownBuildingAndStaysIdle', () {
+    // given
+    final world = WorldMock.withSeventeenWood();
+
+    // when
+    final result = world.orderResumeConstruction('building-99');
+
+    // then
+    expect(result, ResumeConstructionResult.unknownBuilding);
+    expect(world.player.activity, ActivityEntityMock.idle);
+  });
+
+  test('testWhenResumingACompleteBuildingThenReturnsAlreadyComplete', () {
+    // given
+    final world = WorldMock.withSeventeenWood();
+    world.orderConstruction(_house, const PositionEntity(x: 300, y: 100));
+    world.advanceFor(3000 + Rules.hammerIntervalMs * _house.hitsToBuild);
+
+    // when
+    final result = world.orderResumeConstruction('building-1');
+
+    // then
+    expect(result, ResumeConstructionResult.alreadyComplete);
+    expect(world.player.activity, ActivityEntityMock.idle);
   });
 }

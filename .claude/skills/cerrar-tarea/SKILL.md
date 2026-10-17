@@ -70,3 +70,8 @@ Resume al usuario:
 - qué se ha verificado, y cómo (comandos y plataformas);
 - qué queda pendiente;
 - cuál es la siguiente tarea desbloqueada (tabla de fases).
+
+## 5. Después de unir el PR
+
+- Borra la rama de la tarea en local (`git branch -d <rama>`, tras `git fetch --prune`; GitHub ya borra la remota al unir). Si queda la remota, `git push origin --delete <rama>`. Nunca borres `main`, `develop`, `feature/PROJECT-X-arena` ni `feature/PROJECT-X-town`.
+- Borra también los worktrees de esa tarea (`git worktree remove`).

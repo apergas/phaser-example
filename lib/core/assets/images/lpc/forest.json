@@ -432,10 +432,34 @@
     "y": 0.9434
    }
   },
-  "stump": {
+  "rock-large": {
    "frame": {
     "x": 934,
     "y": 242,
+    "w": 61,
+    "h": 45
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 61,
+    "h": 45
+   },
+   "sourceSize": {
+    "w": 61,
+    "h": 45
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.8
+   }
+  },
+  "stump": {
+   "frame": {
+    "x": 0,
+    "y": 382,
     "w": 50,
     "h": 41
    },
@@ -458,8 +482,8 @@
   },
   "sapling": {
    "frame": {
-    "x": 986,
-    "y": 242,
+    "x": 52,
+    "y": 382,
     "w": 18,
     "h": 30
    },
@@ -482,7 +506,7 @@
   },
   "decor-leaves": {
    "frame": {
-    "x": 0,
+    "x": 72,
     "y": 382,
     "w": 31,
     "h": 29
@@ -506,7 +530,7 @@
   },
   "decor-mushrooms": {
    "frame": {
-    "x": 33,
+    "x": 105,
     "y": 382,
     "w": 28,
     "h": 28
@@ -530,7 +554,31 @@
   },
   "axe-pickup": {
    "frame": {
-    "x": 63,
+    "x": 135,
+    "y": 382,
+    "w": 24,
+    "h": 27
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 27
+   },
+   "sourceSize": {
+    "w": 24,
+    "h": 27
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "pickaxe-pickup": {
+   "frame": {
+    "x": 161,
     "y": 382,
     "w": 24,
     "h": 27
@@ -554,7 +602,7 @@
   },
   "decor-rock": {
    "frame": {
-    "x": 89,
+    "x": 187,
     "y": 382,
     "w": 31,
     "h": 25
@@ -578,7 +626,7 @@
   },
   "decor-tall-grass": {
    "frame": {
-    "x": 122,
+    "x": 220,
     "y": 382,
     "w": 23,
     "h": 22
@@ -605,7 +653,7 @@
   "image": "forest.png",
   "size": {
    "w": 1024,
-   "h": 411
+   "h": 423
   },
   "scale": "1"
  }

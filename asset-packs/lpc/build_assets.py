@@ -9,7 +9,7 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
   hero-{chop,hammer}.png           128x128 work animations: body slash frames between the tool's
                                    back and front layers (same layout as the LPC generator)
   forest.png + forest.json         JSON-hash atlas (TexturePacker format): trees and sapling (pivot = trunk base), decor, stump,
-                                   axe pickup, the house, the forge, the armory and the mage tower
+                                   large rock, axe and pickaxe pickups, the house, the forge, the armory and the mage tower
                                    (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
   arena.png + arena.json           JSON-hash atlas for the arena: the hero (with the axe and each sword, in
@@ -167,6 +167,12 @@ CELL = 32
 STUMP_BOX = (391, 395, 441, 436)  # terrain_atlas.png
 SAPLING_BOX = (416, 800, 448, 832)  # terrain_atlas.png, a young woody plant among the farm crops
 AXE_PICKUP = (1, 5)  # (row, column) of a 128px axe frame (back + front layers) showing the whole axe
+ROCK_BOX = (864, 736, 928, 800)  # terrain_atlas.png, a large grey boulder with two pebbles
+ROCK_PIVOT_Y = 0.8  # the centre of the rock's base, where its round footprint sits
+# There is no LPC pickaxe in sources/tools: the pickaxe on the ground is the axe pickup mirrored, with the wooden
+# handle and the blade recoloured grey. Each axe colour maps to the grey at the same index.
+AXE_COLOURS = [(174, 118, 75), (105, 71, 51), (77, 74, 93), (114, 107, 126), (134, 126, 127), (196, 181, 159)]
+PICKAXE_COLOURS = [(150, 150, 156), (96, 96, 102), (64, 66, 74), (92, 96, 106), (120, 124, 132), (170, 174, 182)]
 
 # House assembled from LPC cottage pieces: a 3x3 timber-frame wall, a thatched hip roof on top
 # (overlapping the wall's top edge) and a door centred at the bottom.
@@ -305,6 +311,11 @@ def build_forest() -> None:
     axe = Image.alpha_composite(tool("axe_bg"), tool("axe_fg")).crop(cell)
     frames["axe-pickup"] = trim(axe, "axe-pickup")
     pivots["axe-pickup"] = {"x": 0.5, "y": 0.5}
+    pickaxe = recolour(frames["axe-pickup"].copy(), AXE_COLOURS, PICKAXE_COLOURS)
+    frames["pickaxe-pickup"] = pickaxe.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+    pivots["pickaxe-pickup"] = {"x": 0.5, "y": 0.5}
+    frames["rock-large"] = trim(terrain.crop(ROCK_BOX), "rock-large")
+    pivots["rock-large"] = {"x": 0.5, "y": ROCK_PIVOT_Y}
     frames["house"] = build_house()
     pivots["house"] = {"x": 0.5, "y": 1}
     frames["forge"] = build_forge(terrain)

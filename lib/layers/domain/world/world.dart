@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../../core/config/constants/enum/chop_result.dart';
 import '../../../core/config/constants/enum/resource.dart';
+import '../../../core/config/constants/enum/resume_construction_result.dart';
 import '../entities/building/blueprint_entity.dart';
 import '../entities/building/building_entity.dart';
 import '../entities/decoration/decoration_entity.dart';
@@ -95,6 +96,14 @@ class World {
       _navigation.goWorkOn(ConstructIntentEntity(buildingId: result.building.id));
     }
     return result;
+  }
+
+  ResumeConstructionResult orderResumeConstruction(String buildingId) {
+    final building = _state.buildings[buildingId];
+    if (building == null) return ResumeConstructionResult.unknownBuilding;
+    if (building.isComplete) return ResumeConstructionResult.alreadyComplete;
+    _navigation.goWorkOn(ConstructIntentEntity(buildingId: buildingId));
+    return ResumeConstructionResult.ok;
   }
 
   bool canPlace(BlueprintEntity blueprint, PositionEntity position) =>

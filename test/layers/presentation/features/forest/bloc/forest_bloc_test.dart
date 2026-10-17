@@ -393,4 +393,37 @@ void main() {
       expect(bloc.state.data.placement, isNull);
     },
   );
+  group('testWhenLeavingASiteAndTappingItAgainThenResumesAndCompletesIt', () {
+    late bool completedBeforeResume;
+
+    blocTest<ForestBloc, ForestState>(
+      'testWhenLeavingASiteAndTappingItAgainThenResumesAndCompletesIt',
+      build: () {
+        // given
+        return ForestBlocMock.make(ForestScenarioMock.axeAndFifteenWood(), navigationService: navigationService);
+      },
+      act: (bloc) async {
+        // when
+        effects = ForestBlocMock.collectEffects(bloc);
+        bloc
+          ..add(const ForestStarted())
+          ..add(const ForestTicked(deltaMs: ForestBlocMock.frameMs))
+          ..add(const ForestBuildRequested(blueprint: BlueprintId.house))
+          ..add(const ForestMapClicked(position: ForestScenarioMock.houseSiteEast));
+        ForestBlocMock.tickFor(bloc, 3000 + Rules.hammerIntervalMs * 2);
+        bloc.add(const ForestMapClicked(position: ForestScenarioMock.playerStart));
+        ForestBlocMock.tickFor(bloc, 6000);
+        await ForestBlocMock.processEvents();
+        completedBeforeResume = effects.contains(ForestEffectMock.buildingCompleted);
+        bloc.add(const ForestMapClicked(position: ForestScenarioMock.houseSiteEast, buildingId: 'building-1'));
+        ForestBlocMock.tickFor(bloc, 6000 + Rules.hammerIntervalMs * 8);
+      },
+      wait: Duration.zero,
+      verify: (bloc) {
+        // then
+        expect(completedBeforeResume, isFalse);
+        expect(effects, contains(ForestEffectMock.buildingCompleted));
+      },
+    );
+  });
 }

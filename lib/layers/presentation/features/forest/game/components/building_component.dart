@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:flame/components.dart';
+
 import '../render/render_constants.dart';
 import '../../../../../domain/entities/building/building_entity.dart';
 import '../../../../../domain/entities/geometry/position_entity.dart';
@@ -22,6 +24,7 @@ class BuildingComponent extends AtlasSpriteComponent {
   final String buildingId;
   final PositionEntity footprint;
   final PositionEntity front;
+  final LpcAssets _assets;
   final Paint _barBackground = Paint()..color = const Color(0x99000000);
   final Paint _barFill = Paint()..color = const Color(0xFFE8C05A);
   double _progress = 0;
@@ -34,6 +37,7 @@ class BuildingComponent extends AtlasSpriteComponent {
   BuildingComponent._({required LpcAssets assets, required BuildingEntity building, required this.front})
     : buildingId = building.id,
       footprint = building.position,
+      _assets = assets,
       super.fromFrame(
         frame: assets.frame(SpriteNames.building(building.blueprint.id)),
         sprite: assets.sprite(SpriteNames.building(building.blueprint.id)),
@@ -49,6 +53,13 @@ class BuildingComponent extends AtlasSpriteComponent {
   );
 
   double get progress => _progress;
+
+  @override
+  bool containsPoint(Vector2 point) {
+    if (!boundsContain(point)) return false;
+    final area = bounds;
+    return _assets.isOpaque(frame, (point.x - area.left).floor(), (point.y - area.top).floor());
+  }
 
   bool get isComplete => _isComplete;
 

@@ -50,7 +50,14 @@ class ForestWorld extends World
       _bloc.add(ForestPointerMoved(position: position));
       return;
     }
-    _bloc.add(ForestMapClicked(position: position, treeId: scene.treeAt(point), isSecondary: isSecondary));
+    _bloc.add(
+      ForestMapClicked(
+        position: position,
+        treeId: scene.treeAt(point),
+        buildingId: scene.buildingAt(point),
+        isSecondary: isSecondary,
+      ),
+    );
   }
 
   void mouseMovedTo(Vector2 canvasPosition) {

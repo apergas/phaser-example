@@ -225,4 +225,18 @@ void main() {
     expect(scene.buildings, isEmpty);
     expect(scene.children.whereType<GroundComponent>(), hasLength(1));
   });
+  testWithFlameGame('testWhenTappingABuildingThenOnlyItsOpaquePixelsCount', (game) async {
+    // given
+    final scene = await _mountedScene(game);
+    scene.show(ForestDataMock.housePlaced);
+    await game.ready();
+
+    // when
+    final wall = scene.buildingAt(Vector2(202, 200));
+    final gap = scene.buildingAt(Vector2(197, 200));
+
+    // then
+    expect(wall, 'building-1');
+    expect(gap, isNull);
+  });
 }

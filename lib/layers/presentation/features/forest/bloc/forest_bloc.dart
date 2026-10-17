@@ -21,6 +21,7 @@ import '../../../../../core/config/constants/enum/resource.dart';
 import '../../../../../core/config/constants/enum/skill_id.dart';
 import '../../../../../core/config/constants/enum/skill_option_state.dart';
 import '../../../../../core/config/constants/enum/tool_kind.dart';
+import '../../../../../core/config/constants/enum/resume_construction_result.dart';
 import '../../../../../core/error-handling/exceptions/app_exceptions.dart';
 import '../../../../../core/error-handling/exceptions/custom_exception.dart';
 import '../../../../../core/services/navigation/source/navigation_service.dart';
@@ -39,6 +40,7 @@ import '../../../../domain/rules/skills.dart';
 import '../../../../domain/use-cases/game/advance_game_use_case.dart';
 import '../../../../domain/use-cases/game/can_place_building_use_case.dart';
 import '../../../../domain/use-cases/game/chop_tree_use_case.dart';
+import '../../../../domain/use-cases/game/resume_construction_use_case.dart';
 import '../../../../domain/use-cases/game/construct_building_use_case.dart';
 import '../../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_player_status_use_case.dart';
@@ -76,6 +78,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final ChopTreeUseCase _chopTreeUseCase;
   final CanPlaceBuildingUseCase _canPlaceBuildingUseCase;
   final ConstructBuildingUseCase _constructBuildingUseCase;
+  final ResumeConstructionUseCase _resumeConstructionUseCase;
   final AdvanceGameUseCase _advanceGameUseCase;
   final GetPlayerStatusUseCase _getPlayerStatusUseCase;
   final GetWorldSnapshotUseCase _getWorldSnapshotUseCase;
@@ -99,6 +102,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._chopTreeUseCase,
     required this._canPlaceBuildingUseCase,
     required this._constructBuildingUseCase,
+    required this._resumeConstructionUseCase,
     required this._advanceGameUseCase,
     required this._getPlayerStatusUseCase,
     required this._getWorldSnapshotUseCase,
@@ -176,7 +180,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         _place(placement.blueprint, event.position, effects: effects);
       }
     } else if (!event.isSecondary) {
-      _orderAt(event.position, treeId: event.treeId);
+      _orderAt(event.position, treeId: event.treeId, buildingId: event.buildingId);
     }
     emit(ForestSuccess(data: _buildData(effects: effects)));
   }
@@ -206,7 +210,10 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     emit(ForestSuccess(data: _buildData(effects: const [])));
   }
 
-  void _orderAt(PositionEntity position, {required String? treeId}) {
+  void _orderAt(PositionEntity position, {required String? treeId, required String? buildingId}) {
+    if (buildingId != null && _resumeConstructionUseCase(buildingId: buildingId) == ResumeConstructionResult.ok) {
+      return;
+    }
     if (treeId == null) {
       _movePlayerUseCase(x: position.x, y: position.y);
       return;

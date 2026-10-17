@@ -1,6 +1,8 @@
 import 'package:injectable/injectable.dart';
 
+import '../../../../../core/config/constants/enum/tool_kind.dart';
 import '../../../../../core/error-handling/exceptions/app_exceptions.dart';
+import '../../../../domain/entities/player/inventory_entity.dart';
 import '../../../../domain/entities/player/player_entity.dart';
 import '../../../../domain/rules/rules.dart';
 import '../../../../domain/world/world.dart';
@@ -38,6 +40,7 @@ class LevelMapperDBO {
         position: _positionMapperDBO.toEntity(playerStart),
         speed: Rules.playerSpeed,
         radius: Rules.playerRadius,
+        inventory: const InventoryEntity(tools: {ToolKind.axe}),
       ),
       trees: [for (var index = 0; index < trees.length; index++) _treeMapperDBO.toEntity(trees[index], index: index)],
       items: items.map(_groundItemMapperDBO.toEntity).toList(),

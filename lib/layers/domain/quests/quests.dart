@@ -2,7 +2,6 @@ import '../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../core/config/constants/enum/quest_id.dart';
 import '../../../core/config/constants/enum/quest_line.dart';
 import '../../../core/config/constants/enum/resource.dart';
-import '../../../core/config/constants/enum/tool_kind.dart';
 import '../rules/arena_levels.dart';
 import '../world/extensions/arena_rules.dart';
 import '../world/extensions/building_rules.dart';
@@ -13,12 +12,6 @@ import 'quest.dart';
 
 abstract final class Quests {
   static final List<Quest> all = List.unmodifiable([
-    _MeasuredQuest(
-      id: QuestId.pickUpAxe,
-      line: QuestLine.village,
-      target: 1,
-      measure: (world) => world.player.inventory.hasTool(ToolKind.axe) ? 1 : 0,
-    ),
     _MeasuredQuest(
       id: QuestId.gatherWood,
       line: QuestLine.village,

@@ -34,19 +34,19 @@ Que haya metas después de la primera casa, usando solo mecánicas que ya existe
 | `buildTwoHouses` | 2 | Ten 2 casas terminadas | casas terminadas que hay (`BuildingListRules.completeCount(house)`, nuevo) |
 | `seeATreeRegrow` | 1 | Ve rebrotar un árbol | `stats.treesRegrown` |
 
-- La línea de la aldea pasa a 8 misiones y el total a 16. Se pueden cumplir fuera de orden; `QuestLog` sigue siendo pegajoso, así que gastar madera no deshace `gatherFortyWood`.
+- La línea de la aldea pasa a 7 misiones y el total a 15. Se pueden cumplir fuera de orden; `QuestLog` sigue siendo pegajoso, así que gastar madera no deshace `gatherFortyWood`.
 
 **Panel de misiones** (el recorte lo hace `ForestBloc._hudData`; la vista no tiene lógica). Por línea, en el orden de `QuestLine.values`:
 - si hay hechas, **una** fila plegada (`QuestItemStatus.folded`, al final del enum) con la casilla marcada y el título apagado, sin tachar y sin progreso: "1 hecha" / "3 hechas";
 - después la actual;
 - después como mucho `HudData.pendingQuestsShown = 2` pendientes, en el orden del catálogo.
 - Con la línea entera hecha solo queda "8 hechas". El estado `done` se mantiene en el modelo, aunque el HUD ya no lo enseña.
-- La insignia sigue contando todas (`0/16` al empezar).
+- La insignia sigue contando todas (`0/15` al empezar).
 
 **Textos:**
 - Las cinco misiones.
 - `forest.hud.questsDone` con plural de `easy_localization` (`one`: "{count} hecha", `other`: "{count} hechas", con `plural()`).
-- El aviso de línea completa ("¡Has completado las misiones de Aldea!") llega ahora con la octava misión de la aldea.
+- El aviso de línea completa ("¡Has completado las misiones de Aldea!") llega ahora con la séptima misión de la aldea.
 
 **Guardado:** en F2 (estadísticas y misiones completadas).
 
@@ -59,11 +59,11 @@ Que haya metas después de la primera casa, usando solo mecánicas que ya existe
 
 ## Cómo probarlo
 
-- Jugar la cadena: la insignia pasa de 0/16 y el panel enseña "N hechas", la actual y dos pendientes; la octava misión de la aldea anuncia la línea completa.
+- Jugar la cadena: la insignia pasa de 0/15 y el panel enseña "N hechas", la actual y dos pendientes; la séptima misión de la aldea anuncia la línea completa.
 - Gastar madera no deshace *Ten 40 de madera a la vez*.
 - Tests:
   - `stats_recording_test.dart`: talados, por tipo, edificios terminados y rebrotados; en el mismo tick que el evento;
   - `quest_log_test.dart` / `quests_test.dart`: las cinco misiones, su orden y fuera de orden;
-  - `forest_bloc_test.dart`: recorte por línea (plegada, actual, dos pendientes), insignia `x/16`;
+  - `forest_bloc_test.dart`: recorte por línea (plegada, actual, dos pendientes), insignia `x/15`;
   - `quest_row_test.dart`: fila plegada;
   - `internationalize_test.dart`: títulos y plural.

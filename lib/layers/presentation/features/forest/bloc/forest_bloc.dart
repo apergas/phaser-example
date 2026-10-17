@@ -435,7 +435,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
           ),
       ],
       questBadge: '${quests.where((quest) => quest.isCompleted).length}/${quests.length}',
-      quests: [for (final quest in quests) _questItem(quest)],
+      quests: _questRows(quests),
       buildItems: [for (final option in _getBuildOptionsUseCase()) _buildItem(option)],
       isBuildLocked: _placement != null,
       hero: _heroPanel(),
@@ -526,6 +526,26 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   }
 
   String get _skillBuildingName => Internationalize.forestBlueprint(id: Skills.building);
+
+  List<QuestItemData> _questRows(List<QuestProgressEntity> quests) => [
+    for (final line in QuestLine.values) ..._questRowsOf(line, quests.where((quest) => quest.line == line)),
+  ];
+
+  List<QuestItemData> _questRowsOf(QuestLine line, Iterable<QuestProgressEntity> quests) {
+    final doneCount = quests.where((quest) => quest.isCompleted).length;
+    final open = quests.where((quest) => !quest.isCompleted);
+    return [
+      if (doneCount > 0)
+        QuestItemData(
+          line: line,
+          title: Internationalize.forestQuestsDone(count: doneCount),
+          progressText: '',
+          status: QuestItemStatus.folded,
+        ),
+      for (final quest in open.where((quest) => quest.isCurrent)) _questItem(quest),
+      for (final quest in open.where((quest) => !quest.isCurrent).take(HudData.pendingQuestsShown)) _questItem(quest),
+    ];
+  }
 
   QuestItemData _questItem(QuestProgressEntity quest) {
     return QuestItemData(

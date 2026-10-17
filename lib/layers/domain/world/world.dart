@@ -8,6 +8,7 @@ import '../entities/building/building_entity.dart';
 import '../entities/decoration/decoration_entity.dart';
 import '../entities/game/construction_result_entity.dart';
 import '../entities/game/game_event_entity.dart';
+import '../entities/game/stats_entity.dart';
 import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
 import '../entities/hero/hero_entity.dart';
@@ -24,6 +25,7 @@ import 'extensions/player_rules.dart';
 import 'navigation.dart';
 import 'pick_up_items.dart';
 import 'regrowth.dart';
+import 'stats_recording.dart';
 import 'woodcutting.dart';
 import 'work.dart';
 import 'world_state.dart';
@@ -69,6 +71,8 @@ class World {
   List<BuildingEntity> get buildings => _state.buildings.values.toList();
 
   List<StumpEntity> get stumps => _state.stumps.values.toList();
+
+  StatsEntity get stats => _state.stats;
 
   HeroEntity get hero => _state.hero;
 
@@ -146,6 +150,7 @@ class World {
         break;
     }
     pickUpItems(_state, events);
+    StatsRecording.record(_state, events);
     return events;
   }
 

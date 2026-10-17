@@ -2,11 +2,13 @@ import '../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../core/config/constants/enum/quest_id.dart';
 import '../../../core/config/constants/enum/quest_line.dart';
 import '../../../core/config/constants/enum/resource.dart';
+import '../../../core/config/constants/enum/tree_kind.dart';
 import '../rules/arena_levels.dart';
 import '../world/extensions/arena_rules.dart';
 import '../world/extensions/building_rules.dart';
 import '../world/extensions/hero_rules.dart';
 import '../world/extensions/inventory_rules.dart';
+import '../world/extensions/stats_rules.dart';
 import '../world/world.dart';
 import 'quest.dart';
 
@@ -23,6 +25,36 @@ abstract final class Quests {
       line: QuestLine.village,
       target: 1,
       measure: (world) => _built(world, BlueprintId.house),
+    ),
+    _MeasuredQuest(
+      id: QuestId.fellTenTrees,
+      line: QuestLine.village,
+      target: 10,
+      measure: (world) => world.stats.treesFelled,
+    ),
+    _MeasuredQuest(
+      id: QuestId.fellAnOak,
+      line: QuestLine.village,
+      target: 1,
+      measure: (world) => world.stats.treesFelledOf(TreeKind.oak),
+    ),
+    _MeasuredQuest(
+      id: QuestId.gatherFortyWood,
+      line: QuestLine.village,
+      target: 40,
+      measure: (world) => world.funds.amount(Resource.wood),
+    ),
+    _MeasuredQuest(
+      id: QuestId.buildTwoHouses,
+      line: QuestLine.village,
+      target: 2,
+      measure: (world) => world.buildings.completeCount(BlueprintId.house),
+    ),
+    _MeasuredQuest(
+      id: QuestId.seeATreeRegrow,
+      line: QuestLine.village,
+      target: 1,
+      measure: (world) => world.stats.treesRegrown,
     ),
     _MeasuredQuest(
       id: QuestId.buildForge,

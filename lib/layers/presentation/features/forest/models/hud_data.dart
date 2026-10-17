@@ -7,6 +7,8 @@ import 'resource_item_data.dart';
 import 'tool_item_data.dart';
 
 class HudData {
+  static const int pendingQuestsShown = 2;
+
   final List<ResourceItemData> resources;
   final List<ToolItemData> tools;
   final String questBadge;

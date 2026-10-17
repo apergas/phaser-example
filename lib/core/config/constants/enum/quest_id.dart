@@ -9,4 +9,9 @@ enum QuestId {
   learnASkill,
   clearHalfArena,
   becomeChampion,
+  fellTenTrees,
+  fellAnOak,
+  gatherFortyWood,
+  buildTwoHouses,
+  seeATreeRegrow,
 }

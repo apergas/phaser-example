@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flame/components.dart';
 
+import '../../../../../core/assets/i18n/internationalize.dart';
 import '../../../../../core/config/constants/enum/forest/particle_kind.dart';
 import '../../../../domain/entities/building/building_entity.dart';
 import '../../../../domain/entities/game/world_snapshot_entity.dart';
@@ -14,6 +15,7 @@ import 'atlas/lpc_assets.dart';
 import 'atlas/sprite_names.dart';
 import 'components/atlas_sprite_component.dart';
 import 'components/building_component.dart';
+import 'components/floating_text_component.dart';
 import 'components/ground_component.dart';
 import 'components/ground_item_component.dart';
 import 'components/placement_ghost_component.dart';
@@ -96,8 +98,8 @@ class ForestSceneComponent extends Component {
         _onItemPickedUp(itemId);
       case TreeHitEffect(:final treeId, :final fromX):
         _onTreeHit(treeId, fromX);
-      case TreeFelledEffect(:final treeId, :final fromX):
-        _onTreeFelled(treeId, fromX);
+      case TreeFelledEffect(:final treeId, :final fromX, :final wood):
+        _onTreeFelled(treeId, fromX, wood);
       case BuildingPlacedEffect(:final building):
         _onBuildingPlaced(building);
       case BuildingHammeredEffect(:final buildingId, :final progress):
@@ -127,11 +129,17 @@ class ForestSceneComponent extends Component {
     );
   }
 
-  void _onTreeFelled(String treeId, double fromX) {
+  void _onTreeFelled(String treeId, double fromX, int wood) {
     final tree = _trees.remove(treeId);
     if (tree == null) return;
     tree.fell(fromX);
     _addClutter(SpriteNames.stump, tree.base, tree.base.y - 1);
+    add(
+      FloatingTextComponent(
+        text: Internationalize.forestFloatingWoodGained(wood: wood),
+        at: tree.base,
+      ),
+    );
   }
 
   void _onBuildingPlaced(BuildingEntity building) {

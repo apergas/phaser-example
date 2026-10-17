@@ -56,7 +56,6 @@ void main() {
       for (final kind in EnemyKind.values.where((kind) => ArenaRenderConstants.leapSequence(kind) == null))
         for (var column = 0; column < RenderConstants.walkColumns; column++)
           ArenaSpriteNames.walk(ArenaSpriteNames.enemy(kind), column),
-      ArenaSpriteNames.grass,
       ArenaSpriteNames.fence,
       for (final kind in kinds) ...[
         for (var column = 0; column < RenderConstants.idleColumns; column++)

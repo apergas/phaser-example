@@ -9,6 +9,7 @@ class ArenaAssetsLoader {
   static const String prefix = LpcAssetsLoader.prefix;
   static const String atlasPath = 'lpc/arena.json';
   static const String imagePath = 'lpc/arena.png';
+  static const String groundPath = 'lpc/ground.png';
 
   final AssetBundle _bundle;
 
@@ -17,7 +18,8 @@ class ArenaAssetsLoader {
   Future<ArenaAssets> load() async {
     final images = Images(prefix: prefix, bundle: _bundle);
     final atlas = await images.load(imagePath);
+    final ground = await images.load(groundPath);
     final atlasSource = await _bundle.loadString('$prefix$atlasPath');
-    return ArenaAssets(atlas: atlas, frames: LpcAtlas.parse(atlasSource));
+    return ArenaAssets(atlas: atlas, ground: ground, frames: LpcAtlas.parse(atlasSource));
   }
 }

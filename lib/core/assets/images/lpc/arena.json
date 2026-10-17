@@ -3600,33 +3600,9 @@
     "y": 1.0
    }
   },
-  "arena-grass": {
-   "frame": {
-    "x": 594,
-    "y": 1306,
-    "w": 32,
-    "h": 32
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 32,
-    "h": 32
-   },
-   "sourceSize": {
-    "w": 32,
-    "h": 32
-   },
-   "pivot": {
-    "x": 0,
-    "y": 0
-   }
-  },
   "arena-fence": {
    "frame": {
-    "x": 628,
+    "x": 594,
     "y": 1306,
     "w": 64,
     "h": 32

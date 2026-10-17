@@ -15,8 +15,7 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
   arena.png + arena.json           JSON-hash atlas for the arena: the hero (with the axe and each sword), bandit,
                                    veteran bandit, barbarian and barbarian chief idle and walk (64px, weapon in hand) and
                                    slash (128px) frames in their one facing (pivot = feet), the wolf
-                                   and bear idle, attack and down frames facing left, the grass cell and a fence
-                                   segment
+                                   and bear idle, attack and down frames facing left, a fence segment
 
 Requires Pillow. Licences and authors: see CREDITS.md next to the outputs.
 """
@@ -388,7 +387,6 @@ ARENA_FIGHTERS = {
     "barbarian": (BARBARIAN_RECOLOURS, 1, BARBARIAN_LAYERS, "axe"),
     "barbarian-chief": (CHIEF_RECOLOURS, 1, CHIEF_LAYERS, "axe"),
 }
-ARENA_GRASS = (1, 23)  # (column, row) of terrain_atlas.png, the same grass as the forest ground
 ARENA_FENCE_BOX = (480, 608, 544, 640)  # terrain_atlas.png: a post and a rail, 64x32, tiles horizontally
 IDLE_PIVOT = {"x": 0.5, "y": round(62 / FRAME, 4)}
 SLASH_PIVOT = {"x": 0.5, "y": round((32 + 62) / WORK_FRAME, 4)}
@@ -439,9 +437,6 @@ def build_arena() -> None:
         for column, image in enumerate(cells(slash, row, WORK_FRAME)):
             frames[f"{fighter}-slash-{column}"], pivots[f"{fighter}-slash-{column}"] = image, SLASH_PIVOT
     add_beasts(frames, pivots)
-    column, row = ARENA_GRASS
-    frames["arena-grass"] = terrain.crop((column * CELL, row * CELL, (column + 1) * CELL, (row + 1) * CELL))
-    pivots["arena-grass"] = {"x": 0, "y": 0}
     frames["arena-fence"] = trim(terrain.crop(ARENA_FENCE_BOX), "arena-fence")
     pivots["arena-fence"] = {"x": 0, "y": 1}
     write_atlas("arena", frames, pivots)

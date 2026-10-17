@@ -8,6 +8,7 @@ import '../entities/building/building_entity.dart';
 import '../entities/decoration/decoration_entity.dart';
 import '../entities/game/construction_result_entity.dart';
 import '../entities/game/game_event_entity.dart';
+import '../entities/game/stats_entity.dart';
 import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
 import '../entities/hero/hero_entity.dart';
@@ -16,12 +17,15 @@ import '../entities/player/activity_entity.dart';
 import '../entities/player/intent_entity.dart';
 import '../entities/player/inventory_entity.dart';
 import '../entities/player/player_entity.dart';
+import '../entities/tree/stump_entity.dart';
 import '../entities/tree/tree_entity.dart';
 import 'construction.dart';
 import 'extensions/inventory_rules.dart';
 import 'extensions/player_rules.dart';
 import 'navigation.dart';
 import 'pick_up_items.dart';
+import 'regrowth.dart';
+import 'stats_recording.dart';
 import 'woodcutting.dart';
 import 'work.dart';
 import 'world_state.dart';
@@ -65,6 +69,10 @@ class World {
   List<DecorationEntity> get decorations => _state.decorations;
 
   List<BuildingEntity> get buildings => _state.buildings.values.toList();
+
+  List<StumpEntity> get stumps => _state.stumps.values.toList();
+
+  StatsEntity get stats => _state.stats;
 
   HeroEntity get hero => _state.hero;
 
@@ -132,6 +140,7 @@ class World {
 
   List<GameEventEntity> advance(double deltaMs) {
     final events = <GameEventEntity>[];
+    Regrowth.advance(_state, deltaMs, events);
     switch (player.activity) {
       case final WalkingActivityEntity walking:
         _navigation.step(deltaMs, walking, events);
@@ -141,6 +150,7 @@ class World {
         break;
     }
     pickUpItems(_state, events);
+    StatsRecording.record(_state, events);
     return events;
   }
 

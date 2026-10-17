@@ -1,1 +1,1 @@
-enum QuestItemStatus { done, current, pending }
+enum QuestItemStatus { done, current, pending, folded }

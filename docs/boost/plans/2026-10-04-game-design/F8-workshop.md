@@ -59,7 +59,7 @@ Un taller donde se compran el hacha y el pico de hierro, que talan y pican con u
 
 **Arte:** `workshop` = la casita de `build_cottage()` con el muro de piedra y entramado de la herrería y el tejado de paja recoloreado en **verde**, sin chimenea (120 × 191, pivote `(0.5, 1)`). `buildingFrontOffset` 24. Sin autores nuevos.
 
-**Misiones del capítulo 2** (al final de `QuestId` y detrás de las ocho de F4 en `QuestLine.village`; la insignia pasa a `x/20`):
+**Misiones del capítulo 2** (al final de `QuestId` y detrás de las siete de F4 en `QuestLine.village`; la insignia pasa a `x/19`):
 
 | Misión | Objetivo | Texto | Mide |
 |---|---|---|---|
@@ -99,7 +99,7 @@ Un taller donde se compran el hacha y el pico de hierro, que talan y pican con u
 - Construir el taller (madera y piedra).
 - *Taller* abre el panel; sin taller, las mejoras dicen "Construye el Taller".
 - Comprar el hacha descuenta 15 y 15 del almacén, echa chispas, avisa y la barra dice "Hacha de hierro". Después, un pino cae en 2 golpes, un roble en 5 y, con el pico, una roca en 5. Volver a comprar avisa.
-- Las cuatro misiones avanzan y la insignia llega a 20/20.
+- Las cuatro misiones avanzan y la insignia llega a 19/19.
 - Tests:
   - `inventory_rules_test.dart`: `hitsNeeded` en todos los casos de arriba, y los niveles se conservan al entregar;
   - `world_woodcutting_test.dart` / `world_mining_test.dart`: con nivel 1, los mismos golpes y eventos que antes; con la mejora, menos golpes; un árbol a medias cae con los golpes nuevos;

@@ -28,7 +28,7 @@ class FloatingTextComponent extends TextComponent<TextPaint> {
         textRenderer: TextPaint(style: _style(color, 1)),
         position: Vector2(at.x, at.y - startLift),
         anchor: Anchor.bottomCenter,
-        priority: RenderDepth.overlay,
+        priority: RenderDepth.floatingText,
       );
 
   double get alpha {

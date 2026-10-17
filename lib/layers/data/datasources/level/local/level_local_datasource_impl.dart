@@ -5,7 +5,6 @@ import 'package:injectable/injectable.dart';
 import '../../../../../core/utils/seeded_random.dart';
 import '../source/level_local_datasource.dart';
 import 'dbo/decoration_dbo.dart';
-import 'dbo/item_dbo.dart';
 import 'dbo/level_dbo.dart';
 import 'dbo/point_dbo.dart';
 import 'dbo/tree_dbo.dart';
@@ -60,7 +59,6 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
   static const double _spawnX = _width / 2;
   static const double _spawnY = _height / 2;
   static const PointDBO _playerStart = PointDBO(x: _spawnX, y: _spawnY);
-  static const ItemDBO _axe = ItemDBO(id: 'axe', kind: 'axe', x: _spawnX + 56, y: _spawnY + 8);
 
   const LevelLocalDatasourceImpl();
 
@@ -72,7 +70,7 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
       height: _height,
       playerStart: _playerStart,
       trees: trees,
-      items: const [_axe],
+      items: const [],
       decorations: _scatterDecorations(trees),
     );
   }
@@ -107,11 +105,10 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
         (tree) => (x - tree.x!).abs() < _treeHalfWidth && y > tree.y! - _treeHeight && y < tree.y! + _treeRoots,
       );
       final onSpawn = (x - _spawnX).abs() < _spawnHalfWidth && y > _spawnY - _spawnAbove && y < _spawnY + _spawnBelow;
-      final onAxe = _distance(x, y, _axe.x!, _axe.y!) < _decorationSpacing;
       final crowded = decorations.any(
         (decoration) => _distance(x, y, decoration.x!, decoration.y!) < _decorationSpacing,
       );
-      return !underTree && !onSpawn && !onAxe && !crowded;
+      return !underTree && !onSpawn && !crowded;
     }
 
     for (var attempt = 0; attempt < _decorationAttempts; attempt++) {

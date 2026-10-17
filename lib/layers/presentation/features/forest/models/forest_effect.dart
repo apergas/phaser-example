@@ -36,14 +36,17 @@ final class TreeFelledEffect extends ForestEffect {
   final String treeId;
   final double fromX;
 
-  const TreeFelledEffect({required this.treeId, required this.fromX});
+  final int wood;
+
+  const TreeFelledEffect({required this.treeId, required this.fromX, required this.wood});
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is TreeFelledEffect && other.treeId == treeId && other.fromX == fromX;
+      identical(this, other) ||
+      other is TreeFelledEffect && other.treeId == treeId && other.fromX == fromX && other.wood == wood;
 
   @override
-  int get hashCode => Object.hash(TreeFelledEffect, treeId, fromX);
+  int get hashCode => Object.hash(TreeFelledEffect, treeId, fromX, wood);
 }
 
 final class BuildingPlacedEffect extends ForestEffect {
@@ -109,4 +112,28 @@ final class SkillLearnedEffect extends ForestEffect {
 
   @override
   int get hashCode => Object.hash(SkillLearnedEffect, skill);
+}
+
+final class TreeSproutedEffect extends ForestEffect {
+  final String stumpId;
+
+  const TreeSproutedEffect({required this.stumpId});
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is TreeSproutedEffect && other.stumpId == stumpId;
+
+  @override
+  int get hashCode => Object.hash(TreeSproutedEffect, stumpId);
+}
+
+final class TreeRegrownEffect extends ForestEffect {
+  final String treeId;
+
+  const TreeRegrownEffect({required this.treeId});
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is TreeRegrownEffect && other.treeId == treeId;
+
+  @override
+  int get hashCode => Object.hash(TreeRegrownEffect, treeId);
 }

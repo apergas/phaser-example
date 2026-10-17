@@ -5,6 +5,7 @@ import '../entities/game/game_event_entity.dart';
 import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
 import '../entities/player/intent_entity.dart';
+import '../entities/tree/stump_entity.dart';
 import '../rules/rules.dart';
 import 'extensions/inventory_rules.dart';
 import 'extensions/player_rules.dart';
@@ -46,6 +47,7 @@ final class Woodcutting implements Work<ChopIntentEntity> {
       return false;
     }
     state.trees.remove(tree.id);
+    state.stumps[tree.id] = StumpEntity(id: tree.id, kind: tree.kind, position: tree.position);
     state.player = state.player.withInventory(state.player.inventory.add(Resource.wood, tree.woodYield));
     events.add(TreeFelledEventEntity(treeId: tree.id, wood: tree.woodYield));
     return true;

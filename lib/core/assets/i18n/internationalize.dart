@@ -52,6 +52,8 @@ class Internationalize {
   static String get forestQuests => '$_forest.hud.quests'.tr();
   static String get forestArena => '$_forest.hud.arena'.tr();
   static String get forestQuestDone => '$_forest.hud.questDone'.tr();
+  static String forestQuestsDone({required int count}) =>
+      '$_forest.hud.questsDone'.plural(count, namedArgs: {'count': '$count'});
   static String forestAmount({required Resource resource, required int amount}) => switch (resource) {
     Resource.wood => '$_forest.amount.wood'.tr(namedArgs: {'amount': '$amount'}),
     Resource.gold => '$_forest.amount.gold'.tr(namedArgs: {'amount': '$amount'}),
@@ -65,7 +67,6 @@ class Internationalize {
     BlueprintId.mageTower => '$_forest.blueprint.mageTower'.tr(),
   };
   static String forestQuestTitle({required QuestId id}) => switch (id) {
-    QuestId.pickUpAxe => '$_forest.quest.pickUpAxe'.tr(),
     QuestId.gatherWood => '$_forest.quest.gatherWood'.tr(),
     QuestId.buildHouse => '$_forest.quest.buildHouse'.tr(),
     QuestId.buildForge => '$_forest.quest.buildForge'.tr(),
@@ -76,6 +77,11 @@ class Internationalize {
     QuestId.learnASkill => '$_forest.quest.learnASkill'.tr(),
     QuestId.clearHalfArena => '$_forest.quest.clearHalfArena'.tr(),
     QuestId.becomeChampion => '$_forest.quest.becomeChampion'.tr(),
+    QuestId.fellTenTrees => '$_forest.quest.fellTenTrees'.tr(),
+    QuestId.fellAnOak => '$_forest.quest.fellAnOak'.tr(),
+    QuestId.gatherFortyWood => '$_forest.quest.gatherFortyWood'.tr(),
+    QuestId.buildTwoHouses => '$_forest.quest.buildTwoHouses'.tr(),
+    QuestId.seeATreeRegrow => '$_forest.quest.seeATreeRegrow'.tr(),
   };
   static String forestQuestLine({required QuestLine line}) => switch (line) {
     QuestLine.village => '$_forest.questLine.village'.tr(),
@@ -105,6 +111,8 @@ class Internationalize {
   static String get forestPlacementCancel => '$_forest.placement.cancel'.tr();
   static String get forestAccessibilityGameWorld => '$_forest.accessibility.gameWorld'.tr();
   static String get forestRetry => '$_forest.retry'.tr();
+  static String forestFloatingWoodGained({required int wood}) =>
+      '$_forest.floating.woodGained'.tr(namedArgs: {'wood': '$wood'});
   static String get forestHero => '$_forest.hero.title'.tr();
   static String get forestHeroPower => '$_forest.hero.power'.tr();
   static String get forestHeroChampion => '$_forest.hero.champion'.tr();

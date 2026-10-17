@@ -2,10 +2,12 @@ import 'dart:math' as math;
 
 import 'package:flame/components.dart';
 
+import '../../../../../core/assets/i18n/internationalize.dart';
 import '../../../../../core/config/constants/enum/forest/particle_kind.dart';
 import '../../../../domain/entities/building/building_entity.dart';
 import '../../../../domain/entities/game/world_snapshot_entity.dart';
 import '../../../../domain/entities/geometry/position_entity.dart';
+import '../../../../domain/world/extensions/stump_rules.dart';
 import '../bloc/forest_bloc.dart';
 import '../models/forest_effect.dart';
 import '../models/placement_data.dart';
@@ -14,10 +16,12 @@ import 'atlas/lpc_assets.dart';
 import 'atlas/sprite_names.dart';
 import 'components/atlas_sprite_component.dart';
 import 'components/building_component.dart';
+import 'components/floating_text_component.dart';
 import 'components/ground_component.dart';
 import 'components/ground_item_component.dart';
 import 'components/placement_ghost_component.dart';
 import 'components/player_component.dart';
+import 'components/stump_component.dart';
 import 'components/tree_component.dart';
 import 'particles/particle_burst_component.dart';
 import 'particles/particle_bursts.dart';
@@ -29,6 +33,9 @@ class ForestSceneComponent extends Component {
   final Map<String, TreeComponent> _trees = {};
   final Map<String, GroundItemComponent> _items = {};
   final Map<String, BuildingComponent> _buildings = {};
+  final Map<String, StumpComponent> _stumps = {};
+  final Set<String> _sprouting = {};
+  final Set<String> _regrowing = {};
   final List<AtlasSpriteComponent> _clutter = [];
   PlayerComponent? _player;
   PlacementGhostComponent? _ghost;
@@ -41,6 +48,8 @@ class ForestSceneComponent extends Component {
   Map<String, GroundItemComponent> get items => Map.unmodifiable(_items);
 
   Map<String, BuildingComponent> get buildings => Map.unmodifiable(_buildings);
+
+  Map<String, StumpComponent> get stumps => Map.unmodifiable(_stumps);
 
   List<AtlasSpriteComponent> get clutter => List.unmodifiable(_clutter);
 
@@ -96,8 +105,8 @@ class ForestSceneComponent extends Component {
         _onItemPickedUp(itemId);
       case TreeHitEffect(:final treeId, :final fromX):
         _onTreeHit(treeId, fromX);
-      case TreeFelledEffect(:final treeId, :final fromX):
-        _onTreeFelled(treeId, fromX);
+      case TreeFelledEffect(:final treeId, :final fromX, :final wood):
+        _onTreeFelled(treeId, fromX, wood);
       case BuildingPlacedEffect(:final building):
         _onBuildingPlaced(building);
       case BuildingHammeredEffect(:final buildingId, :final progress):
@@ -108,6 +117,10 @@ class ForestSceneComponent extends Component {
         _sparkleOnPlayer(ParticleKind.sparkle);
       case SkillLearnedEffect():
         _sparkleOnPlayer(ParticleKind.magicSparkle);
+      case TreeSproutedEffect(:final stumpId):
+        _sprouting.add(stumpId);
+      case TreeRegrownEffect(:final treeId):
+        _regrowing.add(treeId);
     }
   }
 
@@ -127,11 +140,16 @@ class ForestSceneComponent extends Component {
     );
   }
 
-  void _onTreeFelled(String treeId, double fromX) {
+  void _onTreeFelled(String treeId, double fromX, int wood) {
     final tree = _trees.remove(treeId);
     if (tree == null) return;
     tree.fell(fromX);
-    _addClutter(SpriteNames.stump, tree.base, tree.base.y - 1);
+    add(
+      FloatingTextComponent(
+        text: Internationalize.forestFloatingWoodGained(wood: wood),
+        at: tree.base,
+      ),
+    );
   }
 
   void _onBuildingPlaced(BuildingEntity building) {
@@ -179,8 +197,30 @@ class ForestSceneComponent extends Component {
       _trees.remove(id)!.removeFromParent();
     }
     for (final tree in world.trees) {
-      _trees.putIfAbsent(tree.id, () => _added(TreeComponent(assets: _assets, tree: tree)));
+      _trees.putIfAbsent(tree.id, () {
+        final component = TreeComponent(assets: _assets, tree: tree);
+        if (_regrowing.contains(tree.id)) component.grow();
+        return _added(component);
+      });
     }
+
+    final saplings = {for (final stump in world.stumps) stump.id: stump.isSapling};
+    final staleStumps = [
+      for (final MapEntry(key: id, value: component) in _stumps.entries)
+        if (saplings[id] != component.isSapling) id,
+    ];
+    for (final id in staleStumps) {
+      _stumps.remove(id)!.removeFromParent();
+    }
+    for (final stump in world.stumps) {
+      _stumps.putIfAbsent(stump.id, () {
+        final component = StumpComponent(assets: _assets, stump: stump);
+        if (_sprouting.contains(stump.id)) component.grow();
+        return _added(component);
+      });
+    }
+    _sprouting.clear();
+    _regrowing.clear();
 
     final itemIds = {for (final item in world.items) item.id};
     for (final id in _items.keys.where((id) => !itemIds.contains(id)).toList()) {

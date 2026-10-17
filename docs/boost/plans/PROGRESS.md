@@ -36,9 +36,9 @@
 | Fase | Estado | Dónde está | Notas |
 |---|---|---|---|
 | F0 Generalizar recursos, herramientas y edificios | ✅ | `develop` (#6) | Incluye el arreglo de las líneas del suelo. |
-| [F1 Árboles con personalidad](2026-10-04-game-design/F1-tree-kinds.md) | 🟢 plan listo | — | Bloque 1. |
-| [F3 Rebrote de árboles](2026-10-04-game-design/F3-regrowth.md) | 📝 ficha | — | Bloque 1. |
-| [F4 Misiones, capítulo 1](2026-10-04-game-design/F4-quests-chapter-1.md) | 📝 ficha | — | Bloque 1. |
+| [F1 Árboles con personalidad](2026-10-04-game-design/F1-tree-kinds.md) | ✅ | `feature/PROJECT-F1-tree-kinds` | Bloque 1. Sin tests (T1). |
+| [F3 Rebrote de árboles](2026-10-04-game-design/F3-regrowth.md) | ✅ | `feature/PROJECT-F3-regrowth` | Bloque 1. Sin tests (T1). |
+| [F4 Misiones, capítulo 1](2026-10-04-game-design/F4-quests-chapter-1.md) | ✅ | `feature/PROJECT-F4-quests-chapter-1` | Bloque 1. Sin tests (T1). |
 | [F5 Piedra y pico](2026-10-04-game-design/F5-stone.md) | 📝 ficha | — | Bloque 2. |
 | [F6 Almacén y capacidad de carga](2026-10-04-game-design/F6-storehouse.md) | 📝 ficha | — | Bloque 2. |
 | [F7 Cantera](2026-10-04-game-design/F7-quarry.md) | 📝 ficha | — | Bloque 2. |
@@ -51,7 +51,7 @@
 | Arreglo o mejora | Estado | Dónde está |
 |---|---|---|
 | [Rayas negras en el suelo de la arena](2026-10-17-extras/arena-ground-seams.md) | ✅ | `develop` (#61) |
-| [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | 📝 ficha | — |
+| [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | ✅ | `feature/PROJECT-X-start-with-axe` |
 | [T1 Tests](2026-10-17-extras/T1-tests.md) | 📝 ficha | — (la última; desde TC9.4 no se escriben tests) |
 
 ## Siguiente paso

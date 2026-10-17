@@ -76,7 +76,7 @@ Para trabajar en una tarea **no hace falta leer el proyecto**. Lee sólo esto:
 | **X** Alineación con iOS | ✅ [X-ios-alignment.md](X-ios-alignment.md) | Único | C8 | Nombre `Farming`, ids `com.apergas.farming`, paquete `farming`, icono del roble, textos táctiles y no reiniciar la obra en curso. Commits `[PROJECT-X]`. |
 | **C9** Maná | ✅ [C9-mana.md](C9-mana.md) | Único | X | Recurso *maná*: lo dan los niveles 6–10 junto con el oro y lo cuestan, con el oro, las habilidades. Hecha en iOS. |
 | **C10** Pelea sin saltar | ✅ [C10-no-skip.md](C10-no-skip.md) | Único | C9 | Sin *Saltar*: la repetición se ve entera y no hay botón mientras dura. Hecha en iOS. |
-| **C11** Habilidades de los enemigos | 📝 [C11-enemy-skills.md](C11-enemy-skills.md) | Único | C10 | Desde *Tres bandidos* los enemigos usan su habilidad (1,5–3,5 %). Hecha en iOS. |
+| **C11** Habilidades de los enemigos | 🟢 [C11-enemy-skills.md](C11-enemy-skills.md) | Único | C10 | Desde *Tres bandidos* los enemigos usan su habilidad (1,5–3,5 %). Hecha en iOS. |
 | **C12** Niveles de habilidad | 📝 [C12-skill-levels.md](C12-skill-levels.md) | Único | C9, C11 | Tres niveles por habilidad del héroe: *Mejorar* paga ×1,5 y ×2,25 y mejora el efecto. Hecha en iOS. |
 
 **Desde el 2026-10-17** el juego vuelve a desarrollarse en Flutter tras su paso por iOS (`$IOS` = `/Users/axelperezgaspar/farming-ios`), donde se hicieron C9–C12. Un solo desarrollador, en serie: X → C9 → C10 → C11 → C12 en `feature/PROJECT-X-arena`; después `feature/PROJECT-X-arena` → `develop` y la aldea (README de la aldea, secciones 2 y 5). Cada ficha cita el plan detallado y los commits de iOS. Como el combate usa el mismo `SeededRandom` y el mismo orden de tiradas, las tablas de equilibrado de iOS se tienen que reproducir exactas.

@@ -24,6 +24,8 @@ flutter analyze lib                                                 # debe termi
 
 ## 2. Prueba manual
 
+**Desde el 2026-10-17 no se prueba a mano en cada fase** (ni web ni Android): se hace una prueba manual por bloque, al terminar C12 (la arena) y al terminar las F (la aldea), con los apartados *Prueba manual* / *Cómo probarlo* de todas sus fases. En una fase, sáltate este paso y pon en el PR «Prueba manual: en el cierre del bloque». En la prueba de bloque:
+
 Lee el apartado *Cómo probarlo* de la tarea, o de la fase si es la última tarea, y:
 - Web: pruébalo tú con `flutter run -d chrome` y las herramientas de Chrome si están disponibles. El juego se pinta en un canvas: valida con capturas, no con el DOM.
 - Android (`flutter run -d emulator-5554`, AVD `Medium_Phone_API_36.0`) e iOS (`flutter run -d "iPhone 17"`): pide al usuario que lo pruebe en el emulador o simulador y espera su confirmación.

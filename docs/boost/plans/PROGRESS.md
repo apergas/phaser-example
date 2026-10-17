@@ -59,7 +59,8 @@
 | Orden | Qué | Rama |
 |---|---|---|
 | 1 | C9 → C10 → C11 → C12 | desde `feature/PROJECT-X-arena` |
-| 2 | Unir la arena a `develop`, con prueba manual en web, Android e iOS | `feature/PROJECT-X-arena` → `develop` |
+| 2 | Prueba manual del bloque de la arena (web, Android e iOS; las *Prueba manual* de X–C12) y unir la arena a `develop` | `feature/PROJECT-X-arena` → `develop` |
 | 3 | Empezar con el hacha (antes de F4) | desde `feature/PROJECT-X-town` |
 | 4 | F1 → F3 → F4 (bloque 1) → F5 → F6 → F7 → F8 (bloque 2) → F2 (bloque 3) | desde `feature/PROJECT-X-town`, tras `git merge develop` |
-| 5 | T1 Tests | desde `develop`, con todo unido |
+| 5 | Prueba manual del bloque de la aldea (web, Android e iOS; las *Prueba manual* de F1–F8, F2 y los arreglos) | `feature/PROJECT-X-town` |
+| 6 | T1 Tests | desde `develop`, con todo unido |

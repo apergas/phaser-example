@@ -75,7 +75,7 @@ Para trabajar en una tarea **no hace falta leer el proyecto**. Lee sólo esto:
 | **C8** Pulido de la arena | ✅ [C8-arena-polish.md](C8-arena-polish.md) | C | C0–C7 | Lo de [`ARENA-FIXES.md`](ARENA-FIXES.md): veterano y armas propios, luchadores que se acercan a golpear, HUD del móvil a la izquierda, mensajes de misiones agrupados y pendientes de C2/C3. |
 | **X** Alineación con iOS | ✅ [X-ios-alignment.md](X-ios-alignment.md) | Único | C8 | Nombre `Farming`, ids `com.apergas.farming`, paquete `farming`, icono del roble, textos táctiles y no reiniciar la obra en curso. Commits `[PROJECT-X]`. |
 | **C9** Maná | ✅ [C9-mana.md](C9-mana.md) | Único | X | Recurso *maná*: lo dan los niveles 6–10 junto con el oro y lo cuestan, con el oro, las habilidades. Hecha en iOS. |
-| **C10** Pelea sin saltar | 📝 [C10-no-skip.md](C10-no-skip.md) | Único | C9 | Sin *Saltar*: la repetición se ve entera y no hay botón mientras dura. Hecha en iOS. |
+| **C10** Pelea sin saltar | 🟢 [C10-no-skip.md](C10-no-skip.md) | Único | C9 | Sin *Saltar*: la repetición se ve entera y no hay botón mientras dura. Hecha en iOS. |
 | **C11** Habilidades de los enemigos | 📝 [C11-enemy-skills.md](C11-enemy-skills.md) | Único | C10 | Desde *Tres bandidos* los enemigos usan su habilidad (1,5–3,5 %). Hecha en iOS. |
 | **C12** Niveles de habilidad | 📝 [C12-skill-levels.md](C12-skill-levels.md) | Único | C9, C11 | Tres niveles por habilidad del héroe: *Mejorar* paga ×1,5 y ×2,25 y mejora el efecto. Hecha en iOS. |
 

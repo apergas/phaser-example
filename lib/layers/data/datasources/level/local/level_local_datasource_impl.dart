@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../core/utils/seeded_random.dart';
 import '../source/level_local_datasource.dart';
+import 'dbo/building_dbo.dart';
 import 'dbo/decoration_dbo.dart';
 import 'dbo/item_dbo.dart';
 import 'dbo/level_dbo.dart';
@@ -45,6 +46,7 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
   static const double _rockTreeClearance = 60;
   static const double _rockItemClearance = 80;
   static const double _rockDecorationClearance = 48;
+  static const double _campDecorationClearance = 64;
   static const int _decorationSeed = 1337;
   static const int _decorationAttempts = 107;
   static const int _decorationPlacements = 20;
@@ -68,6 +70,7 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
   static const double _spawnY = _height / 2;
   static const PointDBO _playerStart = PointDBO(x: _spawnX, y: _spawnY);
   static const ItemDBO _pickaxe = ItemDBO(id: 'pickaxe', kind: 'pickaxe', x: _spawnX + 212, y: _spawnY + 212);
+  static const BuildingDBO _camp = BuildingDBO(id: 'camp', blueprint: 'camp', x: _spawnX - 100, y: _spawnY - 8);
 
   const LevelLocalDatasourceImpl();
 
@@ -83,6 +86,7 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
       items: const [_pickaxe],
       decorations: _scatterDecorations(trees).where((decoration) => _isClear(decoration, rocks)).toList(),
       rocks: rocks,
+      buildings: const [_camp],
     );
   }
 
@@ -133,7 +137,8 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
     final y = decoration.y!;
     final onRock = rocks.any((rock) => _distance(x, y, rock.x!, rock.y!) < _rockDecorationClearance);
     final onPickaxe = _distance(x, y, _pickaxe.x!, _pickaxe.y!) < _decorationSpacing;
-    return !onRock && !onPickaxe;
+    final onCamp = _distance(x, y, _camp.x!, _camp.y!) < _campDecorationClearance;
+    return !onRock && !onPickaxe && !onCamp;
   }
 
   bool _isUnderTree(double x, double y, List<TreeDBO> trees) => trees.any(

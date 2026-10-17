@@ -18,7 +18,7 @@ abstract final class Quests {
       id: QuestId.gatherWood,
       line: QuestLine.village,
       target: 15,
-      measure: (world) => world.player.inventory.amount(Resource.wood),
+      measure: (world) => world.stock.amount(Resource.wood),
     ),
     _MeasuredQuest(
       id: QuestId.buildHouse,

@@ -107,6 +107,7 @@ class Internationalize {
       '$_forest.message.woodGained'.tr(namedArgs: {'wood': '$wood'});
   static String forestMessageStoneGained({required int amount}) =>
       '$_forest.message.stoneGained'.tr(namedArgs: {'amount': '$amount'});
+  static String get forestMessageCarryFull => '$_forest.message.carryFull'.tr();
   static String forestMessagePlacing({required String name}) =>
       '$_forest.message.placing'.tr(namedArgs: {'name': name});
   static String forestMessagePlacingTouch({required String name}) =>

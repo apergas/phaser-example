@@ -169,6 +169,9 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     for (final gameEvent in gameEvents) {
       _react(gameEvent, fromX: fromX, effects: effects);
     }
+    if (gameEvents.any(_isGathering) && _getPlayerStatusUseCase().inventory.isLoadFull) {
+      _showMessage(Internationalize.forestMessageCarryFull);
+    }
     _announceQuests([
       for (final gameEvent in gameEvents)
         if (gameEvent is QuestCompletedEventEntity) gameEvent.questId,
@@ -227,8 +230,13 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       return;
     }
     if (rockId != null) {
-      if (_mineRockUseCase(rockId: rockId) == MineResult.noPickaxe) {
-        _showMessage(Internationalize.forestMessageNeedPickaxe);
+      switch (_mineRockUseCase(rockId: rockId)) {
+        case MineResult.ok || MineResult.unknownRock:
+          break;
+        case MineResult.noPickaxe:
+          _showMessage(Internationalize.forestMessageNeedPickaxe);
+        case MineResult.carryFull:
+          _showMessage(Internationalize.forestMessageCarryFull);
       }
       return;
     }
@@ -236,8 +244,13 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       _movePlayerUseCase(x: position.x, y: position.y);
       return;
     }
-    if (_chopTreeUseCase(treeId: treeId) == ChopResult.noAxe) {
-      _showMessage(Internationalize.forestMessageNeedAxe);
+    switch (_chopTreeUseCase(treeId: treeId)) {
+      case ChopResult.ok || ChopResult.unknownTree:
+        break;
+      case ChopResult.noAxe:
+        _showMessage(Internationalize.forestMessageNeedAxe);
+      case ChopResult.carryFull:
+        _showMessage(Internationalize.forestMessageCarryFull);
     }
   }
 
@@ -370,6 +383,9 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         effects.add(RockBrokenEffect(rockId: rockId, stone: stone));
     }
   }
+
+  bool _isGathering(GameEventEntity gameEvent) =>
+      gameEvent is TreeFelledEventEntity || gameEvent is RockBrokenEventEntity;
 
   void _announceQuests(List<QuestId> completed) {
     if (completed.isEmpty) return;

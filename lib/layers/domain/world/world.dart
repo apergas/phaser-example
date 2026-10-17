@@ -81,6 +81,8 @@ class World {
 
   StatsEntity get stats => _state.stats;
 
+  InventoryEntity get stock => _state.stock;
+
   HeroEntity get hero => _state.hero;
 
   List<ObstacleEntity> get obstacles => _state.obstacles();
@@ -130,22 +132,13 @@ class World {
   bool canPlace(BlueprintEntity blueprint, PositionEntity position) =>
       Construction.canPlace(_state, blueprint, position);
 
-  InventoryEntity get funds => _state.player.inventory;
+  InventoryEntity get funds => _state.stock;
 
   void earn(Map<Resource, int> reward) {
-    var inventory = _state.player.inventory;
-    for (final MapEntry(key: resource, value: quantity) in reward.entries) {
-      if (quantity > 0) inventory = inventory.add(resource, quantity);
-    }
-    _state.player = _state.player.copyWith(inventory: inventory);
+    _state.stock = _state.stock.adding(reward);
   }
 
-  bool spend(Map<Resource, int> cost) {
-    final remaining = _state.player.inventory.spend(cost);
-    if (remaining == null) return false;
-    _state.player = _state.player.copyWith(inventory: remaining);
-    return true;
-  }
+  bool spend(Map<Resource, int> cost) => _state.pay(cost);
 
   void updateHero(HeroEntity Function(HeroEntity hero) transform) {
     _state.hero = transform(_state.hero);

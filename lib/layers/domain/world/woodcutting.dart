@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import '../../../core/config/constants/enum/chop_result.dart';
 import '../../../core/config/constants/enum/resource.dart';
 import '../../../core/config/constants/enum/tool_kind.dart';
@@ -19,6 +21,7 @@ final class Woodcutting implements Work<ChopIntentEntity> {
   static ChopResult check(WorldState state, String treeId) {
     if (!state.trees.containsKey(treeId)) return ChopResult.unknownTree;
     if (!state.player.inventory.hasTool(ToolKind.axe)) return ChopResult.noAxe;
+    if (state.player.inventory.isLoadFull) return ChopResult.carryFull;
     return ChopResult.ok;
   }
 
@@ -48,8 +51,9 @@ final class Woodcutting implements Work<ChopIntentEntity> {
     }
     state.trees.remove(tree.id);
     state.stumps[tree.id] = StumpEntity(id: tree.id, kind: tree.kind, position: tree.position);
-    state.player = state.player.withInventory(state.player.inventory.add(Resource.wood, tree.woodYield));
-    events.add(TreeFelledEventEntity(treeId: tree.id, wood: tree.woodYield));
+    final wood = min(tree.woodYield, state.player.inventory.freeLoad);
+    state.player = state.player.withInventory(state.player.inventory.add(Resource.wood, wood));
+    events.add(TreeFelledEventEntity(treeId: tree.id, wood: wood));
     return true;
   }
 }

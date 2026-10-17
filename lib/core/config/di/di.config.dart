@@ -66,6 +66,8 @@ import 'package:farming/layers/domain/use-cases/game/get_player_status_use_case.
     as _i465;
 import 'package:farming/layers/domain/use-cases/game/get_quests_use_case.dart'
     as _i94;
+import 'package:farming/layers/domain/use-cases/game/get_stock_use_case.dart'
+    as _i401;
 import 'package:farming/layers/domain/use-cases/game/get_world_snapshot_use_case.dart'
     as _i579;
 import 'package:farming/layers/domain/use-cases/game/mine_rock_use_case.dart'
@@ -177,6 +179,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i94.GetQuestsUseCase>(
       () => _i94.GetQuestsUseCase(
+        sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i401.GetStockUseCase>(
+      () => _i401.GetStockUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );

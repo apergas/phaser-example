@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../../../core/config/constants/enum/resource.dart';
 import '../entities/building/building_entity.dart';
 import '../entities/decoration/decoration_entity.dart';
 import '../entities/game/stats_entity.dart';
@@ -7,10 +8,12 @@ import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
 import '../entities/hero/hero_entity.dart';
 import '../entities/item/ground_item_entity.dart';
+import '../entities/player/inventory_entity.dart';
 import '../entities/player/player_entity.dart';
 import '../entities/rock/rock_entity.dart';
 import '../entities/tree/stump_entity.dart';
 import '../entities/tree/tree_entity.dart';
+import 'extensions/inventory_rules.dart';
 import 'extensions/obstacle_rules.dart';
 
 class WorldState {
@@ -40,6 +43,7 @@ class WorldState {
   final Map<String, BuildingEntity> buildings = {};
   final Map<String, StumpEntity> stumps = {};
   StatsEntity stats = const StatsEntity();
+  InventoryEntity stock = const InventoryEntity();
   final Map<String, int> _idCounters = {};
 
   List<ObstacleEntity> obstacles() => [
@@ -57,6 +61,13 @@ class WorldState {
   }
 
   bool isInside(PositionEntity position, double margin) => clamp(position, margin) == position;
+
+  bool pay(Map<Resource, int> cost) {
+    final remaining = stock.spend(cost);
+    if (remaining == null) return false;
+    stock = remaining;
+    return true;
+  }
 
   String nextId(String prefix) {
     final next = (_idCounters[prefix] ?? 0) + 1;

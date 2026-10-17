@@ -18,6 +18,7 @@ import '../../../domain/use-cases/game/deposit_use_case.dart';
 import '../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../domain/use-cases/game/get_player_status_use_case.dart';
 import '../../../domain/use-cases/game/get_quests_use_case.dart';
+import '../../../domain/use-cases/game/get_stock_use_case.dart';
 import '../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
 import '../../../domain/use-cases/game/move_player_use_case.dart';
 import '../../../domain/use-cases/game/start_game_use_case.dart';
@@ -59,6 +60,7 @@ class ForestPage extends StatelessWidget {
         getPlayerStatusUseCase: locator.get<GetPlayerStatusUseCase>(),
         getWorldSnapshotUseCase: locator.get<GetWorldSnapshotUseCase>(),
         getBuildOptionsUseCase: locator.get<GetBuildOptionsUseCase>(),
+        getStockUseCase: locator.get<GetStockUseCase>(),
         getQuestsUseCase: locator.get<GetQuestsUseCase>(),
         getHeroStatusUseCase: locator.get<GetHeroStatusUseCase>(),
         getGearOptionsUseCase: locator.get<GetGearOptionsUseCase>(),

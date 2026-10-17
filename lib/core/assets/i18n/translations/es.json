@@ -30,7 +30,9 @@
         "other": "{count} hechas"
       },
       "missing": "Faltan {amounts}",
-      "arena": "Arena"
+      "arena": "Arena",
+      "stock": "Almacén",
+      "carry": "Carga {amount}/{capacity}"
     },
     "resource": {
       "wood": "Madera",

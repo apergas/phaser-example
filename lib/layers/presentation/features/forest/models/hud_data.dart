@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 
 import 'build_item_data.dart';
+import 'carry_item_data.dart';
 import 'hero_panel_data.dart';
 import 'quest_item_data.dart';
 import 'resource_item_data.dart';
@@ -9,7 +10,8 @@ import 'tool_item_data.dart';
 class HudData {
   static const int pendingQuestsShown = 2;
 
-  final List<ResourceItemData> resources;
+  final List<ResourceItemData> stock;
+  final CarryItemData carry;
   final List<ToolItemData> tools;
   final String questBadge;
   final List<QuestItemData> quests;
@@ -18,7 +20,8 @@ class HudData {
   final HeroPanelData hero;
 
   const HudData({
-    required this.resources,
+    required this.stock,
+    required this.carry,
     required this.tools,
     required this.questBadge,
     required this.quests,
@@ -31,7 +34,8 @@ class HudData {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is HudData &&
-          const ListEquality<ResourceItemData>().equals(other.resources, resources) &&
+          const ListEquality<ResourceItemData>().equals(other.stock, stock) &&
+          other.carry == carry &&
           const ListEquality<ToolItemData>().equals(other.tools, tools) &&
           other.questBadge == questBadge &&
           const ListEquality<QuestItemData>().equals(other.quests, quests) &&
@@ -41,7 +45,8 @@ class HudData {
 
   @override
   int get hashCode => Object.hash(
-    Object.hashAll(resources),
+    Object.hashAll(stock),
+    carry,
     Object.hashAll(tools),
     questBadge,
     Object.hashAll(quests),

@@ -38,6 +38,7 @@ import '../../../../domain/entities/gear/gear_option_entity.dart';
 import '../../../../domain/entities/geometry/position_entity.dart';
 import '../../../../domain/entities/hero/skill_option_entity.dart';
 import '../../../../domain/rules/gear.dart';
+import '../../../../domain/rules/rules.dart';
 import '../../../../domain/rules/skills.dart';
 import '../../../../domain/use-cases/game/advance_game_use_case.dart';
 import '../../../../domain/use-cases/game/can_place_building_use_case.dart';
@@ -48,6 +49,7 @@ import '../../../../domain/use-cases/game/deposit_use_case.dart';
 import '../../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_player_status_use_case.dart';
 import '../../../../domain/use-cases/game/get_quests_use_case.dart';
+import '../../../../domain/use-cases/game/get_stock_use_case.dart';
 import '../../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
 import '../../../../domain/use-cases/game/mine_rock_use_case.dart';
 import '../../../../domain/use-cases/game/move_player_use_case.dart';
@@ -61,6 +63,7 @@ import '../../../../domain/world/extensions/hero_rules.dart';
 import '../../../../domain/world/extensions/inventory_rules.dart';
 import '../../arena/arena_page.dart';
 import '../models/build_item_data.dart';
+import '../models/carry_item_data.dart';
 import '../models/forest_effect.dart';
 import '../models/gear_item_data.dart';
 import '../models/gear_row_data.dart';
@@ -90,6 +93,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final GetPlayerStatusUseCase _getPlayerStatusUseCase;
   final GetWorldSnapshotUseCase _getWorldSnapshotUseCase;
   final GetBuildOptionsUseCase _getBuildOptionsUseCase;
+  final GetStockUseCase _getStockUseCase;
   final GetQuestsUseCase _getQuestsUseCase;
   final GetHeroStatusUseCase _getHeroStatusUseCase;
   final GetGearOptionsUseCase _getGearOptionsUseCase;
@@ -117,6 +121,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._getPlayerStatusUseCase,
     required this._getWorldSnapshotUseCase,
     required this._getBuildOptionsUseCase,
+    required this._getStockUseCase,
     required this._getQuestsUseCase,
     required this._getHeroStatusUseCase,
     required this._getGearOptionsUseCase,
@@ -480,15 +485,20 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   }
 
   HudData _hudData(PlayerStatusEntity status, List<QuestProgressEntity> quests) {
+    final stock = _getStockUseCase();
     return HudData(
-      resources: [
+      stock: [
         for (final resource in Resource.values)
           ResourceItemData(
             resource: resource,
             name: Internationalize.forestResource(resource: resource),
-            amount: status.inventory.amount(resource),
+            amount: stock.amount(resource),
           ),
       ],
+      carry: CarryItemData(
+        text: Internationalize.forestCarry(amount: status.inventory.load, capacity: Rules.carryCapacity),
+        isFull: status.inventory.isLoadFull,
+      ),
       tools: [
         for (final tool in ToolKind.values)
           ToolItemData(

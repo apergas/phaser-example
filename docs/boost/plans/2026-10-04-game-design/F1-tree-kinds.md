@@ -7,6 +7,14 @@
 | **Flujo** | A |
 | **Depende de** | F0 |
 | **Issue / milestone** | `phase:F1` · milestone `F1 Tree kinds` |
+| **Referencia iOS** | Hecha en iOS: `$IOS/docs/plans/2026-10-12-village/F1-tree-kinds.md`, merge `078f228` (`$IOS` = `/Users/axelperezgaspar/farming-ios`) |
+
+> **Revisión del 2026-10-17 (vuelta desde iOS).** Este plan sigue valiendo: iOS lo ejecutó con las mismas cifras y salió lo mismo (411 de madera en el mapa, 388 en los DBO, los mismos recuentos por tipo, roble 7 golpes / +8, pino 3 / +4, redondo 5 / +5). Cambia esto:
+> - **Ramas:** la fase sale de `feature/PROJECT-X-town` (ya al día con `develop`, que trae la arena C0–C12), no de `develop`. Una sola rama `feature/PROJECT-F1-tree-kinds` con las dos tareas, como en el resto de fases.
+> - **La arena ya está:** `FloatingTextComponent` existe (C2/C6) y se reutiliza tal cual; las partículas de la arena (sangre, confeti) no se tocan. La barra de recursos ya tiene oro y maná.
+> - **Tipo sin entrada en la tabla:** en lugar de `Rules.treeKindStats[kind]!`, el *mapper* lanza el mismo error de nivel inválido que un tipo desconocido (iOS, decisión 3). Con la tabla completa no pasa nunca y `rules_test.dart` lo garantiza.
+> - **Color del "+N":** el dorado por defecto del texto flotante (confirmado por el usuario en iOS).
+> - El texto flotante se dibuja por encima del fantasma de colocación (prioridad mayor), para que talar mientras se coloca no lo tape.
 
 **Goal:** Que el tipo de árbol (`TreeKind`, que el generador ya decide) cambie cuánto cuesta talarlo y cuánta madera da. Aparece la primera decisión: ¿talo el roble grande o tres pinos rápidos? Además, la madera ganada se ve flotar sobre el árbol ("+8").
 

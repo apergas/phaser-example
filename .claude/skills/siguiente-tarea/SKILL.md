@@ -19,13 +19,13 @@ En lo que sigue, "el README" es el del plan de la tarea; las reglas de paralelo 
 3. El estado en GitHub:
 
    ```bash
-   gh issue list --repo apergas/phaser-example --state open --label "phase:F0,phase:F1,phase:F2,phase:F3,phase:F4,phase:F5,phase:F6,phase:F7,phase:F8,phase:C0,phase:C1,phase:C2,phase:C3,phase:C4,phase:C5,phase:C6,phase:C7" --json number,title,labels,assignees,milestone --limit 100
+   gh issue list --repo apergas/phaser-example --state open --label "phase:F0,phase:F1,phase:F2,phase:F3,phase:F4,phase:F5,phase:F6,phase:F7,phase:F8,phase:C0,phase:C1,phase:C2,phase:C3,phase:C4,phase:C5,phase:C6,phase:C7,phase:C8,phase:C9,phase:C10,phase:C11,phase:C12" --json number,title,labels,assignees,milestone --limit 100
    gh issue list --repo apergas/phaser-example --state open --assignee @me --json number,title,labels
    ```
 
    - Si `gh` no está instalado o autenticado, para y pide al usuario `! gh auth login`. No se puede asignar una tarea sin tracker.
    - Si el tracker todavía no existe (no hay labels `phase:*`), propón crearlo según la sección 4 de cada README y, con la confirmación del usuario, crea labels, milestones, issues de F0 (T0.1, T0.2) y uno por fase para F1–F8.
-   - Si faltan las labels `phase:C*` (plan de la arena), propón crearlas igual: issues de C0 (TC0.1, TC0.2) y uno por fase para C1–C7.
+   - Si faltan las labels `phase:C*` (plan de la arena), propón crearlas igual: issues de C0 (TC0.1, TC0.2) y uno por fase para C1–C12.
 
 No abras código todavía.
 
@@ -53,6 +53,7 @@ gh issue comment <n> --repo apergas/phaser-example --body "En curso: rama featur
 git switch feature/PROJECT-X-town && git pull && git switch -c feature/PROJECT-<fase>-<tarea>   # p. ej. feature/PROJECT-F1-domain
 # Arena (fases C*): sale de la rama de integración de la arena
 # git switch feature/PROJECT-X-arena && git pull && git switch -c feature/PROJECT-<fase>-<tarea>   # p. ej. feature/PROJECT-C6-barbarians
+# La alineación con iOS (`X-ios-alignment.md`, commits `[PROJECT-X]`) sale de `feature/PROJECT-X-arena` como las fases C.
 flutter pub get
 ```
 

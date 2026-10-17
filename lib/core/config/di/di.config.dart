@@ -56,6 +56,8 @@ import 'package:farming/layers/domain/use-cases/arena/start_fight_use_case.dart'
     as _i630;
 import 'package:farming/layers/domain/use-cases/game/advance_game_use_case.dart'
     as _i961;
+import 'package:farming/layers/domain/use-cases/game/buy_upgrade_use_case.dart'
+    as _i62;
 import 'package:farming/layers/domain/use-cases/game/can_place_building_use_case.dart'
     as _i1071;
 import 'package:farming/layers/domain/use-cases/game/chop_tree_use_case.dart'
@@ -72,6 +74,8 @@ import 'package:farming/layers/domain/use-cases/game/get_quests_use_case.dart'
     as _i94;
 import 'package:farming/layers/domain/use-cases/game/get_stock_use_case.dart'
     as _i401;
+import 'package:farming/layers/domain/use-cases/game/get_upgrade_options_use_case.dart'
+    as _i1066;
 import 'package:farming/layers/domain/use-cases/game/get_world_snapshot_use_case.dart'
     as _i579;
 import 'package:farming/layers/domain/use-cases/game/mine_rock_use_case.dart'
@@ -158,6 +162,11 @@ extension GetItInjectableX on _i174.GetIt {
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );
+    gh.factory<_i62.BuyUpgradeUseCase>(
+      () => _i62.BuyUpgradeUseCase(
+        sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
     gh.factory<_i1071.CanPlaceBuildingUseCase>(
       () => _i1071.CanPlaceBuildingUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
@@ -195,6 +204,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i401.GetStockUseCase>(
       () => _i401.GetStockUseCase(
+        sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i1066.GetUpgradeOptionsUseCase>(
+      () => _i1066.GetUpgradeOptionsUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );

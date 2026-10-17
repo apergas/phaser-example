@@ -173,11 +173,18 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
 
   List<ArenaEffect> _effectsFor(FightReplayData replay, int turnIndex) {
     final effect = _effectFor(replay, turnIndex);
-    return switch (replay.log.turns[turnIndex].action) {
+    final turn = replay.log.turns[turnIndex];
+    return switch (turn.action) {
       FightAction.hit => [effect],
-      FightAction.doubleStrike => [effect, const SkillUsedEffect(skill: SkillId.doubleStrike)],
+      FightAction.doubleStrike => [
+        effect,
+        SkillUsedEffect(skill: SkillId.doubleStrike, side: turn.actor, index: turn.actorIndex),
+      ],
       FightAction.dodge => [effect],
-      FightAction.secondWind => [effect, const SkillUsedEffect(skill: SkillId.secondWind)],
+      FightAction.secondWind => [
+        effect,
+        SkillUsedEffect(skill: SkillId.secondWind, side: turn.actor, index: turn.actorIndex),
+      ],
     };
   }
 

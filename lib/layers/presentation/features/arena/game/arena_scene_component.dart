@@ -71,8 +71,8 @@ class ArenaSceneComponent extends Component {
         _float(side, index, Internationalize.arenaSkillUsed(id: SkillId.dodge), FloatingTextComponent.defaultColor);
       case HealEffect(:final side, :final index, :final amount):
         _float(side, index, Internationalize.arenaHeal(amount: amount), CustomColors.success);
-      case SkillUsedEffect(:final skill):
-        _floatSkillName(skill);
+      case SkillUsedEffect(:final skill, :final side, :final index):
+        _floatSkillName(skill, side, index);
       case ChampionEffect():
         _celebrate();
       case FightEndedEffect():
@@ -118,10 +118,10 @@ class ArenaSceneComponent extends Component {
     );
   }
 
-  void _floatSkillName(SkillId skill) {
-    final hero = _fighters[FighterRenderData.keyOf(FightSide.hero, 0)];
-    if (hero == null) return;
-    final head = hero.headPoint;
+  void _floatSkillName(SkillId skill, FightSide side, int index) {
+    final fighter = _fighters[FighterRenderData.keyOf(side, index)];
+    if (fighter == null) return;
+    final head = fighter.headPoint;
     add(
       FloatingTextComponent(
         text: Internationalize.arenaSkillUsed(id: skill),

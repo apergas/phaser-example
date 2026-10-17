@@ -144,20 +144,33 @@ class Internationalize {
       '$_forest.message.gearPurchased'.tr(namedArgs: {'name': name});
   static String get forestMessageGearNotNextTier => '$_forest.message.gearNotNextTier'.tr();
   static String get forestHeroLearn => '$_forest.hero.learn'.tr();
-  static String get forestHeroKnown => '$_forest.hero.known'.tr();
+  static String get forestHeroUpgrade => '$_forest.hero.upgrade'.tr();
+  static String get forestHeroSkillMax => '$_forest.hero.skillMax'.tr();
+  static String forestHeroSkillLevel({required int level, required int max}) =>
+      '$_forest.hero.skillLevel'.tr(namedArgs: {'level': '$level', 'max': '$max'});
+  static String forestHeroSkillNext({required int level, required String effect}) =>
+      '$_forest.hero.skillNext'.tr(namedArgs: {'level': '$level', 'effect': effect});
   static String forestSkillName({required SkillId id}) => switch (id) {
     SkillId.doubleStrike => '$_forest.skill.doubleStrike.name'.tr(),
     SkillId.secondWind => '$_forest.skill.secondWind.name'.tr(),
     SkillId.dodge => '$_forest.skill.dodge.name'.tr(),
   };
-  static String forestSkillDescription({required SkillId id}) => switch (id) {
-    SkillId.doubleStrike => '$_forest.skill.doubleStrike.description'.tr(),
-    SkillId.secondWind => '$_forest.skill.secondWind.description'.tr(),
-    SkillId.dodge => '$_forest.skill.dodge.description'.tr(),
+  static String forestSkillDescription({required SkillId id, required int level}) => switch ((id, level)) {
+    (SkillId.doubleStrike, 1) => '$_forest.skill.doubleStrike.description'.tr(),
+    (SkillId.doubleStrike, 2) => '$_forest.skill.doubleStrike.descriptionLevel2'.tr(),
+    (SkillId.doubleStrike, _) => '$_forest.skill.doubleStrike.descriptionLevel3'.tr(),
+    (SkillId.secondWind, 1) => '$_forest.skill.secondWind.description'.tr(),
+    (SkillId.secondWind, 2) => '$_forest.skill.secondWind.descriptionLevel2'.tr(),
+    (SkillId.secondWind, _) => '$_forest.skill.secondWind.descriptionLevel3'.tr(),
+    (SkillId.dodge, 1) => '$_forest.skill.dodge.description'.tr(),
+    (SkillId.dodge, 2) => '$_forest.skill.dodge.descriptionLevel2'.tr(),
+    (SkillId.dodge, _) => '$_forest.skill.dodge.descriptionLevel3'.tr(),
   };
   static String forestMessageSkillLearned({required String name}) =>
       '$_forest.message.skillLearned'.tr(namedArgs: {'name': name});
-  static String get forestMessageSkillAlreadyKnown => '$_forest.message.skillAlreadyKnown'.tr();
+  static String forestMessageSkillUpgraded({required String name, required int level}) =>
+      '$_forest.message.skillUpgraded'.tr(namedArgs: {'name': name, 'level': '$level'});
+  static String get forestMessageSkillMaxLevel => '$_forest.message.skillMaxLevel'.tr();
   static const String _arena = 'arena';
   static String get arenaTitle => '$_arena.title'.tr();
   static String arenaHeroPower({required int power}) => '$_arena.heroPower'.tr(namedArgs: {'power': '$power'});

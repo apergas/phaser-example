@@ -6,6 +6,7 @@ import '../../entities/hero/skill_option_entity.dart';
 import '../../repositories/session/game_session_repository.dart';
 import '../../rules/skills.dart';
 import '../../world/extensions/building_rules.dart';
+import '../../world/extensions/hero_rules.dart';
 import '../../world/extensions/inventory_rules.dart';
 import '../../world/world.dart';
 
@@ -21,8 +22,9 @@ final class GetSkillOptionsUseCase {
   }
 
   SkillOptionEntity _option(World world, SkillEntity skill) {
-    if (world.hero.skills.contains(skill.id)) return SkillOptionEntity(skill: skill, state: SkillOptionState.known);
-    final missing = world.funds.missing(skill.cost);
+    final level = world.hero.levelOf(skill.id);
+    if (level == skill.maxLevel) return SkillOptionEntity(skill: skill, level: level, state: SkillOptionState.maxed);
+    final missing = world.funds.missing(skill.costOf(level + 1));
     final SkillOptionState state;
     if (!world.buildings.hasComplete(Skills.building)) {
       state = SkillOptionState.needsBuilding;
@@ -31,6 +33,6 @@ final class GetSkillOptionsUseCase {
     } else {
       state = SkillOptionState.available;
     }
-    return SkillOptionEntity(skill: skill, state: state, missing: missing);
+    return SkillOptionEntity(skill: skill, level: level, state: state, missing: missing);
   }
 }

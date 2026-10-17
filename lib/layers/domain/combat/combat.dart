@@ -20,10 +20,11 @@ abstract final class Combat {
   static FightLogEntity resolve({
     required ArenaLevelEntity level,
     required CombatStatsEntity heroStats,
-    required Set<SkillId> skills,
+    required Map<SkillId, int> skillLevels,
     required int seed,
   }) {
-    final fight = _Fight(level: level, heroStats: heroStats, skills: skills, random: SeededRandom(seed))..play();
+    final fight = _Fight(level: level, heroStats: heroStats, skillLevels: skillLevels, random: SeededRandom(seed))
+      ..play();
     return FightLogEntity(
       levelId: level.id,
       heroStats: heroStats,
@@ -59,7 +60,7 @@ abstract final class Combat {
 final class _Fight {
   final ArenaLevelEntity level;
   final CombatStatsEntity heroStats;
-  final Set<SkillId> skills;
+  final Map<SkillId, int> skillLevels;
   final SeededRandom random;
   final List<FightTurnEntity> turns = [];
   final List<int> enemyHealth;
@@ -69,7 +70,7 @@ final class _Fight {
   int round = 0;
   bool secondWindUsed = false;
 
-  _Fight({required this.level, required this.heroStats, required this.skills, required this.random})
+  _Fight({required this.level, required this.heroStats, required this.skillLevels, required this.random})
     : enemyHealth = [for (final enemy in level.enemies) enemy.stats.health],
       enemySecondWindUsed = [for (final _ in level.enemies) false],
       heroHealth = heroStats.health;
@@ -89,7 +90,7 @@ final class _Fight {
   void _heroAttacks() {
     _heroStrikes(FightAction.hit);
     heroAttacks++;
-    if (skills.contains(SkillId.doubleStrike) && heroAttacks % Rules.doubleStrikeEvery == 0) {
+    if (_levelOf(SkillId.doubleStrike) > 0 && heroAttacks % Rules.doubleStrikeEvery == 0) {
       _heroStrikes(FightAction.doubleStrike);
     }
   }
@@ -116,6 +117,9 @@ final class _Fight {
       attacker: heroStats,
       defense: level.enemies[target].stats.defense,
       healthLeft: enemyHealth[target],
+      bonus: action == FightAction.doubleStrike
+          ? Rules.doubleStrikeBonusByLevel[_levelOf(SkillId.doubleStrike) - 1]
+          : 0,
     );
     enemyHealth[target] -= damage;
     turns.add(
@@ -147,7 +151,8 @@ final class _Fight {
   }
 
   void _enemyStrikes(int index, FightAction action) {
-    final dodged = skills.contains(SkillId.dodge) && random.next() < Rules.dodgeChance;
+    final dodgeLevel = _levelOf(SkillId.dodge);
+    final dodged = dodgeLevel > 0 && random.next() < Rules.dodgeChanceByLevel[dodgeLevel - 1];
     final damage = dodged
         ? 0
         : _damage(attacker: level.enemies[index].stats, defense: heroStats.defense, healthLeft: heroHealth);
@@ -167,10 +172,14 @@ final class _Fight {
   }
 
   void _catchSecondWind() {
-    if (!skills.contains(SkillId.secondWind) || secondWindUsed) return;
+    final secondWindLevel = _levelOf(SkillId.secondWind);
+    if (secondWindLevel == 0 || secondWindUsed) return;
     if (heroHealth == 0 || heroHealth >= heroStats.health * Rules.secondWindThreshold) return;
     secondWindUsed = true;
-    heroHealth = math.min(heroStats.health, heroHealth + (heroStats.health * Rules.secondWindHeal).round());
+    heroHealth = math.min(
+      heroStats.health,
+      heroHealth + (heroStats.health * Rules.secondWindHealByLevel[secondWindLevel - 1]).round(),
+    );
     turns.add(
       FightTurnEntity(
         round: round,
@@ -193,7 +202,7 @@ final class _Fight {
     if (!_enemyRolls(SkillId.secondWind, index)) return;
     enemyHealth[index] = math.min(
       enemy.stats.health,
-      enemyHealth[index] + (enemy.stats.health * Rules.secondWindHeal).round(),
+      enemyHealth[index] + (enemy.stats.health * Rules.secondWindHealByLevel[Rules.enemySkillLevel - 1]).round(),
     );
     turns.add(
       FightTurnEntity(
@@ -209,13 +218,21 @@ final class _Fight {
     );
   }
 
+  int _levelOf(SkillId skill) => skillLevels[skill] ?? 0;
+
   bool _enemyRolls(SkillId skill, int index) =>
       level.enemySkillChance > 0 &&
       level.enemies[index].kind.skills.contains(skill) &&
       random.next() < level.enemySkillChance;
 
-  int _damage({required CombatStatsEntity attacker, required int defense, required int healthLeft}) {
+  int _damage({
+    required CombatStatsEntity attacker,
+    required int defense,
+    required int healthLeft,
+    double bonus = 0,
+  }) {
     final attack = attacker.attackMin + (random.next() * (attacker.attackMax - attacker.attackMin + 1)).floor();
-    return math.min(healthLeft, math.max(1, attack - defense));
+    final hit = math.max(1, attack - defense);
+    return math.min(healthLeft, (hit * (1 + bonus)).round());
   }
 }

@@ -82,7 +82,8 @@
       "gearPurchased": "Has comprado: {name}",
       "gearNotNextTier": "Antes tienes que comprar la pieza anterior.",
       "skillLearned": "Has aprendido: {name}",
-      "skillAlreadyKnown": "Ya conoces esa habilidad."
+      "skillUpgraded": "Has mejorado: {name} (Nv {level})",
+      "skillMaxLevel": "Esa habilidad ya está al nivel máximo."
     },
     "hero": {
       "title": "Héroe",
@@ -107,7 +108,10 @@
       "needsBuilding": "Construye la {name}",
       "maxed": "Ya tienes la mejor pieza",
       "learn": "Aprender",
-      "known": "Aprendida"
+      "upgrade": "Mejorar",
+      "skillLevel": "Nv {level}/{max}",
+      "skillNext": "Nv {level}: {effect}",
+      "skillMax": "Máximo"
     },
     "gear": {
       "woodcutterAxe": "Hacha de leñador",
@@ -122,15 +126,21 @@
     "skill": {
       "doubleStrike": {
         "name": "Golpe doble",
-        "description": "Cada tercer ataque golpea dos veces."
+        "description": "Cada tercer ataque golpea dos veces.",
+        "descriptionLevel2": "Cada tercer ataque golpea dos veces y el segundo golpe hace un 15 % más de daño.",
+        "descriptionLevel3": "Cada tercer ataque golpea dos veces y el segundo golpe hace un 30 % más de daño."
       },
       "secondWind": {
         "name": "Segundo aliento",
-        "description": "Una vez por pelea, por debajo del 30 % de vida recupera el 40 %."
+        "description": "Una vez por pelea, por debajo del 30 % de vida recupera el 40 %.",
+        "descriptionLevel2": "Una vez por pelea, por debajo del 30 % de vida recupera el 50 %.",
+        "descriptionLevel3": "Una vez por pelea, por debajo del 30 % de vida recupera el 60 %."
       },
       "dodge": {
         "name": "Esquiva",
-        "description": "Un 20 % de posibilidades de esquivar cada golpe."
+        "description": "Un 20 % de posibilidades de esquivar cada golpe.",
+        "descriptionLevel2": "Un 25 % de posibilidades de esquivar cada golpe.",
+        "descriptionLevel3": "Un 30 % de posibilidades de esquivar cada golpe."
       }
     },
     "placement": {

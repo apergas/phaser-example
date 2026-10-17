@@ -53,6 +53,7 @@ import '../../../../domain/use-cases/hero/get_gear_options_use_case.dart';
 import '../../../../domain/use-cases/hero/get_hero_status_use_case.dart';
 import '../../../../domain/use-cases/hero/get_skill_options_use_case.dart';
 import '../../../../domain/use-cases/hero/learn_skill_use_case.dart';
+import '../../../../domain/world/extensions/hero_rules.dart';
 import '../../../../domain/world/extensions/inventory_rules.dart';
 import '../../arena/arena_page.dart';
 import '../models/build_item_data.dart';
@@ -300,10 +301,18 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         effects.add(SkillLearnedEffect(skill: id));
       case LearnSkillResult.missingBuilding:
         _showMessage(Internationalize.forestHeroNeedsBuilding(name: _skillBuildingName));
-      case LearnSkillResult.alreadyKnown:
-        _showMessage(Internationalize.forestMessageSkillAlreadyKnown);
       case LearnSkillResult.notEnoughResources:
         _showMessage(Internationalize.forestMessageNotEnoughResources);
+      case LearnSkillResult.upgraded:
+        _showMessage(
+          Internationalize.forestMessageSkillUpgraded(
+            name: Internationalize.forestSkillName(id: id),
+            level: _getHeroStatusUseCase().hero.levelOf(id),
+          ),
+        );
+        effects.add(SkillLearnedEffect(skill: id));
+      case LearnSkillResult.maxed:
+        _showMessage(Internationalize.forestMessageSkillMaxLevel);
     }
   }
 
@@ -481,17 +490,33 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
 
   SkillItemData _skillItem(SkillOptionEntity option) {
     final skill = option.skill;
+    final isKnown = option.level > 0;
+    final nextLevel = option.nextLevel;
+    final nextCost = option.nextCost;
     return SkillItemData(
       id: skill.id,
       name: Internationalize.forestSkillName(id: skill.id),
-      description: Internationalize.forestSkillDescription(id: skill.id),
-      costText: option.state == SkillOptionState.known ? null : _amounts(skill.cost),
+      description: Internationalize.forestSkillDescription(id: skill.id, level: isKnown ? option.level : 1),
+      levelText: isKnown ? Internationalize.forestHeroSkillLevel(level: option.level, max: skill.maxLevel) : null,
+      nextText: isKnown && nextLevel != null
+          ? Internationalize.forestHeroSkillNext(
+              level: nextLevel,
+              effect: Internationalize.forestSkillDescription(id: skill.id, level: nextLevel),
+            )
+          : null,
+      costText: nextCost == null ? null : _amounts(nextCost),
       reasonText: switch (option.state) {
+        SkillOptionState.available => null,
         SkillOptionState.needsBuilding => Internationalize.forestHeroNeedsBuilding(name: _skillBuildingName),
         SkillOptionState.unaffordable => Internationalize.forestMissing(amounts: _amounts(option.missing)),
-        SkillOptionState.known || SkillOptionState.available => null,
+        SkillOptionState.maxed => null,
       },
-      isKnown: option.state == SkillOptionState.known,
+      buttonText: switch (nextLevel) {
+        null => null,
+        _ when isKnown => Internationalize.forestHeroUpgrade,
+        _ => Internationalize.forestHeroLearn,
+      },
+      isKnown: isKnown,
       canLearn: option.canLearn,
     );
   }

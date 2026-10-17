@@ -1,1 +1,1 @@
-enum SkillOptionState { known, available, needsBuilding, unaffordable }
+enum SkillOptionState { available, needsBuilding, unaffordable, maxed }

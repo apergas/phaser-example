@@ -242,6 +242,23 @@ Si existe la piedra, la piden los edificios, no el equipo.
   Con todo ganado una vez hay 160 de maná y las tres habilidades cuestan 95. *Segundo aliento* queda como mejora
   opcional para el final.
 
+**Habilidades de los enemigos** (fase C11). Desde *Tres bandidos* cada enemigo puede usar la habilidad de su tipo,
+con los mismos efectos que la del héroe: bandidos *Esquiva* (al recibir un golpe del héroe), bárbaros, lobos y osos
+*Golpe doble* (tras su ataque, un segundo golpe) y el jefe bárbaro *Golpe doble* y *Segundo aliento* (una sola tirada
+por pelea, la primera vez que baja del 30 %). Cada uso sale con una probabilidad por nivel; los niveles 1–5 no tienen.
+Victorias del héroe esperado con ellas:
+
+| Nivel | Probabilidad | Gana con él (semillas 0–99 / 0–999) | Con un escalón menos (0–99) |
+|---|---|---|---|
+| 6 Tres bandidos | 1,5 % | 89,0 / 86,6 % | 0 % |
+| 7 Bárbaro | 2 % | 73,0 / 75,1 % | 6 % |
+| 8 Manada de tres lobos | 2,5 % | 78,0 / 71,9 % | 15 % |
+| 9 Dos bárbaros | 3 % | 79,0 / 74,0 % | 2 % |
+| 10 Jefe bárbaro | 3,5 % | 64,0 / 60,8 % | 0 % |
+
+Las probabilidades son bajas a propósito: con 10–30 % el héroe esperado ganaba solo el 17–62 %, y el jefe marca el
+techo (con 4 % baja a 59,7 % con 0–999).
+
 - Un nivel se desbloquea al ganar el anterior. Repetir un nivel ganado da un tercio de cada recurso (*Tres bandidos*:
   25 de oro y 6 de maná).
 - Perder no quita nada: se vuelve a la aldea con un consejo ("Te falta Defensa", "Prueba con la Cota de malla").

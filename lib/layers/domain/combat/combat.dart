@@ -14,6 +14,7 @@ import '../entities/combat/fight_log_entity.dart';
 import '../entities/combat/fight_turn_entity.dart';
 import '../entities/hero/combat_stats_entity.dart';
 import '../rules/rules.dart';
+import '../world/extensions/enemy_kind_rules.dart';
 
 abstract final class Combat {
   static FightLogEntity resolve({
@@ -38,7 +39,11 @@ abstract final class Combat {
     final totalHealth = log.enemies.fold(0, (sum, enemy) => sum + enemy.stats.health);
     final healthLeft = log.enemies.indexed.fold(0, (sum, entry) => sum + _healthLeft(log, entry.$1, entry.$2));
     if (healthLeft <= totalHealth * Rules.almostThereShare) return FightAdvice.almostThere;
-    final strikes = log.turns.where((turn) => turn.actor == FightSide.hero && turn.target == FightSide.enemy).toList();
+    final strikes = log.turns
+        .where(
+          (turn) => turn.actor == FightSide.hero && turn.target == FightSide.enemy && turn.action != FightAction.dodge,
+        )
+        .toList();
     final totalDamage = strikes.fold(0, (sum, turn) => sum + turn.damage);
     final averageDamage = strikes.isEmpty ? 0.0 : totalDamage / strikes.length;
     if (averageDamage <= Rules.weakHitDamage) return FightAdvice.needAttack;
@@ -58,6 +63,7 @@ final class _Fight {
   final SeededRandom random;
   final List<FightTurnEntity> turns = [];
   final List<int> enemyHealth;
+  final List<bool> enemySecondWindUsed;
   int heroHealth;
   int heroAttacks = 0;
   int round = 0;
@@ -65,6 +71,7 @@ final class _Fight {
 
   _Fight({required this.level, required this.heroStats, required this.skills, required this.random})
     : enemyHealth = [for (final enemy in level.enemies) enemy.stats.health],
+      enemySecondWindUsed = [for (final _ in level.enemies) false],
       heroHealth = heroStats.health;
 
   bool get enemiesDefeated => enemyHealth.every((health) => health == 0);
@@ -90,6 +97,21 @@ final class _Fight {
   void _heroStrikes(FightAction action) {
     final target = enemyHealth.indexWhere((health) => health > 0);
     if (target < 0) return;
+    if (_enemyRolls(SkillId.dodge, target)) {
+      turns.add(
+        FightTurnEntity(
+          round: round,
+          actor: FightSide.hero,
+          actorIndex: 0,
+          target: FightSide.enemy,
+          targetIndex: target,
+          action: FightAction.dodge,
+          damage: 0,
+          targetHealthAfter: enemyHealth[target],
+        ),
+      );
+      return;
+    }
     final damage = _damage(
       attacker: heroStats,
       defense: level.enemies[target].stats.defense,
@@ -108,18 +130,23 @@ final class _Fight {
         targetHealthAfter: enemyHealth[target],
       ),
     );
+    _catchEnemySecondWind(target);
   }
 
   void _enemiesAttack() {
     for (var index = 0; index < level.enemies.length; index++) {
       if (heroHealth == 0) return;
       if (enemyHealth[index] == 0) continue;
-      _enemyStrikes(index);
+      _enemyStrikes(index, FightAction.hit);
       _catchSecondWind();
+      if (heroHealth > 0 && _enemyRolls(SkillId.doubleStrike, index)) {
+        _enemyStrikes(index, FightAction.doubleStrike);
+        _catchSecondWind();
+      }
     }
   }
 
-  void _enemyStrikes(int index) {
+  void _enemyStrikes(int index, FightAction action) {
     final dodged = skills.contains(SkillId.dodge) && random.next() < Rules.dodgeChance;
     final damage = dodged
         ? 0
@@ -132,7 +159,7 @@ final class _Fight {
         actorIndex: index,
         target: FightSide.hero,
         targetIndex: 0,
-        action: dodged ? FightAction.dodge : FightAction.hit,
+        action: dodged ? FightAction.dodge : action,
         damage: damage,
         targetHealthAfter: heroHealth,
       ),
@@ -157,6 +184,35 @@ final class _Fight {
       ),
     );
   }
+
+  void _catchEnemySecondWind(int index) {
+    final enemy = level.enemies[index];
+    if (!enemy.kind.skills.contains(SkillId.secondWind) || enemySecondWindUsed[index]) return;
+    if (enemyHealth[index] == 0 || enemyHealth[index] >= enemy.stats.health * Rules.secondWindThreshold) return;
+    enemySecondWindUsed[index] = true;
+    if (!_enemyRolls(SkillId.secondWind, index)) return;
+    enemyHealth[index] = math.min(
+      enemy.stats.health,
+      enemyHealth[index] + (enemy.stats.health * Rules.secondWindHeal).round(),
+    );
+    turns.add(
+      FightTurnEntity(
+        round: round,
+        actor: FightSide.enemy,
+        actorIndex: index,
+        target: FightSide.enemy,
+        targetIndex: index,
+        action: FightAction.secondWind,
+        damage: 0,
+        targetHealthAfter: enemyHealth[index],
+      ),
+    );
+  }
+
+  bool _enemyRolls(SkillId skill, int index) =>
+      level.enemySkillChance > 0 &&
+      level.enemies[index].kind.skills.contains(skill) &&
+      random.next() < level.enemySkillChance;
 
   int _damage({required CombatStatsEntity attacker, required int defense, required int healthLeft}) {
     final attack = attacker.attackMin + (random.next() * (attacker.attackMax - attacker.attackMin + 1)).floor();

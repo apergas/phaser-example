@@ -65,14 +65,18 @@ final class FightEndedEffect extends ArenaEffect {
 
 final class SkillUsedEffect extends ArenaEffect {
   final SkillId skill;
+  final FightSide side;
+  final int index;
 
-  const SkillUsedEffect({required this.skill});
+  const SkillUsedEffect({required this.skill, required this.side, required this.index});
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is SkillUsedEffect && other.skill == skill;
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SkillUsedEffect && other.skill == skill && other.side == side && other.index == index;
 
   @override
-  int get hashCode => Object.hash(SkillUsedEffect, skill);
+  int get hashCode => Object.hash(SkillUsedEffect, skill, side, index);
 }
 
 final class ChampionEffect extends ArenaEffect {

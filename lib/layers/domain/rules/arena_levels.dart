@@ -71,6 +71,7 @@ abstract final class ArenaLevels {
         ),
       ],
       reward: {Resource.gold: 75, Resource.mana: 20},
+      enemySkillChance: 0.015,
     ),
     ArenaLevelEntity(
       id: ArenaLevelId.barbarian,
@@ -81,6 +82,7 @@ abstract final class ArenaLevels {
         ),
       ],
       reward: {Resource.gold: 90, Resource.mana: 25},
+      enemySkillChance: 0.02,
     ),
     ArenaLevelEntity(
       id: ArenaLevelId.wolfPack,
@@ -99,6 +101,7 @@ abstract final class ArenaLevels {
         ),
       ],
       reward: {Resource.gold: 100, Resource.mana: 30},
+      enemySkillChance: 0.025,
     ),
     ArenaLevelEntity(
       id: ArenaLevelId.barbarianPair,
@@ -113,6 +116,7 @@ abstract final class ArenaLevels {
         ),
       ],
       reward: {Resource.gold: 120, Resource.mana: 35},
+      enemySkillChance: 0.03,
     ),
     ArenaLevelEntity(
       id: ArenaLevelId.barbarianChief,
@@ -131,6 +135,7 @@ abstract final class ArenaLevels {
         ),
       ],
       reward: {Resource.gold: 150, Resource.mana: 50},
+      enemySkillChance: 0.035,
     ),
   ];
 

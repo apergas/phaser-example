@@ -31,3 +31,9 @@ Desde el 2026-10-17 (a mitad de C9, tras TC9.3) el desarrollo sigue **sin tests*
   - `test/mocks/presentation/features/arena/arena_level_item_data_mock.dart`: `amounts:` con `FundsMock`;
   - `test/core/assets/i18n/internationalize_test.dart`: `arenaReward` con `+75 de oro, 20 de maná`, `+10 de oro`, `+25 de oro, 6 de maná` y sin cantidades 0;
   - `test/layers/presentation/features/arena/bloc/arena_bloc_test.dart`, `arena_page_test.dart` y `widgets/result_panel_test.dart`: los nombres nuevos y los textos con maná.
+- **C10** (sin tests; rompe la compilación de estos). Detalle en la sección *Para T1* de [C10-no-skip.md](../2026-10-06-hero-arena/C10-no-skip.md):
+  - `test/layers/presentation/features/arena/bloc/arena_bloc_test.dart`: quitar `ArenaReplaySkipped` (varios tests), rehacerlos con `ArenaReplayTicked` hasta el final; test nuevo de que se emiten los efectos de todos los turnos, `FightEndedEffect` y `ChampionEffect`;
+  - `test/layers/presentation/features/arena/models/fight_replay_data_test.dart`: borrar el test de `skipped()`;
+  - `test/mocks/presentation/features/arena/arena_data_mock.dart`: `.skipped()` por `.advanced(durationMs)`;
+  - `widgets/fight_button_test.dart` y `widgets/arena_hud_test.dart`: sin `onSkip` ni `Internationalize.arenaSkip`; sin botón durante la repetición y *Empezar pelea* al acabar;
+  - `arena_page_test.dart`: quitar lo que use el salto; `internationalize_test.dart`: sin `arena.skip`.

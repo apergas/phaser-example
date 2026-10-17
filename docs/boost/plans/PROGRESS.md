@@ -26,7 +26,7 @@
 | Reanudar obras | ✅ | `feature/PROJECT-X-arena` (#54) | 655 tests. |
 | [X Alineación con iOS](2026-10-06-hero-arena/X-ios-alignment.md) | ✅ | `feature/PROJECT-X-arena` (#60) | *Farming*, `com.apergas.farming`, icono, textos táctiles. 658 tests. Probada en Chrome y Android; iOS sin probar. |
 | [C9 Maná](2026-10-06-hero-arena/C9-mana.md) | ✅ | `feature/PROJECT-C9-mana` (PR a arena) | Maná en los niveles 6–10 y en las habilidades. Tests hasta TC9.3 (666); TC9.4 sin tests (ver T1). |
-| [C10 Pelea sin saltar](2026-10-06-hero-arena/C10-no-skip.md) | 🟢 plan listo | `feature/PROJECT-C10-no-skip` | Sin *Saltar* durante la repetición. |
+| [C10 Pelea sin saltar](2026-10-06-hero-arena/C10-no-skip.md) | ✅ | `feature/PROJECT-C10-no-skip` | Sin *Saltar* durante la repetición. Sin tests (T1). |
 | [C11 Habilidades de los enemigos](2026-10-06-hero-arena/C11-enemy-skills.md) | 📝 ficha | — | Probabilidades 1,5–3,5 % en los niveles 6–10. |
 | [C12 Niveles de habilidad](2026-10-06-hero-arena/C12-skill-levels.md) | 📝 ficha | — | Tres niveles por habilidad. |
 

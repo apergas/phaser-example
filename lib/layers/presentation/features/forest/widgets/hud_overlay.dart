@@ -6,6 +6,7 @@ import '../../../../../core/config/constants/enum/forest/hero_panel_section.dart
 import '../../../../../core/config/constants/enum/forest/hud_menu.dart';
 import '../../../../../core/config/constants/enum/gear_id.dart';
 import '../../../../../core/config/constants/enum/skill_id.dart';
+import '../../../../../core/config/constants/enum/upgrade_id.dart';
 import '../../../theme/images/custom_icons.dart';
 import '../models/hud_data.dart';
 import 'build_menu.dart';
@@ -13,10 +14,11 @@ import 'hero_panel.dart';
 import 'hud_button.dart';
 import 'quest_panel.dart';
 import 'resource_bar.dart';
+import 'upgrade_menu.dart';
 
 class HudOverlay extends StatefulWidget {
-  static const double narrowWidth = 960;
-  static const double buttonsBelowWidth = 1460;
+  static const double narrowWidth = 1100;
+  static const double buttonsBelowWidth = 1700;
   static const double _margin = 12;
 
   final HudData hud;
@@ -24,6 +26,7 @@ class HudOverlay extends StatefulWidget {
   final ValueChanged<GearId> onGearSelected;
   final VoidCallback onArenaPressed;
   final ValueChanged<SkillId> onSkillSelected;
+  final ValueChanged<UpgradeId> onUpgradeSelected;
 
   const HudOverlay({
     super.key,
@@ -32,6 +35,7 @@ class HudOverlay extends StatefulWidget {
     required this.onGearSelected,
     required this.onArenaPressed,
     required this.onSkillSelected,
+    required this.onUpgradeSelected,
   });
 
   @override
@@ -138,6 +142,12 @@ class _HudOverlayState extends State<HudOverlay> {
           onPressed: widget.hud.isBuildLocked ? null : () => _toggle(HudMenu.build),
         ),
         HudButton(
+          label: Internationalize.forestWorkshop,
+          icon: CustomIcons.workshop,
+          isActive: _openMenu == HudMenu.upgrades,
+          onPressed: () => _toggle(HudMenu.upgrades),
+        ),
+        HudButton(
           label: Internationalize.forestHero,
           icon: CustomIcons.hero,
           isActive: _openMenu == HudMenu.hero,
@@ -158,6 +168,7 @@ class _HudOverlayState extends State<HudOverlay> {
         onLearn: widget.onSkillSelected,
         sections: HeroPanelSection.values,
       ),
+      HudMenu.upgrades => UpgradeMenu(items: widget.hud.upgradeItems, onBuy: widget.onUpgradeSelected),
     };
   }
 

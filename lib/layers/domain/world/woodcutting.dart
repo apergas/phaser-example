@@ -44,8 +44,9 @@ final class Woodcutting implements Work<ChopIntentEntity> {
   bool impact(WorldState state, ChopIntentEntity intent, List<GameEventEntity> events) {
     final tree = state.trees[intent.treeId]?.hit();
     if (tree == null) return true;
-    events.add(TreeHitEventEntity(treeId: tree.id, hitsRemaining: tree.hitsRemaining));
-    if (!tree.isFelled) {
+    final hitsRemaining = max(0, state.player.inventory.hitsNeeded(ToolKind.axe, tree.hitsToFell) - tree.hitsTaken);
+    events.add(TreeHitEventEntity(treeId: tree.id, hitsRemaining: hitsRemaining));
+    if (hitsRemaining > 0) {
       state.trees[tree.id] = tree;
       return false;
     }

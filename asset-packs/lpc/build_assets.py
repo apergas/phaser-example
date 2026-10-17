@@ -10,7 +10,7 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
                                    back and front layers (same layout as the LPC generator)
   forest.png + forest.json         JSON-hash atlas (TexturePacker format): trees and sapling (pivot = trunk base), decor, stump,
                                    large rock, axe and pickaxe pickups, the house, the forge, the armory, the mage tower,
-                                   the storehouse, the camp and the quarry (pivot = bottom centre)
+                                   the storehouse, the camp, the quarry and the workshop (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
   arena.png + arena.json           JSON-hash atlas for the arena: the hero (with the axe and each sword, in
                                    each armour: work clothes, leather, chain mail, plate), bandit,
@@ -187,6 +187,7 @@ ROOF_RAMP = [(43, 28, 29), (48, 33, 36), (98, 53, 28), (112, 86, 55), (137, 103,
 FORGE_ROOF = [(20, 20, 24), (26, 26, 30), (40, 40, 46), (54, 54, 60), (66, 66, 74), (76, 76, 84), (94, 94, 102), (118, 118, 126), (136, 136, 144)]
 ARMORY_ROOF = [(40, 14, 16), (46, 18, 20), (90, 24, 22), (110, 32, 28), (132, 40, 34), (148, 46, 38), (176, 60, 46), (212, 90, 68), (228, 118, 90)]
 FORGE_WALL_BOX = (0, 256, 96, 352)  # cottage.png, stone wall with timber frame
+WORKSHOP_ROOF = [(14, 30, 18), (18, 38, 24), (28, 62, 34), (36, 78, 42), (46, 96, 50), (54, 110, 56), (70, 134, 68), (96, 166, 86), (122, 188, 106)]
 CHIMNEY_BOX = (448, 480, 480, 512)  # terrain_atlas.png, cracked stone block
 CHIMNEY_RISE = 18  # pixels the chimney sticks out above the roof
 CHIMNEY_INSET = 20  # distance from the chimney's right edge to the roof's right edge
@@ -297,6 +298,10 @@ def build_mage_tower() -> Image.Image:
     return build_cottage(MAGE_TOWER_WALL_BOX, MAGE_TOWER_ROOF, roof_stretch=MAGE_TOWER_ROOF_STRETCH)
 
 
+def build_workshop() -> Image.Image:
+    return build_cottage(FORGE_WALL_BOX, WORKSHOP_ROOF)
+
+
 def build_storehouse(terrain: Image.Image) -> Image.Image:
     image = build_cottage(STOREHOUSE_WALL_BOX)
     crate = trim(terrain.crop(CRATE_BOX), "crate")
@@ -381,6 +386,8 @@ def build_forest() -> None:
     pivots["camp"] = {"x": 0.5, "y": 1}
     frames["quarry"] = build_quarry(terrain)
     pivots["quarry"] = {"x": 0.5, "y": 1}
+    frames["workshop"] = build_workshop()
+    pivots["workshop"] = {"x": 0.5, "y": 1}
 
     write_atlas("forest", frames, pivots)
 

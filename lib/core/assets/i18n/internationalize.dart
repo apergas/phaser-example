@@ -13,6 +13,7 @@ import '../../config/constants/enum/quest_line.dart';
 import '../../config/constants/enum/resource.dart';
 import '../../config/constants/enum/skill_id.dart';
 import '../../config/constants/enum/tool_kind.dart';
+import '../../config/constants/enum/upgrade_id.dart';
 
 class Internationalize {
   static const String _app = 'app';
@@ -54,6 +55,7 @@ class Internationalize {
   static String get forestBuild => '$_forest.hud.build'.tr();
   static String get forestQuests => '$_forest.hud.quests'.tr();
   static String get forestArena => '$_forest.hud.arena'.tr();
+  static String get forestWorkshop => '$_forest.hud.workshop'.tr();
   static String get forestStock => '$_forest.hud.stock'.tr();
   static String forestCarry({required int amount, required int capacity}) =>
       '$_forest.hud.carry'.tr(namedArgs: {'amount': '$amount', 'capacity': '$capacity'});
@@ -75,6 +77,7 @@ class Internationalize {
     BlueprintId.camp => '$_forest.blueprint.camp'.tr(),
     BlueprintId.storehouse => '$_forest.blueprint.storehouse'.tr(),
     BlueprintId.quarry => '$_forest.blueprint.quarry'.tr(),
+    BlueprintId.workshop => '$_forest.blueprint.workshop'.tr(),
   };
   static String forestQuestTitle({required QuestId id}) => switch (id) {
     QuestId.gatherWood => '$_forest.quest.gatherWood'.tr(),
@@ -92,6 +95,10 @@ class Internationalize {
     QuestId.gatherFortyWood => '$_forest.quest.gatherFortyWood'.tr(),
     QuestId.buildTwoHouses => '$_forest.quest.buildTwoHouses'.tr(),
     QuestId.seeATreeRegrow => '$_forest.quest.seeATreeRegrow'.tr(),
+    QuestId.gatherTwentyStone => '$_forest.quest.gatherTwentyStone'.tr(),
+    QuestId.buildQuarry => '$_forest.quest.buildQuarry'.tr(),
+    QuestId.buildWorkshop => '$_forest.quest.buildWorkshop'.tr(),
+    QuestId.upgradeAxe => '$_forest.quest.upgradeAxe'.tr(),
   };
   static String forestQuestLine({required QuestLine line}) => switch (line) {
     QuestLine.village => '$_forest.questLine.village'.tr(),
@@ -205,6 +212,20 @@ class Internationalize {
   static String forestMessageSkillUpgraded({required String name, required int level}) =>
       '$_forest.message.skillUpgraded'.tr(namedArgs: {'name': name, 'level': '$level'});
   static String get forestMessageSkillMaxLevel => '$_forest.message.skillMaxLevel'.tr();
+  static String get forestUpgradeTitle => '$_forest.upgrade.title'.tr();
+  static String forestUpgradeName({required UpgradeId id}) => switch (id) {
+    UpgradeId.ironAxe => '$_forest.upgrade.ironAxe.name'.tr(),
+    UpgradeId.ironPickaxe => '$_forest.upgrade.ironPickaxe.name'.tr(),
+  };
+  static String forestUpgradeEffect({required UpgradeId id, required int percent}) => switch (id) {
+    UpgradeId.ironAxe => '$_forest.upgrade.ironAxe.effect'.tr(namedArgs: {'percent': '$percent'}),
+    UpgradeId.ironPickaxe => '$_forest.upgrade.ironPickaxe.effect'.tr(namedArgs: {'percent': '$percent'}),
+  };
+  static String get forestUpgradeOwned => '$_forest.upgrade.owned'.tr();
+  static String get forestUpgradeNeedsWorkshop => '$_forest.upgrade.needsWorkshop'.tr();
+  static String forestMessageUpgradePurchased({required String name}) =>
+      '$_forest.message.upgradePurchased'.tr(namedArgs: {'name': name});
+  static String get forestMessageUpgradeOwned => '$_forest.message.upgradeOwned'.tr();
   static const String _arena = 'arena';
   static String get arenaTitle => '$_arena.title'.tr();
   static String arenaHeroPower({required int power}) => '$_arena.heroPower'.tr(namedArgs: {'power': '$power'});

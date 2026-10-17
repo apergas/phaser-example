@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 import '../../../core/config/constants/enum/chop_result.dart';
 import '../../../core/config/constants/enum/construction_rejection.dart';
 import '../../../core/config/constants/enum/deposit_result.dart';
@@ -171,7 +169,6 @@ class World {
     return events;
   }
 
-  @visibleForTesting
   void updatePlayer(PlayerEntity Function(PlayerEntity player) transform) {
     _state.player = transform(_state.player);
   }

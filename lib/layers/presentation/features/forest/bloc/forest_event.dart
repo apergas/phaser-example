@@ -61,3 +61,9 @@ final class ForestSkillLearnRequested extends ForestEvent {
 
   const ForestSkillLearnRequested({required this.skill});
 }
+
+final class ForestUpgradeRequested extends ForestEvent {
+  final UpgradeId upgrade;
+
+  const ForestUpgradeRequested({required this.upgrade});
+}

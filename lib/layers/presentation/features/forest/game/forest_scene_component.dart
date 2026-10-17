@@ -141,6 +141,8 @@ class ForestSceneComponent extends Component {
         _onRockHit(rockId, fromX);
       case RockBrokenEffect(:final rockId, :final stone):
         _onRockBroken(rockId, stone);
+      case UpgradePurchasedEffect():
+        _sparkleOnPlayer(ParticleKind.sparkle);
     }
   }
 

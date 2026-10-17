@@ -45,7 +45,7 @@ Daniel Eddeland, Johann Charlot, Skyler Robert Colladay.
 CC-BY-SA 3.0 / GPL 3.0 — <https://opengameart.org/content/lpc-tile-atlas>. Full list in
 `asset-packs/lpc/sources/terrain/Attribution.txt`.
 
-## House, forge, armory, mage tower and storehouse (`house`, `forge`, `armory`, `mage-tower`, `storehouse` frames in `forest.png`)
+## House, forge, armory, mage tower, storehouse and workshop (`house`, `forge`, `armory`, `mage-tower`, `storehouse`, `workshop` frames in `forest.png`)
 
 Assembled from "[LPC] Thatched-roof Cottage" (timber-frame and stone walls, thatched roof) and
 "[LPC] Windows & Doors" (door), both by bluecarrot16. CC-BY-SA 3.0 / GPL 3.0 —
@@ -56,6 +56,7 @@ from the LPC Tile Atlas above.
 The mage tower roof is recoloured violet and stretched 40 % taller.
 The storehouse (`storehouse` frame) is the same cottage with the ochre wall and the thatched roof, with two
 closed chests of the LPC Tile Atlas above beside the door.
+The workshop (`workshop` frame) is the cottage with the forge's stone wall and the thatched roof recoloured green.
 
 The stump (`stump` frame) comes from the LPC Tile Atlas above.
 The camp (`camp` frame) is that stump in front of three logs cut from a tree trunk of the LPC Tile Atlas above.

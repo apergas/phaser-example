@@ -2,8 +2,10 @@ import '../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../core/config/constants/enum/quest_id.dart';
 import '../../../core/config/constants/enum/quest_line.dart';
 import '../../../core/config/constants/enum/resource.dart';
+import '../../../core/config/constants/enum/tool_kind.dart';
 import '../../../core/config/constants/enum/tree_kind.dart';
 import '../rules/arena_levels.dart';
+import '../rules/upgrades.dart';
 import '../world/extensions/arena_rules.dart';
 import '../world/extensions/building_rules.dart';
 import '../world/extensions/hero_rules.dart';
@@ -55,6 +57,30 @@ abstract final class Quests {
       line: QuestLine.village,
       target: 1,
       measure: (world) => world.stats.treesRegrown,
+    ),
+    _MeasuredQuest(
+      id: QuestId.gatherTwentyStone,
+      line: QuestLine.village,
+      target: 20,
+      measure: (world) => world.funds.amount(Resource.stone),
+    ),
+    _MeasuredQuest(
+      id: QuestId.buildQuarry,
+      line: QuestLine.village,
+      target: 1,
+      measure: (world) => _built(world, BlueprintId.quarry),
+    ),
+    _MeasuredQuest(
+      id: QuestId.buildWorkshop,
+      line: QuestLine.village,
+      target: 1,
+      measure: (world) => _built(world, BlueprintId.workshop),
+    ),
+    _MeasuredQuest(
+      id: QuestId.upgradeAxe,
+      line: QuestLine.village,
+      target: 1,
+      measure: (world) => world.player.inventory.toolLevel(ToolKind.axe) >= Upgrades.ironAxe.level ? 1 : 0,
     ),
     _MeasuredQuest(
       id: QuestId.buildForge,

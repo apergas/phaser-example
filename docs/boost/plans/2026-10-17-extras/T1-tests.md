@@ -25,4 +25,9 @@ Desde el 2026-10-17 (a mitad de C9, tras TC9.3) el desarrollo sigue **sin tests*
 
 ## Para T1 (se va rellenando)
 
-- **C9:** TC9.4 (recompensa con varios recursos: `Internationalize.arenaReward(amounts:)` con `+10 de oro` / `+75 de oro, 20 de maná` y sin cantidades 0; `ArenaBloc` pasa el mapa entero; mocks de resultados de la arena con maná) y el resto de la sección de tests del plan de C9.
+- **C9** (TC9.1–TC9.3 sí tienen tests; TC9.4 no, y rompe la compilación de estos tests porque `arenaReward(amount:)` pasa a `arenaReward(amounts:)`). El código exacto está en la tarea TC9.4 de [C9-mana.md](../2026-10-06-hero-arena/C9-mana.md):
+  - `test/mocks/domain/world/funds_mock.dart`: `barbarianChiefReward`, `barbarianChiefRepeatReward`, `thirtyGold`, `tenGoldAndZeroMana`, `sixManaBeforeTwentyFiveGold`;
+  - `test/mocks/presentation/features/arena/arena_result_data_mock.dart`: `amounts:` con `FundsMock`, y renombrar a `championWithTheChiefReward` / `victoryWithTheChiefRepeatReward`;
+  - `test/mocks/presentation/features/arena/arena_level_item_data_mock.dart`: `amounts:` con `FundsMock`;
+  - `test/core/assets/i18n/internationalize_test.dart`: `arenaReward` con `+75 de oro, 20 de maná`, `+10 de oro`, `+25 de oro, 6 de maná` y sin cantidades 0;
+  - `test/layers/presentation/features/arena/bloc/arena_bloc_test.dart`, `arena_page_test.dart` y `widgets/result_panel_test.dart`: los nombres nuevos y los textos con maná.

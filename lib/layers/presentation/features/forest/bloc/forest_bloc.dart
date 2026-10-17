@@ -278,9 +278,10 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   void _movePlacement(PositionEntity position) {
     final placement = _placement;
     if (placement == null) return;
-    _placement = placement.copyWith(
+    _placement = PlacementData(
+      blueprint: placement.blueprint,
       position: position,
-      isValid: _canPlaceBuildingUseCase(blueprint: placement.blueprint, x: position.x, y: position.y) == null,
+      invalidReason: _canPlaceBuildingUseCase(blueprint: placement.blueprint, x: position.x, y: position.y),
     );
   }
 
@@ -291,7 +292,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       return;
     }
     final position = _lastPosition ?? _getPlayerStatusUseCase().position;
-    _placement = PlacementData(blueprint: blueprint, position: position, isValid: false);
+    _placement = PlacementData(blueprint: blueprint, position: position, invalidReason: ConstructionRejection.blocked);
     _movePlacement(position);
     final name = Internationalize.forestBlueprint(id: blueprint);
     _showMessage(

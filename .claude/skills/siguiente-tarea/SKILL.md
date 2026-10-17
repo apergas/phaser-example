@@ -74,7 +74,7 @@ Abre el fichero de la fase (`F<n>-*.md` o `C<n>-*.md`):
 
 ## 5. Ejecutar
 
-Usa `boost:subagent-driven-development` (recomendado) o `boost:executing-plans` sobre **tu tarea**, siguiendo TDD (`boost:test-driven-development`).
+Usa `boost:subagent-driven-development` (recomendado) o `boost:executing-plans` sobre **tu tarea**. **Desde el 2026-10-17 no se escriben ni se arreglan tests** (ni TDD): lo que haya que probar se apunta en la sección *Para T1* de `docs/boost/plans/2026-10-17-extras/T1-tests.md`, la fase final de tests.
 
 Reglas:
 - Marca los checkboxes del plan según avances.

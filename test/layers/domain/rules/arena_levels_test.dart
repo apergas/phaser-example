@@ -43,6 +43,17 @@ void main() {
     }
   });
 
+  test('testWhenListingLevelsThenOnlyTheSecondHalfAlsoPaysMana', () {
+    // given
+    final levels = ArenaLevels.all;
+
+    // when
+    final mana = levels.map((level) => level.reward[Resource.mana] ?? 0);
+
+    // then
+    expect(mana, [0, 0, 0, 0, 0, 20, 25, 30, 35, 50]);
+  });
+
   test('testWhenListingLevelsThenTheRookieBanditOpensTheArena', () {
     // given
     final levels = ArenaLevels.all;

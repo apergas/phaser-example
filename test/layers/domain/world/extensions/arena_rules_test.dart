@@ -110,6 +110,19 @@ void main() {
       // then
       expect(reward, FundsMock.threeGold);
     });
+
+    test('testWhenTheThreeBanditsAreWonThenTheFirstRewardIsGoldAndManaAndARepeatPaysAThirdOfEach', () {
+      // given
+      final level = ArenaLevels.byId(ArenaLevelId.banditTrio);
+
+      // when
+      final first = HeroEntityMock.mock.rewardFor(level);
+      final repeat = HeroEntityMock.banditTrioCleared.rewardFor(level);
+
+      // then
+      expect(first, FundsMock.banditTrioReward);
+      expect(repeat, FundsMock.banditTrioRepeatReward);
+    });
   });
 
   group('afterFight', () {

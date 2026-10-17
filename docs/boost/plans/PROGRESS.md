@@ -25,7 +25,7 @@
 | C8 Pulido de la arena | ✅ | `feature/PROJECT-X-arena` | 649 tests. |
 | Reanudar obras | ✅ | `feature/PROJECT-X-arena` (#54) | 655 tests. |
 | [X Alineación con iOS](2026-10-06-hero-arena/X-ios-alignment.md) | ✅ | `feature/PROJECT-X-arena` (#60) | *Farming*, `com.apergas.farming`, icono, textos táctiles. 658 tests. Probada en Chrome y Android; iOS sin probar. |
-| [C9 Maná](2026-10-06-hero-arena/C9-mana.md) | 📝 ficha | — | Maná en los niveles 6–10 y en las habilidades. |
+| [C9 Maná](2026-10-06-hero-arena/C9-mana.md) | ✅ | `feature/PROJECT-C9-mana` (PR a arena) | Maná en los niveles 6–10 y en las habilidades. Tests hasta TC9.3 (666); TC9.4 sin tests (ver T1). |
 | [C10 Pelea sin saltar](2026-10-06-hero-arena/C10-no-skip.md) | 📝 ficha | — | Sin *Saltar* durante la repetición. |
 | [C11 Habilidades de los enemigos](2026-10-06-hero-arena/C11-enemy-skills.md) | 📝 ficha | — | Probabilidades 1,5–3,5 % en los niveles 6–10. |
 | [C12 Niveles de habilidad](2026-10-06-hero-arena/C12-skill-levels.md) | 📝 ficha | — | Tres niveles por habilidad. |
@@ -52,6 +52,7 @@
 | [Rayas negras en el suelo de la arena](2026-10-17-extras/arena-ground-seams.md) | ✅ | `feature/PROJECT-X-arena` (#61) |
 | [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | 📝 ficha | — |
 | [Armadura visible en la arena](2026-10-17-extras/hero-armour.md) | 💭 esbozo | — |
+| [T1 Tests](2026-10-17-extras/T1-tests.md) | 📝 ficha | — (la última; desde TC9.4 no se escriben tests) |
 
 ## Siguiente paso
 
@@ -61,3 +62,4 @@
 | 2 | Unir la arena a `develop`, con prueba manual en web, Android e iOS | `feature/PROJECT-X-arena` → `develop` |
 | 3 | Empezar con el hacha (antes de F4) | desde `feature/PROJECT-X-town` |
 | 4 | F1 → F3 → F4 (bloque 1) → F5 → F6 → F7 → F8 (bloque 2) → F2 (bloque 3) | desde `feature/PROJECT-X-town`, tras `git merge develop` |
+| 5 | T1 Tests | desde `develop`, con todo unido |

@@ -69,6 +69,17 @@ void main() {
     expect(options.first, SkillOptionEntityMock.doubleStrikeTenGoldShort);
   });
 
+  test('testWhenOnlyManaIsShortThenTheSkillSaysOnlyTheManaIsMissing', () {
+    // given
+    playing(SkillScenarioMock.withTower(funds: FundsMock.doubleStrikeGoldWithoutMana));
+
+    // when
+    final options = sut();
+
+    // then
+    expect(options.first, SkillOptionEntityMock.doubleStrikeTwentyManaShort);
+  });
+
   test('testWhenTheHeroKnowsASkillThenItIsListedAsKnownWithNothingMissing', () {
     // given
     playing(SkillScenarioMock.withTower(hero: HeroEntityMock.withDoubleStrike));

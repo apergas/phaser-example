@@ -19,11 +19,15 @@ import 'package:farming/layers/presentation/features/forest/widgets/resource_bar
 import 'package:farming/layers/presentation/features/forest/widgets/skill_tile.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
+import '../../../../../helpers/roboto_font.dart';
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/presentation/features/forest/hud_data_mock.dart';
 
 void main() {
-  setUpAll(loadSpanishTranslations);
+  setUpAll(() async {
+    loadSpanishTranslations();
+    await loadRobotoFont();
+  });
 
   Future<List<BlueprintId>> pumpOverlay(
     WidgetTester tester,
@@ -325,6 +329,32 @@ void main() {
     expect(panel.left, tester.getRect(find.byType(ResourceBar)).left);
     expect(panel.right, lessThanOrEqualTo(640));
     expect(panel.bottom, lessThanOrEqualTo(360));
+  });
+
+  testWidgets('testWhenEveryResourceShowsFourDigitsThenTheBreakpointLeavesRoomForTheButtonsBesideTheBar', (
+    tester,
+  ) async {
+    // given
+    const margin = 12.0;
+    const gap = 8.0;
+    const slack = 24.0;
+    tester.view.physicalSize = const Size(HudOverlay.buttonsBelowWidth, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // when
+    await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+
+    // then
+    final bar = tester.getSize(find.byType(ResourceBar)).width;
+    final buttons = tester
+        .getSize(
+          find
+              .ancestor(of: find.widgetWithText(HudButton, Internationalize.forestQuests), matching: find.byType(Row))
+              .first,
+        )
+        .width;
+    expect(margin + bar + gap + buttons + margin + slack, lessThanOrEqualTo(HudOverlay.buttonsBelowWidth));
   });
 
   testWidgets('testWhenTheScreenIsJustBelowTheBreakpointThenTheButtonsGoUnderTheResourceBar', (tester) async {

@@ -30,14 +30,16 @@
     },
     "resource": {
       "wood": "Madera",
-      "gold": "Oro"
+      "gold": "Oro",
+      "mana": "Maná"
     },
     "tool": {
       "axe": "Hacha"
     },
     "amount": {
       "wood": "{amount} de madera",
-      "gold": "{amount} de oro"
+      "gold": "{amount} de oro",
+      "mana": "{amount} de maná"
     },
     "blueprint": {
       "house": "Casa",
@@ -144,7 +146,7 @@
     "title": "Arena",
     "heroPower": "Tu Poder: {power}",
     "power": "Poder {power}",
-    "reward": "+{amount} de oro",
+    "reward": "+{amounts}",
     "cleared": "Ganado",
     "locked": "Cerrado",
     "fight": "Empezar pelea",

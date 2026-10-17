@@ -6,11 +6,17 @@ import '../entities/hero/skill_entity.dart';
 abstract final class Skills {
   static const BlueprintId building = BlueprintId.mageTower;
 
-  static const SkillEntity doubleStrike = SkillEntity(id: SkillId.doubleStrike, cost: {Resource.gold: 60});
+  static const SkillEntity doubleStrike = SkillEntity(
+    id: SkillId.doubleStrike,
+    cost: {Resource.gold: 60, Resource.mana: 20},
+  );
 
-  static const SkillEntity dodge = SkillEntity(id: SkillId.dodge, cost: {Resource.gold: 90});
+  static const SkillEntity dodge = SkillEntity(id: SkillId.dodge, cost: {Resource.gold: 90, Resource.mana: 30});
 
-  static const SkillEntity secondWind = SkillEntity(id: SkillId.secondWind, cost: {Resource.gold: 130});
+  static const SkillEntity secondWind = SkillEntity(
+    id: SkillId.secondWind,
+    cost: {Resource.gold: 130, Resource.mana: 45},
+  );
 
   static const List<SkillEntity> all = [doubleStrike, dodge, secondWind];
 

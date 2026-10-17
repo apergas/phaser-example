@@ -175,10 +175,11 @@ La aldea por sí sola acaba siendo "talar y construir". Se propone un segundo mo
 ```
 Aldea: madera / piedra ──▶ Herrería, Armería, Torre de magia ──▶ equipo y habilidades ──▶ más Poder
   ▲                                                                                        │
-  └──────────────── oro (y más adelante trofeos) ◀──────────── Arena: ganar niveles ◀──────┘
+  └──────────── oro y maná (y más adelante trofeos) ◀──────── Arena: ganar niveles ◀──────┘
 ```
 
-- El **oro** sólo se gana en la arena; el equipo y las habilidades sólo se compran en la aldea.
+- El **oro** sólo se gana en la arena; desde *Tres bandidos* la arena da también **maná**, que junto con el oro paga
+  las habilidades. El equipo y las habilidades sólo se compran en la aldea.
 - Ningún modo bloquea al otro: la aldea se juega igual sin pisar la arena, y la arena se puede repetir para conseguir
   oro aunque no se avance.
 
@@ -195,7 +196,8 @@ Valores de partida: Ataque 3–5, Defensa 1, Vida 30 (Poder 31). Con todo el equ
 12–16, Defensa 8, Vida 75 (Poder 144). Las cifras son las del equilibrado de la fase C7, protegidas por
 `test/layers/domain/combat/balance_test.dart`.
 
-**Edificios de mejora** (se construyen con recursos de la aldea; lo que venden se paga **sólo con oro** de la arena):
+**Edificios de mejora** (se construyen con recursos de la aldea; el equipo se paga **sólo con oro** de la arena y las
+habilidades con **oro y maná**):
 
 | Edificio | Qué vende | Niveles |
 |---|---|---|
@@ -216,29 +218,32 @@ Si existe la piedra, la piden los edificios, no el equipo.
 | Armadura de cuero | Defensa 3 · Vida 40 | 40 de oro |
 | Cota de malla | Defensa 5 · Vida 55 | 70 de oro |
 | Armadura de placas | Defensa 8 · Vida 75 | 120 de oro |
-| *Golpe doble* / *Esquiva* / *Segundo aliento* | — | 60 / 90 / 130 de oro (con la Torre de magia: 30 de madera y 40 de oro) |
+| *Golpe doble* / *Esquiva* / *Segundo aliento* | — | 60 de oro y 20 de maná / 90 y 30 / 130 y 45 (con la Torre de magia: 30 de madera y 40 de oro) |
 
 **Niveles de la arena** (equilibrados en la fase C7; cada enemigo: Ataque / Defensa / Vida):
 
-| Nivel | Enemigos | Poder | Recompensa (primera vez) | Héroe esperado | Gana con él | Con un escalón menos |
-|---|---|---|---|---|---|---|
-| 1 | Bandido novato (2–4 / 0 / 20) | 19 | 10 de oro | Inicial | casi siempre | — |
-| 2 | Lobo (4–6 / 1 / 20) | 29 | 20 de oro | Inicial | 60–95 % | — |
-| 3 | Bandido veterano (4–6 / 2 / 36) | 41 | 30 de oro | Espada corta | 60–95 % | < 50 % |
-| 4 | Dos lobos (6–8 / 1 / 18) | 68 | 40 de oro | + Armadura de cuero | 60–95 % | < 50 % |
-| 5 | Oso (8–12 / 3 / 40) | 62 | 55 de oro | + Espada de hierro | 60–95 % | < 50 % |
-| 6 | Tres bandidos (7–9 / 1 / 26) | 123 | 75 de oro | + Cota de malla | 60–95 % | < 50 % |
-| 7 | Bárbaro (10–14 / 4 / 58) | 81 | 90 de oro | + *Golpe doble* | 60–95 % | < 50 % |
-| 8 | Manada de tres lobos (8–12 / 1 / 22) | 135 | 100 de oro | + *Esquiva* | 60–95 % | < 50 % |
-| 9 | Dos bárbaros (8–12 / 4 / 52) | 144 | 120 de oro | + Espada de acero | 60–95 % | < 50 % |
-| 10 | Jefe bárbaro (16–20 / 5 / 72) y dos guardias (7–11 / 2 / 31) | 210 | 150 de oro | + Armadura de placas | 60–95 % | < 50 % |
+| Nivel | Enemigos | Poder | Oro (primera vez) | Maná (primera vez) | Héroe esperado | Gana con él | Con un escalón menos |
+|---|---|---|---|---|---|---|---|
+| 1 | Bandido novato (2–4 / 0 / 20) | 19 | 10 | — | Inicial | casi siempre | — |
+| 2 | Lobo (4–6 / 1 / 20) | 29 | 20 | — | Inicial | 60–95 % | — |
+| 3 | Bandido veterano (4–6 / 2 / 36) | 41 | 30 | — | Espada corta | 60–95 % | < 50 % |
+| 4 | Dos lobos (6–8 / 1 / 18) | 68 | 40 | — | + Armadura de cuero | 60–95 % | < 50 % |
+| 5 | Oso (8–12 / 3 / 40) | 62 | 55 | — | + Espada de hierro | 60–95 % | < 50 % |
+| 6 | Tres bandidos (7–9 / 1 / 26) | 123 | 75 | 20 | + Cota de malla | 60–95 % | < 50 % |
+| 7 | Bárbaro (10–14 / 4 / 58) | 81 | 90 | 25 | + *Golpe doble* | 60–95 % | < 50 % |
+| 8 | Manada de tres lobos (8–12 / 1 / 22) | 135 | 100 | 30 | + *Esquiva* | 60–95 % | < 50 % |
+| 9 | Dos bárbaros (8–12 / 4 / 52) | 144 | 120 | 35 | + Espada de acero | 60–95 % | < 50 % |
+| 10 | Jefe bárbaro (16–20 / 5 / 72) y dos guardias (7–11 / 2 / 31) | 210 | 150 | 50 | + Armadura de placas | 60–95 % | < 50 % |
 
 - "Gana con él" y "con un escalón menos" son el porcentaje de victorias en 100 peleas (semillas 0–99). El Poder del
   nivel no sube siempre: el oso pega fuerte pero es uno solo, y los grupos cuentan a todos sus miembros.
-- Con el oro de la primera victoria de cada nivel anterior, más repetir como mucho tres veces el último, se paga el
-  héroe esperado del nivel siguiente. *Segundo aliento* queda como mejora opcional para el final.
+- Con el oro y el maná de la primera victoria de cada nivel anterior, más repetir como mucho tres veces el último, se
+  paga el héroe esperado del nivel siguiente. Maná: 38 ≥ 20 en el bárbaro, 69 ≥ 50 en la manada, 105 ≥ 50 y 143 ≥ 50.
+  Con todo ganado una vez hay 160 de maná y las tres habilidades cuestan 95. *Segundo aliento* queda como mejora
+  opcional para el final.
 
-- Un nivel se desbloquea al ganar el anterior. Repetir un nivel ganado da un tercio del oro.
+- Un nivel se desbloquea al ganar el anterior. Repetir un nivel ganado da un tercio de cada recurso (*Tres bandidos*:
+  25 de oro y 6 de maná).
 - Perder no quita nada: se vuelve a la aldea con un consejo ("Te falta Defensa", "Prueba con la Cota de malla").
 
 **La pelea.**

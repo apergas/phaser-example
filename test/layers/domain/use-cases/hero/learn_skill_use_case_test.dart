@@ -80,6 +80,20 @@ void main() {
     expect(world.funds.amount(Resource.gold), 50);
   });
 
+  test('testWhenThereIsEnoughGoldButNoManaThenNothingIsPaidOrLearned', () {
+    // given
+    final world = playing(SkillScenarioMock.withTower(funds: FundsMock.doubleStrikeGoldWithoutMana));
+
+    // when
+    final result = sut(id: SkillId.doubleStrike);
+
+    // then
+    expect(result, LearnSkillResult.notEnoughResources);
+    expect(world.hero, HeroEntityMock.mock);
+    expect(world.funds.amount(Resource.gold), 60);
+    expect(world.funds.amount(Resource.mana), 0);
+  });
+
   test('testWhenSeveralChecksFailThenTheyAreReportedInOrder', () {
     // given
     playing(SkillScenarioMock.withoutTower(hero: HeroEntityMock.withDoubleStrike));
@@ -107,5 +121,6 @@ void main() {
     expect(world.hero, HeroEntityMock.withDoubleStrike);
     expect((powerBefore, world.hero.power), (31, 34));
     expect(world.funds.amount(Resource.gold), 0);
+    expect(world.funds.amount(Resource.mana), 0);
   });
 }

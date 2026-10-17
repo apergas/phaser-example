@@ -22,19 +22,21 @@ double _winRate(ArenaLevelEntity level, HeroEntity hero) {
   return wins / BalanceScenarioMock.seeds;
 }
 
-int _gold(Map<Resource, int> cost) => cost[Resource.gold] ?? 0;
+const _arenaResources = [Resource.gold, Resource.mana];
 
-int _goldSpentOn(HeroEntity hero) {
+int _amount(Map<Resource, int> amounts, Resource resource) => amounts[resource] ?? 0;
+
+int _spentOn(HeroEntity hero, Resource resource) {
   var total = 0;
   for (final slot in GearSlot.values) {
     for (var tier = 1; tier <= hero.tierOf(slot); tier++) {
-      total += _gold(Gear.of(slot, tier).cost);
+      total += _amount(Gear.of(slot, tier).cost, resource);
     }
   }
   for (final skill in hero.skills) {
-    total += _gold(Skills.byId(skill).cost);
+    total += _amount(Skills.byId(skill).cost, resource);
   }
-  if (hero.skills.isNotEmpty) total += _gold(Blueprints.of(Skills.building).cost);
+  if (hero.skills.isNotEmpty) total += _amount(Blueprints.of(Skills.building).cost, resource);
   return total;
 }
 
@@ -91,23 +93,42 @@ void main() {
     }
   });
 
-  test('testWhenEveryEarlierLevelIsWonOnceAndTheLastOneRepeatedThenTheExpectedGearIsAffordable', () {
+  test('testWhenEveryEarlierLevelIsWonOnceAndTheLastOneRepeatedThenTheExpectedGearIsAffordableInEveryResource', () {
     // given
-    var firstRewards = 0;
     final budgets = <(String, int, int)>[];
 
     // when
-    for (final (index, level) in levels.indexed) {
-      final repeats = index == 0
-          ? 0
-          : BalanceScenarioMock.maxRepeats * (_gold(levels[index - 1].reward) ~/ Rules.repeatRewardDivisor);
-      budgets.add((level.id.name, _goldSpentOn(_expectedHero(level)), firstRewards + repeats));
-      firstRewards += _gold(level.reward);
+    for (final resource in _arenaResources) {
+      var firstRewards = 0;
+      for (final (index, level) in levels.indexed) {
+        final repeats = index == 0
+            ? 0
+            : BalanceScenarioMock.maxRepeats *
+                  (_amount(levels[index - 1].reward, resource) ~/ Rules.repeatRewardDivisor);
+        budgets.add((
+          '${resource.name} ${level.id.name}',
+          _spentOn(_expectedHero(level), resource),
+          firstRewards + repeats,
+        ));
+        firstRewards += _amount(level.reward, resource);
+      }
     }
 
     // then
     for (final (name, spent, earned) in budgets) {
       expect(spent, lessThanOrEqualTo(earned), reason: '$name: gear and skills cost $spent, the arena paid $earned');
     }
+  });
+
+  test('testWhenEveryLevelIsWonOnceThenTheManaPaysForEverySkill', () {
+    // given
+    const skills = Skills.all;
+
+    // when
+    final earned = levels.fold(0, (total, level) => total + _amount(level.reward, Resource.mana));
+    final cost = skills.fold(0, (total, skill) => total + _amount(skill.cost, Resource.mana));
+
+    // then
+    expect((earned, cost), (160, 95));
   });
 }

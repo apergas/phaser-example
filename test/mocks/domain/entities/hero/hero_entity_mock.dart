@@ -57,6 +57,8 @@ abstract final class HeroEntityMock {
     fightsFought: 2,
   );
 
+  static const HeroEntity banditTrioCleared = HeroEntity(clearedLevels: {ArenaLevelId.banditTrio});
+
   static const HeroEntity packHunter = HeroEntity(
     weaponTier: 3,
     armorTier: 3,

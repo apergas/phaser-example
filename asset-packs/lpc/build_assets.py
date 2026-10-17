@@ -12,7 +12,8 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
                                    axe pickup, the house, the forge, the armory and the mage tower
                                    (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
-  arena.png + arena.json           JSON-hash atlas for the arena: the hero (with the axe and each sword), bandit,
+  arena.png + arena.json           JSON-hash atlas for the arena: the hero (with the axe and each sword, in
+                                   each armour: work clothes, leather, chain mail, plate), bandit,
                                    veteran bandit, barbarian and barbarian chief idle and walk (64px, weapon in hand) and
                                    slash (128px) frames in their one facing (pivot = feet), the wolf
                                    and bear idle, attack and down frames facing left, a fence segment
@@ -375,13 +376,42 @@ CHIEF_RECOLOURS = {
     "legs_shorts_male": (CLOTH_RAMP, [(48, 14, 16), (82, 22, 24), (112, 32, 30), (140, 46, 40), (168, 64, 54)]),
     "beards_beard_winter_male": (HAIR_RAMP, [(20, 16, 16), (32, 26, 24), (46, 38, 34), (60, 50, 44), (76, 64, 56)]),
 }
+# Hero armour suffix -> layers, bottom to top (same zPos order as the generator). No suffix: the work clothes of the
+# forest. Leather: the barbarians' armour and bracers over the shirt. Chain mail: over the shirt. Plate: plate legs
+# instead of the pants, chain mail under the breastplate, plate arms, pauldrons and the nasal helmet over the hair.
+HERO_ARMOURS = {
+    "": CHARACTER_LAYERS,
+    "-leather": [
+        *CHARACTER_LAYERS[:4],
+        ("barbarians", "torso_armour_leather_male"),
+        ("barbarians", "arms_bracers_male"),
+        *CHARACTER_LAYERS[4:],
+    ],
+    "-chain-mail": [*CHARACTER_LAYERS[:4], ("armour", "torso_chainmail_male"), *CHARACTER_LAYERS[4:]],
+    "-plate": [
+        ("character", "body_bodies_male"),
+        ("character", "feet_boots_basic_male"),
+        ("armour", "legs_armour_plate_male"),
+        ("character", "torso_clothes_longsleeve_longsleeve_male"),
+        ("armour", "torso_chainmail_male"),
+        ("armour", "torso_armour_plate_male"),
+        ("armour", "arms_armour_plate_male"),
+        ("armour", "shoulders_pauldrons_male"),
+        ("character", "head_heads_human_male"),
+        ("character", "hair_plain_adult"),
+        ("armour", "hat_helmet_nasal_adult"),
+    ],
+}
+# Hero weapon suffix -> the axe or a sword sheet in sources/tools (the LPC arming sword in bronze, iron or steel).
+HERO_WEAPONS = {"": "axe", "-short-sword": "sword-bronze", "-iron-sword": "sword-iron", "-steel-sword": "sword-steel"}
 # Fighter -> (recolours, LPC row, layers, weapon): the hero faces right (row 3), the enemies face left (row 1). The
-# weapon is the axe or a sword sheet in sources/tools (the LPC arming sword in bronze, iron or steel).
+# hero has one set per weapon and armour: hero[-<weapon>][-<armour>].
 ARENA_FIGHTERS = {
-    "hero": (RECOLOURS, 3, CHARACTER_LAYERS, "axe"),
-    "hero-short-sword": (RECOLOURS, 3, CHARACTER_LAYERS, "sword-bronze"),
-    "hero-iron-sword": (RECOLOURS, 3, CHARACTER_LAYERS, "sword-iron"),
-    "hero-steel-sword": (RECOLOURS, 3, CHARACTER_LAYERS, "sword-steel"),
+    **{
+        f"hero{weapon_suffix}{armour_suffix}": (RECOLOURS, 3, layers, weapon)
+        for weapon_suffix, weapon in HERO_WEAPONS.items()
+        for armour_suffix, layers in HERO_ARMOURS.items()
+    },
     "bandit": (BANDIT_RECOLOURS, 1, CHARACTER_LAYERS, "axe"),
     "bandit-veteran": (VETERAN_RECOLOURS, 1, CHARACTER_LAYERS, "sword-iron"),
     "barbarian": (BARBARIAN_RECOLOURS, 1, BARBARIAN_LAYERS, "axe"),

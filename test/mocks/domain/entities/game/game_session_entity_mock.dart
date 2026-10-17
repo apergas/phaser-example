@@ -1,6 +1,6 @@
-import 'package:rpg/layers/domain/entities/game/game_session_entity.dart';
-import 'package:rpg/layers/domain/quests/quest_log.dart';
-import 'package:rpg/layers/domain/world/world.dart';
+import 'package:farming/layers/domain/entities/game/game_session_entity.dart';
+import 'package:farming/layers/domain/quests/quest_log.dart';
+import 'package:farming/layers/domain/world/world.dart';
 
 import '../../world/world_mock.dart';
 

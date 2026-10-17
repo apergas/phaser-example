@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/domain/quests/quest_log.dart';
+import 'package:farming/layers/domain/quests/quest_log.dart';
 
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import '../../../../mocks/domain/world/world_mock.dart';

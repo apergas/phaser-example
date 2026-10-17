@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/core/config/constants/enum/skill_id.dart';
-import 'package:rpg/layers/domain/rules/skills.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/core/config/constants/enum/skill_id.dart';
+import 'package:farming/layers/domain/rules/skills.dart';
 
 import '../../../mocks/domain/entities/hero/skill_entity_mock.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/presentation/features/arena/bloc/arena_bloc.dart';
-import 'package:rpg/layers/presentation/features/arena/game/arena_game.dart';
+import 'package:farming/layers/presentation/features/arena/bloc/arena_bloc.dart';
+import 'package:farming/layers/presentation/features/arena/game/arena_game.dart';
 
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/presentation/features/arena/arena_bloc_fake.dart';

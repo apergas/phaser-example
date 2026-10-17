@@ -1,6 +1,6 @@
-import 'package:rpg/core/config/constants/enum/gear_id.dart';
-import 'package:rpg/core/config/constants/enum/skill_id.dart';
-import 'package:rpg/layers/presentation/features/forest/models/forest_effect.dart';
+import 'package:farming/core/config/constants/enum/gear_id.dart';
+import 'package:farming/core/config/constants/enum/skill_id.dart';
+import 'package:farming/layers/presentation/features/forest/models/forest_effect.dart';
 
 abstract final class ForestEffectMock {
   static TreeFelledEffect get treeFelled => TreeFelledEffect(treeId: 'tree-1', fromX: 180);

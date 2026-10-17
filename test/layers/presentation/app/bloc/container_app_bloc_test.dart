@@ -2,8 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/layers/presentation/app/bloc/container_app_bloc.dart';
-import 'package:rpg/layers/presentation/features/forest/forest_page.dart';
+import 'package:farming/layers/presentation/app/bloc/container_app_bloc.dart';
+import 'package:farming/layers/presentation/features/forest/forest_page.dart';
 
 import '../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
 

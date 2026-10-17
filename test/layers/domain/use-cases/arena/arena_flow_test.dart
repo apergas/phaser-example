@@ -1,15 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/layers/domain/entities/combat/fight_result_entity.dart';
-import 'package:rpg/layers/domain/entities/game/game_session_entity.dart';
-import 'package:rpg/layers/domain/entities/hero/hero_entity.dart';
-import 'package:rpg/layers/domain/rules/arena_levels.dart';
-import 'package:rpg/layers/domain/rules/rules.dart';
-import 'package:rpg/layers/domain/use-cases/arena/get_arena_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/arena/start_fight_use_case.dart';
-import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
+import 'package:farming/core/config/constants/enum/arena_level_id.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/domain/entities/combat/fight_result_entity.dart';
+import 'package:farming/layers/domain/entities/game/game_session_entity.dart';
+import 'package:farming/layers/domain/entities/hero/hero_entity.dart';
+import 'package:farming/layers/domain/rules/arena_levels.dart';
+import 'package:farming/layers/domain/rules/rules.dart';
+import 'package:farming/layers/domain/use-cases/arena/get_arena_use_case.dart';
+import 'package:farming/layers/domain/use-cases/arena/start_fight_use_case.dart';
+import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../../mocks/domain/entities/combat/fight_result_entity_mock.dart';
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';

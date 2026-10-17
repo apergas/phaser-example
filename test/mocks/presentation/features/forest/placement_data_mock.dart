@@ -1,6 +1,6 @@
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/presentation/features/forest/models/placement_data.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/presentation/features/forest/models/placement_data.dart';
 
 import 'forest_scenario_mock.dart';
 

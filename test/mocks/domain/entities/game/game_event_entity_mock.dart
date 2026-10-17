@@ -1,7 +1,7 @@
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/quest_id.dart';
-import 'package:rpg/core/config/constants/enum/tool_kind.dart';
-import 'package:rpg/layers/domain/entities/game/game_event_entity.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/quest_id.dart';
+import 'package:farming/core/config/constants/enum/tool_kind.dart';
+import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
 
 abstract final class GameEventEntityMock {
   static const ItemPickedUpEventEntity itemPickedUp = ItemPickedUpEventEntity(itemId: 'axe-1', kind: ToolKind.axe);

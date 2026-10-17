@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/data/repositories/level/mappers/position_mapper_dbo.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/data/repositories/level/mappers/position_mapper_dbo.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 
 import '../../../../../mocks/data/datasources/level/point_dbo_mock.dart';
 

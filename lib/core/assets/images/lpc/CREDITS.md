@@ -109,3 +109,8 @@ Cut by `build_assets.py` from the side views that face left, without recolouring
 - Bear: "[LPC] bears, deer, lions and more" by tapatilorenzo, `bear, grizzly.png` from
   `lpc_animals_2022_v1.1.zip`. CC-BY 4.0 (the author releases the bears as CC0) —
   <https://opengameart.org/content/lpc-bears-deer-lions-and-more>.
+
+## App icon (Android `mipmap-*/ic_launcher.png` and `mipmap-*/ic_launcher_foreground.png`, iOS `AppIcon.appiconset`, web `icons/` and `favicon.png`)
+
+The `tree-oak` frame of `forest.png` (see *Trees* above, CC-BY-SA 3.0), scaled with nearest neighbour and
+centred on the launch colour `#0E150E` (transparent for the adaptive icon foreground) by `asset-packs/lpc/build_app_icon.py`.

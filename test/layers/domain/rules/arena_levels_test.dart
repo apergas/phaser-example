@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
-import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/layers/domain/rules/arena_levels.dart';
+import 'package:farming/core/config/constants/enum/arena_level_id.dart';
+import 'package:farming/core/config/constants/enum/enemy_kind.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/domain/rules/arena_levels.dart';
 
 void main() {
   test('testWhenListingLevelsThenEveryArenaLevelIdAppearsOnce', () {

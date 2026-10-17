@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/presentation/features/arena/game/atlas/arena_assets_loader.dart';
-import 'package:rpg/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart';
+import 'package:farming/layers/presentation/features/arena/game/atlas/arena_assets_loader.dart';
+import 'package:farming/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart';
 
 import '../../../../../../mocks/presentation/features/arena/game/arena_assets_mock.dart';
 

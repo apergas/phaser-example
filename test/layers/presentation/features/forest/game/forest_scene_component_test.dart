@@ -3,12 +3,12 @@ import 'dart:math' as math;
 import 'package:flame/game.dart';
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/layers/presentation/features/forest/game/components/placement_ghost_component.dart';
-import 'package:rpg/layers/presentation/features/forest/game/components/ground_component.dart';
-import 'package:rpg/layers/presentation/features/forest/game/components/tree_component.dart';
-import 'package:rpg/layers/presentation/features/forest/game/forest_scene_component.dart';
-import 'package:rpg/layers/presentation/features/forest/game/particles/particle_burst_component.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/layers/presentation/features/forest/game/components/placement_ghost_component.dart';
+import 'package:farming/layers/presentation/features/forest/game/components/ground_component.dart';
+import 'package:farming/layers/presentation/features/forest/game/components/tree_component.dart';
+import 'package:farming/layers/presentation/features/forest/game/forest_scene_component.dart';
+import 'package:farming/layers/presentation/features/forest/game/particles/particle_burst_component.dart';
 
 import '../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';

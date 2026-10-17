@@ -1,4 +1,4 @@
-import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
 
 abstract final class FundsMock {
   static const Map<Resource, int> tenGold = {Resource.gold: 10};

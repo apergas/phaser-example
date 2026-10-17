@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/skill_id.dart';
-import 'package:rpg/core/config/constants/enum/skill_option_state.dart';
+import 'package:farming/core/config/constants/enum/skill_id.dart';
+import 'package:farming/core/config/constants/enum/skill_option_state.dart';
 
 import '../../../../mocks/domain/entities/hero/skill_option_entity_mock.dart';
 

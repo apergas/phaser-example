@@ -1,6 +1,6 @@
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/core/config/constants/enum/tool_kind.dart';
-import 'package:rpg/layers/presentation/features/forest/models/tool_item_data.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/core/config/constants/enum/tool_kind.dart';
+import 'package:farming/layers/presentation/features/forest/models/tool_item_data.dart';
 
 abstract final class ToolItemDataMock {
   static ToolItemData axe({required bool isOwned}) => ToolItemData(

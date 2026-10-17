@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/build_option_tile.dart';
-import 'package:rpg/layers/presentation/theme/colors/custom_colors.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/build_option_tile.dart';
+import 'package:farming/layers/presentation/theme/colors/custom_colors.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
 import '../../../../../helpers/spanish_translations.dart';

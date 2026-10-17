@@ -1,6 +1,6 @@
-import 'package:rpg/core/config/constants/enum/player_activity.dart';
-import 'package:rpg/layers/domain/entities/game/player_status_entity.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/core/config/constants/enum/player_activity.dart';
+import 'package:farming/layers/domain/entities/game/player_status_entity.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 
 import '../player/inventory_entity_mock.dart';
 

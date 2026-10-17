@@ -1,10 +1,10 @@
 import 'package:mockito/mockito.dart';
-import 'package:rpg/layers/domain/use-cases/arena/get_arena_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/arena/start_fight_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/hero/get_hero_status_use_case.dart';
-import 'package:rpg/layers/domain/world/world.dart';
-import 'package:rpg/layers/presentation/features/arena/bloc/arena_bloc.dart';
-import 'package:rpg/layers/presentation/features/arena/models/arena_effect.dart';
+import 'package:farming/layers/domain/use-cases/arena/get_arena_use_case.dart';
+import 'package:farming/layers/domain/use-cases/arena/start_fight_use_case.dart';
+import 'package:farming/layers/domain/use-cases/hero/get_hero_status_use_case.dart';
+import 'package:farming/layers/domain/world/world.dart';
+import 'package:farming/layers/presentation/features/arena/bloc/arena_bloc.dart';
+import 'package:farming/layers/presentation/features/arena/models/arena_effect.dart';
 
 import '../../../core/services/navigation_service_mocks.mocks.dart';
 import '../../../domain/entities/game/game_session_entity_mock.dart';

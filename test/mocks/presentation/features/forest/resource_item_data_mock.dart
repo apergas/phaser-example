@@ -1,6 +1,6 @@
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/layers/presentation/features/forest/models/resource_item_data.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/presentation/features/forest/models/resource_item_data.dart';
 
 abstract final class ResourceItemDataMock {
   static ResourceItemData wood(int amount) => ResourceItemData(

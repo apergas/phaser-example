@@ -1,4 +1,4 @@
-import 'package:rpg/layers/domain/world/world_state.dart';
+import 'package:farming/layers/domain/world/world_state.dart';
 
 import '../entities/player/player_entity_mock.dart';
 import '../entities/tree/tree_entity_mock.dart';

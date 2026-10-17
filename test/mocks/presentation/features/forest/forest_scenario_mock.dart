@@ -1,8 +1,8 @@
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/core/config/constants/enum/tool_kind.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/domain/entities/player/inventory_entity.dart';
-import 'package:rpg/layers/domain/world/world.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/core/config/constants/enum/tool_kind.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/domain/entities/player/inventory_entity.dart';
+import 'package:farming/layers/domain/world/world.dart';
 
 import '../../../domain/entities/item/ground_item_entity_mock.dart';
 import '../../../domain/entities/player/player_entity_mock.dart';

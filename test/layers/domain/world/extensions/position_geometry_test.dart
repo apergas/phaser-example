@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/domain/world/extensions/position_geometry.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/domain/world/extensions/position_geometry.dart';
 
 void main() {
   test('testWhenMeasuringDistanceThenReturnsEuclideanDistance', () {

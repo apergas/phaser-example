@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/forest/particle_kind.dart';
-import 'package:rpg/layers/presentation/features/forest/game/particles/particle_bursts.dart';
+import 'package:farming/core/config/constants/enum/forest/particle_kind.dart';
+import 'package:farming/layers/presentation/features/forest/game/particles/particle_bursts.dart';
 
 import '../../../../../../mocks/presentation/features/forest/game/particle_mock.dart';
 

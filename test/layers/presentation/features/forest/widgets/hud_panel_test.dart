@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/hud_panel.dart';
-import 'package:rpg/layers/presentation/theme/colors/custom_colors.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/hud_panel.dart';
+import 'package:farming/layers/presentation/theme/colors/custom_colors.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
 import '../../../../../mocks/presentation/widgets/widget_text_mock.dart';

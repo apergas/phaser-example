@@ -1,9 +1,9 @@
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/layers/domain/entities/building/blueprint_entity.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/domain/entities/hero/hero_entity.dart';
-import 'package:rpg/layers/domain/rules/blueprints.dart';
-import 'package:rpg/layers/domain/world/world.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/domain/entities/building/blueprint_entity.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/domain/entities/hero/hero_entity.dart';
+import 'package:farming/layers/domain/rules/blueprints.dart';
+import 'package:farming/layers/domain/world/world.dart';
 
 import '../entities/hero/hero_entity_mock.dart';
 import '../world/world_mock.dart';

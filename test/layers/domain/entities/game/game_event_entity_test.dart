@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/domain/entities/game/game_event_entity.dart';
+import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
 
 import '../../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 

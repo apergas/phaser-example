@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/fight_action.dart';
-import 'package:rpg/core/config/constants/enum/fight_advice.dart';
-import 'package:rpg/core/config/constants/enum/fight_outcome.dart';
-import 'package:rpg/core/config/constants/enum/fight_side.dart';
-import 'package:rpg/core/config/constants/enum/skill_id.dart';
-import 'package:rpg/layers/domain/combat/combat.dart';
-import 'package:rpg/layers/domain/rules/rules.dart';
+import 'package:farming/core/config/constants/enum/fight_action.dart';
+import 'package:farming/core/config/constants/enum/fight_advice.dart';
+import 'package:farming/core/config/constants/enum/fight_outcome.dart';
+import 'package:farming/core/config/constants/enum/fight_side.dart';
+import 'package:farming/core/config/constants/enum/skill_id.dart';
+import 'package:farming/layers/domain/combat/combat.dart';
+import 'package:farming/layers/domain/rules/rules.dart';
 
 import '../../../mocks/domain/entities/combat/arena_level_entity_mock.dart';
 import '../../../mocks/domain/entities/combat/fight_log_entity_mock.dart';

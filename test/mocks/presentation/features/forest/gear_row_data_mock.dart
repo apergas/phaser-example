@@ -1,6 +1,6 @@
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/core/config/constants/enum/gear_slot.dart';
-import 'package:rpg/layers/presentation/features/forest/models/gear_row_data.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/core/config/constants/enum/gear_slot.dart';
+import 'package:farming/layers/presentation/features/forest/models/gear_row_data.dart';
 
 import 'gear_item_data_mock.dart';
 

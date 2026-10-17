@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/layers/domain/use-cases/game/advance_game_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/advance_game_use_case.dart';
 
 import '../../../../mocks/domain/game/game_scenario_mock.dart';
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';

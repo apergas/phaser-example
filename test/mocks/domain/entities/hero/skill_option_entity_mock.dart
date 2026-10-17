@@ -1,8 +1,8 @@
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/core/config/constants/enum/skill_id.dart';
-import 'package:rpg/core/config/constants/enum/skill_option_state.dart';
-import 'package:rpg/layers/domain/entities/hero/skill_option_entity.dart';
-import 'package:rpg/layers/domain/rules/skills.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/core/config/constants/enum/skill_id.dart';
+import 'package:farming/core/config/constants/enum/skill_option_state.dart';
+import 'package:farming/layers/domain/entities/hero/skill_option_entity.dart';
+import 'package:farming/layers/domain/rules/skills.dart';
 
 abstract final class SkillOptionEntityMock {
   static SkillOptionEntity known(SkillId id) =>

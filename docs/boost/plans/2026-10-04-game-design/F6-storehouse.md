@@ -1,80 +1,112 @@
 # F6 · Almacén y capacidad de carga — ficha
 
-> **Plan detallado: pendiente.** Al empezar la fase, `/siguiente-tarea` ejecuta `boost:writing-plans` sobre esta ficha.
+> **Plan detallado: pendiente.** Al empezar la fase, `/siguiente-tarea` ejecuta `boost:writing-plans` sobre esta ficha. **Ya está hecha en iOS** (`$IOS/docs/plans/2026-10-12-village/F6-storehouse.md`); esta ficha manda sobre la versión anterior.
 
 | | |
 |---|---|
-| **Flujo** | B |
-| **Depende de** | F2 (para guardar el stock de la aldea) |
+| **Rama** | `feature/PROJECT-F6-storehouse`, desde `feature/PROJECT-X-town` |
+| **Depende de** | F5. Ya **no** depende de F2: el guardado va el último y guarda el almacén entonces. |
 | **Issue / milestone** | `phase:F6` · milestone `F6 Storehouse` |
+| **Referencia iOS** | merge `020d442` (`[PROJECT-F6]: Merge the storehouse and the carried load`), commits `a19b855` (carga y almacén), `ea9ceb2` (entregar), `8b90e60` (arte), `7546d3f` (campamento en el nivel), `fc443ff` (HUD) |
 
 ## Objetivo
 
-El bucle de Age of Empires: recoger, llevarlo al almacén y volver. Así importa dónde se coloca cada edificio.
+El bucle de *Age of Empires*: recoger, llevarlo al almacén y volver. Así importa dónde se coloca cada edificio.
 
 ## Decisiones ya tomadas
 
-**Dos inventarios:**
-- `PlayerEntity.inventory` es **la carga**. Admite como máximo `Rules.carryCapacity = 10` unidades, sumando todos los recursos.
-- El **almacén de la aldea** es un `InventoryEntity` nuevo en `WorldState.stock` (sólo usa `resources`), expuesto por `World.stock`.
-- Las construcciones se pagan **del stock**: `Construction.place` deja de usar `player.inventory.spend` y usa el stock. `GetBuildOptionsUseCase` calcula `missing` contra el stock.
+**Carga y almacén:**
+- `PlayerEntity.inventory` es la **carga**, con sus herramientas.
+- La carga admite `Rules.carryCapacity = 10`, sumando madera y piedra. Qué ocupa carga lo dice una regla del recurso (`ResourceRules.takesCargo`): madera y piedra sí, oro y maná no. Las herramientas no ocupan.
+- **Lo que no cabe se pierde.** `TreeFelledEventEntity.wood` y `RockBrokenEventEntity.stone` llevan lo que **entra** (lo que dicen el aviso y el "+N"). El árbol o la roca que llenan la carga avisan con `forest.message.carryFull` después del "+N".
+- Con la carga llena, talar y picar se rechazan (`carryFull` en `ChopResult` y `MineResult`, comprobado después de `unknown…` y `no…`).
+- El **almacén de la aldea** es `WorldState.stock` (un `InventoryEntity` que solo usa recursos), expuesto por `World.stock`.
+- `World.funds` / `earn` / `spend` pasan a usarlo: se conservan los dos nombres, y `funds` es lo que se puede gastar.
+- Edificios, equipo y habilidades se pagan del almacén con **una sola regla de pago**, la misma en `Construction.place` y en `World.spend`.
+- El oro y el maná de la arena entran directamente en el almacén. `HeroUseCase`/`StartFightUseCase` no cambian y el equilibrio de la arena no se mueve.
+- `GetBuildOptionsUseCase` calcula lo que falta contra el almacén.
+- El almacén se lee con un caso de uso nuevo (`GetStockUseCase`). `GetPlayerStatusUseCase` sigue dando el inventario del jugador, que ahora es la carga.
 
-**Carga llena:**
-- Si al caer un árbol no cabe toda la madera, se guarda lo que cabe y el resto se pierde. La alternativa es dejar un montón en el suelo; se propone perderlo porque es más simple. Se decide en el plan y se apunta.
-- Con la carga llena, el jugador no empieza a talar: `ChopResult.carryFull` y el mensaje `forest.message.carryFull`.
+**Edificios nuevos** (al final de `BlueprintId`):
+- `storehouse` (*Almacén*): 20 de madera, 8 golpes, radio 40, punto de entrega. Segundo en el menú.
+- `camp` (*Campamento*): no construible, sin coste, radio 30, punto de entrega.
+  - No sale en el menú: `BlueprintEntity` gana `isBuildable` y `GetBuildOptionsUseCase` solo ofrece los construibles.
+  - `canPlace` da `false` para él, y construirlo da el rechazo `blocked` de siempre.
+- Hasta F7, "punto de entrega" es un booleano del plano (F7 lo cambia por qué recursos acepta).
 
 **Entregar:**
-- Nuevo `DepositIntentEntity(buildingId)` con un sistema `Depositing implements Work<DepositIntentEntity>` (`domain/world/depositing.dart`, pieza interna): un único "golpe" que pasa toda la carga al stock.
-- Al tocar un almacén terminado, el jugador va hasta él y entrega (`DepositUseCase`).
+- `DepositIntentEntity(buildingId)` + sistema `Depositing` (`domain/world/depositing.dart`, pieza interna), como `Construction`: el jugador se pone delante y, a los 400 ms (`Rules.depositIntervalMs`), pasa **toda** la carga al almacén.
+- `DepositResult { ok, unknownBuilding, notADropOff, emptyLoad }` (core) + `DepositUseCase` + `World.orderDeposit`. Se comprueba: edificio desconocido → no recibe (obra a medias o casa) → carga vacía.
+- Al tocar un edificio, primero se intenta entregar:
+  - `notADropOff` sigue con `ResumeConstructionUseCase` como hoy (una obra de almacén se reanuda);
+  - `emptyLoad` avisa "No llevas nada que guardar.";
+  - `ok` avisa al terminar con "Guardado en el almacén: 7 de madera".
+- Sin efecto en la escena.
 
-**Edificios:**
-- `BlueprintEntity` gana `isBuildable`. `GetBuildOptionsUseCase` sólo ofrece los construibles.
-- **Campamento inicial** (`BlueprintId.camp`, no construible): ya viene colocado en el nivel junto al spawn (`LevelDBO.buildings` o un campo propio, se decide en el plan) y es el primer punto de entrega. Así no hace falta un almacén para poder construir el almacén.
-- **Almacén** (`BlueprintId.storehouse`): cuesta 20 de madera y sirve de punto de entrega más cercano.
+**El campamento en el nivel:**
+- `LevelDBO.buildings: List<BuildingDBO>?` (`id`, `blueprint`, `position`) con el campamento (`id`/`blueprint` `camp`) en (700, 592), 100 a la izquierda del inicio.
+- Llega **terminado**. Un `blueprint` desconocido es un error de nivel inválido.
+- Se quita la decoración a menos de 64 de él, sin volver a tirar.
+- `BuildingComponent` puede nacer terminado: completo, sin barra de obra ni rebote. Lo necesitará también F2.
 
-**Clic sobre edificios:** hoy `ForestMapClicked` sólo distingue árboles (y rocas si F5 ya está). Se añade el edificio como objetivo, con detección por la caja del sprite (`AtlasSpriteComponent.boundsContain`) o por píxel; se decide en el plan.
+**Misiones:** `gatherWood` pasa a medir el almacén y su texto a "Lleva 15 de madera al almacén". `gatherFortyWood` (F4) ya medía `funds` y su texto pasa a "Ten 40 de madera en el almacén".
+
+**Dibujo y arte** (sin autores nuevos; `build_cottage()` del script):
+- `storehouse`: la pared ocre de postes, el techo de paja sin recolorear y dos cajas cerradas del *LPC Tile Atlas* junto a la puerta (120 × 191). `buildingFrontOffset` 24.
+- `camp`: el tocón de siempre delante de tres troncos hechos con un tramo de tronco del atlas tumbado (106 × 41). `buildingFrontOffset` 12.
 
 **HUD:**
-- "Carga 7/10" junto a los recursos.
-- El stock de la aldea se muestra como lista de recursos, reutilizando `ResourceItemData` / `ResourceBar`.
-- `HudData` gana `carry: CarryItemData(text, isFull)` (modelo nuevo en `models/`) y `stock: List<ResourceItemData>`.
+- La barra pasa a ser "Almacén" (el rótulo, solo con nombres) + los cuatro recursos del almacén + una raya + "Carga 7/10" + las herramientas.
+- "Carga 7/10" va en color de aviso si está llena, y no se desglosa por recurso.
+- Modelos: `HudData.stock: List<ResourceItemData>` y `HudData.carry: CarryItemData(text, isFull)`.
+- Se vuelven a medir los dos umbrales (en iOS, 1500 y 1000 pt).
 
-**Arte:**
-- Almacén: se monta en `build_assets.py` con piezas de `cottage.png` y `thatched-roof.png`, cambiando proporción o color con `recolour`.
-- Campamento: con piezas existentes, por ejemplo un tocón y un montón de troncos de `terrain_atlas`.
-- Los frames se llaman `storehouse` y `camp` (`SpriteNames.building`). Su desplazamiento de dibujo va en `RenderConstants.buildingFrontOffset`.
+**Textos:**
+- Edificios y rótulos: `forest.blueprint.camp` "Campamento", `forest.blueprint.storehouse` "Almacén", `forest.hud.carry` "Carga {amount}/{capacity}", `forest.hud.stock` "Almacén".
+- `forest.message.carryFull`: "Llevas la carga llena. Déjala en el campamento o en un almacén."
+- `forest.message.deposited`: "Guardado en el almacén: {amounts}"
+- `forest.message.nothingToDeposit`: "No llevas nada que guardar."
 
-**Misiones:** `gatherWood` pasa a medir el stock, no la carga. Hay que revisar `Quests.all` (y las de F4 si ya están).
+**Navegación:** sin cambios (línea recta). Desde lejos, el camino al campamento puede quedar cortado ("Hay algo en medio").
 
-**Persistencia:** se guardan el stock y la carga.
-
-**Si la arena ya está** (plan *Héroe y arena*):
-- `World.funds` / `earn` / `spend` (C0) pasan de `player.inventory` al stock (`_state.stock`) en esta fase, y el último test de `world_funds_test.dart` compara con `world.stock`. Ni las compras del héroe ni las recompensas de la arena cambian.
-- **El oro no cuenta para la carga**: `earn` lo pone directamente en el stock, y `Rules.carryCapacity` sólo suma lo que el jugador recoge en el mapa.
-- `Construction.place` (sistema interno, que no puede llamar al `World`) y `World.spend` usan la misma operación de cobro sobre el stock, para que sólo haya una regla de pago.
+**Guardado:** en F2 (almacén, carga y edificios con el campamento).
 
 ## Ficheros previstos
 
-**Dominio:**
-- `rules/rules.dart`, `rules/blueprints.dart`
-- `world/world_state.dart`, `world.dart`, `depositing.dart` (nuevo), `construction.dart`, `woodcutting.dart`, `work.dart`
-- `entities/building/blueprint_entity.dart` (`isBuildable`), `entities/player/intent_entity.dart`
-- Enums de core: `blueprint_id.dart`, `chop_result.dart`
-- Casos de uso: `deposit_use_case.dart` (nuevo), `get_build_options_use_case.dart`, `get_player_status_use_case.dart` o uno nuevo para el stock.
-
-**Datos:** `lib/layers/data/datasources/level/**` y `repositories/level/**` (el campamento en el nivel).
-
-**Presentación:** `bloc/*`, `models/hud_data.dart`, `models/carry_item_data.dart` (nuevo), `widgets/hud_overlay.dart`, `widgets/resource_bar.dart` si hace falta, `game/components/building_component.dart` (toque), `game/atlas/sprite_names.dart`, `game/render/render_constants.dart`, `Internationalize`, `es.json`.
-
-**Arte:** `build_assets.py`.
-
-**Tests:**
-- `test/architecture_test.dart` (nueva pieza interna).
-- Si es el primer edificio construible después de la casa (C3 no está fusionada): un test de `ForestSceneComponent` que cambia la previsualización de casa a almacén y comprueba que el fantasma se sustituye (desviación de F0).
+- **Dominio:**
+  - `rules/rules.dart`, `rules/blueprints.dart`;
+  - `world/world.dart`, `world_state.dart`, `depositing.dart` (nuevo), `construction.dart`, `woodcutting.dart`, `mining.dart`, `work.dart`;
+  - `extensions/inventory_rules.dart`, `extensions/resource_rules.dart` (nuevo);
+  - `entities/building/blueprint_entity.dart`, `entities/player/intent_entity.dart`;
+  - casos de uso `deposit_use_case.dart` y `get_stock_use_case.dart` (nuevos), y `get_build_options_use_case.dart`;
+  - `quests/quests.dart`.
+- **Core:** `blueprint_id.dart`, `chop_result.dart`, `mine_result.dart`, `deposit_result.dart` (nuevo), `es.json`, `internationalize.dart`.
+- **Datos:** `dbo/building_dbo.dart` (nuevo), `dbo/level_dbo.dart`, `mappers/building_mapper_dbo.dart` (nuevo), `level_local_datasource_impl.dart`, `level_repository_impl.dart`.
+- **Presentación:** `bloc/*`, `models/hud_data.dart`, `models/carry_item_data.dart` (nuevo), `widgets/hud_overlay.dart`, `widgets/resource_bar.dart`, `game/components/building_component.dart` (nace terminado), `game/atlas/sprite_names.dart`, `game/render/render_constants.dart`.
+- **Arte:** `build_assets.py`, `forest.{png,json}`, `CREDITS.md`.
+- **Tests:** `architecture_test.dart` (pieza nueva) y `world_funds_test.dart`, que ahora compara con `world.stock`.
 
 ## Cómo probarlo
 
-- Talar hasta llenar la carga (10): aparece el aviso.
-- Tocar el campamento: el jugador va y entrega. La carga baja a 0 y el stock sube.
-- Construir una casa descuenta del stock.
-- Construir un almacén lejos y entregar allí.
+- Junto al inicio, a la izquierda, está el campamento.
+- Al talar, la carga sube y el almacén no. Con 10, el siguiente árbol da "+1" y avisa, y tocar otro árbol también avisa.
+- Tocar el campamento entrega: la carga vuelve a 0 y el almacén sube. Tocarlo vacío avisa.
+- *Lleva 15 de madera al almacén* se cumple al segundo viaje.
+- El Almacén (20 de madera) es el segundo del menú. Terminado recibe la carga; a medio hacer se sigue construyendo al tocarlo.
+- El oro de la arena aparece en el almacén.
+- Tests:
+  - **`world_deposit_test.dart`:**
+    - capacidad, pérdida de lo que no cabe y `carryFull`;
+    - entregar en el campamento y en un almacén terminado;
+    - `notADropOff`, `emptyLoad` y `unknownBuilding`;
+    - el oro y el maná no ocupan carga.
+  - **`world_funds_test.dart`:** pagos y cobros sobre el almacén.
+  - **`get_build_options_use_case_test.dart`:** sin el campamento, y con lo que falta medido en el almacén.
+  - **Nivel:**
+    - el datasource da el campamento y quita la decoración cercana;
+    - `building_mapper_dbo_test.dart` rechaza un blueprint desconocido.
+  - **Presentación:**
+    - `forest_bloc_test.dart`: tocar un edificio entrega o reanuda; los avisos; `HudData.stock` y `carry`;
+    - `building_component_test.dart`: el campamento nace terminado sin barra;
+    - `resource_bar_test.dart` y los umbrales.
+  - `lpc_atlas_test.dart` e `internationalize_test.dart`.

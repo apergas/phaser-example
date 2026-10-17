@@ -1,8 +1,8 @@
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/gear_id.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/layers/presentation/features/forest/models/gear_item_data.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/gear_id.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/presentation/features/forest/models/gear_item_data.dart';
 
 abstract final class GearItemDataMock {
   static GearItemData get woodcutterAxe => GearItemData(

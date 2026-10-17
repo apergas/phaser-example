@@ -1,24 +1,24 @@
 import 'package:mockito/mockito.dart';
-import 'package:rpg/layers/domain/entities/game/game_session_entity.dart';
-import 'package:rpg/layers/domain/use-cases/game/advance_game_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/game/can_place_building_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/game/chop_tree_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/game/resume_construction_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/game/construct_building_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/game/get_build_options_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/game/get_player_status_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/game/get_quests_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/game/get_world_snapshot_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/game/move_player_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/game/start_game_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/hero/buy_gear_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/hero/get_gear_options_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/hero/get_hero_status_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/hero/get_skill_options_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/hero/learn_skill_use_case.dart';
-import 'package:rpg/layers/domain/world/world.dart';
-import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
-import 'package:rpg/layers/presentation/features/forest/models/forest_effect.dart';
+import 'package:farming/layers/domain/entities/game/game_session_entity.dart';
+import 'package:farming/layers/domain/use-cases/game/advance_game_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/can_place_building_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/chop_tree_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/resume_construction_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/construct_building_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/get_build_options_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/get_player_status_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/get_quests_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/get_world_snapshot_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/move_player_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/start_game_use_case.dart';
+import 'package:farming/layers/domain/use-cases/hero/buy_gear_use_case.dart';
+import 'package:farming/layers/domain/use-cases/hero/get_gear_options_use_case.dart';
+import 'package:farming/layers/domain/use-cases/hero/get_hero_status_use_case.dart';
+import 'package:farming/layers/domain/use-cases/hero/get_skill_options_use_case.dart';
+import 'package:farming/layers/domain/use-cases/hero/learn_skill_use_case.dart';
+import 'package:farming/layers/domain/world/world.dart';
+import 'package:farming/layers/presentation/features/forest/bloc/forest_bloc.dart';
+import 'package:farming/layers/presentation/features/forest/models/forest_effect.dart';
 
 import '../../../core/services/navigation_service_mocks.mocks.dart';
 import '../../../domain/repositories/repository_mocks.mocks.dart';
@@ -31,6 +31,7 @@ abstract final class ForestBlocMock {
     required MockNavigationService navigationService,
     Exception? loadError,
     Set<int>? failingLoads,
+    bool isTouchInput = false,
   }) {
     final levelRepository = MockLevelRepository();
     final sessionRepository = MockGameSessionRepository();
@@ -63,6 +64,7 @@ abstract final class ForestBlocMock {
       getSkillOptionsUseCase: GetSkillOptionsUseCase(sessionRepository: sessionRepository),
       learnSkillUseCase: LearnSkillUseCase(sessionRepository: sessionRepository),
       navigationService: navigationService,
+      isTouchInput: isTouchInput,
     );
   }
 

@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/presentation/features/forest/game/render/tree_motion.dart';
+import 'package:farming/layers/presentation/features/forest/game/render/tree_motion.dart';
 
 double _degrees(double value) => value * math.pi / 180;
 

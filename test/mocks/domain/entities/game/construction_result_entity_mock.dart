@@ -1,5 +1,5 @@
-import 'package:rpg/core/config/constants/enum/construction_rejection.dart';
-import 'package:rpg/layers/domain/entities/game/construction_result_entity.dart';
+import 'package:farming/core/config/constants/enum/construction_rejection.dart';
+import 'package:farming/layers/domain/entities/game/construction_result_entity.dart';
 
 import '../building/building_entity_mock.dart';
 

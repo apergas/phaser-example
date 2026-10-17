@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/config/di/di.dart';
-import 'package:rpg/core/config/di/di_environment.dart';
-import 'package:rpg/core/config/di/locator.dart';
-import 'package:rpg/layers/domain/repositories/level/level_repository.dart';
-import 'package:rpg/layers/presentation/app/container_app.dart';
-import 'package:rpg/layers/presentation/features/forest/forest_page.dart';
+import 'package:farming/core/config/di/di.dart';
+import 'package:farming/core/config/di/di_environment.dart';
+import 'package:farming/core/config/di/locator.dart';
+import 'package:farming/layers/domain/repositories/level/level_repository.dart';
+import 'package:farming/layers/presentation/app/container_app.dart';
+import 'package:farming/layers/presentation/features/forest/forest_page.dart';
 
 import '../../../helpers/pump_until.dart';
 import '../../../mocks/domain/repositories/repository_mocks.mocks.dart';

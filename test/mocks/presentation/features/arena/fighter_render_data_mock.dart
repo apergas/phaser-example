@@ -1,8 +1,8 @@
-import 'package:rpg/core/config/constants/enum/arena/fighter_pose.dart';
-import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
-import 'package:rpg/core/config/constants/enum/fight_side.dart';
-import 'package:rpg/core/config/constants/enum/gear_id.dart';
-import 'package:rpg/layers/presentation/features/arena/models/fighter_render_data.dart';
+import 'package:farming/core/config/constants/enum/arena/fighter_pose.dart';
+import 'package:farming/core/config/constants/enum/enemy_kind.dart';
+import 'package:farming/core/config/constants/enum/fight_side.dart';
+import 'package:farming/core/config/constants/enum/gear_id.dart';
+import 'package:farming/layers/presentation/features/arena/models/fighter_render_data.dart';
 
 abstract final class FighterRenderDataMock {
   static const FighterRenderData heroIdle = FighterRenderData(

@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/core/config/constants/enum/resume_construction_result.dart';
-import 'package:rpg/layers/domain/entities/game/construction_result_entity.dart';
-import 'package:rpg/layers/domain/entities/game/game_event_entity.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/domain/entities/player/activity_entity.dart';
-import 'package:rpg/layers/domain/rules/blueprints.dart';
-import 'package:rpg/layers/domain/rules/rules.dart';
-import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/core/config/constants/enum/resume_construction_result.dart';
+import 'package:farming/layers/domain/entities/game/construction_result_entity.dart';
+import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/domain/entities/player/activity_entity.dart';
+import 'package:farming/layers/domain/rules/blueprints.dart';
+import 'package:farming/layers/domain/rules/rules.dart';
+import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../mocks/domain/entities/game/construction_result_entity_mock.dart';
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';

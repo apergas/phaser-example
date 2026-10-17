@@ -1,4 +1,4 @@
-import 'package:rpg/layers/domain/entities/hero/hero_status_entity.dart';
+import 'package:farming/layers/domain/entities/hero/hero_status_entity.dart';
 
 import 'combat_stats_entity_mock.dart';
 import 'hero_entity_mock.dart';

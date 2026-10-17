@@ -90,6 +90,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final GetSkillOptionsUseCase _getSkillOptionsUseCase;
   final LearnSkillUseCase _learnSkillUseCase;
   final NavigationService _navigationService;
+  final bool _isTouchInput;
 
   PositionEntity? _lastPosition;
   Facing _facing = Facing.down;
@@ -114,6 +115,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._getSkillOptionsUseCase,
     required this._learnSkillUseCase,
     required this._navigationService,
+    required this._isTouchInput,
   }) : super(const ForestInitial()) {
     on<ForestEvent>((event, emit) async {
       await switch (event) {
@@ -241,7 +243,12 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     final position = _lastPosition ?? _getPlayerStatusUseCase().position;
     _placement = PlacementData(blueprint: blueprint, position: position, isValid: false);
     _movePlacement(position);
-    _showMessage(Internationalize.forestMessagePlacing(name: Internationalize.forestBlueprint(id: blueprint)));
+    final name = Internationalize.forestBlueprint(id: blueprint);
+    _showMessage(
+      _isTouchInput
+          ? Internationalize.forestMessagePlacingTouch(name: name)
+          : Internationalize.forestMessagePlacing(name: name),
+    );
   }
 
   void _place(BlueprintId blueprint, PositionEntity position, {required List<ForestEffect> effects}) {
@@ -304,7 +311,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     switch (gameEvent) {
       case ItemPickedUpEventEntity(:final itemId, :final kind):
         _showMessage(switch (kind) {
-          ToolKind.axe => Internationalize.forestMessagePickedUpAxe,
+          ToolKind.axe =>
+            _isTouchInput ? Internationalize.forestMessagePickedUpAxeTouch : Internationalize.forestMessagePickedUpAxe,
         });
         effects.add(ItemPickedUpEffect(itemId: itemId));
       case PlayerBlockedEventEntity():

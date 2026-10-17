@@ -1,9 +1,9 @@
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/core/config/constants/enum/arena/arena_level_item_status.dart';
-import 'package:rpg/core/config/constants/enum/arena/power_tone.dart';
-import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
-import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
-import 'package:rpg/layers/presentation/features/arena/models/arena_level_item_data.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/core/config/constants/enum/arena/arena_level_item_status.dart';
+import 'package:farming/core/config/constants/enum/arena/power_tone.dart';
+import 'package:farming/core/config/constants/enum/arena_level_id.dart';
+import 'package:farming/core/config/constants/enum/enemy_kind.dart';
+import 'package:farming/layers/presentation/features/arena/models/arena_level_item_data.dart';
 
 abstract final class ArenaLevelItemDataMock {
   static ArenaLevelItemData get rookieOpen => ArenaLevelItemData(

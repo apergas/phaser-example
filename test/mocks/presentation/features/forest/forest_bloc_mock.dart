@@ -31,6 +31,7 @@ abstract final class ForestBlocMock {
     required MockNavigationService navigationService,
     Exception? loadError,
     Set<int>? failingLoads,
+    bool isTouchInput = false,
   }) {
     final levelRepository = MockLevelRepository();
     final sessionRepository = MockGameSessionRepository();
@@ -63,6 +64,7 @@ abstract final class ForestBlocMock {
       getSkillOptionsUseCase: GetSkillOptionsUseCase(sessionRepository: sessionRepository),
       learnSkillUseCase: LearnSkillUseCase(sessionRepository: sessionRepository),
       navigationService: navigationService,
+      isTouchInput: isTouchInput,
     );
   }
 

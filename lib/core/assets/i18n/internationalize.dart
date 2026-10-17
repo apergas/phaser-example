@@ -83,6 +83,7 @@ class Internationalize {
   static String get forestMessageNeedAxe => '$_forest.message.needAxe'.tr();
   static String get forestMessageBlockedPath => '$_forest.message.blockedPath'.tr();
   static String get forestMessagePickedUpAxe => '$_forest.message.pickedUpAxe'.tr();
+  static String get forestMessagePickedUpAxeTouch => '$_forest.message.pickedUpAxeTouch'.tr();
   static String get forestMessageBlockedSite => '$_forest.message.blockedSite'.tr();
   static String get forestMessageNotEnoughResources => '$_forest.message.notEnoughResources'.tr();
   static String get forestMessageBuildingStarted => '$_forest.message.buildingStarted'.tr();
@@ -92,6 +93,8 @@ class Internationalize {
       '$_forest.message.woodGained'.tr(namedArgs: {'wood': '$wood'});
   static String forestMessagePlacing({required String name}) =>
       '$_forest.message.placing'.tr(namedArgs: {'name': name});
+  static String forestMessagePlacingTouch({required String name}) =>
+      '$_forest.message.placingTouch'.tr(namedArgs: {'name': name});
   static String forestMessageBuildingCompleted({required String name}) =>
       '$_forest.message.buildingCompleted'.tr(namedArgs: {'name': name});
   static String forestMessageQuestCompleted({required String title}) =>

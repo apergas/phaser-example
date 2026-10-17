@@ -62,11 +62,17 @@ class ForestPage extends StatelessWidget {
         getSkillOptionsUseCase: locator.get<GetSkillOptionsUseCase>(),
         learnSkillUseCase: locator.get<LearnSkillUseCase>(),
         navigationService: locator.get<NavigationService>(),
+        isTouchInput: _isTouchPlatform,
       )..add(const ForestStarted()),
       child: _ForestView(routeObserver: routeObserver),
     );
   }
 }
+
+bool get _isTouchPlatform => switch (defaultTargetPlatform) {
+  TargetPlatform.android || TargetPlatform.iOS => true,
+  _ => false,
+};
 
 class _ForestView extends StatefulWidget {
   const _ForestView({required this.routeObserver});
@@ -81,11 +87,6 @@ class _ForestViewState extends State<_ForestView> with RouteAware {
   ForestBloc get bloc => context.read<ForestBloc>();
 
   late ForestGame _game = _createGame();
-
-  bool get _isTouchPlatform => switch (defaultTargetPlatform) {
-    TargetPlatform.android || TargetPlatform.iOS => true,
-    _ => false,
-  };
 
   ForestGame _createGame() => ForestGame(
     bloc: bloc,

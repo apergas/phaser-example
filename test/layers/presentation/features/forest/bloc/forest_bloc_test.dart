@@ -258,6 +258,58 @@ void main() {
     );
   });
 
+  blocTest<ForestBloc, ForestState>(
+    'testWhenPickingUpTheAxeOnATouchScreenThenTellsToTapATree',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        ForestScenarioMock.axeNextToPlayer(),
+        navigationService: navigationService,
+        isTouchInput: true,
+      );
+    },
+    act: (bloc) {
+      // when
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestMapClicked(position: ForestScenarioMock.axeSpot));
+      ForestBlocMock.tickFor(bloc, 300);
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      final messages = ForestBlocMock.shownMessages(navigationService);
+      expect(messages, contains(Internationalize.forestMessagePickedUpAxeTouch));
+      expect(messages, isNot(contains(Internationalize.forestMessagePickedUpAxe)));
+    },
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenPlacingOnATouchScreenThenTellsToDragAndTap',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        ForestScenarioMock.fifteenWood(),
+        navigationService: navigationService,
+        isTouchInput: true,
+      );
+    },
+    act: (bloc) {
+      // when
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestBuildRequested(blueprint: BlueprintId.house));
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      final name = Internationalize.forestBlueprint(id: BlueprintId.house);
+      final messages = ForestBlocMock.shownMessages(navigationService);
+      expect(messages, contains(Internationalize.forestMessagePlacingTouch(name: name)));
+      expect(messages, isNot(contains(Internationalize.forestMessagePlacing(name: name))));
+    },
+  );
+
   group('testWhenCancellingThePlacementThenClosesItWithoutBuilding', () {
     late World world;
 

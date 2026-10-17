@@ -67,11 +67,16 @@ void main() {
 
     // when
     final placing = Internationalize.forestMessagePlacing(name: name);
+    final placingTouch = Internationalize.forestMessagePlacingTouch(name: name);
     final completed = Internationalize.forestMessageBuildingCompleted(name: name);
     final quest = Internationalize.forestMessageQuestCompleted(title: 'Recoge el hacha');
 
     // then
     expect(placing, 'Elige dónde construir: Casa. Clic derecho o Esc para cancelar.');
+    expect(
+      placingTouch,
+      'Elige dónde construir: Casa. Arrastra el dedo para moverlo y toca Construir aquí o Cancelar.',
+    );
     expect(completed, 'Construcción terminada: Casa');
     expect(quest, 'Misión completada: Recoge el hacha');
   });
@@ -104,6 +109,7 @@ void main() {
       Internationalize.forestMessageNeedAxe,
       Internationalize.forestMessageBlockedPath,
       Internationalize.forestMessagePickedUpAxe,
+      Internationalize.forestMessagePickedUpAxeTouch,
       Internationalize.forestMessageBlockedSite,
       Internationalize.forestMessageNotEnoughResources,
       Internationalize.forestMessageBuildingStarted,
@@ -129,6 +135,7 @@ void main() {
       'Necesitas un hacha para talar.',
       'Hay algo en medio. Acércate por otro lado.',
       '¡Hacha recogida! Haz clic en un árbol para talarlo.',
+      '¡Hacha recogida! Toca un árbol para talarlo.',
       'Ahí no cabe. Busca un sitio despejado.',
       'No tienes recursos suficientes.',
       'Manos a la obra…',

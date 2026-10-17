@@ -36,8 +36,6 @@ class FightReplayData {
     return FightReplayData(log: log, elapsedMs: elapsed, turnIndex: _lastImpactAt(elapsed));
   }
 
-  FightReplayData skipped() => advanced(durationMs);
-
   int maxHealthOf(FightSide side, int index) {
     return switch (side) {
       FightSide.hero => log.heroStats.health,

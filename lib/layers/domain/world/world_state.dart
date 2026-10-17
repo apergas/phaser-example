@@ -25,11 +25,13 @@ class WorldState {
     required List<GroundItemEntity> items,
     required List<DecorationEntity> decorations,
     required List<RockEntity> rocks,
+    required List<BuildingEntity> buildings,
     this.hero = const HeroEntity(),
   }) : assert(width > 0 && height > 0),
        trees = {for (final tree in trees) tree.id: tree},
        items = {for (final item in items) item.id: item},
        rocks = {for (final rock in rocks) rock.id: rock},
+       buildings = {for (final building in buildings) building.id: building},
        decorations = List.unmodifiable(decorations);
 
   final double width;
@@ -40,7 +42,7 @@ class WorldState {
   final Map<String, TreeEntity> trees;
   final Map<String, GroundItemEntity> items;
   final Map<String, RockEntity> rocks;
-  final Map<String, BuildingEntity> buildings = {};
+  final Map<String, BuildingEntity> buildings;
   final Map<String, StumpEntity> stumps = {};
   StatsEntity stats = const StatsEntity();
   InventoryEntity stock = const InventoryEntity();

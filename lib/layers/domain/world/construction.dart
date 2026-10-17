@@ -22,7 +22,11 @@ final class Construction implements Work<ConstructIntentEntity> {
     final player = state.player;
     final overlapsPlayer = position.distanceTo(player.position) < radius + player.radius;
     final overlapsItem = state.items.values.any((item) => position.distanceTo(item.position) < radius);
-    return state.isInside(position, radius) && !state.isBlocked(position, radius) && !overlapsPlayer && !overlapsItem;
+    return blueprint.isBuildable &&
+        state.isInside(position, radius) &&
+        !state.isBlocked(position, radius) &&
+        !overlapsPlayer &&
+        !overlapsItem;
   }
 
   static ConstructionResultEntity place(WorldState state, BlueprintEntity blueprint, PositionEntity position) {

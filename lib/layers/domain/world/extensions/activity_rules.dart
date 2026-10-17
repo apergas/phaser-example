@@ -10,6 +10,7 @@ extension ActivityRules on ActivityEntity {
       ChopIntentEntity() => PlayerActivity.chopping,
       ConstructIntentEntity() => PlayerActivity.constructing,
       MineIntentEntity() => PlayerActivity.mining,
+      DepositIntentEntity() => PlayerActivity.depositing,
     },
   };
 }

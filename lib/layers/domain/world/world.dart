@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../../core/config/constants/enum/chop_result.dart';
+import '../../../core/config/constants/enum/deposit_result.dart';
 import '../../../core/config/constants/enum/mine_result.dart';
 import '../../../core/config/constants/enum/resource.dart';
 import '../../../core/config/constants/enum/resume_construction_result.dart';
@@ -22,6 +23,7 @@ import '../entities/rock/rock_entity.dart';
 import '../entities/tree/stump_entity.dart';
 import '../entities/tree/tree_entity.dart';
 import 'construction.dart';
+import 'depositing.dart';
 import 'mining.dart';
 import 'extensions/inventory_rules.dart';
 import 'extensions/player_rules.dart';
@@ -42,6 +44,7 @@ class World {
     List<GroundItemEntity> items = const [],
     List<DecorationEntity> decorations = const [],
     List<RockEntity> rocks = const [],
+    List<BuildingEntity> buildings = const [],
     HeroEntity hero = const HeroEntity(),
   }) : this._(
          WorldState(
@@ -52,6 +55,7 @@ class World {
            items: items,
            decorations: decorations,
            rocks: rocks,
+           buildings: buildings,
            hero: hero,
          ),
        );
@@ -110,6 +114,12 @@ class World {
   MineResult orderMine(String rockId) {
     final result = Mining.check(_state, rockId);
     if (result == MineResult.ok) _navigation.goWorkOn(MineIntentEntity(rockId: rockId));
+    return result;
+  }
+
+  DepositResult orderDeposit(String buildingId) {
+    final result = Depositing.check(_state, buildingId);
+    if (result == DepositResult.ok) _navigation.goWorkOn(DepositIntentEntity(buildingId: buildingId));
     return result;
   }
 

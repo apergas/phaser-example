@@ -5,6 +5,7 @@ abstract final class Rules {
   static const double chopIntervalMs = 750;
   static const double hammerIntervalMs = 650;
   static const double mineIntervalMs = 750;
+  static const double depositIntervalMs = 400;
   static const double workGap = 2;
   static const double reachTolerance = 6;
   static const double pickUpRange = 14;

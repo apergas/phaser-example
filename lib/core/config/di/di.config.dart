@@ -60,6 +60,8 @@ import 'package:farming/layers/domain/use-cases/game/chop_tree_use_case.dart'
     as _i803;
 import 'package:farming/layers/domain/use-cases/game/construct_building_use_case.dart'
     as _i349;
+import 'package:farming/layers/domain/use-cases/game/deposit_use_case.dart'
+    as _i867;
 import 'package:farming/layers/domain/use-cases/game/get_build_options_use_case.dart'
     as _i109;
 import 'package:farming/layers/domain/use-cases/game/get_player_status_use_case.dart'
@@ -164,6 +166,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i349.ConstructBuildingUseCase>(
       () => _i349.ConstructBuildingUseCase(
+        sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i867.DepositUseCase>(
+      () => _i867.DepositUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );

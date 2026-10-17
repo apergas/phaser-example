@@ -8,12 +8,16 @@ class BlueprintEntity {
   final Map<Resource, int> cost;
   final int hitsToBuild;
   final double footprintRadius;
+  final bool isBuildable;
+  final bool isDropOff;
 
   const BlueprintEntity({
     required this.id,
     required this.cost,
     required this.hitsToBuild,
     required this.footprintRadius,
+    this.isBuildable = true,
+    this.isDropOff = false,
   });
 
   @override
@@ -22,8 +26,17 @@ class BlueprintEntity {
       other.id == id &&
       const MapEquality<Resource, int>().equals(other.cost, cost) &&
       other.hitsToBuild == hitsToBuild &&
-      other.footprintRadius == footprintRadius;
+      other.footprintRadius == footprintRadius &&
+      other.isBuildable == isBuildable &&
+      other.isDropOff == isDropOff;
 
   @override
-  int get hashCode => Object.hash(id, const MapEquality<Resource, int>().hash(cost), hitsToBuild, footprintRadius);
+  int get hashCode => Object.hash(
+    id,
+    const MapEquality<Resource, int>().hash(cost),
+    hitsToBuild,
+    footprintRadius,
+    isBuildable,
+    isDropOff,
+  );
 }

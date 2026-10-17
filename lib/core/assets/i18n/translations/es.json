@@ -52,7 +52,9 @@
       "house": "Casa",
       "forge": "Herrería",
       "armory": "Armería",
-      "mageTower": "Torre de magia"
+      "mageTower": "Torre de magia",
+      "camp": "Campamento",
+      "storehouse": "Almacén"
     },
     "quest": {
       "gatherWood": "Lleva 15 de madera al almacén",
@@ -91,6 +93,8 @@
       "woodGained": "+{wood} de madera",
       "stoneGained": "+{amount} de piedra",
       "carryFull": "Llevas la carga llena. Déjala en el campamento o en un almacén.",
+      "deposited": "Guardado en el almacén: {amounts}",
+      "nothingToDeposit": "No llevas nada que guardar.",
       "placing": "Elige dónde construir: {name}. Clic derecho o Esc para cancelar.",
       "placingTouch": "Elige dónde construir: {name}. Arrastra el dedo para moverlo y toca Construir aquí o Cancelar.",
       "buildingCompleted": "Construcción terminada: {name}",

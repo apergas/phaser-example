@@ -7,6 +7,7 @@ import '../../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../../../core/config/constants/enum/buy_gear_result.dart';
 import '../../../../../core/config/constants/enum/chop_result.dart';
 import '../../../../../core/config/constants/enum/construction_rejection.dart';
+import '../../../../../core/config/constants/enum/deposit_result.dart';
 import '../../../../../core/config/constants/enum/forest/facing.dart';
 import '../../../../../core/config/constants/enum/forest/quest_item_status.dart';
 import '../../../../../core/config/constants/enum/forest/work_tool.dart';
@@ -43,6 +44,7 @@ import '../../../../domain/use-cases/game/can_place_building_use_case.dart';
 import '../../../../domain/use-cases/game/chop_tree_use_case.dart';
 import '../../../../domain/use-cases/game/resume_construction_use_case.dart';
 import '../../../../domain/use-cases/game/construct_building_use_case.dart';
+import '../../../../domain/use-cases/game/deposit_use_case.dart';
 import '../../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_player_status_use_case.dart';
 import '../../../../domain/use-cases/game/get_quests_use_case.dart';
@@ -83,6 +85,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final CanPlaceBuildingUseCase _canPlaceBuildingUseCase;
   final ConstructBuildingUseCase _constructBuildingUseCase;
   final ResumeConstructionUseCase _resumeConstructionUseCase;
+  final DepositUseCase _depositUseCase;
   final AdvanceGameUseCase _advanceGameUseCase;
   final GetPlayerStatusUseCase _getPlayerStatusUseCase;
   final GetWorldSnapshotUseCase _getWorldSnapshotUseCase;
@@ -109,6 +112,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._canPlaceBuildingUseCase,
     required this._constructBuildingUseCase,
     required this._resumeConstructionUseCase,
+    required this._depositUseCase,
     required this._advanceGameUseCase,
     required this._getPlayerStatusUseCase,
     required this._getWorldSnapshotUseCase,
@@ -226,9 +230,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required String? buildingId,
     required String? rockId,
   }) {
-    if (buildingId != null && _resumeConstructionUseCase(buildingId: buildingId) == ResumeConstructionResult.ok) {
-      return;
-    }
+    if (buildingId != null && _orderAtBuilding(buildingId)) return;
     if (rockId != null) {
       switch (_mineRockUseCase(rockId: rockId)) {
         case MineResult.ok || MineResult.unknownRock:
@@ -251,6 +253,20 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         _showMessage(Internationalize.forestMessageNeedAxe);
       case ChopResult.carryFull:
         _showMessage(Internationalize.forestMessageCarryFull);
+    }
+  }
+
+  bool _orderAtBuilding(String buildingId) {
+    switch (_depositUseCase(buildingId: buildingId)) {
+      case DepositResult.ok:
+        return true;
+      case DepositResult.unknownBuilding:
+        return false;
+      case DepositResult.notADropOff:
+        return _resumeConstructionUseCase(buildingId: buildingId) == ResumeConstructionResult.ok;
+      case DepositResult.emptyLoad:
+        _showMessage(Internationalize.forestMessageNothingToDeposit);
+        return true;
     }
   }
 
@@ -381,6 +397,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       case RockBrokenEventEntity(:final rockId, :final stone):
         _showMessage(Internationalize.forestMessageStoneGained(amount: stone));
         effects.add(RockBrokenEffect(rockId: rockId, stone: stone));
+      case DepositedEventEntity(:final load):
+        _showMessage(Internationalize.forestMessageDeposited(amounts: _amounts(load)));
     }
   }
 
@@ -453,6 +471,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     PlayerActivity.chopping => WorkTool.axe,
     PlayerActivity.constructing => WorkTool.hammer,
     PlayerActivity.mining => WorkTool.pickaxe,
+    PlayerActivity.depositing => null,
   };
 
   Facing _facingFor(double dx, double dy) {

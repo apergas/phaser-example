@@ -201,6 +201,9 @@
     "floating": {
       "woodGained": "+{wood}",
       "stoneGained": "+{amount}"
+    },
+    "game": {
+      "saved": "Partida guardada"
     }
   },
   "arena": {

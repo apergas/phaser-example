@@ -23,6 +23,8 @@ import '../../../domain/use-cases/game/get_stock_use_case.dart';
 import '../../../domain/use-cases/game/get_upgrade_options_use_case.dart';
 import '../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
 import '../../../domain/use-cases/game/move_player_use_case.dart';
+import '../../../domain/use-cases/game/new_game_use_case.dart';
+import '../../../domain/use-cases/game/save_game_use_case.dart';
 import '../../../domain/use-cases/game/start_game_use_case.dart';
 import '../../../domain/use-cases/hero/buy_gear_use_case.dart';
 import '../../../domain/use-cases/hero/get_gear_options_use_case.dart';
@@ -71,6 +73,8 @@ class ForestPage extends StatelessWidget {
         learnSkillUseCase: locator.get<LearnSkillUseCase>(),
         getUpgradeOptionsUseCase: locator.get<GetUpgradeOptionsUseCase>(),
         buyUpgradeUseCase: locator.get<BuyUpgradeUseCase>(),
+        saveGameUseCase: locator.get<SaveGameUseCase>(),
+        newGameUseCase: locator.get<NewGameUseCase>(),
         navigationService: locator.get<NavigationService>(),
         isTouchInput: _isTouchPlatform,
       )..add(const ForestStarted()),
@@ -108,11 +112,16 @@ class _ForestViewState extends State<_ForestView> with RouteAware {
     bloc.add(const ForestStarted());
   }
 
+  late final AppLifecycleListener _lifecycleListener;
+
   @override
   void initState() {
     super.initState();
+    _lifecycleListener = AppLifecycleListener(onPause: _onBackground, onHide: _onBackground);
     if (kIsWeb) BrowserContextMenu.disableContextMenu();
   }
+
+  void _onBackground() => bloc.add(const ForestPaused());
 
   @override
   void didChangeDependencies() {
@@ -129,6 +138,7 @@ class _ForestViewState extends State<_ForestView> with RouteAware {
 
   @override
   void dispose() {
+    _lifecycleListener.dispose();
     widget.routeObserver.unsubscribe(this);
     if (kIsWeb) BrowserContextMenu.enableContextMenu();
     super.dispose();
@@ -138,9 +148,13 @@ class _ForestViewState extends State<_ForestView> with RouteAware {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColors.black,
-      body: BlocBuilder<ForestBloc, ForestState>(
-        buildWhen: (previous, current) => previous.runtimeType != current.runtimeType,
-        builder: (context, state) => _bodyByState(state),
+      body: BlocListener<ForestBloc, ForestState>(
+        listenWhen: (previous, current) => previous is ForestSuccess && current is ForestInProgress,
+        listener: (context, state) => setState(() => _game = _createGame()),
+        child: BlocBuilder<ForestBloc, ForestState>(
+          buildWhen: (previous, current) => previous.runtimeType != current.runtimeType,
+          builder: (context, state) => _bodyByState(state),
+        ),
       ),
       bottomNavigationBar: _isTouchPlatform ? _placementBar() : null,
     );

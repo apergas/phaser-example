@@ -6,6 +6,7 @@ import 'hero_panel_data.dart';
 import 'quest_item_data.dart';
 import 'resource_item_data.dart';
 import 'tool_item_data.dart';
+import 'upgrade_item_data.dart';
 
 class HudData {
   static const int pendingQuestsShown = 2;
@@ -16,6 +17,7 @@ class HudData {
   final String questBadge;
   final List<QuestItemData> quests;
   final List<BuildItemData> buildItems;
+  final List<UpgradeItemData> upgradeItems;
   final bool isBuildLocked;
   final HeroPanelData hero;
 
@@ -26,6 +28,7 @@ class HudData {
     required this.questBadge,
     required this.quests,
     required this.buildItems,
+    required this.upgradeItems,
     required this.isBuildLocked,
     required this.hero,
   });
@@ -40,6 +43,7 @@ class HudData {
           other.questBadge == questBadge &&
           const ListEquality<QuestItemData>().equals(other.quests, quests) &&
           const ListEquality<BuildItemData>().equals(other.buildItems, buildItems) &&
+          const ListEquality<UpgradeItemData>().equals(other.upgradeItems, upgradeItems) &&
           other.isBuildLocked == isBuildLocked &&
           other.hero == hero;
 
@@ -51,6 +55,7 @@ class HudData {
     questBadge,
     Object.hashAll(quests),
     Object.hashAll(buildItems),
+    Object.hashAll(upgradeItems),
     isBuildLocked,
     hero,
   );

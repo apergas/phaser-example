@@ -24,6 +24,9 @@ import '../../../../../core/config/constants/enum/skill_id.dart';
 import '../../../../../core/config/constants/enum/skill_option_state.dart';
 import '../../../../../core/config/constants/enum/tool_kind.dart';
 import '../../../../../core/config/constants/enum/resume_construction_result.dart';
+import '../../../../../core/config/constants/enum/upgrade_id.dart';
+import '../../../../../core/config/constants/enum/upgrade_option_state.dart';
+import '../../../../../core/config/constants/enum/upgrade_result.dart';
 import '../../../../../core/error-handling/exceptions/app_exceptions.dart';
 import '../../../../../core/error-handling/exceptions/custom_exception.dart';
 import '../../../../../core/services/navigation/source/navigation_service.dart';
@@ -37,10 +40,13 @@ import '../../../../domain/entities/gear/gear_entity.dart';
 import '../../../../domain/entities/gear/gear_option_entity.dart';
 import '../../../../domain/entities/geometry/position_entity.dart';
 import '../../../../domain/entities/hero/skill_option_entity.dart';
+import '../../../../domain/entities/upgrade/upgrade_option_entity.dart';
 import '../../../../domain/rules/gear.dart';
 import '../../../../domain/rules/rules.dart';
 import '../../../../domain/rules/skills.dart';
+import '../../../../domain/rules/upgrades.dart';
 import '../../../../domain/use-cases/game/advance_game_use_case.dart';
+import '../../../../domain/use-cases/game/buy_upgrade_use_case.dart';
 import '../../../../domain/use-cases/game/can_place_building_use_case.dart';
 import '../../../../domain/use-cases/game/chop_tree_use_case.dart';
 import '../../../../domain/use-cases/game/resume_construction_use_case.dart';
@@ -50,6 +56,7 @@ import '../../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_player_status_use_case.dart';
 import '../../../../domain/use-cases/game/get_quests_use_case.dart';
 import '../../../../domain/use-cases/game/get_stock_use_case.dart';
+import '../../../../domain/use-cases/game/get_upgrade_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
 import '../../../../domain/use-cases/game/mine_rock_use_case.dart';
 import '../../../../domain/use-cases/game/move_player_use_case.dart';
@@ -76,6 +83,7 @@ import '../models/quest_item_data.dart';
 import '../models/resource_item_data.dart';
 import '../models/skill_item_data.dart';
 import '../models/tool_item_data.dart';
+import '../models/upgrade_item_data.dart';
 
 part 'forest_event.dart';
 part 'forest_state.dart';
@@ -100,6 +108,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final BuyGearUseCase _buyGearUseCase;
   final GetSkillOptionsUseCase _getSkillOptionsUseCase;
   final LearnSkillUseCase _learnSkillUseCase;
+  final GetUpgradeOptionsUseCase _getUpgradeOptionsUseCase;
+  final BuyUpgradeUseCase _buyUpgradeUseCase;
   final NavigationService _navigationService;
   final bool _isTouchInput;
 
@@ -128,6 +138,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._buyGearUseCase,
     required this._getSkillOptionsUseCase,
     required this._learnSkillUseCase,
+    required this._getUpgradeOptionsUseCase,
+    required this._buyUpgradeUseCase,
     required this._navigationService,
     required this._isTouchInput,
   }) : super(const ForestInitial()) {
@@ -142,6 +154,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         ForestGearPurchaseRequested() => _onGearPurchaseRequested(event, emit),
         ForestSkillLearnRequested() => _onSkillLearnRequested(event, emit),
         ForestArenaRequested() => _onArenaRequested(event, emit),
+        ForestUpgradeRequested() => _onUpgradeRequested(event, emit),
       };
     });
   }
@@ -366,6 +379,27 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     }
   }
 
+  Future<void> _onUpgradeRequested(ForestUpgradeRequested event, Emitter<ForestState> emit) async {
+    if (state is! ForestSuccess) return;
+    final effects = <ForestEffect>[];
+    _buyUpgrade(event.upgrade, effects: effects);
+    emit(ForestSuccess(data: _buildData(effects: effects)));
+  }
+
+  void _buyUpgrade(UpgradeId id, {required List<ForestEffect> effects}) {
+    switch (_buyUpgradeUseCase(id: id)) {
+      case UpgradeResult.ok:
+        _showMessage(Internationalize.forestMessageUpgradePurchased(name: Internationalize.forestUpgradeName(id: id)));
+        effects.add(UpgradePurchasedEffect(upgrade: id));
+      case UpgradeResult.notEnoughResources:
+        _showMessage(Internationalize.forestMessageNotEnoughResources);
+      case UpgradeResult.noWorkshop:
+        _showMessage(Internationalize.forestUpgradeNeedsWorkshop);
+      case UpgradeResult.alreadyOwned:
+        _showMessage(Internationalize.forestMessageUpgradeOwned);
+    }
+  }
+
   void _react(GameEventEntity gameEvent, {required double fromX, required List<ForestEffect> effects}) {
     switch (gameEvent) {
       case ItemPickedUpEventEntity(:final itemId, :final kind):
@@ -504,13 +538,14 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         for (final tool in ToolKind.values)
           ToolItemData(
             tool: tool,
-            name: Internationalize.forestTool(tool: tool),
+            name: _toolName(tool, level: status.inventory.toolLevel(tool)),
             isOwned: status.inventory.hasTool(tool),
           ),
       ],
       questBadge: '${quests.where((quest) => quest.isCompleted).length}/${quests.length}',
       quests: _questRows(quests),
       buildItems: [for (final option in _getBuildOptionsUseCase()) _buildItem(option)],
+      upgradeItems: [for (final option in _getUpgradeOptionsUseCase()) _upgradeItem(option)],
       isBuildLocked: _placement != null,
       hero: _heroPanel(),
     );
@@ -645,6 +680,29 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       costText: _amounts(option.cost),
       missingText: option.isAffordable ? null : Internationalize.forestMissing(amounts: _amounts(option.missing)),
       isEnabled: option.isAffordable,
+    );
+  }
+
+  String _toolName(ToolKind tool, {required int level}) {
+    final upgrade = Upgrades.reached(tool, level);
+    return upgrade == null
+        ? Internationalize.forestTool(tool: tool)
+        : Internationalize.forestUpgradeName(id: upgrade.id);
+  }
+
+  UpgradeItemData _upgradeItem(UpgradeOptionEntity option) {
+    final upgrade = option.upgrade;
+    return UpgradeItemData(
+      id: upgrade.id,
+      name: Internationalize.forestUpgradeName(id: upgrade.id),
+      effectText: Internationalize.forestUpgradeEffect(id: upgrade.id, percent: 100 - Rules.upgradedHitsPercent),
+      costText: option.state == UpgradeOptionState.owned ? Internationalize.forestUpgradeOwned : _amounts(upgrade.cost),
+      reasonText: switch (option.state) {
+        UpgradeOptionState.needsBuilding => Internationalize.forestUpgradeNeedsWorkshop,
+        UpgradeOptionState.unaffordable => Internationalize.forestMissing(amounts: _amounts(option.missing)),
+        UpgradeOptionState.available || UpgradeOptionState.owned => null,
+      },
+      canBuy: option.canBuy,
     );
   }
 

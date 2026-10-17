@@ -32,7 +32,8 @@
       "missing": "Faltan {amounts}",
       "arena": "Arena",
       "stock": "Almacén",
-      "carry": "Carga {amount}/{capacity}"
+      "carry": "Carga {amount}/{capacity}",
+      "workshop": "Taller"
     },
     "resource": {
       "wood": "Madera",
@@ -107,7 +108,9 @@
       "gearNotNextTier": "Antes tienes que comprar la pieza anterior.",
       "skillLearned": "Has aprendido: {name}",
       "skillUpgraded": "Has mejorado: {name} (Nv {level})",
-      "skillMaxLevel": "Esa habilidad ya está al nivel máximo."
+      "skillMaxLevel": "Esa habilidad ya está al nivel máximo.",
+      "upgradePurchased": "Has mejorado tu herramienta: {name}",
+      "upgradeOwned": "Ya tienes esa mejora."
     },
     "hero": {
       "title": "Héroe",
@@ -166,6 +169,19 @@
         "descriptionLevel2": "Un 25 % de posibilidades de esquivar cada golpe.",
         "descriptionLevel3": "Un 30 % de posibilidades de esquivar cada golpe."
       }
+    },
+    "upgrade": {
+      "title": "Mejoras de herramientas",
+      "ironAxe": {
+        "name": "Hacha de hierro",
+        "effect": "Talas con un {percent} % menos de golpes"
+      },
+      "ironPickaxe": {
+        "name": "Pico de hierro",
+        "effect": "Picas con un {percent} % menos de golpes"
+      },
+      "owned": "Comprada",
+      "needsWorkshop": "Construye el Taller"
     },
     "placement": {
       "confirm": "Construir aquí",

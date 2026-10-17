@@ -1,5 +1,6 @@
 import '../../../../../core/config/constants/enum/gear_id.dart';
 import '../../../../../core/config/constants/enum/skill_id.dart';
+import '../../../../../core/config/constants/enum/upgrade_id.dart';
 import '../../../../domain/entities/building/building_entity.dart';
 
 sealed class ForestEffect {
@@ -164,4 +165,17 @@ final class RockBrokenEffect extends ForestEffect {
 
   @override
   int get hashCode => Object.hash(RockBrokenEffect, rockId, stone);
+}
+
+final class UpgradePurchasedEffect extends ForestEffect {
+  final UpgradeId upgrade;
+
+  const UpgradePurchasedEffect({required this.upgrade});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is UpgradePurchasedEffect && other.upgrade == upgrade;
+
+  @override
+  int get hashCode => Object.hash(UpgradePurchasedEffect, upgrade);
 }

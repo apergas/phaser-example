@@ -65,7 +65,6 @@ class Internationalize {
     BlueprintId.mageTower => '$_forest.blueprint.mageTower'.tr(),
   };
   static String forestQuestTitle({required QuestId id}) => switch (id) {
-    QuestId.pickUpAxe => '$_forest.quest.pickUpAxe'.tr(),
     QuestId.gatherWood => '$_forest.quest.gatherWood'.tr(),
     QuestId.buildHouse => '$_forest.quest.buildHouse'.tr(),
     QuestId.buildForge => '$_forest.quest.buildForge'.tr(),

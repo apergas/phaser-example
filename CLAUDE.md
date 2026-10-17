@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `lib/layers/domain/`, `lib/layers/data/`, `lib/layers/presentation/` — see Architecture.
 - `test/` mirrors `lib/`; `test/mocks/` holds centralised mock data; `test/helpers/` has `loadSpanishTranslations` (`spanish_translations.dart`), `pumpUntil` (`pump_until.dart`) and `hud_test_app.dart`; `test/architecture_test.dart` enforces the layer rules.
 - `android/`, `ios/`, `web/` — Flutter runners (app name `Farming`, ids `com.apergas.farming`, landscape only on mobile: Android `userLandscape`, iOS landscape left/right + full screen).
-- `asset-packs/lpc/` — raw LPC art, `build_assets.py`, which generates `lib/core/assets/images/lpc/`, and `build_app_icon.py`, which draws the app icon (the oak of `forest.png` on `#0E150E`, also the launch colour) for Android, iOS and the web.
+- `asset-packs/lpc/` — raw LPC art, `build_assets.py`, which generates `lib/core/assets/images/lpc/`, and `build_app_icon.py`, which draws the app icon (the oak of `forest.png` on `#0E150E`, also the launch colour) for Android (legacy icon plus the adaptive icon foreground), iOS and the web.
 - `.github/workflows/deploy.yml` — Flutter pinned to 3.47.6 (`flutter-version` in `subosito/flutter-action`, bump it in its own commit); on pushes to `main` that touch the app: `build_runner` + `git diff --exit-code`, `flutter analyze`, `flutter test`, golden tests in Chrome, `flutter build web --base-href /phaser-example/` (production env file) and publish `build/web` to GitHub Pages (https://apergas.github.io/phaser-example/). Android and iOS are tested locally only.
 - `docs/GAME_DESIGN.md` — game analysis and ideas for new mechanics (not implemented).
 

@@ -146,7 +146,7 @@
     "title": "Arena",
     "heroPower": "Tu Poder: {power}",
     "power": "Poder {power}",
-    "reward": "+{amount} de oro",
+    "reward": "+{amounts}",
     "cleared": "Ganado",
     "locked": "Cerrado",
     "fight": "Empezar pelea",

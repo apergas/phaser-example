@@ -13,7 +13,6 @@ import '../../../../../core/config/constants/enum/fight_advice.dart';
 import '../../../../../core/config/constants/enum/fight_side.dart';
 import '../../../../../core/config/constants/enum/gear_id.dart';
 import '../../../../../core/config/constants/enum/gear_slot.dart';
-import '../../../../../core/config/constants/enum/resource.dart';
 import '../../../../../core/config/constants/enum/skill_id.dart';
 import '../../../../../core/error-handling/exceptions/app_exceptions.dart';
 import '../../../../../core/error-handling/exceptions/custom_exception.dart';
@@ -218,7 +217,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
       return ArenaResultData(
         isVictory: true,
         title: _isFirstChampionship ? Internationalize.arenaChampion : Internationalize.arenaVictory,
-        detail: Internationalize.arenaReward(amount: log.reward[Resource.gold] ?? 0),
+        detail: Internationalize.arenaReward(amounts: log.reward),
       );
     }
     final advice = _advice;
@@ -249,7 +248,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
       enemiesText: _enemiesText(level),
       powerText: Internationalize.arenaPower(power: level.power),
       tone: _tone(levelPower: level.power, heroPower: heroPower),
-      rewardText: Internationalize.arenaReward(amount: status.nextReward[Resource.gold] ?? 0),
+      rewardText: Internationalize.arenaReward(amounts: status.nextReward),
       status: switch (status) {
         ArenaLevelStatusEntity(isCleared: true) => ArenaLevelItemStatus.cleared,
         ArenaLevelStatusEntity(isUnlocked: true) => ArenaLevelItemStatus.open,

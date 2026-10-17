@@ -162,7 +162,14 @@ class Internationalize {
   static String get arenaTitle => '$_arena.title'.tr();
   static String arenaHeroPower({required int power}) => '$_arena.heroPower'.tr(namedArgs: {'power': '$power'});
   static String arenaPower({required int power}) => '$_arena.power'.tr(namedArgs: {'power': '$power'});
-  static String arenaReward({required int amount}) => '$_arena.reward'.tr(namedArgs: {'amount': '$amount'});
+  static String arenaReward({required Map<Resource, int> amounts}) => '$_arena.reward'.tr(
+    namedArgs: {
+      'amounts': [
+        for (final resource in Resource.values)
+          if (amounts[resource] case final amount? when amount > 0) forestAmount(resource: resource, amount: amount),
+      ].join(', '),
+    },
+  );
   static String get arenaCleared => '$_arena.cleared'.tr();
   static String get arenaLocked => '$_arena.locked'.tr();
   static String get arenaFight => '$_arena.fight'.tr();

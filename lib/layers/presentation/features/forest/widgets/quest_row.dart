@@ -17,6 +17,8 @@ class QuestRow extends StatelessWidget {
 
   bool get _isDone => quest.status == QuestItemStatus.done;
 
+  bool get _isChecked => _isDone || quest.status == QuestItemStatus.folded;
+
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -52,6 +54,7 @@ class QuestRow extends StatelessWidget {
       QuestItemStatus.done => CustomColors.questDone,
       QuestItemStatus.current => CustomColors.hudAccent,
       QuestItemStatus.pending => CustomColors.hudMuted,
+      QuestItemStatus.folded => CustomColors.questDone,
     };
     return Container(
       key: checkKey,
@@ -62,7 +65,7 @@ class QuestRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       padding: const EdgeInsets.all(2),
-      child: _isDone ? const ColoredBox(color: CustomColors.questDone) : null,
+      child: _isChecked ? const ColoredBox(color: CustomColors.questDone) : null,
     );
   }
 
@@ -70,6 +73,7 @@ class QuestRow extends StatelessWidget {
     final color = switch (quest.status) {
       QuestItemStatus.done || QuestItemStatus.pending => CustomColors.hudMuted,
       QuestItemStatus.current => CustomColors.hudText,
+      QuestItemStatus.folded => CustomColors.hudMuted,
     };
     return CustomTextStyles.system15w600.copyWith(
       color: color,

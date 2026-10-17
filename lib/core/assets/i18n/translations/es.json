@@ -25,6 +25,10 @@
       "build": "Construir",
       "quests": "Misiones",
       "questDone": "Hecha",
+      "questsDone": {
+        "one": "{count} hecha",
+        "other": "{count} hechas"
+      },
       "missing": "Faltan {amounts}",
       "arena": "Arena"
     },

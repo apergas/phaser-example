@@ -52,6 +52,8 @@ class Internationalize {
   static String get forestQuests => '$_forest.hud.quests'.tr();
   static String get forestArena => '$_forest.hud.arena'.tr();
   static String get forestQuestDone => '$_forest.hud.questDone'.tr();
+  static String forestQuestsDone({required int count}) =>
+      '$_forest.hud.questsDone'.plural(count, namedArgs: {'count': '$count'});
   static String forestAmount({required Resource resource, required int amount}) => switch (resource) {
     Resource.wood => '$_forest.amount.wood'.tr(namedArgs: {'amount': '$amount'}),
     Resource.gold => '$_forest.amount.gold'.tr(namedArgs: {'amount': '$amount'}),

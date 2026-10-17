@@ -21,7 +21,7 @@ El juego se migró a SwiftUI + SpriteKit en `/Users/axelperezgaspar/farming-ios`
 |---|---|---|
 | Base (bosque, construcción, héroe, arena C0–C8) | ✅ | ✅ portada (M0–M7) |
 | Reanudar una obra a medias | ✅ `a16317c`, en `feature/PROJECT-X-arena` (#54) | ✅ (D18), con la guarda de no reiniciar la obra en curso |
-| Nombre *Farming*, icono del roble, textos táctiles | ✅ ([X](2026-10-06-hero-arena/X-ios-alignment.md)), sin unir aún | ✅ |
+| Nombre *Farming*, icono del roble, textos táctiles | ✅ ([X](2026-10-06-hero-arena/X-ios-alignment.md)), en `feature/PROJECT-X-arena` (#60) | ✅ |
 | C9 Maná | — | ✅ |
 | C10 Pelea sin saltar | — | ✅ |
 | C11 Habilidades de los enemigos | — | ✅ |
@@ -81,7 +81,7 @@ Lo que **no** se trae de iOS: lo propio de Swift/SpriteKit (cambio de eje Y, ais
 | C7 Misiones y equilibrado | ✅ | `develop` (#52, #53) | Daño por rangos, línea *Héroe*, equipo solo con oro, test de equilibrado. 639 tests. |
 | C8 Pulido de la arena | ✅ | `feature/PROJECT-X-arena` (sin PR) | Lo de `ARENA-FIXES.md`. 649 tests. |
 | Reanudar obras | ✅ | `feature/PROJECT-X-arena` (#54) | Tocar una obra a medias vuelve a martillearla sin pagar. 655 tests. |
-| X Alineación con iOS | ✅ | `feature/PROJECT-X-ios-alignment` (#55, sin PR) | Nombre `Farming`, ids `com.apergas.farming`, paquete `farming`, icono, arranque `#0E150E`, textos táctiles y no reiniciar la obra en curso. 658 tests. Probada en Chrome y en el emulador Android 16 (nombre, icono adaptativo, arranque verde, textos táctiles, la obra no se para); iOS sin probar. |
+| X Alineación con iOS | ✅ | `feature/PROJECT-X-arena` (#60, issue #55) | Nombre `Farming`, ids `com.apergas.farming`, paquete `farming`, icono, arranque `#0E150E`, textos táctiles y no reiniciar la obra en curso. 658 tests. Probada en Chrome y en el emulador Android 16 (nombre, icono adaptativo, arranque verde, textos táctiles, la obra no se para); iOS sin probar. |
 | C9 Maná | 📝 ficha | — | Hecha en iOS (`f8f7792`). Maná en los niveles 6–10 (20/25/30/35/50) y en las habilidades (20/30/45); balance por recurso. |
 | C10 Pelea sin saltar | 📝 ficha | — | Hecha en iOS (`cec553e`). Sin *Saltar* ni botón durante la repetición. |
 | C11 Habilidades de los enemigos | 📝 ficha | — | Hecha en iOS (`283d176`). Probabilidades 1,5/2/2,5/3/3,5 % en los niveles 6–10; orden de tiradas fijo. |
@@ -108,7 +108,7 @@ Fallos y mejoras vistos jugando que no son de ninguna fase. Cada uno va en su ra
 
 | Arreglo | Estado | Rama de destino | Notas |
 |---|---|---|---|
-| Rayas negras en el suelo de la arena | 📝 | `feature/PROJECT-X-arena` | Ver abajo. |
+| Rayas negras en el suelo de la arena | ✅ | `feature/PROJECT-X-arena` (`bugfix/PROJECT-X-arena-ground-seams`) | Hecho como se propone abajo: `ArenaGroundComponent` extiende `GroundComponent` y dibuja la valla encima; `arena-grass` sale del atlas. 660 tests. Comprobado en Chrome a dos tamaños de ventana. |
 | Empezar con el hacha en la mano | 📝 | `feature/PROJECT-X-town` (o `arena`) | Ver abajo. Pedido el 2026-10-17. |
 | El héroe lleva puesta su armadura en la arena | 💭 | `feature/PROJECT-X-arena` | Ver abajo. Hay que bajar capas LPC nuevas y decidir cómo se combinan con las armas. |
 
@@ -120,7 +120,7 @@ Fallos y mejoras vistos jugando que no son de ninguna fase. Cada uno va en su ra
 
 **Cómo se arregló en la aldea** (`d6e932d`, `[PROJECT-X]: Draw the ground as one repeated tile so no seams show between tiles`): `GroundComponent` dejó de pintar baldosa a baldosa. Ahora pinta **un solo rectángulo** del tamaño del mundo con un `Paint` cuyo `shader` es un `ImageShader(tile, TileMode.repeated, TileMode.repeated, identidad, filterQuality: FilterQuality.none)`, con `isAntiAlias = false`. La GPU repite la textura sin costuras a cualquier zoom. Para eso la baldosa tiene que ser una **imagen propia** (`lpc/ground.png`, que carga `LpcAssetsLoader`), no un trozo de un atlas: el shader repetiría el atlas entero.
 
-**Arreglo propuesto:**
+**Arreglo** (hecho el 2026-10-17):
 - La hierba de la arena es la misma que la del bosque (`ARENA_GRASS` en `build_assets.py` toma la misma celda de `terrain_atlas.png`). `ArenaAssetsLoader` carga también `lpc/ground.png`, y `ArenaAssets` la expone como `ground` (`Image`).
 - `ArenaGroundComponent` pinta la hierba con un `drawRect` del tamaño del escenario y el mismo `Paint` con `ImageShader` repetido que `GroundComponent`; la valla sigue igual. Si sale limpio, se puede compartir el `Paint` entre los dos componentes.
 - Si `arena-grass` ya no se usa, sale de `ArenaSpriteNames` y del atlas (`build_assets.py` regenera `arena.png`/`arena.json`). El test del atlas de la arena y `ArenaAssetsMock` cambian con él.
@@ -181,9 +181,9 @@ Fallos y mejoras vistos jugando que no son de ninguna fase. Cada uno va en su ra
 
 ## Siguiente paso
 
-1. PR de **X** (#55): `feature/PROJECT-X-ios-alignment` → `feature/PROJECT-X-arena`, tras la prueba manual del plan.
-2. **C9 → C10 → C11 → C12**, cada una desde `feature/PROJECT-X-arena`.
-3. PR de `feature/PROJECT-X-arena` a `develop`, con la prueba manual completa en web, Android e iOS.
+1. **C9 → C10 → C11 → C12**, cada una desde `feature/PROJECT-X-arena`.
+2. PR de `feature/PROJECT-X-arena` a `develop`, con la prueba manual completa en web, Android e iOS.
+3. Empezar con el hacha (ver *Arreglos y mejoras pendientes*), antes de F4.
 4. `git merge develop` en `feature/PROJECT-X-town` y **F1 → F3 → F4** (bloque 1) → **F5 → F6 → F7 → F8** (bloque 2) → **F2** (bloque 3).
 
 **Tracker de GitHub** (al día el 2026-10-17):

@@ -38,6 +38,8 @@ import 'package:farming/layers/data/repositories/level/mappers/level_mapper_dbo.
     as _i459;
 import 'package:farming/layers/data/repositories/level/mappers/position_mapper_dbo.dart'
     as _i453;
+import 'package:farming/layers/data/repositories/level/mappers/rock_mapper_dbo.dart'
+    as _i1063;
 import 'package:farming/layers/data/repositories/level/mappers/tree_mapper_dbo.dart'
     as _i553;
 import 'package:farming/layers/data/repositories/session/game_session_repository_impl.dart'
@@ -98,6 +100,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i188.DecorationMapperDBO>(() => _i188.DecorationMapperDBO());
     gh.factory<_i875.GroundItemMapperDBO>(() => _i875.GroundItemMapperDBO());
     gh.factory<_i453.PositionMapperDBO>(() => _i453.PositionMapperDBO());
+    gh.factory<_i1063.RockMapperDBO>(() => _i1063.RockMapperDBO());
     gh.factory<_i553.TreeMapperDBO>(() => _i553.TreeMapperDBO());
     gh.singleton<_i500.NavigationService>(() => _i769.NavifyImpl());
     gh.factory<_i459.LevelMapperDBO>(
@@ -106,6 +109,7 @@ extension GetItInjectableX on _i174.GetIt {
         treeMapperDBO: gh<_i553.TreeMapperDBO>(),
         decorationMapperDBO: gh<_i188.DecorationMapperDBO>(),
         groundItemMapperDBO: gh<_i875.GroundItemMapperDBO>(),
+        rockMapperDBO: gh<_i1063.RockMapperDBO>(),
       ),
     );
     gh.lazySingleton<_i576.GameSessionLocalDatasource>(

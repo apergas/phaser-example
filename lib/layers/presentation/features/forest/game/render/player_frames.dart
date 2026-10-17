@@ -26,7 +26,10 @@ abstract final class PlayerFrames {
   static int idleColumn(double seconds) => (seconds * RenderConstants.idleFps).floor() % RenderConstants.idleColumns;
 
   static int workColumn(WorkTool tool, double swingProgress) {
-    final sequence = tool == WorkTool.axe ? RenderConstants.chopSequence : RenderConstants.hammerSequence;
+    final sequence = switch (tool) {
+      WorkTool.axe => RenderConstants.chopSequence,
+      WorkTool.hammer || WorkTool.pickaxe => RenderConstants.hammerSequence,
+    };
     final step = math.min(sequence.length - 1, (swingProgress * sequence.length).floor());
     return sequence[math.max(0, step)];
   }
@@ -35,7 +38,10 @@ abstract final class PlayerFrames {
     return switch (pose) {
       IdlePose(:final withAxe) => withAxe ? PlayerSheet.idleAxe : PlayerSheet.idle,
       WalkPose(:final withAxe) => withAxe ? PlayerSheet.walkAxe : PlayerSheet.walk,
-      WorkPose(:final tool) => tool == WorkTool.axe ? PlayerSheet.chop : PlayerSheet.hammer,
+      WorkPose(:final tool) => switch (tool) {
+        WorkTool.axe => PlayerSheet.chop,
+        WorkTool.hammer || WorkTool.pickaxe => PlayerSheet.hammer,
+      },
     };
   }
 

@@ -12,21 +12,21 @@ abstract final class Blueprints {
 
   static const BlueprintEntity forge = BlueprintEntity(
     id: BlueprintId.forge,
-    cost: {Resource.wood: 25},
+    cost: {Resource.wood: 25, Resource.stone: 10},
     hitsToBuild: 10,
     footprintRadius: 40,
   );
 
   static const BlueprintEntity armory = BlueprintEntity(
     id: BlueprintId.armory,
-    cost: {Resource.wood: 25},
+    cost: {Resource.wood: 25, Resource.stone: 10},
     hitsToBuild: 10,
     footprintRadius: 40,
   );
 
   static const BlueprintEntity mageTower = BlueprintEntity(
     id: BlueprintId.mageTower,
-    cost: {Resource.wood: 30, Resource.gold: 40},
+    cost: {Resource.wood: 30, Resource.gold: 40, Resource.stone: 10},
     hitsToBuild: 12,
     footprintRadius: 40,
   );

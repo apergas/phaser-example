@@ -14,6 +14,7 @@ import '../../../../../core/config/constants/enum/gear_id.dart';
 import '../../../../../core/config/constants/enum/gear_option_state.dart';
 import '../../../../../core/config/constants/enum/gear_slot.dart';
 import '../../../../../core/config/constants/enum/learn_skill_result.dart';
+import '../../../../../core/config/constants/enum/mine_result.dart';
 import '../../../../../core/config/constants/enum/player_activity.dart';
 import '../../../../../core/config/constants/enum/quest_id.dart';
 import '../../../../../core/config/constants/enum/quest_line.dart';
@@ -46,6 +47,7 @@ import '../../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_player_status_use_case.dart';
 import '../../../../domain/use-cases/game/get_quests_use_case.dart';
 import '../../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
+import '../../../../domain/use-cases/game/mine_rock_use_case.dart';
 import '../../../../domain/use-cases/game/move_player_use_case.dart';
 import '../../../../domain/use-cases/game/start_game_use_case.dart';
 import '../../../../domain/use-cases/hero/buy_gear_use_case.dart';
@@ -77,6 +79,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final StartGameUseCase _startGameUseCase;
   final MovePlayerUseCase _movePlayerUseCase;
   final ChopTreeUseCase _chopTreeUseCase;
+  final MineRockUseCase _mineRockUseCase;
   final CanPlaceBuildingUseCase _canPlaceBuildingUseCase;
   final ConstructBuildingUseCase _constructBuildingUseCase;
   final ResumeConstructionUseCase _resumeConstructionUseCase;
@@ -102,6 +105,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._startGameUseCase,
     required this._movePlayerUseCase,
     required this._chopTreeUseCase,
+    required this._mineRockUseCase,
     required this._canPlaceBuildingUseCase,
     required this._constructBuildingUseCase,
     required this._resumeConstructionUseCase,
@@ -183,7 +187,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         _place(placement.blueprint, event.position, effects: effects);
       }
     } else if (!event.isSecondary) {
-      _orderAt(event.position, treeId: event.treeId, buildingId: event.buildingId);
+      _orderAt(event.position, treeId: event.treeId, buildingId: event.buildingId, rockId: event.rockId);
     }
     emit(ForestSuccess(data: _buildData(effects: effects)));
   }
@@ -213,8 +217,19 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     emit(ForestSuccess(data: _buildData(effects: const [])));
   }
 
-  void _orderAt(PositionEntity position, {required String? treeId, required String? buildingId}) {
+  void _orderAt(
+    PositionEntity position, {
+    required String? treeId,
+    required String? buildingId,
+    required String? rockId,
+  }) {
     if (buildingId != null && _resumeConstructionUseCase(buildingId: buildingId) == ResumeConstructionResult.ok) {
+      return;
+    }
+    if (rockId != null) {
+      if (_mineRockUseCase(rockId: rockId) == MineResult.noPickaxe) {
+        _showMessage(Internationalize.forestMessageNeedPickaxe);
+      }
       return;
     }
     if (treeId == null) {
@@ -322,6 +337,10 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         _showMessage(switch (kind) {
           ToolKind.axe =>
             _isTouchInput ? Internationalize.forestMessagePickedUpAxeTouch : Internationalize.forestMessagePickedUpAxe,
+          ToolKind.pickaxe =>
+            _isTouchInput
+                ? Internationalize.forestMessagePickedUpPickaxeTouch
+                : Internationalize.forestMessagePickedUpPickaxe,
         });
         effects.add(ItemPickedUpEffect(itemId: itemId));
       case PlayerBlockedEventEntity():
@@ -344,6 +363,11 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         effects.add(TreeSproutedEffect(stumpId: stumpId));
       case TreeRegrownEventEntity(:final tree):
         effects.add(TreeRegrownEffect(treeId: tree.id));
+      case RockHitEventEntity(:final rockId):
+        effects.add(RockHitEffect(rockId: rockId, fromX: fromX));
+      case RockBrokenEventEntity(:final rockId, :final stone):
+        _showMessage(Internationalize.forestMessageStoneGained(amount: stone));
+        effects.add(RockBrokenEffect(rockId: rockId, stone: stone));
     }
   }
 
@@ -391,25 +415,29 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     final dx = status.position.x - lastPosition.x;
     final dy = status.position.y - lastPosition.y;
     final isMoving = dx != 0 || dy != 0;
-    final isWorking = status.activity == PlayerActivity.chopping || status.activity == PlayerActivity.constructing;
+    final tool = _workTool(status.activity);
     final target = status.target;
     var facing = _facing;
-    if (isWorking && target != null) {
+    if (tool != null && target != null) {
       facing = _facingFor(target.x - status.position.x, target.y - status.position.y);
     } else if (isMoving) {
       facing = _facingFor(dx, dy);
     }
 
-    final PlayerPose pose = switch ((isWorking, isMoving)) {
-      (true, _) => WorkPose(
-        tool: status.activity == PlayerActivity.chopping ? WorkTool.axe : WorkTool.hammer,
-        swingProgress: status.swingProgress,
-      ),
-      (false, true) => WalkPose(withAxe: status.inventory.hasTool(ToolKind.axe)),
-      (false, false) => IdlePose(withAxe: status.inventory.hasTool(ToolKind.axe)),
+    final PlayerPose pose = switch ((tool, isMoving)) {
+      (final WorkTool tool, _) => WorkPose(tool: tool, swingProgress: status.swingProgress),
+      (null, true) => WalkPose(withAxe: status.inventory.hasTool(ToolKind.axe)),
+      (null, false) => IdlePose(withAxe: status.inventory.hasTool(ToolKind.axe)),
     };
     return PlayerRenderData(position: status.position, facing: facing, pose: pose);
   }
+
+  WorkTool? _workTool(PlayerActivity activity) => switch (activity) {
+    PlayerActivity.idle || PlayerActivity.walking => null,
+    PlayerActivity.chopping => WorkTool.axe,
+    PlayerActivity.constructing => WorkTool.hammer,
+    PlayerActivity.mining => WorkTool.pickaxe,
+  };
 
   Facing _facingFor(double dx, double dy) {
     if (dx.abs() > dy.abs()) return dx < 0 ? Facing.left : Facing.right;

@@ -8,6 +8,7 @@ import '../entities/geometry/position_entity.dart';
 import '../entities/hero/hero_entity.dart';
 import '../entities/item/ground_item_entity.dart';
 import '../entities/player/player_entity.dart';
+import '../entities/rock/rock_entity.dart';
 import '../entities/tree/stump_entity.dart';
 import '../entities/tree/tree_entity.dart';
 import 'extensions/obstacle_rules.dart';
@@ -20,10 +21,12 @@ class WorldState {
     required List<TreeEntity> trees,
     required List<GroundItemEntity> items,
     required List<DecorationEntity> decorations,
+    required List<RockEntity> rocks,
     this.hero = const HeroEntity(),
   }) : assert(width > 0 && height > 0),
        trees = {for (final tree in trees) tree.id: tree},
        items = {for (final item in items) item.id: item},
+       rocks = {for (final rock in rocks) rock.id: rock},
        decorations = List.unmodifiable(decorations);
 
   final double width;
@@ -33,6 +36,7 @@ class WorldState {
   final List<DecorationEntity> decorations;
   final Map<String, TreeEntity> trees;
   final Map<String, GroundItemEntity> items;
+  final Map<String, RockEntity> rocks;
   final Map<String, BuildingEntity> buildings = {};
   final Map<String, StumpEntity> stumps = {};
   StatsEntity stats = const StatsEntity();
@@ -40,6 +44,7 @@ class WorldState {
 
   List<ObstacleEntity> obstacles() => [
     for (final tree in trees.values) tree.footprint,
+    for (final rock in rocks.values) rock.footprint,
     for (final building in buildings.values) building.footprint,
   ];
 

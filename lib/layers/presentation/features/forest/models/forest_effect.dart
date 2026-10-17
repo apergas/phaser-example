@@ -137,3 +137,31 @@ final class TreeRegrownEffect extends ForestEffect {
   @override
   int get hashCode => Object.hash(TreeRegrownEffect, treeId);
 }
+
+final class RockHitEffect extends ForestEffect {
+  final String rockId;
+  final double fromX;
+
+  const RockHitEffect({required this.rockId, required this.fromX});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is RockHitEffect && other.rockId == rockId && other.fromX == fromX;
+
+  @override
+  int get hashCode => Object.hash(RockHitEffect, rockId, fromX);
+}
+
+final class RockBrokenEffect extends ForestEffect {
+  final String rockId;
+  final int stone;
+
+  const RockBrokenEffect({required this.rockId, required this.stone});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is RockBrokenEffect && other.rockId == rockId && other.stone == stone;
+
+  @override
+  int get hashCode => Object.hash(RockBrokenEffect, rockId, stone);
+}

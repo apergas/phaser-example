@@ -20,6 +20,8 @@ class ParticleBurstComponent extends Component {
   static const Color magicSparkleColor = Color(0xFF8FC8FF);
   static const Color bloodColor = Color(0xFF9E1B1B);
   static const Rect bloodDrop = Rect.fromLTWH(-1, -1, 2, 2);
+  static const Color stoneDark = Color(0xFF4B4F58);
+  static const Color stoneLight = Color(0xFF9AA0AA);
 
   final List<Particle> _particles;
   final Paint _paint = Paint();
@@ -45,7 +47,7 @@ class ParticleBurstComponent extends Component {
       final alpha = particle.alpha(_ageSeconds);
       switch (particle.kind) {
         case ParticleKind.woodChip:
-          _renderChip(canvas, at, particle.rotationDegrees, alpha);
+          _renderChip(canvas, at, particle.rotationDegrees, alpha, dark: chipDark, light: chipLight);
         case ParticleKind.dust:
           _paint.color = dustColor.withValues(alpha: alpha);
           canvas.drawCircle(Offset(at.x, at.y), dustRadius * particle.scale(_ageSeconds), _paint);
@@ -61,6 +63,8 @@ class ParticleBurstComponent extends Component {
             sparkleSize * particle.scale(_ageSeconds),
             magicSparkleColor.withValues(alpha: alpha),
           );
+        case ParticleKind.stoneChip:
+          _renderChip(canvas, at, particle.rotationDegrees, alpha, dark: stoneDark, light: stoneLight);
       }
     }
   }
@@ -70,13 +74,20 @@ class ParticleBurstComponent extends Component {
     canvas.drawRect(Rect.fromCenter(center: Offset(at.x, at.y), width: size, height: size), _paint);
   }
 
-  void _renderChip(Canvas canvas, PositionEntity at, double rotationDegrees, double alpha) {
+  void _renderChip(
+    Canvas canvas,
+    PositionEntity at,
+    double rotationDegrees,
+    double alpha, {
+    required Color dark,
+    required Color light,
+  }) {
     canvas.save();
     canvas.translate(at.x, at.y);
     canvas.rotate(rotationDegrees * math.pi / 180);
-    _paint.color = chipDark.withValues(alpha: alpha);
+    _paint.color = dark.withValues(alpha: alpha);
     canvas.drawRect(chipBody, _paint);
-    _paint.color = chipLight.withValues(alpha: alpha);
+    _paint.color = light.withValues(alpha: alpha);
     canvas.drawRect(chipHighlight, _paint);
     canvas.restore();
   }

@@ -5,8 +5,10 @@ import 'package:injectable/injectable.dart';
 import '../../../../../core/utils/seeded_random.dart';
 import '../source/level_local_datasource.dart';
 import 'dbo/decoration_dbo.dart';
+import 'dbo/item_dbo.dart';
 import 'dbo/level_dbo.dart';
 import 'dbo/point_dbo.dart';
+import 'dbo/rock_dbo.dart';
 import 'dbo/tree_dbo.dart';
 
 @Injectable(as: LevelLocalDatasource)
@@ -37,6 +39,12 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
     'old',
     'big',
   ];
+  static const int _rockSeed = 2026;
+  static const int _rockCount = 12;
+  static const double _minRockSpacing = 200;
+  static const double _rockTreeClearance = 60;
+  static const double _rockItemClearance = 80;
+  static const double _rockDecorationClearance = 48;
   static const int _decorationSeed = 1337;
   static const int _decorationAttempts = 107;
   static const int _decorationPlacements = 20;
@@ -59,19 +67,22 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
   static const double _spawnX = _width / 2;
   static const double _spawnY = _height / 2;
   static const PointDBO _playerStart = PointDBO(x: _spawnX, y: _spawnY);
+  static const ItemDBO _pickaxe = ItemDBO(id: 'pickaxe', kind: 'pickaxe', x: _spawnX + 212, y: _spawnY + 212);
 
   const LevelLocalDatasourceImpl();
 
   @override
   LevelDBO fetch() {
     final trees = _scatterTrees();
+    final rocks = _scatterRocks(trees);
     return LevelDBO(
       width: _width,
       height: _height,
       playerStart: _playerStart,
       trees: trees,
-      items: const [],
-      decorations: _scatterDecorations(trees),
+      items: const [_pickaxe],
+      decorations: _scatterDecorations(trees).where((decoration) => _isClear(decoration, rocks)).toList(),
+      rocks: rocks,
     );
   }
 
@@ -96,14 +107,45 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
     return trees;
   }
 
+  List<RockDBO> _scatterRocks(List<TreeDBO> trees) {
+    final random = SeededRandom(_rockSeed);
+    final rocks = <RockDBO>[];
+
+    var attempt = 0;
+    while (attempt < _rockCount * 50 && rocks.length < _rockCount) {
+      attempt++;
+      final x = _borderMargin + random.next() * (_width - _borderMargin * 2);
+      final y = _borderMargin + random.next() * (_height - _borderMargin * 2);
+      final clearOfSpawn = _distance(x, y, _spawnX, _spawnY) >= _spawnClearance;
+      final clearOfPickaxe = _distance(x, y, _pickaxe.x!, _pickaxe.y!) >= _rockItemClearance;
+      final clearOfTrees =
+          !_isUnderTree(x, y, trees) && trees.every((tree) => _distance(x, y, tree.x!, tree.y!) >= _rockTreeClearance);
+      final apart = rocks.every((rock) => _distance(x, y, rock.x!, rock.y!) >= _minRockSpacing);
+      if (clearOfSpawn && clearOfPickaxe && clearOfTrees && apart) {
+        rocks.add(RockDBO(id: 'rock-${rocks.length + 1}', x: x, y: y));
+      }
+    }
+    return rocks;
+  }
+
+  bool _isClear(DecorationDBO decoration, List<RockDBO> rocks) {
+    final x = decoration.x!;
+    final y = decoration.y!;
+    final onRock = rocks.any((rock) => _distance(x, y, rock.x!, rock.y!) < _rockDecorationClearance);
+    final onPickaxe = _distance(x, y, _pickaxe.x!, _pickaxe.y!) < _decorationSpacing;
+    return !onRock && !onPickaxe;
+  }
+
+  bool _isUnderTree(double x, double y, List<TreeDBO> trees) => trees.any(
+    (tree) => (x - tree.x!).abs() < _treeHalfWidth && y > tree.y! - _treeHeight && y < tree.y! + _treeRoots,
+  );
+
   List<DecorationDBO> _scatterDecorations(List<TreeDBO> trees) {
     final random = SeededRandom(_decorationSeed);
     final decorations = <DecorationDBO>[];
 
     bool isFree(double x, double y) {
-      final underTree = trees.any(
-        (tree) => (x - tree.x!).abs() < _treeHalfWidth && y > tree.y! - _treeHeight && y < tree.y! + _treeRoots,
-      );
+      final underTree = _isUnderTree(x, y, trees);
       final onSpawn = (x - _spawnX).abs() < _spawnHalfWidth && y > _spawnY - _spawnAbove && y < _spawnY + _spawnBelow;
       final crowded = decorations.any(
         (decoration) => _distance(x, y, decoration.x!, decoration.y!) < _decorationSpacing,

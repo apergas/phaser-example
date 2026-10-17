@@ -15,8 +15,8 @@ import 'quest_panel.dart';
 import 'resource_bar.dart';
 
 class HudOverlay extends StatefulWidget {
-  static const double narrowWidth = 480;
-  static const double buttonsBelowWidth = 1030;
+  static const double narrowWidth = 770;
+  static const double buttonsBelowWidth = 1260;
   static const double _margin = 12;
 
   final HudData hud;

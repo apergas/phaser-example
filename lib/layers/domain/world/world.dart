@@ -59,6 +59,38 @@ class World {
          ),
        );
 
+  World.restore({
+    required double width,
+    required double height,
+    required PlayerEntity player,
+    required List<TreeEntity> trees,
+    required List<StumpEntity> stumps,
+    required List<RockEntity> rocks,
+    required List<GroundItemEntity> items,
+    required List<DecorationEntity> decorations,
+    required List<BuildingEntity> buildings,
+    required HeroEntity hero,
+    required StatsEntity stats,
+    required InventoryEntity stock,
+    required Map<String, int> idCounters,
+  }) : this._(
+         WorldState(
+           width: width,
+           height: height,
+           player: player,
+           trees: trees,
+           items: items,
+           decorations: decorations,
+           rocks: rocks,
+           buildings: buildings,
+           hero: hero,
+           stumps: stumps,
+           stats: stats,
+           stock: stock,
+           idCounters: idCounters,
+         ),
+       );
+
   World._(this._state) : _navigation = Navigation(_state);
 
   final WorldState _state;
@@ -85,6 +117,8 @@ class World {
   StatsEntity get stats => _state.stats;
 
   InventoryEntity get stock => _state.stock;
+
+  Map<String, int> get idCounters => _state.idCounters;
 
   HeroEntity get hero => _state.hero;
 

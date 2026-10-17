@@ -7,4 +7,6 @@ extension BuildingRules on BuildingEntity {
 
 extension BuildingListRules on Iterable<BuildingEntity> {
   bool hasComplete(BlueprintId id) => any((building) => building.blueprint.id == id && building.isComplete);
+
+  int completeCount(BlueprintId id) => where((building) => building.blueprint.id == id && building.isComplete).length;
 }

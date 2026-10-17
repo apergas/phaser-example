@@ -57,7 +57,12 @@
       "buildMageTower": "Construye la Torre de magia",
       "learnASkill": "Aprende una habilidad",
       "clearHalfArena": "Gana la mitad de los niveles de la arena",
-      "becomeChampion": "Gana al Jefe bárbaro"
+      "becomeChampion": "Gana al Jefe bárbaro",
+      "fellTenTrees": "Tala 10 árboles",
+      "fellAnOak": "Tala un roble",
+      "gatherFortyWood": "Ten 40 de madera a la vez",
+      "buildTwoHouses": "Ten 2 casas terminadas",
+      "seeATreeRegrow": "Ve rebrotar un árbol"
     },
     "questLine": {
       "village": "Aldea",

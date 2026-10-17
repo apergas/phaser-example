@@ -75,6 +75,11 @@ class Internationalize {
     QuestId.learnASkill => '$_forest.quest.learnASkill'.tr(),
     QuestId.clearHalfArena => '$_forest.quest.clearHalfArena'.tr(),
     QuestId.becomeChampion => '$_forest.quest.becomeChampion'.tr(),
+    QuestId.fellTenTrees => '$_forest.quest.fellTenTrees'.tr(),
+    QuestId.fellAnOak => '$_forest.quest.fellAnOak'.tr(),
+    QuestId.gatherFortyWood => '$_forest.quest.gatherFortyWood'.tr(),
+    QuestId.buildTwoHouses => '$_forest.quest.buildTwoHouses'.tr(),
+    QuestId.seeATreeRegrow => '$_forest.quest.seeATreeRegrow'.tr(),
   };
   static String forestQuestLine({required QuestLine line}) => switch (line) {
     QuestLine.village => '$_forest.questLine.village'.tr(),

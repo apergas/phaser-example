@@ -17,7 +17,7 @@ abstract final class Blueprints {
     cost: {Resource.wood: 20},
     hitsToBuild: 8,
     footprintRadius: 40,
-    isDropOff: true,
+    accepts: {Resource.wood, Resource.stone},
   );
 
   static const BlueprintEntity quarry = BlueprintEntity(
@@ -25,6 +25,7 @@ abstract final class Blueprints {
     cost: {Resource.wood: 25},
     hitsToBuild: 8,
     footprintRadius: 40,
+    accepts: {Resource.stone},
     placementRule: NearRockPlacementRuleEntity(range: Rules.quarryRockRange),
   );
 
@@ -55,7 +56,7 @@ abstract final class Blueprints {
     hitsToBuild: 1,
     footprintRadius: 30,
     isBuildable: false,
-    isDropOff: true,
+    accepts: {Resource.wood, Resource.stone},
   );
 
   static const List<BlueprintEntity> all = [house, storehouse, quarry, forge, armory, mageTower, camp];

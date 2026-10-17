@@ -10,7 +10,7 @@ class BlueprintEntity {
   final int hitsToBuild;
   final double footprintRadius;
   final bool isBuildable;
-  final bool isDropOff;
+  final Set<Resource> accepts;
   final PlacementRuleEntity placementRule;
 
   const BlueprintEntity({
@@ -19,7 +19,7 @@ class BlueprintEntity {
     required this.hitsToBuild,
     required this.footprintRadius,
     this.isBuildable = true,
-    this.isDropOff = false,
+    this.accepts = const <Resource>{},
     this.placementRule = const AnywherePlacementRuleEntity(),
   });
 
@@ -31,7 +31,7 @@ class BlueprintEntity {
       other.hitsToBuild == hitsToBuild &&
       other.footprintRadius == footprintRadius &&
       other.isBuildable == isBuildable &&
-      other.isDropOff == isDropOff &&
+      const SetEquality<Resource>().equals(other.accepts, accepts) &&
       other.placementRule == placementRule;
 
   @override
@@ -41,7 +41,7 @@ class BlueprintEntity {
     hitsToBuild,
     footprintRadius,
     isBuildable,
-    isDropOff,
+    const SetEquality<Resource>().hash(accepts),
     placementRule,
   );
 }

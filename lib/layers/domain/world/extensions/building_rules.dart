@@ -2,7 +2,7 @@ import '../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../entities/building/building_entity.dart';
 
 extension BuildingRules on BuildingEntity {
-  bool get acceptsDeposits => isComplete && blueprint.isDropOff;
+  bool get acceptsDeposits => isComplete && blueprint.accepts.isNotEmpty;
 
   BuildingEntity hammer() => isComplete ? this : copyWith(hitsDone: hitsDone + 1);
 }

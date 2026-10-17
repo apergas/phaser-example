@@ -37,7 +37,7 @@ Que la partida sobreviva a cerrar la app o la pestaña: se guarda sola y tambié
 - niveles de habilidad entre 1 y `maxLevel` (el `assert` de `HeroEntity` no tiene tope);
 - `hitsTaken` de cada roca entre 0 y sus golpes;
 - estadísticas ≥ 0;
-- un nivel de herramienta sin mejora en el catálogo se recorta al máximo;
+- un nivel de herramienta por debajo de 1 es inválido (`InventoryRules.withToolLevel` lanza) y uno sin mejora en el catálogo se recorta al máximo de `Upgrades`;
 - una cantera guardada se queda aunque su roca ya esté rota (la regla de colocación no se vuelve a comprobar).
 
 **Datos:**

@@ -1,6 +1,6 @@
 # F8 · Taller y mejoras de herramientas — Implementation Plan
 
-> **Plan detallado (2026-10-17), escrito con el código tras F7 y la versión iOS** (plan `$IOS/docs/plans/2026-10-12-village/F8-workshop.md`, `819a4aa`; en iOS solo está hecha la tarea 1, `0234537`). Se implementa sin tests (regla del usuario); lo que falta de test está en *Para T1*. Cifras, orden de las comprobaciones, textos y arte, los del plan iOS salvo lo que dice *Desvíos*.
+> **Implementado el 2026-10-17 sin tests (regla del usuario); lo que falta de test está en *Para T1*.** Una sola rama `feature/PROJECT-F8-workshop`: el plan primero (escrito con el código tras F7 y el plan iOS `$IOS/docs/plans/2026-10-12-village/F8-workshop.md`, `819a4aa`; en iOS solo estaba hecha la tarea 1, `0234537`), un commit por tarea (TF8.1–TF8.5) y el cierre. El código se aplicó tal como está en el plan (solo `dart format` partió la línea de `_toolName`). Desvíos respecto a iOS, en *Desvíos respecto a iOS*: dos casos de uso en vez de métodos de `GameUseCase`, `World.updatePlayer` sin `@visibleForTesting`, claves `forest.upgrade.<id>.name`, título del panel en mayúsculas, `withToolLevel` con `ArgumentError`, el nombre mejorado lo pone el bloc, umbrales 1700 / 1100 px medidos con Roboto, insignia `x/19`. Cifras, orden de las comprobaciones, textos y arte (`workshop` 120 × 191; ningún frame anterior cambia), los de iOS.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use boost:subagent-driven-development (recommended) or boost:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Read the **Global Constraints** in [README.md](README.md) first; they apply to every task.
 
@@ -855,7 +855,9 @@ Y detrás de `_buildItem`:
 ```dart
   String _toolName(ToolKind tool, {required int level}) {
     final upgrade = Upgrades.reached(tool, level);
-    return upgrade == null ? Internationalize.forestTool(tool: tool) : Internationalize.forestUpgradeName(id: upgrade.id);
+    return upgrade == null
+        ? Internationalize.forestTool(tool: tool)
+        : Internationalize.forestUpgradeName(id: upgrade.id);
   }
 
   UpgradeItemData _upgradeItem(UpgradeOptionEntity option) {

@@ -130,7 +130,6 @@ class _ArenaViewState extends State<_ArenaView> {
         result: view.result,
         onLevelSelected: (levelId) => bloc.add(ArenaLevelSelected(levelId: levelId)),
         onFight: () => bloc.add(const ArenaFightRequested()),
-        onSkip: () => bloc.add(const ArenaReplaySkipped()),
         onBack: () => bloc.add(const ArenaClosed()),
       ),
     );

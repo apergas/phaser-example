@@ -7,19 +7,12 @@ class FightButton extends StatelessWidget {
   final bool isReplaying;
   final bool canFight;
   final VoidCallback onFight;
-  final VoidCallback onSkip;
 
-  const FightButton({
-    super.key,
-    required this.isReplaying,
-    required this.canFight,
-    required this.onFight,
-    required this.onSkip,
-  });
+  const FightButton({super.key, required this.isReplaying, required this.canFight, required this.onFight});
 
   @override
   Widget build(BuildContext context) {
-    if (isReplaying) return HudButton(label: Internationalize.arenaSkip, onPressed: onSkip);
+    if (isReplaying) return const SizedBox.shrink();
     return HudButton(label: Internationalize.arenaFight, isActive: canFight, onPressed: canFight ? onFight : null);
   }
 }

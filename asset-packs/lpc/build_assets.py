@@ -8,7 +8,7 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
                                    with and without the axe in hand
   hero-{chop,hammer}.png           128x128 work animations: body slash frames between the tool's
                                    back and front layers (same layout as the LPC generator)
-  forest.png + forest.json         JSON-hash atlas (TexturePacker format): trees (pivot = trunk base), decor, stump,
+  forest.png + forest.json         JSON-hash atlas (TexturePacker format): trees and sapling (pivot = trunk base), decor, stump,
                                    axe pickup, the house, the forge, the armory and the mage tower
                                    (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
@@ -165,6 +165,7 @@ GROUND_TILES = [(1, 23)]
 CELL = 32
 # Pixel boxes (x0, y0, x1, y1) of single sprites.
 STUMP_BOX = (391, 395, 441, 436)  # terrain_atlas.png
+SAPLING_BOX = (416, 800, 448, 832)  # terrain_atlas.png, a young woody plant among the farm crops
 AXE_PICKUP = (1, 5)  # (row, column) of a 128px axe frame (back + front layers) showing the whole axe
 
 # House assembled from LPC cottage pieces: a 3x3 timber-frame wall, a thatched hip roof on top
@@ -295,6 +296,10 @@ def build_forest() -> None:
 
     frames["stump"] = terrain.crop(STUMP_BOX)
     pivots["stump"] = {"x": 0.5, "y": 0.85}
+    sapling = trim(terrain.crop(SAPLING_BOX), "sapling")
+    frames["sapling"] = sapling
+    base_x, base_y = trunk_base(sapling)
+    pivots["sapling"] = {"x": round(base_x / sapling.width, 4), "y": round(base_y / sapling.height, 4)}
     row, column = AXE_PICKUP
     cell = (column * WORK_FRAME, row * WORK_FRAME, (column + 1) * WORK_FRAME, (row + 1) * WORK_FRAME)
     axe = Image.alpha_composite(tool("axe_bg"), tool("axe_fg")).crop(cell)

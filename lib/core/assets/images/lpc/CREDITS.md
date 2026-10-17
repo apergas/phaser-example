@@ -55,6 +55,7 @@ from the LPC Tile Atlas above.
 The mage tower roof is recoloured violet and stretched 40 % taller.
 
 The stump (`stump` frame) comes from the LPC Tile Atlas above.
+The sapling (`sapling` frame) is a young plant from the farming crops of the LPC Tile Atlas above (Daniel Eddeland).
 
 ## Arena (`arena.png`)
 

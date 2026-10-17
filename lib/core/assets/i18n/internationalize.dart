@@ -144,7 +144,6 @@ class Internationalize {
       '$_forest.message.gearPurchased'.tr(namedArgs: {'name': name});
   static String get forestMessageGearNotNextTier => '$_forest.message.gearNotNextTier'.tr();
   static String get forestHeroLearn => '$_forest.hero.learn'.tr();
-  static String get forestHeroKnown => '$_forest.hero.known'.tr();
   static String get forestHeroUpgrade => '$_forest.hero.upgrade'.tr();
   static String get forestHeroSkillMax => '$_forest.hero.skillMax'.tr();
   static String forestHeroSkillLevel({required int level, required int max}) =>

@@ -108,7 +108,6 @@
       "needsBuilding": "Construye la {name}",
       "maxed": "Ya tienes la mejor pieza",
       "learn": "Aprender",
-      "known": "Aprendida",
       "upgrade": "Mejorar",
       "skillLevel": "Nv {level}/{max}",
       "skillNext": "Nv {level}: {effect}",

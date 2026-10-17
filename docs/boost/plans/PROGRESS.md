@@ -29,6 +29,7 @@
 | [C10 Pelea sin saltar](2026-10-06-hero-arena/C10-no-skip.md) | ✅ | `feature/PROJECT-C10-no-skip` | Sin *Saltar* durante la repetición. Sin tests (T1). |
 | [C11 Habilidades de los enemigos](2026-10-06-hero-arena/C11-enemy-skills.md) | ✅ | `feature/PROJECT-C11-enemy-skills` | Probabilidades 1,5–3,5 % en los niveles 6–10. Sin tests (T1). |
 | [C12 Niveles de habilidad](2026-10-06-hero-arena/C12-skill-levels.md) | ✅ | `feature/PROJECT-C12-skill-levels` | Tres niveles por habilidad (×1,5 y ×2,25). Sin tests (T1). |
+| [C13 Armadura visible del héroe](2026-10-06-hero-arena/C13-hero-armour.md) | 📝 ficha | `feature/PROJECT-C13-hero-armour` | Juegos precompuestos arma × armadura. |
 
 ## Aldea
 
@@ -51,15 +52,14 @@
 |---|---|---|
 | [Rayas negras en el suelo de la arena](2026-10-17-extras/arena-ground-seams.md) | ✅ | `feature/PROJECT-X-arena` (#61) |
 | [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | 📝 ficha | — |
-| [Armadura visible en la arena](2026-10-17-extras/hero-armour.md) | 💭 esbozo | — |
 | [T1 Tests](2026-10-17-extras/T1-tests.md) | 📝 ficha | — (la última; desde TC9.4 no se escriben tests) |
 
 ## Siguiente paso
 
 | Orden | Qué | Rama |
 |---|---|---|
-| 1 | C9 → C10 → C11 → C12 | desde `feature/PROJECT-X-arena` |
-| 2 | Prueba manual del bloque de la arena (web, Android e iOS; las *Prueba manual* de X–C12) y unir la arena a `develop` | `feature/PROJECT-X-arena` → `develop` |
+| 1 | C9 → C10 → C11 → C12 → C13 | desde `feature/PROJECT-X-arena` |
+| 2 | Prueba manual del bloque de la arena (web, Android e iOS; las *Prueba manual* de X–C13) y unir la arena a `develop` | `feature/PROJECT-X-arena` → `develop` |
 | 3 | Empezar con el hacha (antes de F4) | desde `feature/PROJECT-X-town` |
 | 4 | F1 → F3 → F4 (bloque 1) → F5 → F6 → F7 → F8 (bloque 2) → F2 (bloque 3) | desde `feature/PROJECT-X-town`, tras `git merge develop` |
 | 5 | Prueba manual del bloque de la aldea (web, Android e iOS; las *Prueba manual* de F1–F8, F2 y los arreglos) | `feature/PROJECT-X-town` |

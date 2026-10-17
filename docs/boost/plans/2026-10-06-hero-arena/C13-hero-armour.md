@@ -1,11 +1,14 @@
-# El héroe lleva puesta su armadura en la arena — ficha
+# C13 · Armadura visible del héroe — ficha
 
-> Arreglo o mejora sin fase propia: commits `[PROJECT-X]: …`. Antes de implementarla, `boost:writing-plans` sobre esta ficha.
+> **Plan detallado: pendiente.** Al empezar, `boost:writing-plans` sobre esta ficha. Antes era una mejora sin fase; el 2026-10-17 el usuario la convirtió en la fase C13. No está en iOS.
 
 | | |
 |---|---|
-| **Rama** | `feature/PROJECT-X-hero-armour`, desde `feature/PROJECT-X-arena` |
-| **Estado** | Esbozo: hay que decidir el enfoque |
+| **Rama** | `feature/PROJECT-C13-hero-armour`, desde `feature/PROJECT-X-arena` |
+| **Depende de** | C12 |
+| **Issue / milestone** | `phase:C13` · milestone `C13 Hero armour` · #67 |
+
+**Decidido por el usuario (2026-10-17): juegos precompuestos por combinación** (`hero-<arma>-<armadura>`, 4 × 4 = 16 juegos), el mismo camino que las armas, sin tocar Flame.
 
 **Qué se quiere:** igual que el héroe cambia de arma en la arena (hacha → espada corta → de hierro → de acero), que cambie de aspecto al comprar armadura.
 
@@ -28,7 +31,7 @@
 - Las capas que faltan se bajan del Universal LPC Spritesheet Character Generator, en el mismo commit que ya usan los bárbaros (`58ce1aa`), carpeta `spritesheets/`. Las rutas hay que confirmarlas en el repositorio, y cada capa trae sus animaciones `idle`, `walk` y `slash`.
 - Licencias esperadas: OGA-BY 3.0 / CC-BY-SA 3.0 / GPL 3.0. Cada capa nueva se acredita en `CREDITS.md`.
 
-**Qué hay que decidir al planificarlo:**
+**Opciones que se valoraron** (se eligió la primera):
 - **Juegos precompuestos por combinación** (`hero-<arma>-<armadura>`):
   - es el camino de hoy y no hay que tocar Flame;
   - pero son 4 × 4 = 16 juegos, 272 frames del héroe en vez de 68, y `arena.png` crece bastante.

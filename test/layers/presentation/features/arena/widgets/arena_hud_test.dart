@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
-import 'package:rpg/layers/presentation/features/arena/models/arena_result_data.dart';
-import 'package:rpg/layers/presentation/features/arena/widgets/arena_hud.dart';
-import 'package:rpg/layers/presentation/features/arena/widgets/fight_button.dart';
-import 'package:rpg/layers/presentation/features/arena/widgets/result_panel.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/core/config/constants/enum/arena_level_id.dart';
+import 'package:farming/layers/presentation/features/arena/models/arena_result_data.dart';
+import 'package:farming/layers/presentation/features/arena/widgets/arena_hud.dart';
+import 'package:farming/layers/presentation/features/arena/widgets/fight_button.dart';
+import 'package:farming/layers/presentation/features/arena/widgets/result_panel.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
 import '../../../../../helpers/spanish_translations.dart';

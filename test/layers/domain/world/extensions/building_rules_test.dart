@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/layers/domain/world/extensions/building_rules.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/layers/domain/world/extensions/building_rules.dart';
 
 import '../../../../mocks/domain/entities/building/building_entity_mock.dart';
 import '../../../../mocks/domain/entities/geometry/obstacle_entity_mock.dart';

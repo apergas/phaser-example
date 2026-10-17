@@ -1,4 +1,4 @@
-import 'package:rpg/layers/domain/entities/combat/arena_entity.dart';
+import 'package:farming/layers/domain/entities/combat/arena_entity.dart';
 
 import 'arena_level_status_entity_mock.dart';
 

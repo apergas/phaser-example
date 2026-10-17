@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
-import 'package:rpg/layers/domain/rules/arena_levels.dart';
-import 'package:rpg/layers/domain/world/extensions/arena_rules.dart';
+import 'package:farming/core/config/constants/enum/arena_level_id.dart';
+import 'package:farming/layers/domain/rules/arena_levels.dart';
+import 'package:farming/layers/domain/world/extensions/arena_rules.dart';
 
 import '../../../../mocks/domain/entities/combat/arena_level_entity_mock.dart';
 import '../../../../mocks/domain/entities/combat/fight_log_entity_mock.dart';

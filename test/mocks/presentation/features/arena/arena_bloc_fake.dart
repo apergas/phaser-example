@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rpg/layers/presentation/features/arena/bloc/arena_bloc.dart';
+import 'package:farming/layers/presentation/features/arena/bloc/arena_bloc.dart';
 
 class ArenaBlocFake extends Bloc<ArenaEvent, ArenaState> implements ArenaBloc {
   final List<ArenaEvent> events = [];

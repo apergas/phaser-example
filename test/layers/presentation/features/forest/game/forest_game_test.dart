@@ -3,9 +3,9 @@ import 'package:flame/events.dart';
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
-import 'package:rpg/layers/presentation/features/forest/game/forest_game.dart';
-import 'package:rpg/layers/presentation/features/forest/game/particles/particle_burst_component.dart';
+import 'package:farming/layers/presentation/features/forest/bloc/forest_bloc.dart';
+import 'package:farming/layers/presentation/features/forest/game/forest_game.dart';
+import 'package:farming/layers/presentation/features/forest/game/particles/particle_burst_component.dart';
 
 import '../../../../../mocks/presentation/features/forest/forest_bloc_fake.dart';
 import '../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';

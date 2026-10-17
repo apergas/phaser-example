@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/domain/world/extensions/tree_rules.dart';
+import 'package:farming/layers/domain/world/extensions/tree_rules.dart';
 
 import '../../../../mocks/domain/entities/tree/tree_entity_mock.dart';
 

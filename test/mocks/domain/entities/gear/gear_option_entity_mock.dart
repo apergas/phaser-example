@@ -1,8 +1,8 @@
-import 'package:rpg/core/config/constants/enum/gear_id.dart';
-import 'package:rpg/core/config/constants/enum/gear_option_state.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/layers/domain/entities/gear/gear_option_entity.dart';
-import 'package:rpg/layers/domain/rules/gear.dart';
+import 'package:farming/core/config/constants/enum/gear_id.dart';
+import 'package:farming/core/config/constants/enum/gear_option_state.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/domain/entities/gear/gear_option_entity.dart';
+import 'package:farming/layers/domain/rules/gear.dart';
 
 abstract final class GearOptionEntityMock {
   static GearOptionEntity equipped(GearId id) => GearOptionEntity(gear: Gear.byId(id), state: GearOptionState.equipped);

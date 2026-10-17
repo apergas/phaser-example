@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/data/datasources/session/local/game_session_local_datasource_impl.dart';
+import 'package:farming/layers/data/datasources/session/local/game_session_local_datasource_impl.dart';
 
 import '../../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 

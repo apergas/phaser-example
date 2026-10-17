@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/player_activity.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/core/config/constants/enum/tool_kind.dart';
-import 'package:rpg/core/error-handling/exceptions/app_exceptions.dart';
-import 'package:rpg/layers/domain/rules/rules.dart';
-import 'package:rpg/layers/domain/use-cases/game/construct_building_use_case.dart';
-import 'package:rpg/layers/domain/use-cases/game/get_player_status_use_case.dart';
-import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/player_activity.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/core/config/constants/enum/tool_kind.dart';
+import 'package:farming/core/error-handling/exceptions/app_exceptions.dart';
+import 'package:farming/layers/domain/rules/rules.dart';
+import 'package:farming/layers/domain/use-cases/game/construct_building_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/get_player_status_use_case.dart';
+import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../../mocks/domain/game/game_scenario_mock.dart';
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';

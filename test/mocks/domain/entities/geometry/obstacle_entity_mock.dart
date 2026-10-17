@@ -1,5 +1,5 @@
-import 'package:rpg/layers/domain/entities/geometry/obstacle_entity.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/domain/entities/geometry/obstacle_entity.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 
 abstract final class ObstacleEntityMock {
   static const ObstacleEntity mock = ObstacleEntity(position: PositionEntity(x: 30, y: 0), radius: 10);

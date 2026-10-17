@@ -1,7 +1,7 @@
-import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
-import 'package:rpg/core/config/constants/enum/fight_outcome.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/layers/domain/entities/combat/fight_log_entity.dart';
+import 'package:farming/core/config/constants/enum/arena_level_id.dart';
+import 'package:farming/core/config/constants/enum/fight_outcome.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/domain/entities/combat/fight_log_entity.dart';
 
 import '../hero/combat_stats_entity_mock.dart';
 import 'enemy_entity_mock.dart';

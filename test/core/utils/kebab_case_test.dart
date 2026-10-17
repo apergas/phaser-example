@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/utils/kebab_case.dart';
+import 'package:farming/core/utils/kebab_case.dart';
 
 void main() {
   test('testWhenNameHasSeveralWordsThenJoinsThemWithHyphens', () {

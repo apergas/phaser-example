@@ -1,4 +1,4 @@
-import 'package:rpg/layers/data/datasources/level/local/dbo/point_dbo.dart';
+import 'package:farming/layers/data/datasources/level/local/dbo/point_dbo.dart';
 
 abstract final class PointDBOMock {
   static const playerStart = PointDBO(x: 800.0, y: 600.0);

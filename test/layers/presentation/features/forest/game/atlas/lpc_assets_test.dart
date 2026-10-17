@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/forest/player_sheet.dart';
-import 'package:rpg/layers/presentation/features/forest/game/atlas/sprite_names.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/forest/player_sheet.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/sprite_names.dart';
 
 import '../../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
 

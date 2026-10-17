@@ -1,4 +1,4 @@
-package com.apergas.rpg
+package com.apergas.farming
 
 import io.flutter.embedding.android.FlutterActivity
 

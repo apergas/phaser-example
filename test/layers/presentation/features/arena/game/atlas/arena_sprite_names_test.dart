@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
-import 'package:rpg/core/config/constants/enum/gear_id.dart';
-import 'package:rpg/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart';
-import 'package:rpg/layers/presentation/features/arena/game/render/arena_render_constants.dart';
-import 'package:rpg/layers/presentation/features/forest/game/render/render_constants.dart';
+import 'package:farming/core/config/constants/enum/enemy_kind.dart';
+import 'package:farming/core/config/constants/enum/gear_id.dart';
+import 'package:farming/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart';
+import 'package:farming/layers/presentation/features/arena/game/render/arena_render_constants.dart';
+import 'package:farming/layers/presentation/features/forest/game/render/render_constants.dart';
 
 void main() {
   test('testWhenNamingFightersThenEveryKindHasItsOwnArt', () {

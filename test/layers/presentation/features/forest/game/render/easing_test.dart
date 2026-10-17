@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/presentation/features/forest/game/render/easing.dart';
+import 'package:farming/layers/presentation/features/forest/game/render/easing.dart';
 
 void main() {
   test('testWhenEasingTheEndsThenStartsAtZeroAndEndsAtOne', () {

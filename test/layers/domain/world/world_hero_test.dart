@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/gear_id.dart';
-import 'package:rpg/layers/domain/rules/gear.dart';
-import 'package:rpg/layers/domain/world/extensions/hero_rules.dart';
+import 'package:farming/core/config/constants/enum/gear_id.dart';
+import 'package:farming/layers/domain/rules/gear.dart';
+import 'package:farming/layers/domain/world/extensions/hero_rules.dart';
 
 import '../../../mocks/domain/entities/hero/hero_entity_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';

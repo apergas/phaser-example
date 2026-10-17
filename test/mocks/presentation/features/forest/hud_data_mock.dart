@@ -1,7 +1,7 @@
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/core/config/constants/enum/tool_kind.dart';
-import 'package:rpg/layers/presentation/features/forest/models/hero_panel_data.dart';
-import 'package:rpg/layers/presentation/features/forest/models/hud_data.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/core/config/constants/enum/tool_kind.dart';
+import 'package:farming/layers/presentation/features/forest/models/hero_panel_data.dart';
+import 'package:farming/layers/presentation/features/forest/models/hud_data.dart';
 
 import 'build_item_data_mock.dart';
 import 'hero_panel_data_mock.dart';

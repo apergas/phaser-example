@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:rpg/layers/presentation/features/forest/game/atlas/alpha_mask.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/alpha_mask.dart';
 
 abstract final class AlphaMaskMock {
   static AlphaMask get transparentThenOpaque =>

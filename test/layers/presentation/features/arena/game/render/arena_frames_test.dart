@@ -1,11 +1,11 @@
 import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
-import 'package:rpg/core/config/constants/enum/fight_side.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/presentation/features/arena/game/render/arena_frames.dart';
-import 'package:rpg/layers/presentation/features/arena/game/render/arena_render_constants.dart';
+import 'package:farming/core/config/constants/enum/enemy_kind.dart';
+import 'package:farming/core/config/constants/enum/fight_side.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/presentation/features/arena/game/render/arena_frames.dart';
+import 'package:farming/layers/presentation/features/arena/game/render/arena_render_constants.dart';
 
 import '../../../../../../mocks/presentation/features/arena/fighter_render_data_mock.dart';
 

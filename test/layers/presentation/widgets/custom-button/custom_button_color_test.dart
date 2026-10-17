@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/presentation/theme/colors/custom_colors.dart';
-import 'package:rpg/layers/presentation/widgets/custom-button/custom_button_color.dart';
+import 'package:farming/layers/presentation/theme/colors/custom_colors.dart';
+import 'package:farming/layers/presentation/widgets/custom-button/custom_button_color.dart';
 
 void main() {
   test('testWhenReadingTheDisabledForegroundThenItDiffersFromTheDisabledBackgroundForEveryColor', () {

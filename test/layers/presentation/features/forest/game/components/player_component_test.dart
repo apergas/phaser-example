@@ -1,9 +1,9 @@
 import 'package:flame/extensions.dart';
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/forest/player_sheet.dart';
-import 'package:rpg/layers/presentation/features/forest/game/components/player_component.dart';
-import 'package:rpg/layers/presentation/features/forest/game/render/render_depth.dart';
+import 'package:farming/core/config/constants/enum/forest/player_sheet.dart';
+import 'package:farming/layers/presentation/features/forest/game/components/player_component.dart';
+import 'package:farming/layers/presentation/features/forest/game/render/render_depth.dart';
 
 import '../../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';
 import '../../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';

@@ -1,6 +1,6 @@
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/core/config/constants/enum/fight_advice.dart';
-import 'package:rpg/layers/presentation/features/arena/models/arena_result_data.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/core/config/constants/enum/fight_advice.dart';
+import 'package:farming/layers/presentation/features/arena/models/arena_result_data.dart';
 
 abstract final class ArenaResultDataMock {
   static ArenaResultData get victoryTenGold => ArenaResultData(

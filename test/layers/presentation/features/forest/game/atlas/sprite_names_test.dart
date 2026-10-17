@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/decoration_kind.dart';
-import 'package:rpg/core/config/constants/enum/tool_kind.dart';
-import 'package:rpg/core/config/constants/enum/tree_kind.dart';
-import 'package:rpg/layers/presentation/features/forest/game/atlas/sprite_names.dart';
-import 'package:rpg/layers/presentation/features/forest/game/render/render_constants.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/decoration_kind.dart';
+import 'package:farming/core/config/constants/enum/tool_kind.dart';
+import 'package:farming/core/config/constants/enum/tree_kind.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/sprite_names.dart';
+import 'package:farming/layers/presentation/features/forest/game/render/render_constants.dart';
 
 void main() {
   test('testWhenNamingSpritesThenFollowsTheAtlasFrameNames', () {

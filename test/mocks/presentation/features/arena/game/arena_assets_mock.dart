@@ -1,9 +1,9 @@
 import 'dart:ui';
 
-import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
-import 'package:rpg/layers/presentation/features/arena/game/atlas/arena_assets.dart';
-import 'package:rpg/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart';
-import 'package:rpg/layers/presentation/features/forest/game/atlas/atlas_frame.dart';
+import 'package:farming/core/config/constants/enum/enemy_kind.dart';
+import 'package:farming/layers/presentation/features/arena/game/atlas/arena_assets.dart';
+import 'package:farming/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/atlas_frame.dart';
 
 abstract final class ArenaAssetsMock {
   static const int frameSize = 8;

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/error-handling/exceptions/app_exceptions.dart';
-import 'package:rpg/layers/domain/use-cases/hero/get_hero_status_use_case.dart';
+import 'package:farming/core/error-handling/exceptions/app_exceptions.dart';
+import 'package:farming/layers/domain/use-cases/hero/get_hero_status_use_case.dart';
 
 import '../../../../mocks/core/error-handling/app_exception_mock.dart';
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';

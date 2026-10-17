@@ -1,14 +1,14 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/decoration_kind.dart';
-import 'package:rpg/core/config/constants/enum/tool_kind.dart';
-import 'package:rpg/core/config/constants/enum/tree_kind.dart';
-import 'package:rpg/layers/presentation/features/forest/game/atlas/alpha_mask.dart';
-import 'package:rpg/layers/presentation/features/forest/game/atlas/atlas_frame.dart';
-import 'package:rpg/layers/presentation/features/forest/game/atlas/lpc_assets.dart';
-import 'package:rpg/layers/presentation/features/forest/game/atlas/sprite_names.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/decoration_kind.dart';
+import 'package:farming/core/config/constants/enum/tool_kind.dart';
+import 'package:farming/core/config/constants/enum/tree_kind.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/alpha_mask.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/atlas_frame.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/lpc_assets.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/sprite_names.dart';
 
 abstract final class LpcAssetsMock {
   static const int frameSize = 8;

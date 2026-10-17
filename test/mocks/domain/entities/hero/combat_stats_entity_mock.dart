@@ -1,4 +1,4 @@
-import 'package:rpg/layers/domain/entities/hero/combat_stats_entity.dart';
+import 'package:farming/layers/domain/entities/hero/combat_stats_entity.dart';
 
 abstract final class CombatStatsEntityMock {
   static const CombatStatsEntity heroBase = CombatStatsEntity(attackMin: 3, attackMax: 5, defense: 1, health: 30);

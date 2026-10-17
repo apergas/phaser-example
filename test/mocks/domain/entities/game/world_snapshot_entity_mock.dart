@@ -1,4 +1,4 @@
-import 'package:rpg/layers/domain/entities/game/world_snapshot_entity.dart';
+import 'package:farming/layers/domain/entities/game/world_snapshot_entity.dart';
 
 import '../building/building_entity_mock.dart';
 import '../item/ground_item_entity_mock.dart';

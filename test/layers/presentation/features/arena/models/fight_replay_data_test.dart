@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/fight_side.dart';
+import 'package:farming/core/config/constants/enum/fight_side.dart';
 
 import '../../../../../mocks/presentation/features/arena/fight_replay_data_mock.dart';
 

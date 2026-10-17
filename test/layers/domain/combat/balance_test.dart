@@ -1,15 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/gear_slot.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/layers/domain/combat/combat.dart';
-import 'package:rpg/layers/domain/entities/combat/arena_level_entity.dart';
-import 'package:rpg/layers/domain/entities/hero/hero_entity.dart';
-import 'package:rpg/layers/domain/rules/arena_levels.dart';
-import 'package:rpg/layers/domain/rules/blueprints.dart';
-import 'package:rpg/layers/domain/rules/gear.dart';
-import 'package:rpg/layers/domain/rules/rules.dart';
-import 'package:rpg/layers/domain/rules/skills.dart';
-import 'package:rpg/layers/domain/world/extensions/hero_rules.dart';
+import 'package:farming/core/config/constants/enum/gear_slot.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/domain/combat/combat.dart';
+import 'package:farming/layers/domain/entities/combat/arena_level_entity.dart';
+import 'package:farming/layers/domain/entities/hero/hero_entity.dart';
+import 'package:farming/layers/domain/rules/arena_levels.dart';
+import 'package:farming/layers/domain/rules/blueprints.dart';
+import 'package:farming/layers/domain/rules/gear.dart';
+import 'package:farming/layers/domain/rules/rules.dart';
+import 'package:farming/layers/domain/rules/skills.dart';
+import 'package:farming/layers/domain/world/extensions/hero_rules.dart';
 
 import '../../../mocks/domain/game/balance_scenario_mock.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 
 abstract final class ParticleMock {
   static const PositionEntity trunkBase = PositionEntity(x: 100, y: 120);

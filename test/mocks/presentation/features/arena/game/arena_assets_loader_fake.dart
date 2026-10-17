@@ -1,5 +1,5 @@
-import 'package:rpg/layers/presentation/features/arena/game/atlas/arena_assets.dart';
-import 'package:rpg/layers/presentation/features/arena/game/atlas/arena_assets_loader.dart';
+import 'package:farming/layers/presentation/features/arena/game/atlas/arena_assets.dart';
+import 'package:farming/layers/presentation/features/arena/game/atlas/arena_assets_loader.dart';
 
 class ArenaAssetsLoaderFake implements ArenaAssetsLoader {
   ArenaAssetsLoaderFake(this.assets);

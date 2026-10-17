@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/gear_id.dart';
-import 'package:rpg/core/config/constants/enum/gear_slot.dart';
-import 'package:rpg/layers/domain/entities/gear/gear_entity.dart';
-import 'package:rpg/layers/domain/rules/gear.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/gear_id.dart';
+import 'package:farming/core/config/constants/enum/gear_slot.dart';
+import 'package:farming/layers/domain/entities/gear/gear_entity.dart';
+import 'package:farming/layers/domain/rules/gear.dart';
 
 void main() {
   test('testWhenListingGearThenEveryGearIdAppearsOnce', () {

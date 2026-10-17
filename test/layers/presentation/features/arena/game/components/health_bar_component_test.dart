@@ -1,8 +1,8 @@
 import 'package:flame/components.dart';
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/presentation/features/arena/game/components/health_bar_component.dart';
-import 'package:rpg/layers/presentation/theme/colors/custom_colors.dart';
+import 'package:farming/layers/presentation/features/arena/game/components/health_bar_component.dart';
+import 'package:farming/layers/presentation/theme/colors/custom_colors.dart';
 
 void main() {
   testWithFlameGame('testWhenHealthDropsThenTheBarEasesDownToTheNewValue', (game) async {

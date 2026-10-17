@@ -1,8 +1,8 @@
-import 'package:rpg/core/config/constants/enum/forest/facing.dart';
-import 'package:rpg/core/config/constants/enum/forest/work_tool.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/presentation/features/forest/models/player_pose.dart';
-import 'package:rpg/layers/presentation/features/forest/models/player_render_data.dart';
+import 'package:farming/core/config/constants/enum/forest/facing.dart';
+import 'package:farming/core/config/constants/enum/forest/work_tool.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/presentation/features/forest/models/player_pose.dart';
+import 'package:farming/layers/presentation/features/forest/models/player_render_data.dart';
 
 abstract final class PlayerRenderDataMock {
   static PlayerRenderData get chopping => PlayerRenderData(

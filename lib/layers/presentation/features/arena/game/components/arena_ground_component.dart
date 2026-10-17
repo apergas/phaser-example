@@ -2,37 +2,30 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 
-import '../../../forest/game/render/render_depth.dart';
+import '../../../forest/game/components/ground_component.dart';
 import '../atlas/arena_assets.dart';
 import '../atlas/arena_sprite_names.dart';
 import '../render/arena_render_constants.dart';
 
-class ArenaGroundComponent extends PositionComponent {
-  final Sprite _grass;
+class ArenaGroundComponent extends GroundComponent {
   final Sprite _fence;
-  final Vector2 _grassSize;
   final Vector2 _fenceSize;
   final Paint _paint = Paint()..filterQuality = FilterQuality.none;
 
   ArenaGroundComponent({required ArenaAssets assets})
-    : _grass = assets.sprite(ArenaSpriteNames.grass),
-      _fence = assets.sprite(ArenaSpriteNames.fence),
-      _grassSize = assets.sprite(ArenaSpriteNames.grass).srcSize,
+    : _fence = assets.sprite(ArenaSpriteNames.fence),
       _fenceSize = assets.sprite(ArenaSpriteNames.fence).srcSize,
       super(
-        size: Vector2(ArenaRenderConstants.stageWidth, ArenaRenderConstants.stageHeight),
-        priority: RenderDepth.ground,
+        tile: assets.ground,
+        worldWidth: ArenaRenderConstants.stageWidth,
+        worldHeight: ArenaRenderConstants.stageHeight,
       );
 
   int get fencePosts => (ArenaRenderConstants.stageWidth / _fenceSize.x).ceil();
 
   @override
   void render(Canvas canvas) {
-    for (var y = 0.0; y < size.y; y += _grassSize.y) {
-      for (var x = 0.0; x < size.x; x += _grassSize.x) {
-        _grass.render(canvas, position: Vector2(x, y), overridePaint: _paint);
-      }
-    }
+    super.render(canvas);
     for (var post = 0; post < fencePosts; post++) {
       _fence.render(
         canvas,

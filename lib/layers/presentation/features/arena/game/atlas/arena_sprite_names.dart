@@ -3,7 +3,6 @@ import '../../../../../../core/config/constants/enum/gear_id.dart';
 
 abstract final class ArenaSpriteNames {
   static const String hero = 'hero';
-  static const String grass = 'arena-grass';
   static const String fence = 'arena-fence';
 
   static String enemy(EnemyKind kind) => switch (kind) {

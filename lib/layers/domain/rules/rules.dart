@@ -5,6 +5,7 @@ abstract final class Rules {
   static const double chopIntervalMs = 750;
   static const double hammerIntervalMs = 650;
   static const double mineIntervalMs = 750;
+  static const double depositIntervalMs = 400;
   static const double workGap = 2;
   static const double reachTolerance = 6;
   static const double pickUpRange = 14;
@@ -16,6 +17,7 @@ abstract final class Rules {
   static const double rockRadius = 22;
   static const int rockStoneYield = 8;
   static const int rockHitsToBreak = 8;
+  static const int carryCapacity = 10;
   static const Map<TreeKind, TreeStatsEntity> treeKindStats = {
     TreeKind.slim: TreeStatsEntity(woodYield: 4, hitsToFell: 3),
     TreeKind.round: TreeStatsEntity(woodYield: 5, hitsToFell: 5),

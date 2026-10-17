@@ -1,1 +1,1 @@
-enum BlueprintId { house, forge, armory, mageTower }
+enum BlueprintId { house, forge, armory, mageTower, camp, storehouse }

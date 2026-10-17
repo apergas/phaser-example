@@ -3,6 +3,7 @@ import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
 import '../entities/player/intent_entity.dart';
 import 'construction.dart';
+import 'depositing.dart';
 import 'mining.dart';
 import 'woodcutting.dart';
 import 'world_state.dart';
@@ -37,4 +38,5 @@ BoundWork<IntentEntity> workFor(IntentEntity intent) => switch (intent) {
   ChopIntentEntity() => BoundWork<ChopIntentEntity>(const Woodcutting(), intent),
   ConstructIntentEntity() => BoundWork<ConstructIntentEntity>(const Construction(), intent),
   MineIntentEntity() => BoundWork<MineIntentEntity>(const Mining(), intent),
+  DepositIntentEntity() => BoundWork<DepositIntentEntity>(const Depositing(), intent),
 };

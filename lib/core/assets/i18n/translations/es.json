@@ -30,7 +30,9 @@
         "other": "{count} hechas"
       },
       "missing": "Faltan {amounts}",
-      "arena": "Arena"
+      "arena": "Arena",
+      "stock": "Almacén",
+      "carry": "Carga {amount}/{capacity}"
     },
     "resource": {
       "wood": "Madera",
@@ -52,10 +54,12 @@
       "house": "Casa",
       "forge": "Herrería",
       "armory": "Armería",
-      "mageTower": "Torre de magia"
+      "mageTower": "Torre de magia",
+      "camp": "Campamento",
+      "storehouse": "Almacén"
     },
     "quest": {
-      "gatherWood": "Consigue al menos 15 de madera",
+      "gatherWood": "Lleva 15 de madera al almacén",
       "buildHouse": "Construye una casa",
       "buildForge": "Construye la Herrería",
       "winFirstFight": "Gana un nivel de la arena",
@@ -67,7 +71,7 @@
       "becomeChampion": "Gana al Jefe bárbaro",
       "fellTenTrees": "Tala 10 árboles",
       "fellAnOak": "Tala un roble",
-      "gatherFortyWood": "Ten 40 de madera a la vez",
+      "gatherFortyWood": "Ten 40 de madera en el almacén",
       "buildTwoHouses": "Ten 2 casas terminadas",
       "seeATreeRegrow": "Ve rebrotar un árbol"
     },
@@ -90,6 +94,9 @@
       "questLineCompleted": "¡Has completado las misiones de {line}!",
       "woodGained": "+{wood} de madera",
       "stoneGained": "+{amount} de piedra",
+      "carryFull": "Llevas la carga llena. Déjala en el campamento o en un almacén.",
+      "deposited": "Guardado en el almacén: {amounts}",
+      "nothingToDeposit": "No llevas nada que guardar.",
       "placing": "Elige dónde construir: {name}. Clic derecho o Esc para cancelar.",
       "placingTouch": "Elige dónde construir: {name}. Arrastra el dedo para moverlo y toca Construir aquí o Cancelar.",
       "buildingCompleted": "Construcción terminada: {name}",

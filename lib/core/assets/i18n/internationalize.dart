@@ -53,6 +53,9 @@ class Internationalize {
   static String get forestBuild => '$_forest.hud.build'.tr();
   static String get forestQuests => '$_forest.hud.quests'.tr();
   static String get forestArena => '$_forest.hud.arena'.tr();
+  static String get forestStock => '$_forest.hud.stock'.tr();
+  static String forestCarry({required int amount, required int capacity}) =>
+      '$_forest.hud.carry'.tr(namedArgs: {'amount': '$amount', 'capacity': '$capacity'});
   static String get forestQuestDone => '$_forest.hud.questDone'.tr();
   static String forestQuestsDone({required int count}) =>
       '$_forest.hud.questsDone'.plural(count, namedArgs: {'count': '$count'});
@@ -68,6 +71,8 @@ class Internationalize {
     BlueprintId.forge => '$_forest.blueprint.forge'.tr(),
     BlueprintId.armory => '$_forest.blueprint.armory'.tr(),
     BlueprintId.mageTower => '$_forest.blueprint.mageTower'.tr(),
+    BlueprintId.camp => '$_forest.blueprint.camp'.tr(),
+    BlueprintId.storehouse => '$_forest.blueprint.storehouse'.tr(),
   };
   static String forestQuestTitle({required QuestId id}) => switch (id) {
     QuestId.gatherWood => '$_forest.quest.gatherWood'.tr(),
@@ -107,6 +112,10 @@ class Internationalize {
       '$_forest.message.woodGained'.tr(namedArgs: {'wood': '$wood'});
   static String forestMessageStoneGained({required int amount}) =>
       '$_forest.message.stoneGained'.tr(namedArgs: {'amount': '$amount'});
+  static String get forestMessageCarryFull => '$_forest.message.carryFull'.tr();
+  static String forestMessageDeposited({required String amounts}) =>
+      '$_forest.message.deposited'.tr(namedArgs: {'amounts': amounts});
+  static String get forestMessageNothingToDeposit => '$_forest.message.nothingToDeposit'.tr();
   static String forestMessagePlacing({required String name}) =>
       '$_forest.message.placing'.tr(namedArgs: {'name': name});
   static String forestMessagePlacingTouch({required String name}) =>

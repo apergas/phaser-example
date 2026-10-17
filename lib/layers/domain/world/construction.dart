@@ -10,7 +10,6 @@ import '../rules/rules.dart';
 import 'extensions/building_rules.dart';
 import 'extensions/inventory_rules.dart';
 import 'extensions/obstacle_rules.dart';
-import 'extensions/player_rules.dart';
 import 'extensions/position_geometry.dart';
 import 'work.dart';
 import 'world_state.dart';
@@ -23,16 +22,21 @@ final class Construction implements Work<ConstructIntentEntity> {
     final player = state.player;
     final overlapsPlayer = position.distanceTo(player.position) < radius + player.radius;
     final overlapsItem = state.items.values.any((item) => position.distanceTo(item.position) < radius);
-    return state.isInside(position, radius) && !state.isBlocked(position, radius) && !overlapsPlayer && !overlapsItem;
+    return blueprint.isBuildable &&
+        state.isInside(position, radius) &&
+        !state.isBlocked(position, radius) &&
+        !overlapsPlayer &&
+        !overlapsItem;
   }
 
   static ConstructionResultEntity place(WorldState state, BlueprintEntity blueprint, PositionEntity position) {
-    final paid = state.player.inventory.spend(blueprint.cost);
-    if (paid == null) return const ConstructionRejectedEntity(reason: ConstructionRejection.notEnoughResources);
+    if (state.stock.missing(blueprint.cost).isNotEmpty) {
+      return const ConstructionRejectedEntity(reason: ConstructionRejection.notEnoughResources);
+    }
     if (!canPlace(state, blueprint, position)) {
       return const ConstructionRejectedEntity(reason: ConstructionRejection.blocked);
     }
-    state.player = state.player.withInventory(paid);
+    state.pay(blueprint.cost);
     final building = BuildingEntity(id: state.nextId('building'), blueprint: blueprint, position: position);
     state.buildings[building.id] = building;
     state.stumps.removeWhere((_, stump) => building.footprint.blocks(stump.position, Rules.treeTrunkRadius));

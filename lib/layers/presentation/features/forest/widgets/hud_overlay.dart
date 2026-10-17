@@ -15,8 +15,8 @@ import 'quest_panel.dart';
 import 'resource_bar.dart';
 
 class HudOverlay extends StatefulWidget {
-  static const double narrowWidth = 770;
-  static const double buttonsBelowWidth = 1260;
+  static const double narrowWidth = 960;
+  static const double buttonsBelowWidth = 1460;
   static const double _margin = 12;
 
   final HudData hud;
@@ -53,7 +53,8 @@ class _HudOverlayState extends State<HudOverlay> {
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final resourceBar = ResourceBar(
-      resources: widget.hud.resources,
+      stock: widget.hud.stock,
+      carry: widget.hud.carry,
       tools: widget.hud.tools,
       showLabels: width >= HudOverlay.narrowWidth,
     );

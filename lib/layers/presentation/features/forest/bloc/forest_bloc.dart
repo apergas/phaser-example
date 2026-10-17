@@ -7,6 +7,7 @@ import '../../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../../../core/config/constants/enum/buy_gear_result.dart';
 import '../../../../../core/config/constants/enum/chop_result.dart';
 import '../../../../../core/config/constants/enum/construction_rejection.dart';
+import '../../../../../core/config/constants/enum/deposit_result.dart';
 import '../../../../../core/config/constants/enum/forest/facing.dart';
 import '../../../../../core/config/constants/enum/forest/quest_item_status.dart';
 import '../../../../../core/config/constants/enum/forest/work_tool.dart';
@@ -37,15 +38,18 @@ import '../../../../domain/entities/gear/gear_option_entity.dart';
 import '../../../../domain/entities/geometry/position_entity.dart';
 import '../../../../domain/entities/hero/skill_option_entity.dart';
 import '../../../../domain/rules/gear.dart';
+import '../../../../domain/rules/rules.dart';
 import '../../../../domain/rules/skills.dart';
 import '../../../../domain/use-cases/game/advance_game_use_case.dart';
 import '../../../../domain/use-cases/game/can_place_building_use_case.dart';
 import '../../../../domain/use-cases/game/chop_tree_use_case.dart';
 import '../../../../domain/use-cases/game/resume_construction_use_case.dart';
 import '../../../../domain/use-cases/game/construct_building_use_case.dart';
+import '../../../../domain/use-cases/game/deposit_use_case.dart';
 import '../../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_player_status_use_case.dart';
 import '../../../../domain/use-cases/game/get_quests_use_case.dart';
+import '../../../../domain/use-cases/game/get_stock_use_case.dart';
 import '../../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
 import '../../../../domain/use-cases/game/mine_rock_use_case.dart';
 import '../../../../domain/use-cases/game/move_player_use_case.dart';
@@ -59,6 +63,7 @@ import '../../../../domain/world/extensions/hero_rules.dart';
 import '../../../../domain/world/extensions/inventory_rules.dart';
 import '../../arena/arena_page.dart';
 import '../models/build_item_data.dart';
+import '../models/carry_item_data.dart';
 import '../models/forest_effect.dart';
 import '../models/gear_item_data.dart';
 import '../models/gear_row_data.dart';
@@ -83,10 +88,12 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final CanPlaceBuildingUseCase _canPlaceBuildingUseCase;
   final ConstructBuildingUseCase _constructBuildingUseCase;
   final ResumeConstructionUseCase _resumeConstructionUseCase;
+  final DepositUseCase _depositUseCase;
   final AdvanceGameUseCase _advanceGameUseCase;
   final GetPlayerStatusUseCase _getPlayerStatusUseCase;
   final GetWorldSnapshotUseCase _getWorldSnapshotUseCase;
   final GetBuildOptionsUseCase _getBuildOptionsUseCase;
+  final GetStockUseCase _getStockUseCase;
   final GetQuestsUseCase _getQuestsUseCase;
   final GetHeroStatusUseCase _getHeroStatusUseCase;
   final GetGearOptionsUseCase _getGearOptionsUseCase;
@@ -109,10 +116,12 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._canPlaceBuildingUseCase,
     required this._constructBuildingUseCase,
     required this._resumeConstructionUseCase,
+    required this._depositUseCase,
     required this._advanceGameUseCase,
     required this._getPlayerStatusUseCase,
     required this._getWorldSnapshotUseCase,
     required this._getBuildOptionsUseCase,
+    required this._getStockUseCase,
     required this._getQuestsUseCase,
     required this._getHeroStatusUseCase,
     required this._getGearOptionsUseCase,
@@ -169,6 +178,9 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     for (final gameEvent in gameEvents) {
       _react(gameEvent, fromX: fromX, effects: effects);
     }
+    if (gameEvents.any(_isGathering) && _getPlayerStatusUseCase().inventory.isLoadFull) {
+      _showMessage(Internationalize.forestMessageCarryFull);
+    }
     _announceQuests([
       for (final gameEvent in gameEvents)
         if (gameEvent is QuestCompletedEventEntity) gameEvent.questId,
@@ -223,12 +235,15 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required String? buildingId,
     required String? rockId,
   }) {
-    if (buildingId != null && _resumeConstructionUseCase(buildingId: buildingId) == ResumeConstructionResult.ok) {
-      return;
-    }
+    if (buildingId != null && _orderAtBuilding(buildingId)) return;
     if (rockId != null) {
-      if (_mineRockUseCase(rockId: rockId) == MineResult.noPickaxe) {
-        _showMessage(Internationalize.forestMessageNeedPickaxe);
+      switch (_mineRockUseCase(rockId: rockId)) {
+        case MineResult.ok || MineResult.unknownRock:
+          break;
+        case MineResult.noPickaxe:
+          _showMessage(Internationalize.forestMessageNeedPickaxe);
+        case MineResult.carryFull:
+          _showMessage(Internationalize.forestMessageCarryFull);
       }
       return;
     }
@@ -236,8 +251,27 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       _movePlayerUseCase(x: position.x, y: position.y);
       return;
     }
-    if (_chopTreeUseCase(treeId: treeId) == ChopResult.noAxe) {
-      _showMessage(Internationalize.forestMessageNeedAxe);
+    switch (_chopTreeUseCase(treeId: treeId)) {
+      case ChopResult.ok || ChopResult.unknownTree:
+        break;
+      case ChopResult.noAxe:
+        _showMessage(Internationalize.forestMessageNeedAxe);
+      case ChopResult.carryFull:
+        _showMessage(Internationalize.forestMessageCarryFull);
+    }
+  }
+
+  bool _orderAtBuilding(String buildingId) {
+    switch (_depositUseCase(buildingId: buildingId)) {
+      case DepositResult.ok:
+        return true;
+      case DepositResult.unknownBuilding:
+        return false;
+      case DepositResult.notADropOff:
+        return _resumeConstructionUseCase(buildingId: buildingId) == ResumeConstructionResult.ok;
+      case DepositResult.emptyLoad:
+        _showMessage(Internationalize.forestMessageNothingToDeposit);
+        return true;
     }
   }
 
@@ -368,8 +402,13 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       case RockBrokenEventEntity(:final rockId, :final stone):
         _showMessage(Internationalize.forestMessageStoneGained(amount: stone));
         effects.add(RockBrokenEffect(rockId: rockId, stone: stone));
+      case DepositedEventEntity(:final load):
+        _showMessage(Internationalize.forestMessageDeposited(amounts: _amounts(load)));
     }
   }
+
+  bool _isGathering(GameEventEntity gameEvent) =>
+      gameEvent is TreeFelledEventEntity || gameEvent is RockBrokenEventEntity;
 
   void _announceQuests(List<QuestId> completed) {
     if (completed.isEmpty) return;
@@ -437,6 +476,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     PlayerActivity.chopping => WorkTool.axe,
     PlayerActivity.constructing => WorkTool.hammer,
     PlayerActivity.mining => WorkTool.pickaxe,
+    PlayerActivity.depositing => null,
   };
 
   Facing _facingFor(double dx, double dy) {
@@ -445,15 +485,20 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   }
 
   HudData _hudData(PlayerStatusEntity status, List<QuestProgressEntity> quests) {
+    final stock = _getStockUseCase();
     return HudData(
-      resources: [
+      stock: [
         for (final resource in Resource.values)
           ResourceItemData(
             resource: resource,
             name: Internationalize.forestResource(resource: resource),
-            amount: status.inventory.amount(resource),
+            amount: stock.amount(resource),
           ),
       ],
+      carry: CarryItemData(
+        text: Internationalize.forestCarry(amount: status.inventory.load, capacity: Rules.carryCapacity),
+        isFull: status.inventory.isLoadFull,
+      ),
       tools: [
         for (final tool in ToolKind.values)
           ToolItemData(

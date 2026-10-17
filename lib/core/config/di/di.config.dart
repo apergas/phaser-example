@@ -30,6 +30,8 @@ import 'package:farming/layers/data/datasources/session/source/game_session_loca
     as _i576;
 import 'package:farming/layers/data/repositories/level/level_repository_impl.dart'
     as _i571;
+import 'package:farming/layers/data/repositories/level/mappers/building_mapper_dbo.dart'
+    as _i959;
 import 'package:farming/layers/data/repositories/level/mappers/decoration_mapper_dbo.dart'
     as _i188;
 import 'package:farming/layers/data/repositories/level/mappers/ground_item_mapper_dbo.dart'
@@ -60,12 +62,16 @@ import 'package:farming/layers/domain/use-cases/game/chop_tree_use_case.dart'
     as _i803;
 import 'package:farming/layers/domain/use-cases/game/construct_building_use_case.dart'
     as _i349;
+import 'package:farming/layers/domain/use-cases/game/deposit_use_case.dart'
+    as _i867;
 import 'package:farming/layers/domain/use-cases/game/get_build_options_use_case.dart'
     as _i109;
 import 'package:farming/layers/domain/use-cases/game/get_player_status_use_case.dart'
     as _i465;
 import 'package:farming/layers/domain/use-cases/game/get_quests_use_case.dart'
     as _i94;
+import 'package:farming/layers/domain/use-cases/game/get_stock_use_case.dart'
+    as _i401;
 import 'package:farming/layers/domain/use-cases/game/get_world_snapshot_use_case.dart'
     as _i579;
 import 'package:farming/layers/domain/use-cases/game/mine_rock_use_case.dart'
@@ -97,12 +103,20 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.factory<_i284.AppExceptionHandler>(() => _i284.AppExceptionHandler());
+    gh.factory<_i959.BuildingMapperDBO>(() => _i959.BuildingMapperDBO());
     gh.factory<_i188.DecorationMapperDBO>(() => _i188.DecorationMapperDBO());
     gh.factory<_i875.GroundItemMapperDBO>(() => _i875.GroundItemMapperDBO());
     gh.factory<_i453.PositionMapperDBO>(() => _i453.PositionMapperDBO());
     gh.factory<_i1063.RockMapperDBO>(() => _i1063.RockMapperDBO());
     gh.factory<_i553.TreeMapperDBO>(() => _i553.TreeMapperDBO());
     gh.singleton<_i500.NavigationService>(() => _i769.NavifyImpl());
+    gh.lazySingleton<_i576.GameSessionLocalDatasource>(
+      () => _i23.GameSessionLocalDatasourceImpl(),
+    );
+    gh.singleton<_i195.Logger>(() => _i189.CustomLoggerImpl());
+    gh.factory<_i1028.LevelLocalDatasource>(
+      () => const _i783.LevelLocalDatasourceImpl(),
+    );
     gh.factory<_i459.LevelMapperDBO>(
       () => _i459.LevelMapperDBO(
         positionMapperDBO: gh<_i453.PositionMapperDBO>(),
@@ -110,14 +124,8 @@ extension GetItInjectableX on _i174.GetIt {
         decorationMapperDBO: gh<_i188.DecorationMapperDBO>(),
         groundItemMapperDBO: gh<_i875.GroundItemMapperDBO>(),
         rockMapperDBO: gh<_i1063.RockMapperDBO>(),
+        buildingMapperDBO: gh<_i959.BuildingMapperDBO>(),
       ),
-    );
-    gh.lazySingleton<_i576.GameSessionLocalDatasource>(
-      () => _i23.GameSessionLocalDatasourceImpl(),
-    );
-    gh.singleton<_i195.Logger>(() => _i189.CustomLoggerImpl());
-    gh.factory<_i1028.LevelLocalDatasource>(
-      () => const _i783.LevelLocalDatasourceImpl(),
     );
     gh.factory<_i663.GameSessionRepository>(
       () => _i623.GameSessionRepositoryImpl(
@@ -165,6 +173,11 @@ extension GetItInjectableX on _i174.GetIt {
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );
+    gh.factory<_i867.DepositUseCase>(
+      () => _i867.DepositUseCase(
+        sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
     gh.factory<_i109.GetBuildOptionsUseCase>(
       () => _i109.GetBuildOptionsUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
@@ -177,6 +190,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i94.GetQuestsUseCase>(
       () => _i94.GetQuestsUseCase(
+        sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i401.GetStockUseCase>(
+      () => _i401.GetStockUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );

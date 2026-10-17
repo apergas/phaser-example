@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../../../core/assets/i18n/internationalize.dart';
 import '../../../../../core/config/constants/enum/tool_kind.dart';
 import '../../../theme/colors/custom_colors.dart';
 import '../../../theme/images/custom_icons.dart';
 import '../../../theme/styles/custom_text_styles.dart';
+import '../models/carry_item_data.dart';
 import '../models/resource_item_data.dart';
 import '../models/tool_item_data.dart';
 import 'hud_panel.dart';
 
 class ResourceBar extends StatelessWidget {
-  final List<ResourceItemData> resources;
+  static const Key carryKey = Key('resourceBarCarry');
+
+  final List<ResourceItemData> stock;
+  final CarryItemData carry;
   final List<ToolItemData> tools;
   final bool showLabels;
 
-  const ResourceBar({super.key, required this.resources, required this.tools, this.showLabels = true});
+  const ResourceBar({
+    super.key,
+    required this.stock,
+    required this.carry,
+    required this.tools,
+    this.showLabels = true,
+  });
 
   static Key toolKey(ToolKind tool) => Key('resourceBarTool-${tool.name}');
 
@@ -25,7 +36,16 @@ class ResourceBar extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         spacing: 16,
-        children: [for (final resource in resources) _resource(resource), for (final tool in tools) _tool(tool)],
+        children: [
+          if (showLabels)
+            Text(
+              Internationalize.forestStock,
+              style: CustomTextStyles.system15w600.copyWith(color: CustomColors.hudMuted),
+            ),
+          for (final resource in stock) _resource(resource),
+          _carry(),
+          for (final tool in tools) _tool(tool),
+        ],
       ),
     );
   }
@@ -52,6 +72,23 @@ class ResourceBar extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _carry() {
+    return Container(
+      key: carryKey,
+      padding: const EdgeInsets.only(left: 12),
+      decoration: const BoxDecoration(
+        border: Border(left: BorderSide(color: CustomColors.hudBorder)),
+      ),
+      child: Text(
+        carry.text,
+        style: CustomTextStyles.system15w600.copyWith(
+          color: carry.isFull ? CustomColors.hudWarning : CustomColors.hudText,
+          fontFeatures: const [FontFeature.tabularFigures()],
+        ),
       ),
     );
   }

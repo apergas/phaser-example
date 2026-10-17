@@ -10,6 +10,14 @@ abstract final class Blueprints {
     footprintRadius: 40,
   );
 
+  static const BlueprintEntity storehouse = BlueprintEntity(
+    id: BlueprintId.storehouse,
+    cost: {Resource.wood: 20},
+    hitsToBuild: 8,
+    footprintRadius: 40,
+    isDropOff: true,
+  );
+
   static const BlueprintEntity forge = BlueprintEntity(
     id: BlueprintId.forge,
     cost: {Resource.wood: 25, Resource.stone: 10},
@@ -31,7 +39,16 @@ abstract final class Blueprints {
     footprintRadius: 40,
   );
 
-  static const List<BlueprintEntity> all = [house, forge, armory, mageTower];
+  static const BlueprintEntity camp = BlueprintEntity(
+    id: BlueprintId.camp,
+    cost: {},
+    hitsToBuild: 1,
+    footprintRadius: 30,
+    isBuildable: false,
+    isDropOff: true,
+  );
+
+  static const List<BlueprintEntity> all = [house, storehouse, forge, armory, mageTower, camp];
 
   static BlueprintEntity of(BlueprintId id) => all.firstWhere((blueprint) => blueprint.id == id);
 }

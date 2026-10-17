@@ -14,9 +14,11 @@ import '../../../domain/use-cases/game/chop_tree_use_case.dart';
 import '../../../domain/use-cases/game/mine_rock_use_case.dart';
 import '../../../domain/use-cases/game/resume_construction_use_case.dart';
 import '../../../domain/use-cases/game/construct_building_use_case.dart';
+import '../../../domain/use-cases/game/deposit_use_case.dart';
 import '../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../domain/use-cases/game/get_player_status_use_case.dart';
 import '../../../domain/use-cases/game/get_quests_use_case.dart';
+import '../../../domain/use-cases/game/get_stock_use_case.dart';
 import '../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
 import '../../../domain/use-cases/game/move_player_use_case.dart';
 import '../../../domain/use-cases/game/start_game_use_case.dart';
@@ -53,10 +55,12 @@ class ForestPage extends StatelessWidget {
         canPlaceBuildingUseCase: locator.get<CanPlaceBuildingUseCase>(),
         constructBuildingUseCase: locator.get<ConstructBuildingUseCase>(),
         resumeConstructionUseCase: locator.get<ResumeConstructionUseCase>(),
+        depositUseCase: locator.get<DepositUseCase>(),
         advanceGameUseCase: locator.get<AdvanceGameUseCase>(),
         getPlayerStatusUseCase: locator.get<GetPlayerStatusUseCase>(),
         getWorldSnapshotUseCase: locator.get<GetWorldSnapshotUseCase>(),
         getBuildOptionsUseCase: locator.get<GetBuildOptionsUseCase>(),
+        getStockUseCase: locator.get<GetStockUseCase>(),
         getQuestsUseCase: locator.get<GetQuestsUseCase>(),
         getHeroStatusUseCase: locator.get<GetHeroStatusUseCase>(),
         getGearOptionsUseCase: locator.get<GetGearOptionsUseCase>(),

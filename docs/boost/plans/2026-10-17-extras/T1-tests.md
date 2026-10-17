@@ -37,3 +37,11 @@ Desde el 2026-10-17 (a mitad de C9, tras TC9.3) el desarrollo sigue **sin tests*
   - `test/mocks/presentation/features/arena/arena_data_mock.dart`: `.skipped()` por `.advanced(durationMs)`;
   - `widgets/fight_button_test.dart` y `widgets/arena_hud_test.dart`: sin `onSkip` ni `Internationalize.arenaSkip`; sin botón durante la repetición y *Empezar pelea* al acabar;
   - `arena_page_test.dart`: quitar lo que use el salto; `internationalize_test.dart`: sin `arena.skip`.
+- **C11** (sin tests; rompe la compilación de estos y puede cambiar resultados). Detalle, semillas y cifras en la sección *Para T1* de [C11-enemy-skills.md](../2026-10-06-hero-arena/C11-enemy-skills.md):
+  - `test/mocks/presentation/features/arena/arena_effect_mock.dart`: `SkillUsedEffect` con `side` e `index` (héroe: `FightSide.hero, 0`) y variantes de enemigo; arregla la compilación de `arena_bloc_test.dart`;
+  - revisar resultados de los tests que pelean con los niveles reales 6–10: `arena_flow_test.dart`, `start_fight_use_case_test.dart` (jefe), `arena_bloc_test.dart` (`banditTrio`, `wolfPack`, `barbarianChief`);
+  - `arena_levels_test.dart`: `enemySkillChance` 0 en 1–5 y 0,015 / 0,02 / 0,025 / 0,03 / 0,035 en 6–10; `arena_level_entity_test.dart`: valor por defecto, `copyWith`, `==`, `hashCode`; mocks de nivel con probabilidad;
+  - `enemy_kind_rules_test.dart` (nuevo): habilidades de cada `EnemyKind`;
+  - `combat_test.dart`: goldens de los niveles 6–10 (semillas 0, 25, 1, 8 y 1), probabilidad 0 da el registro de antes, *Segundo aliento* del jefe una sola vez, `adviceFor` sin los `dodge` del héroe;
+  - `balance_test.dart`: sigue en verde con las probabilidades; añadir ≥ 60 % con las semillas 0–999 (89,0/86,6, 73,0/75,1, 78,0/71,9, 79,0/74,0, 64,0/60,8 %);
+  - `arena_bloc_test.dart`: `SkillUsedEffect` de enemigo (bando e índice); `arena_scene_component_test.dart`: el nombre flota sobre el enemigo.

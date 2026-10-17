@@ -102,88 +102,21 @@ Lo que **no** se trae de iOS: lo propio de Swift/SpriteKit (cambio de eje Y, ais
 | F2 Guardado de la partida | 📝 ficha | — | Va la última. `shared_preferences`, versión 1 con todo, autoguardado, menú *Partida* con *Guardar* y *Nueva partida*. |
 | F9–F15 Comida, aldeanos, granja, estaciones, eras, mercader | 💭 esbozo | — | Se replanifican al terminar F2, si el equipo confirma el giro a la gestión con aldeanos (`GAME_DESIGN.md` §5). |
 
-## Arreglos y mejoras pendientes
+## Arreglos y mejoras
 
-Fallos y mejoras vistos jugando que no son de ninguna fase. Cada uno va en su rama desde la rama de integración donde está el código (`bugfix/PROJECT-X-<descripción>` para un fallo, `feature/PROJECT-X-<descripción>` para una mejora), con commits `[PROJECT-X]`.
+Sin fase propia. Fichas en [`2026-10-17-extras/`](2026-10-17-extras/README.md).
 
-| Arreglo | Estado | Rama de destino | Notas |
-|---|---|---|---|
-| Rayas negras en el suelo de la arena | ✅ | `feature/PROJECT-X-arena` (`bugfix/PROJECT-X-arena-ground-seams`) | Hecho como se propone abajo: `ArenaGroundComponent` extiende `GroundComponent` y dibuja la valla encima; `arena-grass` sale del atlas. 660 tests. Comprobado en Chrome a dos tamaños de ventana. |
-| Empezar con el hacha en la mano | 📝 | `feature/PROJECT-X-town` (o `arena`) | Ver abajo. Pedido el 2026-10-17. |
-| El héroe lleva puesta su armadura en la arena | 💭 | `feature/PROJECT-X-arena` | Ver abajo. Hay que bajar capas LPC nuevas y decidir cómo se combinan con las armas. |
-
-### Rayas negras en el suelo de la arena
-
-**Qué pasa:** el suelo de la arena se ve con rayas negras horizontales entre las baldosas de hierba.
-
-**Por qué:** `ArenaGroundComponent.render` (`features/arena/game/components/arena_ground_component.dart`) pinta la hierba como un mosaico de sprites `arena-grass` de 32 px, uno por baldosa, sacados del atlas `arena.png`. La cámara de la arena usa un zoom de cobertura entre 1 y 3 que casi nunca es entero. Con un zoom fraccionario, los bordes de cada baldosa caen entre píxeles de la pantalla: quedan huecos de un píxel donde se ve el fondo, y el muestreo también puede coger la fila vecina del atlas.
-
-**Cómo se arregló en la aldea** (`d6e932d`, `[PROJECT-X]: Draw the ground as one repeated tile so no seams show between tiles`): `GroundComponent` dejó de pintar baldosa a baldosa. Ahora pinta **un solo rectángulo** del tamaño del mundo con un `Paint` cuyo `shader` es un `ImageShader(tile, TileMode.repeated, TileMode.repeated, identidad, filterQuality: FilterQuality.none)`, con `isAntiAlias = false`. La GPU repite la textura sin costuras a cualquier zoom. Para eso la baldosa tiene que ser una **imagen propia** (`lpc/ground.png`, que carga `LpcAssetsLoader`), no un trozo de un atlas: el shader repetiría el atlas entero.
-
-**Arreglo** (hecho el 2026-10-17):
-- La hierba de la arena es la misma que la del bosque (`ARENA_GRASS` en `build_assets.py` toma la misma celda de `terrain_atlas.png`). `ArenaAssetsLoader` carga también `lpc/ground.png`, y `ArenaAssets` la expone como `ground` (`Image`).
-- `ArenaGroundComponent` pinta la hierba con un `drawRect` del tamaño del escenario y el mismo `Paint` con `ImageShader` repetido que `GroundComponent`; la valla sigue igual. Si sale limpio, se puede compartir el `Paint` entre los dos componentes.
-- Si `arena-grass` ya no se usa, sale de `ArenaSpriteNames` y del atlas (`build_assets.py` regenera `arena.png`/`arena.json`). El test del atlas de la arena y `ArenaAssetsMock` cambian con él.
-- **Tests:** `arena_ground_component_test.dart` comprueba que la hierba se pinta con un solo rectángulo y shader, como `ground_component_test.dart` en el bosque.
-- **Prueba manual:** la arena en Chrome con la ventana a varios tamaños (zoom no entero) y en Android: sin rayas.
-
-### Empezar con el hacha en la mano
-
-**Qué se quiere** (pedido por el usuario el 2026-10-17): que el personaje empiece la partida con el hacha en la mano, sin tener que recogerla y sin la misión *Recoge el hacha*.
-
-**Por qué:** recogerla no aporta nada. Además, el aviso "¡Hacha recogida! …" se pierde, porque en el mismo tick llega "Misión completada: Recoge el hacha" y lo tapa (visto en Chrome y en Android).
-
-**Qué cambia:**
-- **Nivel:** el hacha ya no está en el suelo (`LevelLocalDatasourceImpl` deja de poner el objeto del hacha) y el jugador empieza con `ToolKind.axe`. Hay que mirar dónde nace el jugador (`StartGameUseCase` / `World`).
-- **Misiones:** `QuestId.pickUpAxe` sale de `Quests.all`. F2 todavía no guarda nada, así que el valor del enum también se puede quitar. Las insignias (`0/11` hoy) bajan en uno, y las fichas de F4 (`x/16`) y F8 (`x/20`) se ajustan.
-- **Textos:** fuera `forest.message.welcome` ("Hay un hacha en el suelo…"), o se cambia por una bienvenida que mande a talar. Fuera también `pickedUpAxe` / `pickedUpAxeTouch` si ya nadie los usa. F5 seguirá teniendo el pico en el suelo, con su propio aviso.
-- **Tests:** los escenarios y mocks que empiezan sin hacha (`ForestScenarioMock.axeNextToPlayer`, `GameScenarioMock`…), los de misiones y el test de flujo. El test de equilibrado no cambia.
-- **iOS** sigue haciendo lo que Flutter hace hoy: es un cambio nuevo, no de paridad, y el repositorio iOS no se toca.
-
-**Cuándo:** antes de F4, que añade misiones a la aldea y cuenta la insignia. Puede ir en la rama de la aldea antes de F1, o en la de la arena si se quiere ya.
-
-### El héroe lleva puesta su armadura en la arena
-
-**Qué se quiere:** igual que el héroe cambia de arma en la arena (hacha → espada corta → de hierro → de acero), que cambie de aspecto al comprar armadura.
-
-**Cómo están hoy las armas:**
-- `build_assets.py` compone cada juego del héroe con sus capas LPC y su arma (`ARENA_FIGHTERS`: `hero`, `hero-short-sword`, `hero-iron-sword`, `hero-steel-sword`). Cada juego tiene 17 frames: 2 de reposo, 9 de andar y 6 de golpe.
-- `ArenaBloc` lee el arma equipada (`Gear.of(GearSlot.weapon, hero.weaponTier).id`) y la pasa en `FighterRenderData.weapon`.
-- `ArenaSpriteNames.heroWith(GearId?)` elige el juego.
-- **La armadura no llega a la vista:** `FighterRenderData` no tiene campo para ella y el héroe lleva siempre la ropa de trabajo.
-- En el bosque el jugador no muestra equipo, ni arma ni armadura. Esto no cambia.
-
-**Armaduras del catálogo** (`Gear`, `GearSlot.armor`) **y capas LPC posibles:**
-
-| Tier | Armadura | Capas | ¿Están en el repo? |
-|---|---|---|---|
-| 0 | Ropa de trabajo | La camisa de manga larga de hoy (`torso_clothes_longsleeve`) | Sí |
-| 1 | Armadura de cuero | `torso_armour_leather_male` (la de los bárbaros), quizá con brazales | Sí (`sources/barbarians/`) |
-| 2 | Cota de malla | Torso de malla, y hombreras si las hay | No |
-| 3 | Armadura de placas | Torso, hombreras y piernas de placas, y quizá yelmo | No |
-
-- Las capas que faltan se bajan del Universal LPC Spritesheet Character Generator, en el mismo commit que ya usan los bárbaros (`58ce1aa`), carpeta `spritesheets/`. Las rutas hay que confirmarlas en el repositorio, y cada capa trae sus animaciones `idle`, `walk` y `slash`.
-- Licencias esperadas: OGA-BY 3.0 / CC-BY-SA 3.0 / GPL 3.0. Cada capa nueva se acredita en `CREDITS.md`.
-
-**Qué hay que decidir al planificarlo:**
-- **Juegos precompuestos por combinación** (`hero-<arma>-<armadura>`):
-  - es el camino de hoy y no hay que tocar Flame;
-  - pero son 4 × 4 = 16 juegos, 272 frames del héroe en vez de 68, y `arena.png` crece bastante.
-- **Armadura como capa aparte**, dibujada encima del héroe con su arma:
-  - un juego de frames por armadura, con `FighterComponent` pintando dos sprites alineados;
-  - el atlas crece poco, pero el orden de capas (el arma delante o detrás del torso según el frame) lo complica.
-
-**Piezas, en cualquiera de los dos casos:**
-- `FighterRenderData.armor` (`GearId?`), que `ArenaBloc` rellena con `Gear.of(GearSlot.armor, hero.armorTier).id` en los mismos dos sitios que el arma.
-- Los nombres en `ArenaSpriteNames`, el atlas regenerado y sus tests (`arena_sprite_names_test.dart`, `ArenaAssetsMock`).
-
-**Prueba manual:** comprar cada armadura en la Armería y ver al héroe con ella en la arena, con cada arma.
+| Arreglo o mejora | Estado | Dónde está |
+|---|---|---|
+| [Rayas negras en el suelo de la arena](2026-10-17-extras/arena-ground-seams.md) | ✅ | `feature/PROJECT-X-arena` (#61) |
+| [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | 📝 ficha | — (antes de F4) |
+| [Armadura visible en la arena](2026-10-17-extras/hero-armour.md) | 💭 esbozo | — |
 
 ## Siguiente paso
 
 1. **C9 → C10 → C11 → C12**, cada una desde `feature/PROJECT-X-arena`.
 2. PR de `feature/PROJECT-X-arena` a `develop`, con la prueba manual completa en web, Android e iOS.
-3. Empezar con el hacha (ver *Arreglos y mejoras pendientes*), antes de F4.
+3. [Empezar con el hacha](2026-10-17-extras/start-with-axe.md), antes de F4.
 4. `git merge develop` en `feature/PROJECT-X-town` y **F1 → F3 → F4** (bloque 1) → **F5 → F6 → F7 → F8** (bloque 2) → **F2** (bloque 3).
 
 **Tracker de GitHub** (al día el 2026-10-17):

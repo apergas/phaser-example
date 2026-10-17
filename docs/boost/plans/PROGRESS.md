@@ -21,7 +21,7 @@ El juego se migró a SwiftUI + SpriteKit en `/Users/axelperezgaspar/farming-ios`
 |---|---|---|
 | Base (bosque, construcción, héroe, arena C0–C8) | ✅ | ✅ portada (M0–M7) |
 | Reanudar una obra a medias | ✅ `a16317c`, en `feature/PROJECT-X-arena` (#54) | ✅ (D18), con la guarda de no reiniciar la obra en curso |
-| Nombre *Farming*, icono del roble, textos táctiles | — ([X](2026-10-06-hero-arena/X-ios-alignment.md)) | ✅ |
+| Nombre *Farming*, icono del roble, textos táctiles | ✅ ([X](2026-10-06-hero-arena/X-ios-alignment.md)), sin unir aún | ✅ |
 | C9 Maná | — | ✅ |
 | C10 Pelea sin saltar | — | ✅ |
 | C11 Habilidades de los enemigos | — | ✅ |
@@ -81,7 +81,7 @@ Lo que **no** se trae de iOS: lo propio de Swift/SpriteKit (cambio de eje Y, ais
 | C7 Misiones y equilibrado | ✅ | `develop` (#52, #53) | Daño por rangos, línea *Héroe*, equipo solo con oro, test de equilibrado. 639 tests. |
 | C8 Pulido de la arena | ✅ | `feature/PROJECT-X-arena` (sin PR) | Lo de `ARENA-FIXES.md`. 649 tests. |
 | Reanudar obras | ✅ | `feature/PROJECT-X-arena` (#54) | Tocar una obra a medias vuelve a martillearla sin pagar. 655 tests. |
-| X Alineación con iOS | 🟢 plan listo | `feature/PROJECT-X-ios-alignment` (#55) | Nombre `Farming`, ids `com.apergas.farming`, paquete `farming`, icono, arranque `#0E150E`, textos táctiles y no reiniciar la obra en curso. |
+| X Alineación con iOS | ✅ | `feature/PROJECT-X-ios-alignment` (#55, sin PR) | Nombre `Farming`, ids `com.apergas.farming`, paquete `farming`, icono, arranque `#0E150E`, textos táctiles y no reiniciar la obra en curso. 658 tests. Falta comprobar en un emulador Android 12+ que el arranque sale verde (si no, `values-v31` con `windowSplashScreenBackground`). |
 | C9 Maná | 📝 ficha | — | Hecha en iOS (`f8f7792`). Maná en los niveles 6–10 (20/25/30/35/50) y en las habilidades (20/30/45); balance por recurso. |
 | C10 Pelea sin saltar | 📝 ficha | — | Hecha en iOS (`cec553e`). Sin *Saltar* ni botón durante la repetición. |
 | C11 Habilidades de los enemigos | 📝 ficha | — | Hecha en iOS (`283d176`). Probabilidades 1,5/2/2,5/3/3,5 % en los niveles 6–10; orden de tiradas fijo. |
@@ -102,9 +102,70 @@ Lo que **no** se trae de iOS: lo propio de Swift/SpriteKit (cambio de eje Y, ais
 | F2 Guardado de la partida | 📝 ficha | — | Va la última. `shared_preferences`, versión 1 con todo, autoguardado, menú *Partida* con *Guardar* y *Nueva partida*. |
 | F9–F15 Comida, aldeanos, granja, estaciones, eras, mercader | 💭 esbozo | — | Se replanifican al terminar F2, si el equipo confirma el giro a la gestión con aldeanos (`GAME_DESIGN.md` §5). |
 
+## Arreglos y mejoras pendientes
+
+Fallos y mejoras vistos jugando que no son de ninguna fase. Cada uno va en su rama desde la rama de integración donde está el código (`bugfix/PROJECT-X-<descripción>` para un fallo, `feature/PROJECT-X-<descripción>` para una mejora), con commits `[PROJECT-X]`.
+
+| Arreglo | Estado | Rama de destino | Notas |
+|---|---|---|---|
+| Rayas negras en el suelo de la arena | 📝 | `feature/PROJECT-X-arena` | Ver abajo. |
+| El héroe lleva puesta su armadura en la arena | 💭 | `feature/PROJECT-X-arena` | Ver abajo. Hay que bajar capas LPC nuevas y decidir cómo se combinan con las armas. |
+
+### Rayas negras en el suelo de la arena
+
+**Qué pasa:** el suelo de la arena se ve con rayas negras horizontales entre las baldosas de hierba.
+
+**Por qué:** `ArenaGroundComponent.render` (`features/arena/game/components/arena_ground_component.dart`) pinta la hierba como un mosaico de sprites `arena-grass` de 32 px, uno por baldosa, sacados del atlas `arena.png`. La cámara de la arena usa un zoom de cobertura entre 1 y 3 que casi nunca es entero. Con un zoom fraccionario, los bordes de cada baldosa caen entre píxeles de la pantalla: quedan huecos de un píxel donde se ve el fondo, y el muestreo también puede coger la fila vecina del atlas.
+
+**Cómo se arregló en la aldea** (`d6e932d`, `[PROJECT-X]: Draw the ground as one repeated tile so no seams show between tiles`): `GroundComponent` dejó de pintar baldosa a baldosa. Ahora pinta **un solo rectángulo** del tamaño del mundo con un `Paint` cuyo `shader` es un `ImageShader(tile, TileMode.repeated, TileMode.repeated, identidad, filterQuality: FilterQuality.none)`, con `isAntiAlias = false`. La GPU repite la textura sin costuras a cualquier zoom. Para eso la baldosa tiene que ser una **imagen propia** (`lpc/ground.png`, que carga `LpcAssetsLoader`), no un trozo de un atlas: el shader repetiría el atlas entero.
+
+**Arreglo propuesto:**
+- La hierba de la arena es la misma que la del bosque (`ARENA_GRASS` en `build_assets.py` toma la misma celda de `terrain_atlas.png`). `ArenaAssetsLoader` carga también `lpc/ground.png`, y `ArenaAssets` la expone como `ground` (`Image`).
+- `ArenaGroundComponent` pinta la hierba con un `drawRect` del tamaño del escenario y el mismo `Paint` con `ImageShader` repetido que `GroundComponent`; la valla sigue igual. Si sale limpio, se puede compartir el `Paint` entre los dos componentes.
+- Si `arena-grass` ya no se usa, sale de `ArenaSpriteNames` y del atlas (`build_assets.py` regenera `arena.png`/`arena.json`). El test del atlas de la arena y `ArenaAssetsMock` cambian con él.
+- **Tests:** `arena_ground_component_test.dart` comprueba que la hierba se pinta con un solo rectángulo y shader, como `ground_component_test.dart` en el bosque.
+- **Prueba manual:** la arena en Chrome con la ventana a varios tamaños (zoom no entero) y en Android: sin rayas.
+
+### El héroe lleva puesta su armadura en la arena
+
+**Qué se quiere:** igual que el héroe cambia de arma en la arena (hacha → espada corta → de hierro → de acero), que cambie de aspecto al comprar armadura.
+
+**Cómo están hoy las armas:**
+- `build_assets.py` compone cada juego del héroe con sus capas LPC y su arma (`ARENA_FIGHTERS`: `hero`, `hero-short-sword`, `hero-iron-sword`, `hero-steel-sword`). Cada juego tiene 17 frames: 2 de reposo, 9 de andar y 6 de golpe.
+- `ArenaBloc` lee el arma equipada (`Gear.of(GearSlot.weapon, hero.weaponTier).id`) y la pasa en `FighterRenderData.weapon`.
+- `ArenaSpriteNames.heroWith(GearId?)` elige el juego.
+- **La armadura no llega a la vista:** `FighterRenderData` no tiene campo para ella y el héroe lleva siempre la ropa de trabajo.
+- En el bosque el jugador no muestra equipo, ni arma ni armadura. Esto no cambia.
+
+**Armaduras del catálogo** (`Gear`, `GearSlot.armor`) **y capas LPC posibles:**
+
+| Tier | Armadura | Capas | ¿Están en el repo? |
+|---|---|---|---|
+| 0 | Ropa de trabajo | La camisa de manga larga de hoy (`torso_clothes_longsleeve`) | Sí |
+| 1 | Armadura de cuero | `torso_armour_leather_male` (la de los bárbaros), quizá con brazales | Sí (`sources/barbarians/`) |
+| 2 | Cota de malla | Torso de malla, y hombreras si las hay | No |
+| 3 | Armadura de placas | Torso, hombreras y piernas de placas, y quizá yelmo | No |
+
+- Las capas que faltan se bajan del Universal LPC Spritesheet Character Generator, en el mismo commit que ya usan los bárbaros (`58ce1aa`), carpeta `spritesheets/`. Las rutas hay que confirmarlas en el repositorio, y cada capa trae sus animaciones `idle`, `walk` y `slash`.
+- Licencias esperadas: OGA-BY 3.0 / CC-BY-SA 3.0 / GPL 3.0. Cada capa nueva se acredita en `CREDITS.md`.
+
+**Qué hay que decidir al planificarlo:**
+- **Juegos precompuestos por combinación** (`hero-<arma>-<armadura>`):
+  - es el camino de hoy y no hay que tocar Flame;
+  - pero son 4 × 4 = 16 juegos, 272 frames del héroe en vez de 68, y `arena.png` crece bastante.
+- **Armadura como capa aparte**, dibujada encima del héroe con su arma:
+  - un juego de frames por armadura, con `FighterComponent` pintando dos sprites alineados;
+  - el atlas crece poco, pero el orden de capas (el arma delante o detrás del torso según el frame) lo complica.
+
+**Piezas, en cualquiera de los dos casos:**
+- `FighterRenderData.armor` (`GearId?`), que `ArenaBloc` rellena con `Gear.of(GearSlot.armor, hero.armorTier).id` en los mismos dos sitios que el arma.
+- Los nombres en `ArenaSpriteNames`, el atlas regenerado y sus tests (`arena_sprite_names_test.dart`, `ArenaAssetsMock`).
+
+**Prueba manual:** comprar cada armadura en la Armería y ver al héroe con ella en la arena, con cada arma.
+
 ## Siguiente paso
 
-1. **X** Alineación con iOS (#55), en `feature/PROJECT-X-ios-alignment` (ya creada, con estos planes y el arreglo de #54).
+1. PR de **X** (#55): `feature/PROJECT-X-ios-alignment` → `feature/PROJECT-X-arena`, tras la prueba manual del plan.
 2. **C9 → C10 → C11 → C12**, cada una desde `feature/PROJECT-X-arena`.
 3. PR de `feature/PROJECT-X-arena` a `develop`, con la prueba manual completa en web, Android e iOS.
 4. `git merge develop` en `feature/PROJECT-X-town` y **F1 → F3 → F4** (bloque 1) → **F5 → F6 → F7 → F8** (bloque 2) → **F2** (bloque 3).

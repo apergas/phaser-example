@@ -51,7 +51,7 @@
 | Arreglo o mejora | Estado | Dónde está |
 |---|---|---|
 | [Rayas negras en el suelo de la arena](2026-10-17-extras/arena-ground-seams.md) | ✅ | `develop` (#61) |
-| [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | 📝 ficha | — |
+| [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | ✅ | `feature/PROJECT-X-start-with-axe` |
 | [T1 Tests](2026-10-17-extras/T1-tests.md) | 📝 ficha | — (la última; desde TC9.4 no se escriben tests) |
 
 ## Siguiente paso

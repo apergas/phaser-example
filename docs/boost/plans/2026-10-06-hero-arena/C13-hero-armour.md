@@ -54,7 +54,7 @@
    | `hat_helmet_nasal_adult` | `hat/helmet/nasal/adult` | bluecarrot16 | CC-BY 3.0, CC-BY 4.0, OGA-BY 3.0, GPL 2.0, GPL 3.0 |
 
    Todas existen en el commit `58ce1aa` con `idle`, `walk` y `slash`, y todas tienen una licencia aceptada. `zPos` comprobados en `sheet_definitions/` del mismo commit (`torso_chainmail.json` 50, `torso/armour/torso_armour_plate.json` 60, `arms/arms_armour.json` 60, `arms/shoulders/shoulders_pauldrons.json` 60, `arms/wrists/arms_bracers.json` 70, `legs/legs_armour.json` 20).
-5. **Tamaño del atlas:** `arena.png` pasa de 1024 × 1370 a unos 1024 × 3400 (12 juegos nuevos de 11 frames de 64 px y 6 de 128 px). Sigue por debajo de 4096, el máximo seguro de textura en WebGL y en móviles; no se cambia el ancho del empaquetado.
+5. **Tamaño del atlas:** `arena.png` pasa de 1024 × 1370 (110 KB) a 1024 × 3328 (261 KB; `arena.json` de 50 a 119 KB) (12 juegos nuevos de 11 frames de 64 px y 6 de 128 px). Sigue por debajo de 4096, el máximo seguro de textura en WebGL y en móviles; no se cambia el ancho del empaquetado.
 6. **Presentación:** `FighterRenderData.armor` (`GearId?`, por defecto `null`, en `==` y `hashCode`); `ArenaBloc._heroArmor` (`GearId.workClothes` al empezar) se calcula con `Gear.of(GearSlot.armor, status.hero.armorTier).id` en `_previewFighters`, junto a `_heroWeapon`, y se pasa en los dos sitios donde se pasa el arma (`_previewFighters` y `_replayFighter`, solo al héroe). `ArenaSpriteNames.heroWith(GearId? weapon, GearId? armor)` con dos `switch` exhaustivos (uno por sufijo); `ArenaSpriteNames.fighter(kind, {weapon, armor})`; `ArenaFrames.frameName` pasa `armor: fighter.armor`.
 
 ## Reparto

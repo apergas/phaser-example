@@ -29,7 +29,7 @@
 | [C10 Pelea sin saltar](2026-10-06-hero-arena/C10-no-skip.md) | ✅ | `feature/PROJECT-C10-no-skip` | Sin *Saltar* durante la repetición. Sin tests (T1). |
 | [C11 Habilidades de los enemigos](2026-10-06-hero-arena/C11-enemy-skills.md) | ✅ | `feature/PROJECT-C11-enemy-skills` | Probabilidades 1,5–3,5 % en los niveles 6–10. Sin tests (T1). |
 | [C12 Niveles de habilidad](2026-10-06-hero-arena/C12-skill-levels.md) | ✅ | `feature/PROJECT-C12-skill-levels` | Tres niveles por habilidad (×1,5 y ×2,25). Sin tests (T1). |
-| [C13 Armadura visible del héroe](2026-10-06-hero-arena/C13-hero-armour.md) | 🟢 plan listo | `feature/PROJECT-C13-hero-armour` | Juegos precompuestos arma × armadura. |
+| [C13 Armadura visible del héroe](2026-10-06-hero-arena/C13-hero-armour.md) | ✅ | `feature/PROJECT-C13-hero-armour` | Juegos precompuestos arma × armadura (cuero, malla, placas con yelmo). Sin tests (T1). |
 
 ## Aldea
 

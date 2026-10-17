@@ -64,3 +64,13 @@ final class NoGameInProgressException extends AppException<Object?> {
 
   const NoGameInProgressException();
 }
+
+final class InvalidSaveException extends AppException<String> {
+  @override
+  String get title => Internationalize.errorInvalidSaveTitle;
+
+  @override
+  String get message => Internationalize.errorInvalidSaveMessage(reason: data!);
+
+  const InvalidSaveException({required String super.data});
+}

@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 
+import 'package:farming/core/config/di/storage_module.dart' as _i399;
 import 'package:farming/core/error-handling/handlers/app_exception_handler.dart'
     as _i284;
 import 'package:farming/core/services/logging/bloc/bloc_logger.dart' as _i296;
@@ -24,6 +25,10 @@ import 'package:farming/layers/data/datasources/level/local/level_local_datasour
     as _i783;
 import 'package:farming/layers/data/datasources/level/source/level_local_datasource.dart'
     as _i1028;
+import 'package:farming/layers/data/datasources/save/local/game_save_local_datasource_impl.dart'
+    as _i657;
+import 'package:farming/layers/data/datasources/save/source/game_save_local_datasource.dart'
+    as _i768;
 import 'package:farming/layers/data/datasources/session/local/game_session_local_datasource_impl.dart'
     as _i23;
 import 'package:farming/layers/data/datasources/session/source/game_session_local_datasource.dart'
@@ -44,10 +49,38 @@ import 'package:farming/layers/data/repositories/level/mappers/rock_mapper_dbo.d
     as _i1063;
 import 'package:farming/layers/data/repositories/level/mappers/tree_mapper_dbo.dart'
     as _i553;
+import 'package:farming/layers/data/repositories/save/game_save_repository_impl.dart'
+    as _i796;
+import 'package:farming/layers/data/repositories/save/mappers/save_building_mapper_dbo.dart'
+    as _i1;
+import 'package:farming/layers/data/repositories/save/mappers/save_decoration_mapper_dbo.dart'
+    as _i105;
+import 'package:farming/layers/data/repositories/save/mappers/save_ground_item_mapper_dbo.dart'
+    as _i840;
+import 'package:farming/layers/data/repositories/save/mappers/save_hero_mapper_dbo.dart'
+    as _i815;
+import 'package:farming/layers/data/repositories/save/mappers/save_inventory_mapper_dbo.dart'
+    as _i911;
+import 'package:farming/layers/data/repositories/save/mappers/save_mapper_dbo.dart'
+    as _i440;
+import 'package:farming/layers/data/repositories/save/mappers/save_player_mapper_dbo.dart'
+    as _i589;
+import 'package:farming/layers/data/repositories/save/mappers/save_position_mapper_dbo.dart'
+    as _i829;
+import 'package:farming/layers/data/repositories/save/mappers/save_rock_mapper_dbo.dart'
+    as _i143;
+import 'package:farming/layers/data/repositories/save/mappers/save_stats_mapper_dbo.dart'
+    as _i24;
+import 'package:farming/layers/data/repositories/save/mappers/save_stump_mapper_dbo.dart'
+    as _i396;
+import 'package:farming/layers/data/repositories/save/mappers/save_tree_mapper_dbo.dart'
+    as _i18;
 import 'package:farming/layers/data/repositories/session/game_session_repository_impl.dart'
     as _i623;
 import 'package:farming/layers/domain/repositories/level/level_repository.dart'
     as _i1036;
+import 'package:farming/layers/domain/repositories/save/game_save_repository.dart'
+    as _i997;
 import 'package:farming/layers/domain/repositories/session/game_session_repository.dart'
     as _i663;
 import 'package:farming/layers/domain/use-cases/arena/get_arena_use_case.dart'
@@ -93,19 +126,21 @@ import 'package:farming/layers/domain/use-cases/hero/get_gear_options_use_case.d
 import 'package:farming/layers/domain/use-cases/hero/get_hero_status_use_case.dart'
     as _i201;
 import 'package:farming/layers/domain/use-cases/hero/get_skill_options_use_case.dart'
-    as _i1;
+    as _i2;
 import 'package:farming/layers/domain/use-cases/hero/learn_skill_use_case.dart'
     as _i506;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
-  _i174.GetIt init({
+  Future<_i174.GetIt> init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
-  }) {
+  }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    final storageModule = _$StorageModule();
     gh.factory<_i284.AppExceptionHandler>(() => _i284.AppExceptionHandler());
     gh.factory<_i959.BuildingMapperDBO>(() => _i959.BuildingMapperDBO());
     gh.factory<_i188.DecorationMapperDBO>(() => _i188.DecorationMapperDBO());
@@ -113,6 +148,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i453.PositionMapperDBO>(() => _i453.PositionMapperDBO());
     gh.factory<_i1063.RockMapperDBO>(() => _i1063.RockMapperDBO());
     gh.factory<_i553.TreeMapperDBO>(() => _i553.TreeMapperDBO());
+    gh.factory<_i815.SaveHeroMapperDBO>(() => _i815.SaveHeroMapperDBO());
+    gh.factory<_i911.SaveInventoryMapperDBO>(
+      () => _i911.SaveInventoryMapperDBO(),
+    );
+    gh.factory<_i829.SavePositionMapperDBO>(
+      () => _i829.SavePositionMapperDBO(),
+    );
+    gh.factory<_i24.SaveStatsMapperDBO>(() => _i24.SaveStatsMapperDBO());
+    await gh.singletonAsync<_i460.SharedPreferencesWithCache>(
+      () => storageModule.preferences,
+      preResolve: true,
+    );
     gh.singleton<_i500.NavigationService>(() => _i769.NavifyImpl());
     gh.lazySingleton<_i576.GameSessionLocalDatasource>(
       () => _i23.GameSessionLocalDatasourceImpl(),
@@ -120,6 +167,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i195.Logger>(() => _i189.CustomLoggerImpl());
     gh.factory<_i1028.LevelLocalDatasource>(
       () => const _i783.LevelLocalDatasourceImpl(),
+    );
+    gh.lazySingleton<_i768.GameSaveLocalDatasource>(
+      () => _i657.GameSaveLocalDatasourceImpl(
+        preferences: gh<_i460.SharedPreferencesWithCache>(),
+        logger: gh<_i195.Logger>(),
+      ),
     );
     gh.factory<_i459.LevelMapperDBO>(
       () => _i459.LevelMapperDBO(
@@ -140,11 +193,61 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i296.BlocLogger>(
       () => _i296.BlocLogger(logger: gh<_i195.Logger>()),
     );
+    gh.factory<_i1.SaveBuildingMapperDBO>(
+      () => _i1.SaveBuildingMapperDBO(
+        positionMapperDBO: gh<_i829.SavePositionMapperDBO>(),
+      ),
+    );
+    gh.factory<_i105.SaveDecorationMapperDBO>(
+      () => _i105.SaveDecorationMapperDBO(
+        positionMapperDBO: gh<_i829.SavePositionMapperDBO>(),
+      ),
+    );
+    gh.factory<_i840.SaveGroundItemMapperDBO>(
+      () => _i840.SaveGroundItemMapperDBO(
+        positionMapperDBO: gh<_i829.SavePositionMapperDBO>(),
+      ),
+    );
+    gh.factory<_i143.SaveRockMapperDBO>(
+      () => _i143.SaveRockMapperDBO(
+        positionMapperDBO: gh<_i829.SavePositionMapperDBO>(),
+      ),
+    );
+    gh.factory<_i396.SaveStumpMapperDBO>(
+      () => _i396.SaveStumpMapperDBO(
+        positionMapperDBO: gh<_i829.SavePositionMapperDBO>(),
+      ),
+    );
+    gh.factory<_i18.SaveTreeMapperDBO>(
+      () => _i18.SaveTreeMapperDBO(
+        positionMapperDBO: gh<_i829.SavePositionMapperDBO>(),
+      ),
+    );
+    gh.factory<_i589.SavePlayerMapperDBO>(
+      () => _i589.SavePlayerMapperDBO(
+        positionMapperDBO: gh<_i829.SavePositionMapperDBO>(),
+        inventoryMapperDBO: gh<_i911.SaveInventoryMapperDBO>(),
+      ),
+    );
     gh.factory<_i1036.LevelRepository>(
       () => _i571.LevelRepositoryImpl(
         localDatasource: gh<_i1028.LevelLocalDatasource>(),
         levelMapperDBO: gh<_i459.LevelMapperDBO>(),
         appExceptionHandler: gh<_i284.AppExceptionHandler>(),
+      ),
+    );
+    gh.factory<_i440.SaveMapperDBO>(
+      () => _i440.SaveMapperDBO(
+        treeMapperDBO: gh<_i18.SaveTreeMapperDBO>(),
+        stumpMapperDBO: gh<_i396.SaveStumpMapperDBO>(),
+        rockMapperDBO: gh<_i143.SaveRockMapperDBO>(),
+        groundItemMapperDBO: gh<_i840.SaveGroundItemMapperDBO>(),
+        decorationMapperDBO: gh<_i105.SaveDecorationMapperDBO>(),
+        buildingMapperDBO: gh<_i1.SaveBuildingMapperDBO>(),
+        inventoryMapperDBO: gh<_i911.SaveInventoryMapperDBO>(),
+        playerMapperDBO: gh<_i589.SavePlayerMapperDBO>(),
+        heroMapperDBO: gh<_i815.SaveHeroMapperDBO>(),
+        statsMapperDBO: gh<_i24.SaveStatsMapperDBO>(),
       ),
     );
     gh.factory<_i281.GetArenaUseCase>(
@@ -247,14 +350,22 @@ extension GetItInjectableX on _i174.GetIt {
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );
-    gh.factory<_i1.GetSkillOptionsUseCase>(
-      () => _i1.GetSkillOptionsUseCase(
+    gh.factory<_i2.GetSkillOptionsUseCase>(
+      () => _i2.GetSkillOptionsUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );
     gh.factory<_i506.LearnSkillUseCase>(
       () => _i506.LearnSkillUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i997.GameSaveRepository>(
+      () => _i796.GameSaveRepositoryImpl(
+        localDatasource: gh<_i768.GameSaveLocalDatasource>(),
+        saveMapperDBO: gh<_i440.SaveMapperDBO>(),
+        appExceptionHandler: gh<_i284.AppExceptionHandler>(),
+        logger: gh<_i195.Logger>(),
       ),
     );
     gh.factory<_i1072.StartGameUseCase>(
@@ -266,3 +377,5 @@ extension GetItInjectableX on _i174.GetIt {
     return this;
   }
 }
+
+class _$StorageModule extends _i399.StorageModule {}

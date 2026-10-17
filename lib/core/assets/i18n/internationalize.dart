@@ -40,6 +40,9 @@ class Internationalize {
       '$_error.unknownItemKindMessage'.tr(namedArgs: {'detail': detail});
   static String get errorNoGameInProgressTitle => '$_error.noGameInProgressTitle'.tr();
   static String get errorNoGameInProgressMessage => '$_error.noGameInProgressMessage'.tr();
+  static String get errorInvalidSaveTitle => '$_error.invalidSaveTitle'.tr();
+  static String errorInvalidSaveMessage({required String reason}) =>
+      '$_error.invalidSaveMessage'.tr(namedArgs: {'reason': reason});
 
   static const String _forest = 'forest';
   static String forestResource({required Resource resource}) => switch (resource) {

@@ -94,6 +94,8 @@ Sources: <https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
 <http://opengameart.org/content/lpc-clothing-updates>, <https://opengameart.org/content/lpc-helmets>,
 <https://opengameart.org/content/lpc-expanded-hats-facial-helmets>
 
+### Fence and ground (`arena-fence`; the grass is `ground.png`)
+
 The fence (`arena-fence`) comes from the LPC Tile Atlas, and the grass is the forest `ground.png` (see
 *Ground and decor* above). CC-BY-SA 3.0 / GPL 3.0.
 

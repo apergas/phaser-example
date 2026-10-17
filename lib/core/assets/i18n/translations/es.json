@@ -76,7 +76,11 @@
       "fellAnOak": "Tala un roble",
       "gatherFortyWood": "Ten 40 de madera en el almacén",
       "buildTwoHouses": "Ten 2 casas terminadas",
-      "seeATreeRegrow": "Ve rebrotar un árbol"
+      "seeATreeRegrow": "Ve rebrotar un árbol",
+      "gatherTwentyStone": "Ten 20 de piedra en el almacén",
+      "buildQuarry": "Construye una cantera",
+      "buildWorkshop": "Construye el Taller",
+      "upgradeAxe": "Compra el Hacha de hierro"
     },
     "questLine": {
       "village": "Aldea",

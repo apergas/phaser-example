@@ -95,6 +95,10 @@ class Internationalize {
     QuestId.gatherFortyWood => '$_forest.quest.gatherFortyWood'.tr(),
     QuestId.buildTwoHouses => '$_forest.quest.buildTwoHouses'.tr(),
     QuestId.seeATreeRegrow => '$_forest.quest.seeATreeRegrow'.tr(),
+    QuestId.gatherTwentyStone => '$_forest.quest.gatherTwentyStone'.tr(),
+    QuestId.buildQuarry => '$_forest.quest.buildQuarry'.tr(),
+    QuestId.buildWorkshop => '$_forest.quest.buildWorkshop'.tr(),
+    QuestId.upgradeAxe => '$_forest.quest.upgradeAxe'.tr(),
   };
   static String forestQuestLine({required QuestLine line}) => switch (line) {
     QuestLine.village => '$_forest.questLine.village'.tr(),

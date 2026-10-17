@@ -59,6 +59,8 @@ closed chests of the LPC Tile Atlas above beside the door.
 
 The stump (`stump` frame) comes from the LPC Tile Atlas above.
 The camp (`camp` frame) is that stump in front of three logs cut from a tree trunk of the LPC Tile Atlas above.
+The quarry (`quarry` frame) is the large boulder between two cracked stone blocks behind two pieces of the arena
+fence, all from the LPC Tile Atlas above.
 The large rock (`rock-large` frame) is a grey boulder of the LPC Tile Atlas above.
 The sapling (`sapling` frame) is a young plant from the farming crops of the LPC Tile Atlas above (Daniel Eddeland).
 

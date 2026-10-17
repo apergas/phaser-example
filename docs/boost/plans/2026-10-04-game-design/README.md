@@ -96,7 +96,7 @@ El **"qué y cómo"** está en estos Markdown. El **"quién y por dónde va"** e
 | **F4** Misiones, capítulo 1 | ✅ [F4-quests-chapter-1.md](F4-quests-chapter-1.md) | Único | F3 | `StatsEntity`, 5 misiones nuevas y misiones hechas plegadas en el panel. |
 | **F5** Piedra y pico | ✅ [F5-stone.md](F5-stone.md) | Único | F4 | Segundo recurso: 12 rocas, pico y el trabajo de picar; piedra en los edificios del héroe. |
 | **F6** Almacén y capacidad de carga | ✅ [F6-storehouse.md](F6-storehouse.md) | Único | F5 | Bucle "ir y volver": carga de 10, entregar en el campamento o en un almacén, que paga todo. |
-| **F7** Cantera | 📝 [F7-quarry.md](F7-quarry.md) | Único | F5, F6 | Primera regla de colocación (junto a roca), entrega solo de piedra y picado más rápido. |
+| **F7** Cantera | ✅ [F7-quarry.md](F7-quarry.md) | Único | F5, F6 | Primera regla de colocación (junto a roca), entrega solo de piedra y picado más rápido. |
 | **F8** Taller y mejoras de herramientas | 📝 [F8-workshop.md](F8-workshop.md) | Único | F7 | Hacha y pico de hierro, botón *Taller*, misiones del capítulo 2. |
 | **F2** Guardado de la partida | 📝 [F2-autosave.md](F2-autosave.md) | Único | F8 | La partida sobrevive a cerrar la app: guardado automático, botón *Guardar* y *Nueva partida* (menú *Partida*). Va la última. |
 | **F9** Comida y población | 💭 | — | F8 | `Resource.food`, bayas. Cada casa da +2 de población. |

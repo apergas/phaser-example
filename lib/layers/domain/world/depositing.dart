@@ -17,12 +17,12 @@ final class Depositing implements Work<DepositIntentEntity> {
     final building = state.buildings[buildingId];
     if (building == null) return DepositResult.unknownBuilding;
     if (!building.acceptsDeposits) return DepositResult.notADropOff;
-    if (state.player.inventory.load == 0) return DepositResult.emptyLoad;
+    if (state.player.inventory.cargoFor(building.blueprint.accepts).isEmpty) return DepositResult.emptyLoad;
     return DepositResult.ok;
   }
 
   @override
-  double get intervalMs => Rules.depositIntervalMs;
+  double intervalMs(WorldState state, DepositIntentEntity intent) => Rules.depositIntervalMs;
 
   @override
   ObstacleEntity? target(WorldState state, DepositIntentEntity intent) {
@@ -38,9 +38,11 @@ final class Depositing implements Work<DepositIntentEntity> {
 
   @override
   bool impact(WorldState state, DepositIntentEntity intent, List<GameEventEntity> events) {
-    final load = state.player.inventory.cargo;
+    final accepted = state.buildings[intent.buildingId]?.blueprint.accepts;
+    if (accepted == null) return true;
+    final load = state.player.inventory.cargoFor(accepted);
     if (load.isEmpty) return true;
-    state.player = state.player.withInventory(state.player.inventory.unloading());
+    state.player = state.player.withInventory(state.player.inventory.unloading(accepted));
     state.stock = state.stock.adding(load);
     events.add(DepositedEventEntity(buildingId: intent.buildingId, load: load));
     return true;

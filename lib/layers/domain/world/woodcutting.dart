@@ -26,7 +26,7 @@ final class Woodcutting implements Work<ChopIntentEntity> {
   }
 
   @override
-  double get intervalMs => Rules.chopIntervalMs;
+  double intervalMs(WorldState state, ChopIntentEntity intent) => Rules.chopIntervalMs;
 
   @override
   ObstacleEntity? target(WorldState state, ChopIntentEntity intent) => state.trees[intent.treeId]?.footprint;

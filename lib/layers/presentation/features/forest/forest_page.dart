@@ -208,7 +208,9 @@ class _ForestViewState extends State<_ForestView> with RouteAware {
 
   Widget _placementActions({required PlacementData? placement}) {
     if (placement == null) return const SizedBox.shrink();
+    final reason = placement.invalidReason;
     return PlacementBar(
+      reason: reason == null ? null : Internationalize.forestPlacementRejection(rejection: reason),
       onConfirm: () => bloc.add(ForestMapClicked(position: placement.position)),
       onCancel: () => bloc.add(const ForestPlacementCancelled()),
     );

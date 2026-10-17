@@ -38,7 +38,14 @@ extension InventoryRules on InventoryEntity {
     return inventory;
   }
 
-  InventoryEntity unloading() => copyWith(resources: {...resources}..removeWhere((resource, _) => resource.takesCargo));
+  Map<Resource, int> cargoFor(Set<Resource> accepted) => {
+    for (final MapEntry(key: resource, value: quantity) in cargo.entries)
+      if (accepted.contains(resource)) resource: quantity,
+  };
+
+  InventoryEntity unloading(Set<Resource> accepted) => copyWith(
+    resources: {...resources}..removeWhere((resource, _) => resource.takesCargo && accepted.contains(resource)),
+  );
 
   Map<Resource, int> missing(Map<Resource, int> cost) {
     for (final MapEntry(key: resource, value: quantity) in cost.entries) {

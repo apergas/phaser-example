@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import '../../config/constants/enum/arena_level_id.dart';
 import '../../config/constants/enum/blueprint_id.dart';
+import '../../config/constants/enum/construction_rejection.dart';
 import '../../config/constants/enum/enemy_kind.dart';
 import '../../config/constants/enum/fight_advice.dart';
 import '../../config/constants/enum/forest/hero_panel_section.dart';
@@ -73,6 +74,7 @@ class Internationalize {
     BlueprintId.mageTower => '$_forest.blueprint.mageTower'.tr(),
     BlueprintId.camp => '$_forest.blueprint.camp'.tr(),
     BlueprintId.storehouse => '$_forest.blueprint.storehouse'.tr(),
+    BlueprintId.quarry => '$_forest.blueprint.quarry'.tr(),
   };
   static String forestQuestTitle({required QuestId id}) => switch (id) {
     QuestId.gatherWood => '$_forest.quest.gatherWood'.tr(),
@@ -126,6 +128,11 @@ class Internationalize {
       '$_forest.message.questCompleted'.tr(namedArgs: {'title': title});
   static String get forestPlacementConfirm => '$_forest.placement.confirm'.tr();
   static String get forestPlacementCancel => '$_forest.placement.cancel'.tr();
+  static String forestPlacementRejection({required ConstructionRejection rejection}) => switch (rejection) {
+    ConstructionRejection.notEnoughResources => forestMessageNotEnoughResources,
+    ConstructionRejection.blocked => forestMessageBlockedSite,
+    ConstructionRejection.needsNearbyRock => '$_forest.placement.needsRock'.tr(),
+  };
   static String get forestAccessibilityGameWorld => '$_forest.accessibility.gameWorld'.tr();
   static String get forestRetry => '$_forest.retry'.tr();
   static String forestFloatingWoodGained({required int wood}) =>

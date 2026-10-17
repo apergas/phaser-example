@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../../core/config/constants/enum/chop_result.dart';
+import '../../../core/config/constants/enum/construction_rejection.dart';
 import '../../../core/config/constants/enum/deposit_result.dart';
 import '../../../core/config/constants/enum/mine_result.dart';
 import '../../../core/config/constants/enum/resource.dart';
@@ -94,7 +95,7 @@ class World {
   double get workProgress {
     final activity = player.activity;
     if (activity is! WorkingActivityEntity) return 0;
-    return activity.elapsedMs / workFor(activity.intent).intervalMs;
+    return activity.elapsedMs / workFor(activity.intent).intervalMs(_state);
   }
 
   PositionEntity? get playerTarget => switch (player.activity) {
@@ -139,8 +140,8 @@ class World {
     return ResumeConstructionResult.ok;
   }
 
-  bool canPlace(BlueprintEntity blueprint, PositionEntity position) =>
-      Construction.canPlace(_state, blueprint, position);
+  ConstructionRejection? placementRejection(BlueprintEntity blueprint, PositionEntity position) =>
+      Construction.rejection(_state, blueprint, position);
 
   InventoryEntity get funds => _state.stock;
 
@@ -182,11 +183,12 @@ class World {
       return;
     }
     final elapsed = activity.elapsedMs + deltaMs;
-    if (elapsed < work.intervalMs) {
+    final intervalMs = work.intervalMs(_state);
+    if (elapsed < intervalMs) {
       _state.player = _state.player.continueWork(elapsed);
       return;
     }
-    _state.player = _state.player.continueWork(elapsed - work.intervalMs);
+    _state.player = _state.player.continueWork(elapsed - intervalMs);
     if (work.impact(_state, events)) _state.player = _state.player.stop();
   }
 }

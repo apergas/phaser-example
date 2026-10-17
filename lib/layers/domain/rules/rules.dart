@@ -10,10 +10,12 @@ abstract final class Rules {
   static const double treeTrunkRadius = 12;
   static const double powerPerSkill = 0.1;
   static const int maxFightRounds = 30;
-  static const double dodgeChance = 0.2;
+  static const List<double> dodgeChanceByLevel = [0.2, 0.25, 0.3];
   static const double secondWindThreshold = 0.3;
-  static const double secondWindHeal = 0.4;
+  static const List<double> secondWindHealByLevel = [0.4, 0.5, 0.6];
   static const int doubleStrikeEvery = 3;
+  static const List<double> doubleStrikeBonusByLevel = [0, 0.15, 0.3];
+  static const int enemySkillLevel = 1;
   static const double almostThereShare = 0.25;
   static const double weakHitDamage = 2;
   static const int repeatRewardDivisor = 3;

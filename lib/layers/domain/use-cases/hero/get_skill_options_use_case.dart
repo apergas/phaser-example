@@ -6,6 +6,7 @@ import '../../entities/hero/skill_option_entity.dart';
 import '../../repositories/session/game_session_repository.dart';
 import '../../rules/skills.dart';
 import '../../world/extensions/building_rules.dart';
+import '../../world/extensions/hero_rules.dart';
 import '../../world/extensions/inventory_rules.dart';
 import '../../world/world.dart';
 

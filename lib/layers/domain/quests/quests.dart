@@ -6,6 +6,7 @@ import '../../../core/config/constants/enum/tool_kind.dart';
 import '../rules/arena_levels.dart';
 import '../world/extensions/arena_rules.dart';
 import '../world/extensions/building_rules.dart';
+import '../world/extensions/hero_rules.dart';
 import '../world/extensions/inventory_rules.dart';
 import '../world/world.dart';
 import 'quest.dart';

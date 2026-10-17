@@ -57,7 +57,8 @@
       "mageTower": "Torre de magia",
       "camp": "Campamento",
       "storehouse": "Almacén",
-      "quarry": "Cantera"
+      "quarry": "Cantera",
+      "workshop": "Taller"
     },
     "quest": {
       "gatherWood": "Lleva 15 de madera al almacén",

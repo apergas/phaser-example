@@ -50,7 +50,7 @@ final class Mining implements Work<MineIntentEntity> {
     final rock = state.rocks[intent.rockId]?.hit();
     if (rock == null) return true;
     events.add(RockHitEventEntity(rockId: rock.id));
-    if (!rock.isBroken) {
+    if (rock.hitsTaken < state.player.inventory.hitsNeeded(ToolKind.pickaxe, rock.hitsToBreak)) {
       state.rocks[rock.id] = rock;
       return false;
     }

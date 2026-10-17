@@ -21,6 +21,7 @@ abstract final class SpriteNames {
     BlueprintId.camp => 'camp',
     BlueprintId.storehouse => 'storehouse',
     BlueprintId.quarry => 'quarry',
+    BlueprintId.workshop => 'workshop',
   };
 
   static String item(ToolKind kind) => switch (kind) {

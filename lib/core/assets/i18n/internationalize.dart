@@ -75,6 +75,7 @@ class Internationalize {
     BlueprintId.camp => '$_forest.blueprint.camp'.tr(),
     BlueprintId.storehouse => '$_forest.blueprint.storehouse'.tr(),
     BlueprintId.quarry => '$_forest.blueprint.quarry'.tr(),
+    BlueprintId.workshop => '$_forest.blueprint.workshop'.tr(),
   };
   static String forestQuestTitle({required QuestId id}) => switch (id) {
     QuestId.gatherWood => '$_forest.quest.gatherWood'.tr(),

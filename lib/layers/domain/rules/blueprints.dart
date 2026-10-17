@@ -29,6 +29,13 @@ abstract final class Blueprints {
     placementRule: NearRockPlacementRuleEntity(range: Rules.quarryRockRange),
   );
 
+  static const BlueprintEntity workshop = BlueprintEntity(
+    id: BlueprintId.workshop,
+    cost: {Resource.wood: 20, Resource.stone: 10},
+    hitsToBuild: 10,
+    footprintRadius: 40,
+  );
+
   static const BlueprintEntity forge = BlueprintEntity(
     id: BlueprintId.forge,
     cost: {Resource.wood: 25, Resource.stone: 10},
@@ -59,7 +66,7 @@ abstract final class Blueprints {
     accepts: {Resource.wood, Resource.stone},
   );
 
-  static const List<BlueprintEntity> all = [house, storehouse, quarry, forge, armory, mageTower, camp];
+  static const List<BlueprintEntity> all = [house, storehouse, quarry, workshop, forge, armory, mageTower, camp];
 
   static BlueprintEntity of(BlueprintId id) => all.firstWhere((blueprint) => blueprint.id == id);
 }

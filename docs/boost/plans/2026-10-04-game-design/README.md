@@ -92,7 +92,7 @@ El **"qué y cómo"** está en estos Markdown. El **"quién y por dónde va"** e
 |---|---|---|---|---|
 | **F0** Generalizar recursos, herramientas y edificios | ✅ [F0-generalize.md](F0-generalize.md) | A + B | — | Inventario por `Resource`, coste por recursos, HUD de recursos genérico, sprites de edificios e ítems elegidos por tipo. **Sin cambios de jugabilidad.** |
 | **F1** Árboles con personalidad | ✅ [F1-tree-kinds.md](F1-tree-kinds.md) | Único | F0 | Cada `TreeKind` da distinta madera y pide distintos golpes. Texto "+N" flotante. |
-| **F3** Rebrote de árboles | 📝 [F3-regrowth.md](F3-regrowth.md) | Único | F1 | Tocón → brote → el mismo árbol: la madera es sostenible. |
+| **F3** Rebrote de árboles | ✅ [F3-regrowth.md](F3-regrowth.md) | Único | F1 | Tocón → brote → el mismo árbol: la madera es sostenible. |
 | **F4** Misiones, capítulo 1 | 📝 [F4-quests-chapter-1.md](F4-quests-chapter-1.md) | Único | F3 | `StatsEntity`, 5 misiones nuevas y misiones hechas plegadas en el panel. |
 | **F5** Piedra y pico | 📝 [F5-stone.md](F5-stone.md) | Único | F4 | Segundo recurso: 12 rocas, pico y el trabajo de picar; piedra en los edificios del héroe. |
 | **F6** Almacén y capacidad de carga | 📝 [F6-storehouse.md](F6-storehouse.md) | Único | F5 | Bucle "ir y volver": carga de 10, entregar en el campamento o en un almacén, que paga todo. |

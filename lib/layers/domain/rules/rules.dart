@@ -10,6 +10,8 @@ abstract final class Rules {
   static const double playerSpeed = 110;
   static const double playerRadius = 8;
   static const double treeTrunkRadius = 12;
+  static const double sproutAfterMs = 60000;
+  static const double regrowAfterMs = 180000;
   static const Map<TreeKind, TreeStatsEntity> treeKindStats = {
     TreeKind.slim: TreeStatsEntity(woodYield: 4, hitsToFell: 3),
     TreeKind.round: TreeStatsEntity(woodYield: 5, hitsToFell: 5),

@@ -456,10 +456,34 @@
     "y": 0.85
    }
   },
-  "decor-leaves": {
+  "sapling": {
    "frame": {
     "x": 986,
     "y": 242,
+    "w": 18,
+    "h": 30
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 30
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 30
+   },
+   "pivot": {
+    "x": 0.3889,
+    "y": 0.9
+   }
+  },
+  "decor-leaves": {
+   "frame": {
+    "x": 0,
+    "y": 382,
     "w": 31,
     "h": 29
    },
@@ -482,7 +506,7 @@
   },
   "decor-mushrooms": {
    "frame": {
-    "x": 0,
+    "x": 33,
     "y": 382,
     "w": 28,
     "h": 28
@@ -506,7 +530,7 @@
   },
   "axe-pickup": {
    "frame": {
-    "x": 30,
+    "x": 63,
     "y": 382,
     "w": 24,
     "h": 27
@@ -530,7 +554,7 @@
   },
   "decor-rock": {
    "frame": {
-    "x": 56,
+    "x": 89,
     "y": 382,
     "w": 31,
     "h": 25
@@ -554,7 +578,7 @@
   },
   "decor-tall-grass": {
    "frame": {
-    "x": 89,
+    "x": 122,
     "y": 382,
     "w": 23,
     "h": 22
@@ -581,7 +605,7 @@
   "image": "forest.png",
   "size": {
    "w": 1024,
-   "h": 410
+   "h": 411
   },
   "scale": "1"
  }

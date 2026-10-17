@@ -4,6 +4,7 @@ import '../../../../../domain/entities/geometry/position_entity.dart';
 import '../../../../../domain/entities/tree/tree_entity.dart';
 import '../atlas/lpc_assets.dart';
 import '../atlas/sprite_names.dart';
+import '../render/growth_motion.dart';
 import '../render/position_conversion.dart';
 import '../render/render_depth.dart';
 import '../render/tree_motion.dart';
@@ -16,6 +17,7 @@ class TreeComponent extends AtlasSpriteComponent {
   double _direction = 1;
   double? _hitElapsedMs;
   double? _fallElapsedMs;
+  double? _growElapsedMs;
 
   TreeComponent({required LpcAssets assets, required TreeEntity tree})
     : treeId = tree.id,
@@ -48,6 +50,11 @@ class TreeComponent extends AtlasSpriteComponent {
     _fallElapsedMs = 0;
   }
 
+  void grow() {
+    _growElapsedMs = 0;
+    scale.setAll(GrowthMotion.startScale);
+  }
+
   @override
   void update(double dt) {
     super.update(dt);
@@ -60,6 +67,12 @@ class TreeComponent extends AtlasSpriteComponent {
       opacity = TreeMotion.fallOpacity(total);
       if (TreeMotion.hasFallen(total)) removeFromParent();
       return;
+    }
+    final growElapsed = _growElapsedMs;
+    if (growElapsed != null) {
+      final total = growElapsed + elapsedMs;
+      scale.setAll(GrowthMotion.scale(total));
+      _growElapsedMs = GrowthMotion.hasGrown(total) ? null : total;
     }
     final hitElapsed = _hitElapsedMs;
     if (hitElapsed == null) return;

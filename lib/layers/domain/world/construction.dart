@@ -9,6 +9,7 @@ import '../entities/player/intent_entity.dart';
 import '../rules/rules.dart';
 import 'extensions/building_rules.dart';
 import 'extensions/inventory_rules.dart';
+import 'extensions/obstacle_rules.dart';
 import 'extensions/player_rules.dart';
 import 'extensions/position_geometry.dart';
 import 'work.dart';
@@ -34,6 +35,7 @@ final class Construction implements Work<ConstructIntentEntity> {
     state.player = state.player.withInventory(paid);
     final building = BuildingEntity(id: state.nextId('building'), blueprint: blueprint, position: position);
     state.buildings[building.id] = building;
+    state.stumps.removeWhere((_, stump) => building.footprint.blocks(stump.position, Rules.treeTrunkRadius));
     return ConstructionStartedEntity(building: building);
   }
 

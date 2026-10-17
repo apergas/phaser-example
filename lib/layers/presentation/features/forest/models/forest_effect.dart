@@ -113,3 +113,27 @@ final class SkillLearnedEffect extends ForestEffect {
   @override
   int get hashCode => Object.hash(SkillLearnedEffect, skill);
 }
+
+final class TreeSproutedEffect extends ForestEffect {
+  final String stumpId;
+
+  const TreeSproutedEffect({required this.stumpId});
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is TreeSproutedEffect && other.stumpId == stumpId;
+
+  @override
+  int get hashCode => Object.hash(TreeSproutedEffect, stumpId);
+}
+
+final class TreeRegrownEffect extends ForestEffect {
+  final String treeId;
+
+  const TreeRegrownEffect({required this.treeId});
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is TreeRegrownEffect && other.treeId == treeId;
+
+  @override
+  int get hashCode => Object.hash(TreeRegrownEffect, treeId);
+}

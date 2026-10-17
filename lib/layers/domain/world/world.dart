@@ -16,12 +16,14 @@ import '../entities/player/activity_entity.dart';
 import '../entities/player/intent_entity.dart';
 import '../entities/player/inventory_entity.dart';
 import '../entities/player/player_entity.dart';
+import '../entities/tree/stump_entity.dart';
 import '../entities/tree/tree_entity.dart';
 import 'construction.dart';
 import 'extensions/inventory_rules.dart';
 import 'extensions/player_rules.dart';
 import 'navigation.dart';
 import 'pick_up_items.dart';
+import 'regrowth.dart';
 import 'woodcutting.dart';
 import 'work.dart';
 import 'world_state.dart';
@@ -65,6 +67,8 @@ class World {
   List<DecorationEntity> get decorations => _state.decorations;
 
   List<BuildingEntity> get buildings => _state.buildings.values.toList();
+
+  List<StumpEntity> get stumps => _state.stumps.values.toList();
 
   HeroEntity get hero => _state.hero;
 
@@ -132,6 +136,7 @@ class World {
 
   List<GameEventEntity> advance(double deltaMs) {
     final events = <GameEventEntity>[];
+    Regrowth.advance(_state, deltaMs, events);
     switch (player.activity) {
       case final WalkingActivityEntity walking:
         _navigation.step(deltaMs, walking, events);

@@ -7,6 +7,7 @@ import '../entities/geometry/position_entity.dart';
 import '../entities/hero/hero_entity.dart';
 import '../entities/item/ground_item_entity.dart';
 import '../entities/player/player_entity.dart';
+import '../entities/tree/stump_entity.dart';
 import '../entities/tree/tree_entity.dart';
 import 'extensions/obstacle_rules.dart';
 
@@ -32,6 +33,7 @@ class WorldState {
   final Map<String, TreeEntity> trees;
   final Map<String, GroundItemEntity> items;
   final Map<String, BuildingEntity> buildings = {};
+  final Map<String, StumpEntity> stumps = {};
   final Map<String, int> _idCounters = {};
 
   List<ObstacleEntity> obstacles() => [

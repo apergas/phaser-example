@@ -21,5 +21,6 @@ abstract final class SpriteNames {
 
   static String item(ToolKind kind) => switch (kind) {
     ToolKind.axe => 'axe-pickup',
+    ToolKind.pickaxe => 'pickaxe-pickup',
   };
 }

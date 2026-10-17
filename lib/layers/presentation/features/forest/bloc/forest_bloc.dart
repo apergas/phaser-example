@@ -322,6 +322,10 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         _showMessage(switch (kind) {
           ToolKind.axe =>
             _isTouchInput ? Internationalize.forestMessagePickedUpAxeTouch : Internationalize.forestMessagePickedUpAxe,
+          ToolKind.pickaxe =>
+            _isTouchInput
+                ? Internationalize.forestMessagePickedUpPickaxeTouch
+                : Internationalize.forestMessagePickedUpPickaxe,
         });
         effects.add(ItemPickedUpEffect(itemId: itemId));
       case PlayerBlockedEventEntity():

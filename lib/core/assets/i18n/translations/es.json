@@ -35,15 +35,18 @@
     "resource": {
       "wood": "Madera",
       "gold": "Oro",
-      "mana": "Maná"
+      "mana": "Maná",
+      "stone": "Piedra"
     },
     "tool": {
-      "axe": "Hacha"
+      "axe": "Hacha",
+      "pickaxe": "Pico"
     },
     "amount": {
       "wood": "{amount} de madera",
       "gold": "{amount} de oro",
-      "mana": "{amount} de maná"
+      "mana": "{amount} de maná",
+      "stone": "{amount} de piedra"
     },
     "blueprint": {
       "house": "Casa",
@@ -78,6 +81,8 @@
       "blockedPath": "Hay algo en medio. Acércate por otro lado.",
       "pickedUpAxe": "¡Hacha recogida! Haz clic en un árbol para talarlo.",
       "pickedUpAxeTouch": "¡Hacha recogida! Toca un árbol para talarlo.",
+      "pickedUpPickaxe": "¡Pico recogido! Haz clic en una roca para picarla.",
+      "pickedUpPickaxeTouch": "¡Pico recogido! Toca una roca para picarla.",
       "blockedSite": "Ahí no cabe. Busca un sitio despejado.",
       "notEnoughResources": "No tienes recursos suficientes.",
       "buildingStarted": "Manos a la obra…",

@@ -37,7 +37,7 @@
 |---|---|---|---|
 | F0 Generalizar recursos, herramientas y edificios | ✅ | `develop` (#6) | Incluye el arreglo de las líneas del suelo. |
 | [F1 Árboles con personalidad](2026-10-04-game-design/F1-tree-kinds.md) | ✅ | `feature/PROJECT-F1-tree-kinds` | Bloque 1. Sin tests (T1). |
-| [F3 Rebrote de árboles](2026-10-04-game-design/F3-regrowth.md) | 🟢 plan listo | `feature/PROJECT-F3-regrowth` | Bloque 1. |
+| [F3 Rebrote de árboles](2026-10-04-game-design/F3-regrowth.md) | ✅ | `feature/PROJECT-F3-regrowth` | Bloque 1. Sin tests (T1). |
 | [F4 Misiones, capítulo 1](2026-10-04-game-design/F4-quests-chapter-1.md) | 📝 ficha | — | Bloque 1. |
 | [F5 Piedra y pico](2026-10-04-game-design/F5-stone.md) | 📝 ficha | — | Bloque 2. |
 | [F6 Almacén y capacidad de carga](2026-10-04-game-design/F6-storehouse.md) | 📝 ficha | — | Bloque 2. |

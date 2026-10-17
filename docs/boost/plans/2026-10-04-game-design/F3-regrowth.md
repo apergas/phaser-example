@@ -1,5 +1,7 @@
 # F3 · Rebrote de árboles — Implementation Plan
 
+> **Implementado el 2026-10-17 sin tests (regla del usuario); lo que falta de test está en *Para T1*.** Una sola rama `feature/PROJECT-F3-regrowth`, un commit por tarea (TF3.1–TF3.4). Desvíos respecto a iOS: `isSapling` vive en `StumpRules` y no en la entidad (decisión 1); `stump_component.dart` importa `package:flame/components.dart` para `scale.setAll`. El atlas regenerado coincide con iOS: el frame `sapling` (18 × 30, pivote 0.3889 / 0.9) y cinco frames pequeños movidos con los mismos píxeles, tamaño y pivote; `forest.png` pasa de 410 a 411 px de alto.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use boost:subagent-driven-development (recommended) or boost:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Read the **Global Constraints** in [README.md](README.md) first; they apply to every task.
 
 | | |
@@ -386,6 +388,8 @@ abstract final class GrowthMotion {
 - [ ] **Step 4: `stump_component.dart`** (nuevo)
 
 ```dart
+import 'package:flame/components.dart';
+
 import '../../../../../domain/entities/tree/stump_entity.dart';
 import '../../../../../domain/world/extensions/stump_rules.dart';
 import '../atlas/lpc_assets.dart';

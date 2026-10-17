@@ -63,7 +63,7 @@ Fighters composed by `build_assets.py` from the same character layers and axe as
 the veteran bandit are recolours of those layers (clothes and hair). Same authors and licences as
 the character layers. The barbarian and the barbarian chief add their own layers (see
 *Barbarians* below); the hero's swords and the veteran's sword are the arming sword (see *Swords*
-below).
+below), and the hero's armour is described in *Hero armour* below.
 
 ### Swords (`hero-short-sword-*`, `hero-iron-sword-*`, `hero-steel-sword-*`, `bandit-veteran-*`)
 
@@ -73,6 +73,26 @@ below).
 JaidynReiman. OGA-BY 3.0 —
 <https://github.com/ElizaWy/LPC/tree/main/Characters/Props/Sword%2001%20-%20Arming%20Sword>,
 <https://opengameart.org/content/lpc-expanded-sit-run-jump-more>.
+
+### Hero armour (`hero-*-leather-*`, `hero-*-chain-mail-*`, `hero-*-plate-*` and the same without a weapon)
+
+The hero's leather armour is the barbarians' leather armour and bracers (see *Barbarians* below). The chain mail
+and the plate armour are layers of the [Universal LPC Spritesheet Character Generator](https://github.com/liberatedpixelcup/Universal-LPC-Spritesheet-Character-Generator)
+(commit 58ce1aa) in `asset-packs/lpc/sources/armour/` (see `CREDITS-armour.txt` there), not recoloured.
+
+| Layer | Authors | Licences |
+|---|---|---|
+| Chain mail | Johannes Sjölund (wulax), Napsio (Vitruvian Studio), JaidynReiman | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
+| Plate breastplate | Napsio (Vitruvian Studio), JaidynReiman, bluecarrot16, Michael Whitlock (bigbeargames), Johannes Sjölund (wulax) | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
+| Plate arms | Michael Whitlock (bigbeargames), Matthew Krohn (makrohn), Johannes Sjölund (wulax), bluecarrot16, JaidynReiman | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
+| Pauldrons | Matthew Krohn (makrohn), Johannes Sjölund (wulax), bluecarrot16, JaidynReiman | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
+| Plate legs | bluecarrot16, JaidynReiman, Michael Whitlock (bigbeargames), Matthew Krohn (makrohn), Johannes Sjölund (wulax) | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
+| Nasal helmet | bluecarrot16 | CC-BY 3.0, CC-BY 4.0, OGA-BY 3.0, GPL 2.0, GPL 3.0 |
+
+Sources: <https://opengameart.org/content/lpc-medieval-fantasy-character-sprites>,
+<https://opengameart.org/content/lpc-combat-armor-for-women>,
+<http://opengameart.org/content/lpc-clothing-updates>, <https://opengameart.org/content/lpc-helmets>,
+<https://opengameart.org/content/lpc-expanded-hats-facial-helmets>
 
 The fence (`arena-fence`) comes from the LPC Tile Atlas, and the grass is the forest `ground.png` (see
 *Ground and decor* above). CC-BY-SA 3.0 / GPL 3.0.

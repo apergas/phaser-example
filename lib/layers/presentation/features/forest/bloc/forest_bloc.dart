@@ -330,7 +330,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         effects.add(TreeHitEffect(treeId: treeId, fromX: fromX));
       case TreeFelledEventEntity(:final treeId, :final wood):
         _showMessage(Internationalize.forestMessageWoodGained(wood: wood));
-        effects.add(TreeFelledEffect(treeId: treeId, fromX: fromX));
+        effects.add(TreeFelledEffect(treeId: treeId, fromX: fromX, wood: wood));
       case BuildingHammeredEventEntity(:final buildingId, :final progress):
         effects.add(BuildingHammeredEffect(buildingId: buildingId, progress: progress));
       case BuildingCompletedEventEntity(:final buildingId, :final blueprint):

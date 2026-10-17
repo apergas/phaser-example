@@ -12,13 +12,16 @@ import '../../../datasources/level/local/dbo/tree_dbo.dart';
 class TreeMapperDBO {
   TreeEntity toEntity(TreeDBO dbo, {required int index}) {
     final treeId = dbo.id ?? 'tree-${index + 1}';
+    final kind = _kind(treeId, dbo.kind);
+    final stats = Rules.treeKindStats[kind];
+    if (stats == null) throw UnknownTreeKindException(data: '$treeId: "${kind.name}"');
     return TreeEntity(
       id: treeId,
-      kind: _kind(treeId, dbo.kind),
+      kind: kind,
       position: PositionEntity(x: dbo.x ?? 0, y: dbo.y ?? 0),
       trunkRadius: Rules.treeTrunkRadius,
-      woodYield: dbo.wood ?? 0,
-      hitsToFell: Rules.hitsToFellTree,
+      woodYield: stats.woodYield,
+      hitsToFell: stats.hitsToFell,
     );
   }
 

@@ -104,6 +104,8 @@ class Internationalize {
   static String get forestPlacementCancel => '$_forest.placement.cancel'.tr();
   static String get forestAccessibilityGameWorld => '$_forest.accessibility.gameWorld'.tr();
   static String get forestRetry => '$_forest.retry'.tr();
+  static String forestFloatingWoodGained({required int wood}) =>
+      '$_forest.floating.woodGained'.tr(namedArgs: {'wood': '$wood'});
   static String get forestHero => '$_forest.hero.title'.tr();
   static String get forestHeroPower => '$_forest.hero.power'.tr();
   static String get forestHeroChampion => '$_forest.hero.champion'.tr();

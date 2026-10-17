@@ -149,7 +149,10 @@
     "accessibility": {
       "gameWorld": "Mundo de juego: bosque con árboles, el personaje y los edificios"
     },
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "floating": {
+      "woodGained": "+{wood}"
+    }
   },
   "arena": {
     "title": "Arena",

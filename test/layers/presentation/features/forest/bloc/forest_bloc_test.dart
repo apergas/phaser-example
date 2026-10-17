@@ -1,18 +1,18 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/quest_line.dart';
-import 'package:rpg/core/config/constants/enum/forest/facing.dart';
-import 'package:rpg/core/config/constants/enum/forest/work_tool.dart';
-import 'package:rpg/layers/domain/rules/rules.dart';
-import 'package:rpg/layers/domain/world/world.dart';
-import 'package:rpg/layers/presentation/features/arena/arena_page.dart';
-import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
-import 'package:rpg/layers/presentation/features/forest/models/forest_effect.dart';
-import 'package:rpg/layers/presentation/features/forest/models/placement_data.dart';
-import 'package:rpg/layers/presentation/features/forest/models/player_pose.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/quest_line.dart';
+import 'package:farming/core/config/constants/enum/forest/facing.dart';
+import 'package:farming/core/config/constants/enum/forest/work_tool.dart';
+import 'package:farming/layers/domain/rules/rules.dart';
+import 'package:farming/layers/domain/world/world.dart';
+import 'package:farming/layers/presentation/features/arena/arena_page.dart';
+import 'package:farming/layers/presentation/features/forest/bloc/forest_bloc.dart';
+import 'package:farming/layers/presentation/features/forest/models/forest_effect.dart';
+import 'package:farming/layers/presentation/features/forest/models/placement_data.dart';
+import 'package:farming/layers/presentation/features/forest/models/player_pose.dart';
 
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
@@ -155,7 +155,11 @@ void main() {
         expect((pose as WorkPose).tool, WorkTool.axe);
         expect(effects.whereType<TreeHitEffect>().length, 5);
         expect(effects, contains(ForestEffectMock.treeFelled));
-        expect(bloc.state.data.hud!.resources, [ResourceItemDataMock.wood(6), ResourceItemDataMock.gold(0)]);
+        expect(bloc.state.data.hud!.resources, [
+          ResourceItemDataMock.wood(6),
+          ResourceItemDataMock.gold(0),
+          ResourceItemDataMock.mana(0),
+        ]);
       },
     );
   });
@@ -257,6 +261,58 @@ void main() {
       },
     );
   });
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenPickingUpTheAxeOnATouchScreenThenTellsToTapATree',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        ForestScenarioMock.axeNextToPlayer(),
+        navigationService: navigationService,
+        isTouchInput: true,
+      );
+    },
+    act: (bloc) {
+      // when
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestMapClicked(position: ForestScenarioMock.axeSpot));
+      ForestBlocMock.tickFor(bloc, 300);
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      final messages = ForestBlocMock.shownMessages(navigationService);
+      expect(messages, contains(Internationalize.forestMessagePickedUpAxeTouch));
+      expect(messages, isNot(contains(Internationalize.forestMessagePickedUpAxe)));
+    },
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenPlacingOnATouchScreenThenTellsToDragAndTap',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        ForestScenarioMock.fifteenWood(),
+        navigationService: navigationService,
+        isTouchInput: true,
+      );
+    },
+    act: (bloc) {
+      // when
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestBuildRequested(blueprint: BlueprintId.house));
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      final name = Internationalize.forestBlueprint(id: BlueprintId.house);
+      final messages = ForestBlocMock.shownMessages(navigationService);
+      expect(messages, contains(Internationalize.forestMessagePlacingTouch(name: name)));
+      expect(messages, isNot(contains(Internationalize.forestMessagePlacing(name: name))));
+    },
+  );
 
   group('testWhenCancellingThePlacementThenClosesItWithoutBuilding', () {
     late World world;
@@ -393,4 +449,37 @@ void main() {
       expect(bloc.state.data.placement, isNull);
     },
   );
+  group('testWhenLeavingASiteAndTappingItAgainThenResumesAndCompletesIt', () {
+    late bool completedBeforeResume;
+
+    blocTest<ForestBloc, ForestState>(
+      'testWhenLeavingASiteAndTappingItAgainThenResumesAndCompletesIt',
+      build: () {
+        // given
+        return ForestBlocMock.make(ForestScenarioMock.axeAndFifteenWood(), navigationService: navigationService);
+      },
+      act: (bloc) async {
+        // when
+        effects = ForestBlocMock.collectEffects(bloc);
+        bloc
+          ..add(const ForestStarted())
+          ..add(const ForestTicked(deltaMs: ForestBlocMock.frameMs))
+          ..add(const ForestBuildRequested(blueprint: BlueprintId.house))
+          ..add(const ForestMapClicked(position: ForestScenarioMock.houseSiteEast));
+        ForestBlocMock.tickFor(bloc, 3000 + Rules.hammerIntervalMs * 2);
+        bloc.add(const ForestMapClicked(position: ForestScenarioMock.playerStart));
+        ForestBlocMock.tickFor(bloc, 6000);
+        await ForestBlocMock.processEvents();
+        completedBeforeResume = effects.contains(ForestEffectMock.buildingCompleted);
+        bloc.add(const ForestMapClicked(position: ForestScenarioMock.houseSiteEast, buildingId: 'building-1'));
+        ForestBlocMock.tickFor(bloc, 6000 + Rules.hammerIntervalMs * 8);
+      },
+      wait: Duration.zero,
+      verify: (bloc) {
+        // then
+        expect(completedBeforeResume, isFalse);
+        expect(effects, contains(ForestEffectMock.buildingCompleted));
+      },
+    );
+  });
 }

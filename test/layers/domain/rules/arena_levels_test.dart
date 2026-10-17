@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
-import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/layers/domain/rules/arena_levels.dart';
+import 'package:farming/core/config/constants/enum/arena_level_id.dart';
+import 'package:farming/core/config/constants/enum/enemy_kind.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/domain/rules/arena_levels.dart';
 
 void main() {
   test('testWhenListingLevelsThenEveryArenaLevelIdAppearsOnce', () {
@@ -41,6 +41,17 @@ void main() {
       // then
       expect(gold, greaterThan(0), reason: '${level.id}');
     }
+  });
+
+  test('testWhenListingLevelsThenOnlyTheSecondHalfAlsoPaysMana', () {
+    // given
+    final levels = ArenaLevels.all;
+
+    // when
+    final mana = levels.map((level) => level.reward[Resource.mana] ?? 0);
+
+    // then
+    expect(mana, [0, 0, 0, 0, 0, 20, 25, 30, 35, 50]);
   });
 
   test('testWhenListingLevelsThenTheRookieBanditOpensTheArena', () {

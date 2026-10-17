@@ -1,4 +1,4 @@
-import 'package:rpg/layers/presentation/features/forest/game/atlas/atlas_frame.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/atlas_frame.dart';
 
 abstract final class AtlasFrameMock {
   static const AtlasFrame house = AtlasFrame(

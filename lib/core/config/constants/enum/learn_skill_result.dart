@@ -1,1 +1,1 @@
-enum LearnSkillResult { ok, missingBuilding, alreadyKnown, notEnoughResources }
+enum LearnSkillResult { ok, missingBuilding, notEnoughResources, upgraded, maxed }

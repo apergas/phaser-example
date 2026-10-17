@@ -1,4 +1,4 @@
-import 'package:rpg/layers/domain/entities/player/intent_entity.dart';
+import 'package:farming/layers/domain/entities/player/intent_entity.dart';
 
 abstract final class IntentEntityMock {
   static const ChopIntentEntity chop = ChopIntentEntity(treeId: 'tree-1');

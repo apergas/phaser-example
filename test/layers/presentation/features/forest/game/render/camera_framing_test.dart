@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/presentation/features/forest/game/render/camera_framing.dart';
+import 'package:farming/layers/presentation/features/forest/game/render/camera_framing.dart';
 
 void main() {
   final world = Size(1600, 1200);

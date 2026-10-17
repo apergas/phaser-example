@@ -91,14 +91,14 @@ El **"qué y cómo"** está en estos Markdown. El **"quién y por dónde va"** e
 | Fase | Plan | Flujo | Depende de | Qué añade |
 |---|---|---|---|---|
 | **F0** Generalizar recursos, herramientas y edificios | ✅ [F0-generalize.md](F0-generalize.md) | A + B | — | Inventario por `Resource`, coste por recursos, HUD de recursos genérico, sprites de edificios e ítems elegidos por tipo. **Sin cambios de jugabilidad.** |
-| **F1** Árboles con personalidad | 🟢 [F1-tree-kinds.md](F1-tree-kinds.md) | A | F0 | Cada `TreeKind` da distinta madera y pide distintos golpes. Texto "+N" flotante. |
-| **F2** Guardado automático | 📝 [F2-autosave.md](F2-autosave.md) | B | F0 | La partida sobrevive a cerrar la app. Botón "Nueva partida". |
-| **F3** Rebrote de árboles | 📝 [F3-regrowth.md](F3-regrowth.md) | A | F1 | Tocón → brote → árbol: la madera es sostenible. |
-| **F4** Misiones, capítulo 1 | 📝 [F4-quests-chapter-1.md](F4-quests-chapter-1.md) | A | F3 | `StatsEntity` y 5 misiones nuevas. |
-| **F5** Piedra y pico | 📝 [F5-stone.md](F5-stone.md) | A | F0 | Segundo recurso: rocas, pico y el trabajo de picar. |
-| **F6** Almacén y capacidad de carga | 📝 [F6-storehouse.md](F6-storehouse.md) | B | F2 | Bucle "ir y volver": carga máxima, entregar en almacén, campamento inicial. |
-| **F7** Cantera | 📝 [F7-quarry.md](F7-quarry.md) | A | F5, F6 | Primera regla de colocación (junto a roca) y entrega de piedra. |
-| **F8** Taller y mejoras de herramientas | 📝 [F8-workshop.md](F8-workshop.md) | B | F5, F6 | Coste en varios recursos, hacha/pico de hierro, misiones del capítulo 2. |
+| **F1** Árboles con personalidad | 🟢 [F1-tree-kinds.md](F1-tree-kinds.md) | Único | F0 | Cada `TreeKind` da distinta madera y pide distintos golpes. Texto "+N" flotante. |
+| **F3** Rebrote de árboles | 📝 [F3-regrowth.md](F3-regrowth.md) | Único | F1 | Tocón → brote → el mismo árbol: la madera es sostenible. |
+| **F4** Misiones, capítulo 1 | 📝 [F4-quests-chapter-1.md](F4-quests-chapter-1.md) | Único | F3 | `StatsEntity`, 5 misiones nuevas y misiones hechas plegadas en el panel. |
+| **F5** Piedra y pico | 📝 [F5-stone.md](F5-stone.md) | Único | F4 | Segundo recurso: 12 rocas, pico y el trabajo de picar; piedra en los edificios del héroe. |
+| **F6** Almacén y capacidad de carga | 📝 [F6-storehouse.md](F6-storehouse.md) | Único | F5 | Bucle "ir y volver": carga de 10, entregar en el campamento o en un almacén, que paga todo. |
+| **F7** Cantera | 📝 [F7-quarry.md](F7-quarry.md) | Único | F5, F6 | Primera regla de colocación (junto a roca), entrega solo de piedra y picado más rápido. |
+| **F8** Taller y mejoras de herramientas | 📝 [F8-workshop.md](F8-workshop.md) | Único | F7 | Hacha y pico de hierro, botón *Taller*, misiones del capítulo 2. |
+| **F2** Guardado de la partida | 📝 [F2-autosave.md](F2-autosave.md) | Único | F8 | La partida sobrevive a cerrar la app: guardado automático, botón *Guardar* y *Nueva partida* (menú *Partida*). Va la última. |
 | **F9** Comida y población | 💭 | — | F8 | `Resource.food`, bayas. Cada casa da +2 de población. |
 | **F10** Reclutar aldeanos | 💭 | — | F9 | `PlayerEntity` pasa a ser una lista de unidades; reclutar en casa a cambio de comida. |
 | **F11** Asignar trabajos | 💭 | — | F10 | El aldeano repite el ciclo: recoger → entregar → siguiente del mismo tipo. |
@@ -111,7 +111,9 @@ La columna *Si la arena ya está* de la sección 6 dice qué añade cada fase cu
 
 F9–F15 dan por hecho que el juego evoluciona hacia **gestión** (aldeanos). Es la primera pregunta abierta de `docs/GAME_DESIGN.md` (sección 5): se confirma con el equipo antes de planificar F9.
 
-### Flujos de trabajo (dos desarrolladores)
+**Orden desde el 2026-10-17 (un solo desarrollador, como en iOS):** F1 → F3 → F4 → F5 → F6 → F7 → F8 → F2. Las fases F1 y F3–F7 ya están hechas en la versión iOS (`/Users/axelperezgaspar/farming-ios`, en adelante `$IOS`) y F8 a medias; cada ficha dice qué se decidió y comprobó allí, y manda sobre la versión anterior de la ficha. El guardado va el último para que su formato nazca completo en la versión 1 (sección 5). Los flujos A/B de abajo quedan como historia.
+
+### Flujos de trabajo (dos desarrolladores, histórico)
 
 ```
 T0.1 dominio ─▶ T0.2 presentación
@@ -138,8 +140,9 @@ Las fases de la aldea no van directamente a `develop`. Se acumulan en **`feature
 
 | Bloque | Fases | Qué se puede jugar al pasar a `develop` |
 |---|---|---|
-| 1 | F1–F4 | Árboles distintos, guardado, rebrote y misiones del capítulo 1. |
+| 1 | F1, F3, F4 | Árboles distintos, rebrote y misiones del capítulo 1. |
 | 2 | F5–F8 | Piedra, almacén, cantera y taller. |
+| 3 | F2 | Guardado de todo lo anterior. Después, `develop` → `main` (web publicada) cuando lo decida el usuario. |
 | 3 en adelante | F9–F15 | Se definen al replanificar. |
 
 - **Ramas de fase o de tarea:** salen de `feature/PROJECT-X-town` y su PR va hacia esa rama, no hacia `develop`.
@@ -150,10 +153,7 @@ Las fases de la aldea no van directamente a `develop`. Se acumulan en **`feature
 
 - **Rama por tarea:** `feature/PROJECT-<fase>-<tarea>`, por ejemplo `feature/PROJECT-F1-domain`. Sale de `feature/PROJECT-X-town`; PR a `feature/PROJECT-X-town` (sección 3.0). Antes de abrir el PR, `git merge` de `feature/PROJECT-X-town` en la rama.
 - **Cada tarea deja `develop` en verde:** al ser una sola app, una tarea que cambia una API del dominio adapta en el mismo PR todo lo que la usa (BLoC, widgets, componentes y tests). No se dejan APIs `@Deprecated` a medias.
-- **Persistencia (a partir de F2):**
-  - Cada fase que añade estado lo añade también al guardado y sube `SaveDBO.currentVersion`.
-  - Si una fase de un flujo se fusiona antes que F2, quien hace F2 incluye ese estado.
-  - Si se fusiona después, lo añade la propia fase.
+- **Persistencia:** F2 va la última de la aldea, así que ninguna fase anterior toca el guardado: cada una apunta en su ficha lo que F2 debe guardar, y F2 lo guarda todo en la versión 1. Las fases posteriores a F2 (F9 en adelante) sí añaden su estado al guardado y suben `SaveDBO.currentVersion`.
 - **Ficheros calientes:** `rules.dart`, `blueprints.dart`, `world.dart`, `world_state.dart`, `work.dart`, `game_event_entity.dart`, `quests.dart`, `forest_bloc.dart`, `forest_event.dart`, `forest_effect.dart`, `hud_data.dart`, `hud_overlay.dart`, `forest_scene_component.dart`, `internationalize.dart`, `es.json`, `build_assets.py` y los enums de `lib/core/config/constants/enum/`. El plan *Héroe y arena* añade los suyos (sección 3.3 de su README).
   - Cambios **aditivos**: se añaden entradas nuevas al final de su bloque, sin reordenar ni reformatear lo existente.
   - Los casos de los `switch` exhaustivos van en el orden de declaración del `enum` o de la jerarquía `sealed`.
@@ -221,13 +221,26 @@ Aquí se apunta todo lo que se haga distinto de lo que dicen los planes: qué, p
   - **El HUD muestra todos los recursos y herramientas** de los enums, aunque estén a 0 o no se tengan. Por eso, al añadir `stone` o `gold`, aparecen como "Piedra 0" / "Oro 0" desde el principio (es lo que espera C0).
   - **Sin test todavía:** la rama de `ForestSceneComponent._showGhost` que cambia de fantasma al cambiar de edificio no se puede probar con un solo `BlueprintId`. Lo prueba la primera fase que añada un edificio construible (F6, almacén, o C3, Herrería).
 
+- **Vuelta desde iOS (2026-10-17):** entre el 2026-10-12 y el 2026-10-17 el juego se migró a SwiftUI (`$IOS`) y allí se hicieron la arena C9–C12 y la aldea F1, F3–F7 (F8 a medias). El desarrollo vuelve a Flutter: la versión iOS es la referencia de qué hace cada fase.
+  - Las fichas F3–F8 y F2 se reescriben con las decisiones de iOS; F1 conserva su plan detallado con una nota.
+  - Orden nuevo F1 → F3 → F4 → F5 → F6 → F7 → F8 → F2 (un solo desarrollador). F2 va la última: así el formato del guardado nace completo y ninguna fase lo amplía. F6 deja de depender de F2.
+  - **La arena llega primero:** C0–C12 entran en `develop` antes que la aldea, así que se aplican todas las notas *Si la arena ya está* de la sección 6.
+  - Cambios respecto a las fichas anteriores:
+    - F5 pone la piedra solo en los edificios del héroe (no en `Gear`);
+    - F6 añade `isBuildable` y el campamento en el nivel;
+    - F7 hace que el almacén acepte por recurso (`accepts`);
+    - F8 no recolorea las herramientas (la mejora se ve en el nombre de la barra) y añade el botón *Taller*;
+    - F2 añade un botón *Guardar* en un menú *Partida* que también tiene *Nueva partida*.
+  - Antes de C9 va una [alineación con iOS](../2026-10-06-hero-arena/X-ios-alignment.md): nombre `Farming`, ids `com.apergas.farming`, paquete `farming`, icono, textos táctiles y la guarda de la obra en curso.
+  - Como Dart y Swift comparten `SeededRandom` y el orden de las tiradas, los goldens de iOS (bosque, rocas, combate y equilibrado) valen tal cual en Flutter: si un número no coincide, hay un fallo.
+
 ## 6. Convivencia con el plan *Héroe y arena*
 
 Resumen; el detalle está en la sección 3 del [README del plan de la arena](../2026-10-06-hero-arena/README.md).
 
 - **Dependencia dura:** sólo **F0 → C0** (el oro es un `Resource`). Ninguna fase F depende de una fase C.
 - **Regla de los cruces:** lo resuelve **la fase que se fusiona segunda**, en el mismo PR. Así cada plan se puede implementar sin el otro.
-- **La arena vive en `feature/PROJECT-X-arena` hasta estar completa** (sección 3.0 del README de la arena), y la aldea en `feature/PROJECT-X-town`, que pasa a `develop` por bloques (sección 3.0). Para este plan, eso significa que en `develop` **la arena todavía no está**: las notas *Si la arena ya está* no se aplican y las fases de la aldea se hacen como si la arena no existiera. Los cruces los resuelve el flujo de la arena al traer `develop` a su rama.
+- **La arena vive en `feature/PROJECT-X-arena` hasta estar completa** (sección 3.0 del README de la arena), y la aldea en `feature/PROJECT-X-town`, que pasa a `develop` por bloques (sección 3.0). **Desde el 2026-10-17 la arena (C0–C12) entra en `develop` antes de empezar F1**, y `feature/PROJECT-X-town` hace `git merge develop` antes de la primera fase: las notas *Si la arena ya está* se aplican siempre, y las fichas ya las incluyen.
 - **Lo que este plan debe respetar si C0 ya está en `develop`:**
   - El `World` tiene `hero` / `updateHero` y la caja `funds` / `earn` / `spend`. Las fases que tocan el inventario o el stock mantienen esos métodos funcionando y sus tests (`world_funds_test.dart`, `world_hero_test.dart`) en verde.
   - `Resource.gold` existe. Los recursos nuevos (`stone`, `food`) se añaden al final del enum, después de `gold`.

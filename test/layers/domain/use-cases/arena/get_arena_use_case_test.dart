@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
-import 'package:rpg/core/error-handling/exceptions/app_exceptions.dart';
-import 'package:rpg/layers/domain/rules/arena_levels.dart';
-import 'package:rpg/layers/domain/use-cases/arena/get_arena_use_case.dart';
+import 'package:farming/core/config/constants/enum/arena_level_id.dart';
+import 'package:farming/core/error-handling/exceptions/app_exceptions.dart';
+import 'package:farming/layers/domain/rules/arena_levels.dart';
+import 'package:farming/layers/domain/use-cases/arena/get_arena_use_case.dart';
 
 import '../../../../mocks/core/error-handling/app_exception_mock.dart';
 import '../../../../mocks/domain/entities/combat/arena_level_status_entity_mock.dart';

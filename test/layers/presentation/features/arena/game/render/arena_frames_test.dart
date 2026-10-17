@@ -1,27 +1,26 @@
 import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
-import 'package:rpg/core/config/constants/enum/fight_side.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/presentation/features/arena/game/render/arena_frames.dart';
-import 'package:rpg/layers/presentation/features/arena/game/render/arena_render_constants.dart';
+import 'package:farming/core/config/constants/enum/enemy_kind.dart';
+import 'package:farming/core/config/constants/enum/fight_side.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/presentation/features/arena/game/render/arena_frames.dart';
+import 'package:farming/layers/presentation/features/arena/game/render/arena_render_constants.dart';
 
 import '../../../../../../mocks/presentation/features/arena/fighter_render_data_mock.dart';
 
 void main() {
-  test('testWhenAFighterSwingsThenTheSlashFrameFollowsTheChopSequence', () {
+  test('testWhenAPersonAttacksThenItWalksStrikesWithTheChopSequenceAndWalksBack', () {
     // given
-    final start = FighterRenderDataMock.heroSwinging(0);
-    final impact = FighterRenderDataMock.heroSwinging(0.5);
+    final progresses = [0.1, 0.35, 0.5, 0.9];
 
     // when
-    final startName = ArenaFrames.frameName(start, 0);
-    final impactName = ArenaFrames.frameName(impact, 0);
+    final names = [
+      for (final progress in progresses) ArenaFrames.frameName(FighterRenderDataMock.heroSwinging(progress), 0),
+    ];
 
     // then
-    expect(startName, 'hero-slash-0');
-    expect(impactName, 'hero-slash-4');
+    expect(names, ['hero-walk-1', 'hero-slash-0', 'hero-slash-4', 'hero-walk-1']);
   });
 
   test('testWhenAFighterIsIdleHurtOrDownThenTheIdleFramesAreUsed', () {
@@ -105,15 +104,32 @@ void main() {
     expect(lifts[3], closeTo(ArenaRenderConstants.leapHeight, 1e-9));
   });
 
-  test('testWhenAPersonSwingsThenItStaysOnItsSpot', () {
+  test('testWhenAPersonAttacksThenItWalksUpToItsTargetStopsShortAndWalksBackWithoutJumping', () {
     // given
-    final swinging = FighterRenderDataMock.heroSwinging(0.3);
+    final progresses = [0.0, 0.5, 0.999];
 
     // when
-    final spot = ArenaFrames.groundSpot(swinging);
-    final lift = ArenaFrames.lift(swinging);
+    final spots = [
+      for (final progress in progresses) ArenaFrames.groundSpot(FighterRenderDataMock.heroSwinging(progress)),
+    ];
+    final lift = ArenaFrames.lift(FighterRenderDataMock.heroSwinging(0.2));
 
     // then
-    expect((spot, lift), (const PositionEntity(x: 190, y: 170), 0.0));
+    expect(spots.map((spot) => spot.y), everyElement(170));
+    expect(spots[0].x, 190);
+    expect(spots[1].x, 300 - ArenaRenderConstants.approachGap);
+    expect(spots[2].x, closeTo(190, 0.01));
+    expect(lift, 0);
+  });
+
+  test('testWhenTheHeroHoldsASwordThenItsFramesAreTheSwordOnes', () {
+    // given
+    const hero = FighterRenderDataMock.heroWithSteelSwordIdle;
+
+    // when
+    final name = ArenaFrames.frameName(hero, 0);
+
+    // then
+    expect(name, 'hero-steel-sword-idle-0');
   });
 }

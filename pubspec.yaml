@@ -1,5 +1,5 @@
-name: rpg
-description: "Top-down forest RPG: chop trees, gather wood and build a house."
+name: farming
+description: "Top-down forest game: chop trees, build a village and train a hero for the arena."
 publish_to: 'none'
 version: 0.1.0+1
 

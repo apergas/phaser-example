@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/config/constants/enum/buy_gear_result.dart';
-import 'package:rpg/core/config/constants/enum/gear_id.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/layers/domain/world/extensions/hero_rules.dart';
-import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
-import 'package:rpg/layers/domain/world/world.dart';
-import 'package:rpg/layers/domain/use-cases/hero/buy_gear_use_case.dart';
+import 'package:farming/core/config/constants/enum/buy_gear_result.dart';
+import 'package:farming/core/config/constants/enum/gear_id.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/domain/world/extensions/hero_rules.dart';
+import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
+import 'package:farming/layers/domain/world/world.dart';
+import 'package:farming/layers/domain/use-cases/hero/buy_gear_use_case.dart';
 
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import '../../../../mocks/domain/entities/hero/combat_stats_entity_mock.dart';

@@ -59,11 +59,44 @@ The stump (`stump` frame) comes from the LPC Tile Atlas above.
 ## Arena (`arena.png`)
 
 Fighters composed by `build_assets.py` from the same character layers and axe as `hero-*.png`
-(see *Character* above), each kept in one facing. The bandit is a recolour of those layers
-(clothes and hair). Same authors and licences as the character layers. The barbarian and the
-barbarian chief add their own layers (see *Barbarians* below).
+(see *Character* above), each kept in one facing, standing, walking and striking. The bandit and
+the veteran bandit are recolours of those layers (clothes and hair). Same authors and licences as
+the character layers. The barbarian and the barbarian chief add their own layers (see
+*Barbarians* below); the hero's swords and the veteran's sword are the arming sword (see *Swords*
+below), and the hero's armour is described in *Hero armour* below.
 
-The grass (`arena-grass`) and the fence (`arena-fence`) come from the LPC Tile Atlas (see
+### Swords (`hero-short-sword-*`, `hero-iron-sword-*`, `hero-steel-sword-*`, `bandit-veteran-*`)
+
+"Arming Sword" of the [Universal LPC Spritesheet Character Generator](https://github.com/liberatedpixelcup/Universal-LPC-Spritesheet-Character-Generator)
+(commit 58ce1aa), in its bronze (short sword), iron (iron sword and the veteran bandit) and steel
+(steel sword) variants: `asset-packs/lpc/sources/tools/sword-*.png`. By ElizaWy; walk by
+JaidynReiman. OGA-BY 3.0 —
+<https://github.com/ElizaWy/LPC/tree/main/Characters/Props/Sword%2001%20-%20Arming%20Sword>,
+<https://opengameart.org/content/lpc-expanded-sit-run-jump-more>.
+
+### Hero armour (`hero-*-leather-*`, `hero-*-chain-mail-*`, `hero-*-plate-*` and the same without a weapon)
+
+The hero's leather armour is the barbarians' leather armour and bracers (see *Barbarians* below). The chain mail
+and the plate armour are layers of the [Universal LPC Spritesheet Character Generator](https://github.com/liberatedpixelcup/Universal-LPC-Spritesheet-Character-Generator)
+(commit 58ce1aa) in `asset-packs/lpc/sources/armour/` (see `CREDITS-armour.txt` there), not recoloured.
+
+| Layer | Authors | Licences |
+|---|---|---|
+| Chain mail | Johannes Sjölund (wulax), Napsio (Vitruvian Studio), JaidynReiman | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
+| Plate breastplate | Napsio (Vitruvian Studio), JaidynReiman, bluecarrot16, Michael Whitlock (bigbeargames), Johannes Sjölund (wulax) | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
+| Plate arms | Michael Whitlock (bigbeargames), Matthew Krohn (makrohn), Johannes Sjölund (wulax), bluecarrot16, JaidynReiman | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
+| Pauldrons | Matthew Krohn (makrohn), Johannes Sjölund (wulax), bluecarrot16, JaidynReiman | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
+| Plate legs | bluecarrot16, JaidynReiman, Michael Whitlock (bigbeargames), Matthew Krohn (makrohn), Johannes Sjölund (wulax) | OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0 |
+| Nasal helmet | bluecarrot16 | CC-BY 3.0, CC-BY 4.0, OGA-BY 3.0, GPL 2.0, GPL 3.0 |
+
+Sources: <https://opengameart.org/content/lpc-medieval-fantasy-character-sprites>,
+<https://opengameart.org/content/lpc-combat-armor-for-women>,
+<http://opengameart.org/content/lpc-clothing-updates>, <https://opengameart.org/content/lpc-helmets>,
+<https://opengameart.org/content/lpc-expanded-hats-facial-helmets>
+
+### Fence and ground (`arena-fence`; the grass is `ground.png`)
+
+The fence (`arena-fence`) comes from the LPC Tile Atlas, and the grass is the forest `ground.png` (see
 *Ground and decor* above). CC-BY-SA 3.0 / GPL 3.0.
 
 ### Barbarians (`barbarian-*`, `barbarian-chief-*` frames in `arena.png`)
@@ -98,3 +131,8 @@ Cut by `build_assets.py` from the side views that face left, without recolouring
 - Bear: "[LPC] bears, deer, lions and more" by tapatilorenzo, `bear, grizzly.png` from
   `lpc_animals_2022_v1.1.zip`. CC-BY 4.0 (the author releases the bears as CC0) —
   <https://opengameart.org/content/lpc-bears-deer-lions-and-more>.
+
+## App icon (Android `mipmap-*/ic_launcher.png` and `mipmap-*/ic_launcher_foreground.png`, iOS `AppIcon.appiconset`, web `icons/` and `favicon.png`)
+
+The `tree-oak` frame of `forest.png` (see *Trees* above, CC-BY-SA 3.0), scaled with nearest neighbour and
+centred on the launch colour `#0E150E` (transparent for the adaptive icon foreground) by `asset-packs/lpc/build_app_icon.py`.

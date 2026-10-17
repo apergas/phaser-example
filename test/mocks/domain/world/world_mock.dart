@@ -1,9 +1,9 @@
-import 'package:rpg/layers/domain/entities/game/game_event_entity.dart';
-import 'package:rpg/layers/domain/entities/hero/hero_entity.dart';
-import 'package:rpg/layers/domain/entities/item/ground_item_entity.dart';
-import 'package:rpg/layers/domain/entities/player/player_entity.dart';
-import 'package:rpg/layers/domain/entities/tree/tree_entity.dart';
-import 'package:rpg/layers/domain/world/world.dart';
+import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
+import 'package:farming/layers/domain/entities/hero/hero_entity.dart';
+import 'package:farming/layers/domain/entities/item/ground_item_entity.dart';
+import 'package:farming/layers/domain/entities/player/player_entity.dart';
+import 'package:farming/layers/domain/entities/tree/tree_entity.dart';
+import 'package:farming/layers/domain/world/world.dart';
 
 import '../entities/hero/hero_entity_mock.dart';
 import '../entities/player/player_entity_mock.dart';

@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/core/config/di/di.dart';
-import 'package:rpg/core/config/di/di_environment.dart';
-import 'package:rpg/core/config/di/locator.dart';
-import 'package:rpg/core/services/navigation/source/navigation_service.dart';
-import 'package:rpg/layers/domain/repositories/level/level_repository.dart';
-import 'package:rpg/layers/domain/use-cases/game/start_game_use_case.dart';
-import 'package:rpg/layers/presentation/features/arena/arena_page.dart';
-import 'package:rpg/layers/presentation/features/arena/game/arena_game.dart';
-import 'package:rpg/layers/presentation/features/arena/game/atlas/arena_assets_loader.dart';
-import 'package:rpg/layers/presentation/features/arena/widgets/level_list.dart';
-import 'package:rpg/layers/presentation/features/arena/widgets/result_panel.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/core/config/di/di.dart';
+import 'package:farming/core/config/di/di_environment.dart';
+import 'package:farming/core/config/di/locator.dart';
+import 'package:farming/core/services/navigation/source/navigation_service.dart';
+import 'package:farming/layers/domain/repositories/level/level_repository.dart';
+import 'package:farming/layers/domain/use-cases/game/start_game_use_case.dart';
+import 'package:farming/layers/presentation/features/arena/arena_page.dart';
+import 'package:farming/layers/presentation/features/arena/game/arena_game.dart';
+import 'package:farming/layers/presentation/features/arena/game/atlas/arena_assets_loader.dart';
+import 'package:farming/layers/presentation/features/arena/widgets/level_list.dart';
+import 'package:farming/layers/presentation/features/arena/widgets/result_panel.dart';
 
 import '../../../../helpers/pump_until.dart';
 import '../../../../helpers/spanish_translations.dart';
@@ -90,7 +90,7 @@ void main() {
 
     // when
     await tester.tap(find.text(Internationalize.arenaFight));
-    for (var frame = 0; frame < 70 && find.byType(ResultPanel).evaluate().isEmpty; frame++) {
+    for (var frame = 0; frame < 90 && find.byType(ResultPanel).evaluate().isEmpty; frame++) {
       await tester.pump(const Duration(milliseconds: 100));
     }
 

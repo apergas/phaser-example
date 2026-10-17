@@ -1,6 +1,6 @@
-import 'package:rpg/core/config/constants/enum/fight_action.dart';
-import 'package:rpg/core/config/constants/enum/fight_side.dart';
-import 'package:rpg/layers/domain/entities/combat/fight_turn_entity.dart';
+import 'package:farming/core/config/constants/enum/fight_action.dart';
+import 'package:farming/core/config/constants/enum/fight_side.dart';
+import 'package:farming/layers/domain/entities/combat/fight_turn_entity.dart';
 
 abstract final class FightTurnEntityMock {
   static FightTurnEntity heroHits({required int round, required int damage, required int enemyHealthAfter}) =>

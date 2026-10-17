@@ -1,5 +1,5 @@
-import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
-import 'package:rpg/layers/domain/entities/combat/enemy_entity.dart';
+import 'package:farming/core/config/constants/enum/enemy_kind.dart';
+import 'package:farming/layers/domain/entities/combat/enemy_entity.dart';
 
 import '../hero/combat_stats_entity_mock.dart';
 

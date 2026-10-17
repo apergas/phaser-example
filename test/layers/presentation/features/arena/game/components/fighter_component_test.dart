@@ -1,8 +1,8 @@
 import 'package:flame/components.dart';
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/presentation/features/arena/game/components/fighter_component.dart';
-import 'package:rpg/layers/presentation/features/forest/game/render/render_depth.dart';
+import 'package:farming/layers/presentation/features/arena/game/components/fighter_component.dart';
+import 'package:farming/layers/presentation/features/forest/game/render/render_depth.dart';
 
 import '../../../../../../mocks/presentation/features/arena/fighter_render_data_mock.dart';
 import '../../../../../../mocks/presentation/features/arena/game/arena_assets_mock.dart';

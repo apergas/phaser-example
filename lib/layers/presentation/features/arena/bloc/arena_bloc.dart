@@ -11,7 +11,8 @@ import '../../../../../core/config/constants/enum/enemy_kind.dart';
 import '../../../../../core/config/constants/enum/fight_action.dart';
 import '../../../../../core/config/constants/enum/fight_advice.dart';
 import '../../../../../core/config/constants/enum/fight_side.dart';
-import '../../../../../core/config/constants/enum/resource.dart';
+import '../../../../../core/config/constants/enum/gear_id.dart';
+import '../../../../../core/config/constants/enum/gear_slot.dart';
 import '../../../../../core/config/constants/enum/skill_id.dart';
 import '../../../../../core/error-handling/exceptions/app_exceptions.dart';
 import '../../../../../core/error-handling/exceptions/custom_exception.dart';
@@ -20,6 +21,7 @@ import '../../../../domain/entities/combat/arena_entity.dart';
 import '../../../../domain/entities/combat/arena_level_entity.dart';
 import '../../../../domain/entities/combat/arena_level_status_entity.dart';
 import '../../../../domain/entities/combat/fight_result_entity.dart';
+import '../../../../domain/rules/gear.dart';
 import '../../../../domain/use-cases/arena/get_arena_use_case.dart';
 import '../../../../domain/use-cases/arena/start_fight_use_case.dart';
 import '../../../../domain/use-cases/hero/get_hero_status_use_case.dart';
@@ -44,6 +46,8 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
   ArenaEntity? _arena;
   FightAdvice? _advice;
   bool _isFirstChampionship = false;
+  GearId _heroWeapon = GearId.woodcutterAxe;
+  GearId _heroArmor = GearId.workClothes;
 
   ArenaBloc({
     required this._getArenaUseCase,
@@ -57,7 +61,6 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
         ArenaLevelSelected() => _onLevelSelected(event, emit),
         ArenaFightRequested() => _onFightRequested(event, emit),
         ArenaReplayTicked() => _onReplayTicked(event, emit),
-        ArenaReplaySkipped() => _onReplaySkipped(event, emit),
         ArenaClosed() => _onClosed(event, emit),
       };
     });
@@ -141,44 +144,48 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
     _emitReplay(replay, replay.advanced(event.deltaMs), emit);
   }
 
-  Future<void> _onReplaySkipped(ArenaReplaySkipped event, Emitter<ArenaState> emit) async {
-    final replay = state.data.replay;
-    if (state is! ArenaSuccess || replay == null || replay.isFinished) return;
-    _emitReplay(replay, replay.skipped(), emit, playTurns: false);
-  }
-
   Future<void> _onClosed(ArenaClosed event, Emitter<ArenaState> emit) async {
     _navigationService.pop();
   }
 
-  void _emitReplay(
-    FightReplayData previous,
-    FightReplayData next,
-    Emitter<ArenaState> emit, {
-    bool playTurns = true,
-  }) {
+  void _emitReplay(FightReplayData previous, FightReplayData next, Emitter<ArenaState> emit) {
     final effects = <ArenaEffect>[
-      if (playTurns)
-        for (var turn = previous.turnIndex + 1; turn <= next.turnIndex; turn++) ..._effectsFor(next, turn),
+      for (var turn = previous.turnIndex + 1; turn <= next.turnIndex; turn++) ..._effectsFor(next, turn),
       if (next.isFinished) FightEndedEffect(isVictory: next.log.isVictory),
       if (next.isFinished && _isFirstChampionship) const ChampionEffect(),
     ];
     var data = state.data.copyWith(replay: () => next, fighters: _replayFighters(next), effects: effects);
     if (next.isFinished) {
-      final arena = _getArenaUseCase();
-      _arena = arena;
-      data = _withArena(data, arena).copyWith(result: () => _result(next));
+      data = data.copyWith(result: () => _result(next));
+      try {
+        final arena = _getArenaUseCase();
+        _arena = arena;
+        data = _withArena(data, arena);
+      } on AppException catch (exception) {
+        _navigationService.showErrorPopUp(
+          title: exception.title,
+          message: exception.message,
+          buttonTitle: Internationalize.commonAccept,
+        );
+      }
     }
     emit(ArenaSuccess(data: data));
   }
 
   List<ArenaEffect> _effectsFor(FightReplayData replay, int turnIndex) {
     final effect = _effectFor(replay, turnIndex);
-    return switch (replay.log.turns[turnIndex].action) {
+    final turn = replay.log.turns[turnIndex];
+    return switch (turn.action) {
       FightAction.hit => [effect],
-      FightAction.doubleStrike => [effect, const SkillUsedEffect(skill: SkillId.doubleStrike)],
+      FightAction.doubleStrike => [
+        effect,
+        SkillUsedEffect(skill: SkillId.doubleStrike, side: turn.actor, index: turn.actorIndex),
+      ],
       FightAction.dodge => [effect],
-      FightAction.secondWind => [effect, const SkillUsedEffect(skill: SkillId.secondWind)],
+      FightAction.secondWind => [
+        effect,
+        SkillUsedEffect(skill: SkillId.secondWind, side: turn.actor, index: turn.actorIndex),
+      ],
     };
   }
 
@@ -205,7 +212,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
       return ArenaResultData(
         isVictory: true,
         title: _isFirstChampionship ? Internationalize.arenaChampion : Internationalize.arenaVictory,
-        detail: Internationalize.arenaReward(amount: log.reward[Resource.gold] ?? 0),
+        detail: Internationalize.arenaReward(amounts: log.reward),
       );
     }
     final advice = _advice;
@@ -236,7 +243,7 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
       enemiesText: _enemiesText(level),
       powerText: Internationalize.arenaPower(power: level.power),
       tone: _tone(levelPower: level.power, heroPower: heroPower),
-      rewardText: Internationalize.arenaReward(amount: status.nextReward[Resource.gold] ?? 0),
+      rewardText: Internationalize.arenaReward(amounts: status.nextReward),
       status: switch (status) {
         ArenaLevelStatusEntity(isCleared: true) => ArenaLevelItemStatus.cleared,
         ArenaLevelStatusEntity(isUnlocked: true) => ArenaLevelItemStatus.open,
@@ -266,8 +273,11 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
   }
 
   List<FighterRenderData> _previewFighters(ArenaEntity arena, ArenaLevelId? selected) {
-    final heroHealth = _getHeroStatusUseCase().stats.health;
-    final level = arena.levels.firstWhereOrNull((status) => status.level.id == selected)?.level;
+    final status = _getHeroStatusUseCase();
+    final heroHealth = status.stats.health;
+    _heroWeapon = Gear.of(GearSlot.weapon, status.hero.weaponTier).id;
+    _heroArmor = Gear.of(GearSlot.armor, status.hero.armorTier).id;
+    final level = arena.levels.firstWhereOrNull((entry) => entry.level.id == selected)?.level;
     return [
       FighterRenderData(
         side: FightSide.hero,
@@ -276,6 +286,8 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
         health: heroHealth,
         maxHealth: heroHealth,
         pose: FighterPose.idle,
+        weapon: _heroWeapon,
+        armor: _heroArmor,
       ),
       if (level != null)
         for (final (index, enemy) in level.enemies.indexed)
@@ -339,6 +351,8 @@ class ArenaBloc extends Bloc<ArenaEvent, ArenaState> {
       swingProgress: pose == FighterPose.attack ? progress : 0,
       targetIndex: pose == FighterPose.attack ? turn?.targetIndex ?? 0 : 0,
       isTargeted: isTargeted,
+      weapon: side == FightSide.hero ? _heroWeapon : null,
+      armor: side == FightSide.hero ? _heroArmor : null,
     );
   }
 }

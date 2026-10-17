@@ -43,6 +43,7 @@ class Internationalize {
   static String forestResource({required Resource resource}) => switch (resource) {
     Resource.wood => '$_forest.resource.wood'.tr(),
     Resource.gold => '$_forest.resource.gold'.tr(),
+    Resource.mana => '$_forest.resource.mana'.tr(),
   };
   static String forestTool({required ToolKind tool}) => switch (tool) {
     ToolKind.axe => '$_forest.tool.axe'.tr(),
@@ -54,6 +55,7 @@ class Internationalize {
   static String forestAmount({required Resource resource, required int amount}) => switch (resource) {
     Resource.wood => '$_forest.amount.wood'.tr(namedArgs: {'amount': '$amount'}),
     Resource.gold => '$_forest.amount.gold'.tr(namedArgs: {'amount': '$amount'}),
+    Resource.mana => '$_forest.amount.mana'.tr(namedArgs: {'amount': '$amount'}),
   };
   static String forestMissing({required String amounts}) => '$_forest.hud.missing'.tr(namedArgs: {'amounts': amounts});
   static String forestBlueprint({required BlueprintId id}) => switch (id) {
@@ -83,6 +85,7 @@ class Internationalize {
   static String get forestMessageNeedAxe => '$_forest.message.needAxe'.tr();
   static String get forestMessageBlockedPath => '$_forest.message.blockedPath'.tr();
   static String get forestMessagePickedUpAxe => '$_forest.message.pickedUpAxe'.tr();
+  static String get forestMessagePickedUpAxeTouch => '$_forest.message.pickedUpAxeTouch'.tr();
   static String get forestMessageBlockedSite => '$_forest.message.blockedSite'.tr();
   static String get forestMessageNotEnoughResources => '$_forest.message.notEnoughResources'.tr();
   static String get forestMessageBuildingStarted => '$_forest.message.buildingStarted'.tr();
@@ -92,6 +95,8 @@ class Internationalize {
       '$_forest.message.woodGained'.tr(namedArgs: {'wood': '$wood'});
   static String forestMessagePlacing({required String name}) =>
       '$_forest.message.placing'.tr(namedArgs: {'name': name});
+  static String forestMessagePlacingTouch({required String name}) =>
+      '$_forest.message.placingTouch'.tr(namedArgs: {'name': name});
   static String forestMessageBuildingCompleted({required String name}) =>
       '$_forest.message.buildingCompleted'.tr(namedArgs: {'name': name});
   static String forestMessageQuestCompleted({required String title}) =>
@@ -139,30 +144,49 @@ class Internationalize {
       '$_forest.message.gearPurchased'.tr(namedArgs: {'name': name});
   static String get forestMessageGearNotNextTier => '$_forest.message.gearNotNextTier'.tr();
   static String get forestHeroLearn => '$_forest.hero.learn'.tr();
-  static String get forestHeroKnown => '$_forest.hero.known'.tr();
+  static String get forestHeroUpgrade => '$_forest.hero.upgrade'.tr();
+  static String get forestHeroSkillMax => '$_forest.hero.skillMax'.tr();
+  static String forestHeroSkillLevel({required int level, required int max}) =>
+      '$_forest.hero.skillLevel'.tr(namedArgs: {'level': '$level', 'max': '$max'});
+  static String forestHeroSkillNext({required int level, required String effect}) =>
+      '$_forest.hero.skillNext'.tr(namedArgs: {'level': '$level', 'effect': effect});
   static String forestSkillName({required SkillId id}) => switch (id) {
     SkillId.doubleStrike => '$_forest.skill.doubleStrike.name'.tr(),
     SkillId.secondWind => '$_forest.skill.secondWind.name'.tr(),
     SkillId.dodge => '$_forest.skill.dodge.name'.tr(),
   };
-  static String forestSkillDescription({required SkillId id}) => switch (id) {
-    SkillId.doubleStrike => '$_forest.skill.doubleStrike.description'.tr(),
-    SkillId.secondWind => '$_forest.skill.secondWind.description'.tr(),
-    SkillId.dodge => '$_forest.skill.dodge.description'.tr(),
+  static String forestSkillDescription({required SkillId id, required int level}) => switch ((id, level)) {
+    (SkillId.doubleStrike, 1) => '$_forest.skill.doubleStrike.description'.tr(),
+    (SkillId.doubleStrike, 2) => '$_forest.skill.doubleStrike.descriptionLevel2'.tr(),
+    (SkillId.doubleStrike, _) => '$_forest.skill.doubleStrike.descriptionLevel3'.tr(),
+    (SkillId.secondWind, 1) => '$_forest.skill.secondWind.description'.tr(),
+    (SkillId.secondWind, 2) => '$_forest.skill.secondWind.descriptionLevel2'.tr(),
+    (SkillId.secondWind, _) => '$_forest.skill.secondWind.descriptionLevel3'.tr(),
+    (SkillId.dodge, 1) => '$_forest.skill.dodge.description'.tr(),
+    (SkillId.dodge, 2) => '$_forest.skill.dodge.descriptionLevel2'.tr(),
+    (SkillId.dodge, _) => '$_forest.skill.dodge.descriptionLevel3'.tr(),
   };
   static String forestMessageSkillLearned({required String name}) =>
       '$_forest.message.skillLearned'.tr(namedArgs: {'name': name});
-  static String get forestMessageSkillAlreadyKnown => '$_forest.message.skillAlreadyKnown'.tr();
+  static String forestMessageSkillUpgraded({required String name, required int level}) =>
+      '$_forest.message.skillUpgraded'.tr(namedArgs: {'name': name, 'level': '$level'});
+  static String get forestMessageSkillMaxLevel => '$_forest.message.skillMaxLevel'.tr();
   static const String _arena = 'arena';
   static String get arenaTitle => '$_arena.title'.tr();
   static String arenaHeroPower({required int power}) => '$_arena.heroPower'.tr(namedArgs: {'power': '$power'});
   static String arenaPower({required int power}) => '$_arena.power'.tr(namedArgs: {'power': '$power'});
-  static String arenaReward({required int amount}) => '$_arena.reward'.tr(namedArgs: {'amount': '$amount'});
+  static String arenaReward({required Map<Resource, int> amounts}) => '$_arena.reward'.tr(
+    namedArgs: {
+      'amounts': [
+        for (final resource in Resource.values)
+          if (amounts[resource] case final amount? when amount > 0) forestAmount(resource: resource, amount: amount),
+      ].join(', '),
+    },
+  );
   static String get arenaCleared => '$_arena.cleared'.tr();
   static String get arenaLocked => '$_arena.locked'.tr();
   static String get arenaFight => '$_arena.fight'.tr();
   static String get arenaBack => '$_arena.back'.tr();
-  static String get arenaSkip => '$_arena.skip'.tr();
   static String get arenaRetry => '$_arena.retry'.tr();
   static String get arenaVictory => '$_arena.victory'.tr();
   static String get arenaChampion => '$_arena.champion'.tr();
@@ -191,6 +215,7 @@ class Internationalize {
     EnemyKind.barbarianChief => '$_arena.enemy.barbarianChief'.tr(),
     EnemyKind.wolf => '$_arena.enemy.wolf'.tr(),
     EnemyKind.bear => '$_arena.enemy.bear'.tr(),
+    EnemyKind.banditVeteran => '$_arena.enemy.banditVeteran'.tr(),
   };
   static String arenaAdvice({required FightAdvice advice}) => switch (advice) {
     FightAdvice.almostThere => '$_arena.advice.almostThere'.tr(),

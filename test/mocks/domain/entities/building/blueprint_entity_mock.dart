@@ -1,6 +1,6 @@
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/layers/domain/entities/building/blueprint_entity.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/domain/entities/building/blueprint_entity.dart';
 
 abstract final class BlueprintEntityMock {
   static const BlueprintEntity mock = BlueprintEntity(

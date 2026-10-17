@@ -1,59 +1,65 @@
 # Progreso del desarrollo
 
-> Resumen de las dos hojas de ruta. El detalle de cada fase está en su plan:
-> - Aldea: [`2026-10-04-game-design/`](2026-10-04-game-design/README.md)
-> - Héroe y arena: [`2026-10-06-hero-arena/`](2026-10-06-hero-arena/README.md)
->
-> Última actualización: 2026-10-09. Se actualiza al terminar cada tarea (`/cerrar-tarea`) y al pasar un plan de ficha a detallado, con un commit en la misma rama de la tarea. Cada rama de integración lleva su copia al día; `develop` la recibe cuando entra la rama.
+> Planes: [héroe y arena](2026-10-06-hero-arena/README.md) · [aldea](2026-10-04-game-design/README.md) · [arreglos y mejoras](2026-10-17-extras/README.md). Última actualización: 2026-10-17.
 
-**Leyenda:**
-- ✅ terminada.
-- 🟢 plan detallado, lista para implementar.
-- 📝 ficha: hay que detallar el plan al empezar.
-- 💭 esbozo: se replanifica más adelante.
-
-## Ramas
-
-| Rama | Contenido | Destino |
-|---|---|---|
-| `develop` | Lo integrado de las dos partes y todos los planes (`docs/`). | `main` (publicado en GitHub Pages) |
-| `feature/PROJECT-X-town` | Integración de la aldea: las fases F terminadas. | `develop`, por bloques jugables (README de la aldea, sección 3.0) |
-| `feature/PROJECT-X-arena` | Integración de la arena: todo `develop` más las fases C terminadas. | `develop`, una sola vez, cuando la arena esté completa (README de la arena, sección 3.0) |
-
-**Bloques de la aldea** (cada uno pasa a `develop` cuando está completo):
-- **Bloque 1:** F1–F4 (árboles, guardado, rebrote y misiones).
-- **Bloque 2:** F5–F8 (piedra, almacén, cantera y taller).
-- **Bloque 3 en adelante:** F9–F15, cuando se replanifiquen.
-
-## Aldea
-
-| Fase | Estado | Dónde está | Notas |
-|---|---|---|---|
-| F0 Generalizar recursos, herramientas y edificios | ✅ | `develop` (#6), anterior a `town` | Incluye el arreglo de las líneas del suelo. |
-| F1 Árboles con personalidad | 🟢 plan listo | — | Ramas `feature/PROJECT-F1-…` desde `feature/PROJECT-X-town`. |
-| F2 Guardado automático | 📝 ficha | — | Antes de empezar: decidir cómo queda la sesión en el datasource (entidad frente a DBO). |
-| F3 Rebrote de árboles | 📝 ficha | — | Después de F1. |
-| F4 Misiones, capítulo 1 | 📝 ficha | — | Después de F3. |
-| F5 Piedra y pico | 📝 ficha | — | Después de F0. |
-| F6 Almacén y capacidad de carga | 📝 ficha | — | Después de F2. |
-| F7 Cantera | 📝 ficha | — | Después de F5 y F6. |
-| F8 Taller y mejoras de herramientas | 📝 ficha | — | Después de F5 y F6. |
-| F9–F15 Comida, aldeanos, granja, estaciones, eras, mercader | 💭 esbozo | — | Se replanifican al terminar F8. |
+| Icono | Estado |
+|---|---|
+| ✅ | terminada |
+| 🔨 | en curso |
+| 🟢 | plan detallado, lista para implementar |
+| 📝 | ficha: hay que detallar el plan al empezar |
+| 💭 | esbozo: se replanifica más adelante |
 
 ## Arena
 
 | Fase | Estado | Dónde está | Notas |
 |---|---|---|---|
-| C0 Contrato común | ✅ | `feature/PROJECT-X-arena` (#9) | Oro, caja del `World`, héroe y entidades de combate. |
-| C1 Motor y niveles | ✅ | `feature/PROJECT-X-arena` (#10) | Lógica sin pantalla; 418 tests en verde. |
-| C2 Pantalla de la arena | ✅ | `feature/PROJECT-X-arena` (#42) | Lleva unida C3 y resuelve los cruces; HUD con botones bajo la barra en pantallas estrechas. Decisiones provisionales a revisar en la fase de pruebas. |
-| C3 Herrería y Armería | ✅ | `feature/PROJECT-X-arena` (#41) | Herrería, Armería y panel *Héroe*; el oro llega con C2. |
-| C4 Lobos y oso | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Lobo de Redshrike y oso de tapatilorenzo (CC-BY / OGA-BY, aceptado); niveles de animales y salto hacia el objetivo. |
-| C5 Torre de magia | ✅ | `feature/PROJECT-X-arena` (merge directo, sin PR) | Torre de magia, catálogo `Skills`, pestaña *Habilidades* y nombres de las habilidades en la arena. Unida tras C4 con dos conflictos aditivos; 612 tests en verde. |
-| C6 Bárbaros y jefe | ✅ | `feature/PROJECT-X-arena` (#51) | Bárbaros y jefe con capas LPC reales (cuero, barba, casco; jefe con casco vikingo), hacha de siempre; anillo bajo el objetivo y caídos al 50 %; *Campeón de la arena* con confeti e insignia en el panel *Héroe*. 630 tests en verde; prueba manual en Chrome y Android. |
-| C7 Misiones y equilibrado | ✅ | `feature/PROJECT-X-arena` (#52) | Daño por rangos, línea de misiones *Héroe*, equipo sólo con oro y test de equilibrado con los números finales (tabla en `GAME_DESIGN.md` 3.8). 639 tests en verde. |
+| C0 Contrato común | ✅ | `develop` (#9) | Oro, caja del `World`, héroe y entidades de combate. |
+| C1 Motor y niveles | ✅ | `develop` (#10) | Lógica sin pantalla. |
+| C2 Pantalla de la arena | ✅ | `develop` (#42) | HUD con botones bajo la barra en pantallas estrechas. |
+| C3 Herrería y Armería | ✅ | `develop` (#41) | Herrería, Armería y panel *Héroe*. |
+| C4 Lobos y oso | ✅ | `develop` | Salto hacia el objetivo. |
+| C5 Torre de magia | ✅ | `develop` | Catálogo `Skills`, pestaña *Habilidades*. |
+| C6 Bárbaros y jefe | ✅ | `develop` (#51) | Anillo bajo el objetivo, *Campeón de la arena*. |
+| C7 Misiones y equilibrado | ✅ | `develop` (#52, #53) | Daño por rangos, línea *Héroe*, test de equilibrado. 639 tests. |
+| C8 Pulido de la arena | ✅ | `develop` | 649 tests. |
+| Reanudar obras | ✅ | `develop` (#54) | 655 tests. |
+| [X Alineación con iOS](2026-10-06-hero-arena/X-ios-alignment.md) | ✅ | `develop` (#60) | *Farming*, `com.apergas.farming`, icono, textos táctiles. 658 tests. Probada en Chrome y Android; iOS sin probar. |
+| [C9 Maná](2026-10-06-hero-arena/C9-mana.md) | ✅ | `develop` (#64) | Maná en los niveles 6–10 y en las habilidades. Tests hasta TC9.3 (666); TC9.4 sin tests (ver T1). |
+| [C10 Pelea sin saltar](2026-10-06-hero-arena/C10-no-skip.md) | ✅ | `develop` (#65) | Sin *Saltar* durante la repetición. Sin tests (T1). |
+| [C11 Habilidades de los enemigos](2026-10-06-hero-arena/C11-enemy-skills.md) | ✅ | `develop` (#66) | Probabilidades 1,5–3,5 % en los niveles 6–10. Sin tests (T1). |
+| [C12 Niveles de habilidad](2026-10-06-hero-arena/C12-skill-levels.md) | ✅ | `develop` (#68) | Tres niveles por habilidad (×1,5 y ×2,25). Sin tests (T1). |
+| [C13 Armadura visible del héroe](2026-10-06-hero-arena/C13-hero-armour.md) | ✅ | `develop` (#69) | Juegos precompuestos arma × armadura (cuero, malla, placas con yelmo). Sin tests (T1). |
+
+## Aldea
+
+| Fase | Estado | Dónde está | Notas |
+|---|---|---|---|
+| F0 Generalizar recursos, herramientas y edificios | ✅ | `develop` (#6) | Incluye el arreglo de las líneas del suelo. |
+| [F1 Árboles con personalidad](2026-10-04-game-design/F1-tree-kinds.md) | 🟢 plan listo | — | Bloque 1. |
+| [F3 Rebrote de árboles](2026-10-04-game-design/F3-regrowth.md) | 📝 ficha | — | Bloque 1. |
+| [F4 Misiones, capítulo 1](2026-10-04-game-design/F4-quests-chapter-1.md) | 📝 ficha | — | Bloque 1. |
+| [F5 Piedra y pico](2026-10-04-game-design/F5-stone.md) | 📝 ficha | — | Bloque 2. |
+| [F6 Almacén y capacidad de carga](2026-10-04-game-design/F6-storehouse.md) | 📝 ficha | — | Bloque 2. |
+| [F7 Cantera](2026-10-04-game-design/F7-quarry.md) | 📝 ficha | — | Bloque 2. |
+| [F8 Taller y mejoras de herramientas](2026-10-04-game-design/F8-workshop.md) | 📝 ficha | — | Bloque 2. |
+| [F2 Guardado de la partida](2026-10-04-game-design/F2-autosave.md) | 📝 ficha | — | Bloque 3: va la última. |
+| F9–F15 Comida, aldeanos, granja, estaciones, eras, mercader | 💭 en espera | — | No se planifican hasta terminar todo, T1 incluida; se hablan entonces. |
+
+## Arreglos y mejoras
+
+| Arreglo o mejora | Estado | Dónde está |
+|---|---|---|
+| [Rayas negras en el suelo de la arena](2026-10-17-extras/arena-ground-seams.md) | ✅ | `develop` (#61) |
+| [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | 📝 ficha | — |
+| [T1 Tests](2026-10-17-extras/T1-tests.md) | 📝 ficha | — (la última; desde TC9.4 no se escriben tests) |
 
 ## Siguiente paso
 
-- **Arena:** hoja de ruta completa (C0–C7). PR de `feature/PROJECT-X-arena` a `develop` abierta el 2026-10-09, antes del pulido (decisión del usuario); la prueba manual completa en Android e iOS queda pendiente en la PR. El pulido de `ARENA-FIXES.md` (más los mensajes de misiones repetidos) se hará más adelante, en ramas desde `develop`. Cambios y mejoras para el final, en [`ARENA-FIXES.md`](2026-10-06-hero-arena/ARENA-FIXES.md).
-- **Aldea:** implementar F1 desde `feature/PROJECT-X-town`.
+| Orden | Qué | Rama |
+|---|---|---|
+| ✅ | Arena C9–C13; prueba manual del bloque en Chrome y Android 16 (iOS sin probar; los niveles 6–10 y las mejoras sin jugar a mano) y unión a `develop` | `feature/PROJECT-X-arena` → `develop` |
+| 1 | Empezar con el hacha (antes de F4) | desde `feature/PROJECT-X-town` |
+| 2 | F1 → F3 → F4 (bloque 1) → F5 → F6 → F7 → F8 (bloque 2) → F2 (bloque 3) | desde `feature/PROJECT-X-town`, tras `git merge develop` |
+| 3 | Prueba manual del bloque de la aldea (web, Android e iOS; las *Prueba manual* de F1–F8, F2 y los arreglos) | `feature/PROJECT-X-town` |
+| 4 | T1 Tests | desde `develop`, con todo unido |

@@ -1,10 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/core/config/constants/enum/forest/facing.dart';
-import 'package:rpg/core/error-handling/exceptions/app_exceptions.dart';
-import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/core/config/constants/enum/forest/facing.dart';
+import 'package:farming/core/error-handling/exceptions/app_exceptions.dart';
+import 'package:farming/layers/presentation/features/forest/bloc/forest_bloc.dart';
 
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/core/services/navigation_service_mocks.mocks.dart';

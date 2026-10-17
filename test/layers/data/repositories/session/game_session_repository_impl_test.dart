@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/error-handling/exceptions/app_exceptions.dart';
-import 'package:rpg/core/error-handling/handlers/app_exception_handler.dart';
-import 'package:rpg/layers/data/datasources/session/source/game_session_local_datasource.dart';
-import 'package:rpg/layers/data/repositories/session/game_session_repository_impl.dart';
+import 'package:farming/core/error-handling/exceptions/app_exceptions.dart';
+import 'package:farming/core/error-handling/handlers/app_exception_handler.dart';
+import 'package:farming/layers/data/datasources/session/source/game_session_local_datasource.dart';
+import 'package:farming/layers/data/repositories/session/game_session_repository_impl.dart';
 
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import 'game_session_repository_impl_test.mocks.dart';

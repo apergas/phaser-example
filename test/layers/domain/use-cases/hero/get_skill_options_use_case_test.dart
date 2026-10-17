@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/config/constants/enum/skill_option_state.dart';
-import 'package:rpg/layers/domain/use-cases/hero/get_skill_options_use_case.dart';
-import 'package:rpg/layers/domain/world/world.dart';
+import 'package:farming/core/config/constants/enum/skill_option_state.dart';
+import 'package:farming/layers/domain/use-cases/hero/get_skill_options_use_case.dart';
+import 'package:farming/layers/domain/world/world.dart';
 
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import '../../../../mocks/domain/entities/hero/hero_entity_mock.dart';
@@ -67,6 +67,17 @@ void main() {
 
     // then
     expect(options.first, SkillOptionEntityMock.doubleStrikeTenGoldShort);
+  });
+
+  test('testWhenOnlyManaIsShortThenTheSkillSaysOnlyTheManaIsMissing', () {
+    // given
+    playing(SkillScenarioMock.withTower(funds: FundsMock.doubleStrikeGoldWithoutMana));
+
+    // when
+    final options = sut();
+
+    // then
+    expect(options.first, SkillOptionEntityMock.doubleStrikeTwentyManaShort);
   });
 
   test('testWhenTheHeroKnowsASkillThenItIsListedAsKnownWithNothingMissing', () {

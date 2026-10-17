@@ -30,7 +30,7 @@ abstract final class ArenaLevels {
       id: ArenaLevelId.banditVeteran,
       enemies: [
         EnemyEntity(
-          kind: EnemyKind.bandit,
+          kind: EnemyKind.banditVeteran,
           stats: CombatStatsEntity(attackMin: 4, attackMax: 6, defense: 2, health: 36),
         ),
       ],
@@ -70,7 +70,8 @@ abstract final class ArenaLevels {
           stats: CombatStatsEntity(attackMin: 7, attackMax: 9, defense: 1, health: 26),
         ),
       ],
-      reward: {Resource.gold: 75},
+      reward: {Resource.gold: 75, Resource.mana: 20},
+      enemySkillChance: 0.015,
     ),
     ArenaLevelEntity(
       id: ArenaLevelId.barbarian,
@@ -80,7 +81,8 @@ abstract final class ArenaLevels {
           stats: CombatStatsEntity(attackMin: 10, attackMax: 14, defense: 4, health: 58),
         ),
       ],
-      reward: {Resource.gold: 90},
+      reward: {Resource.gold: 90, Resource.mana: 25},
+      enemySkillChance: 0.02,
     ),
     ArenaLevelEntity(
       id: ArenaLevelId.wolfPack,
@@ -98,7 +100,8 @@ abstract final class ArenaLevels {
           stats: CombatStatsEntity(attackMin: 8, attackMax: 12, defense: 1, health: 22),
         ),
       ],
-      reward: {Resource.gold: 100},
+      reward: {Resource.gold: 100, Resource.mana: 30},
+      enemySkillChance: 0.025,
     ),
     ArenaLevelEntity(
       id: ArenaLevelId.barbarianPair,
@@ -112,7 +115,8 @@ abstract final class ArenaLevels {
           stats: CombatStatsEntity(attackMin: 8, attackMax: 12, defense: 4, health: 52),
         ),
       ],
-      reward: {Resource.gold: 120},
+      reward: {Resource.gold: 120, Resource.mana: 35},
+      enemySkillChance: 0.03,
     ),
     ArenaLevelEntity(
       id: ArenaLevelId.barbarianChief,
@@ -130,7 +134,8 @@ abstract final class ArenaLevels {
           stats: CombatStatsEntity(attackMin: 7, attackMax: 11, defense: 2, health: 31),
         ),
       ],
-      reward: {Resource.gold: 150},
+      reward: {Resource.gold: 150, Resource.mana: 50},
+      enemySkillChance: 0.035,
     ),
   ];
 

@@ -3,7 +3,7 @@ Arena barbarians (used by build_assets.py -> arena.png)
 
 Layers of the Universal LPC Spritesheet Character Generator, commit 58ce1aa479e4df32845a73a5d0afc221c3a893c2:
 https://github.com/liberatedpixelcup/Universal-LPC-Spritesheet-Character-Generator
-Each file is spritesheets/<path>/{idle,slash}.png, renamed to <name>__{idle,slash}.png.
+Each file is spritesheets/<path>/{idle,walk,slash}.png, renamed to <name>__{idle,walk,slash}.png.
 
 legs_shorts_male            <- legs/shorts/shorts/male
   JaidynReiman, ElizaWy, bluecarrot16, Johannes Sjölund (wulax), Stephen Challener (Redshrike)

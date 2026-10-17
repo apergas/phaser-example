@@ -1,6 +1,6 @@
-import 'package:rpg/core/config/constants/enum/quest_id.dart';
-import 'package:rpg/core/config/constants/enum/quest_line.dart';
-import 'package:rpg/layers/domain/entities/game/quest_progress_entity.dart';
+import 'package:farming/core/config/constants/enum/quest_id.dart';
+import 'package:farming/core/config/constants/enum/quest_line.dart';
+import 'package:farming/layers/domain/entities/game/quest_progress_entity.dart';
 
 abstract final class QuestProgressEntityMock {
   static const QuestProgressEntity mock = QuestProgressEntity(

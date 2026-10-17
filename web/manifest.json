@@ -1,7 +1,7 @@
 {
-  "name": "RPG",
-  "short_name": "RPG",
-  "description": "Top-down forest RPG: chop trees, gather wood and build a house.",
+  "name": "Farming",
+  "short_name": "Farming",
+  "description": "Top-down forest game: chop trees, build a village and train a hero for the arena.",
   "start_url": ".",
   "display": "standalone",
   "orientation": "landscape",

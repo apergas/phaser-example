@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/decoration_kind.dart';
-import 'package:rpg/layers/data/repositories/level/mappers/decoration_mapper_dbo.dart';
+import 'package:farming/core/config/constants/enum/decoration_kind.dart';
+import 'package:farming/layers/data/repositories/level/mappers/decoration_mapper_dbo.dart';
 
 import '../../../../../mocks/data/datasources/level/decoration_dbo_mock.dart';
 

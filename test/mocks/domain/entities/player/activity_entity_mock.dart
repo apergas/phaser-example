@@ -1,6 +1,6 @@
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/domain/entities/player/activity_entity.dart';
-import 'package:rpg/layers/domain/entities/player/intent_entity.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/domain/entities/player/activity_entity.dart';
+import 'package:farming/layers/domain/entities/player/intent_entity.dart';
 
 import 'intent_entity_mock.dart';
 

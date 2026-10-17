@@ -1,6 +1,7 @@
 import '../../../../../core/config/constants/enum/arena/fighter_pose.dart';
 import '../../../../../core/config/constants/enum/enemy_kind.dart';
 import '../../../../../core/config/constants/enum/fight_side.dart';
+import '../../../../../core/config/constants/enum/gear_id.dart';
 
 class FighterRenderData {
   final FightSide side;
@@ -12,6 +13,8 @@ class FighterRenderData {
   final double swingProgress;
   final int targetIndex;
   final bool isTargeted;
+  final GearId? weapon;
+  final GearId? armor;
 
   const FighterRenderData({
     required this.side,
@@ -23,6 +26,8 @@ class FighterRenderData {
     this.swingProgress = 0,
     this.targetIndex = 0,
     this.isTargeted = false,
+    this.weapon,
+    this.armor,
   });
 
   static String keyOf(FightSide side, int index) => '${side.name}-$index';
@@ -41,9 +46,22 @@ class FighterRenderData {
           other.pose == pose &&
           other.swingProgress == swingProgress &&
           other.targetIndex == targetIndex &&
-          other.isTargeted == isTargeted;
+          other.isTargeted == isTargeted &&
+          other.weapon == weapon &&
+          other.armor == armor;
 
   @override
-  int get hashCode =>
-      Object.hash(side, index, enemyKind, health, maxHealth, pose, swingProgress, targetIndex, isTargeted);
+  int get hashCode => Object.hash(
+    side,
+    index,
+    enemyKind,
+    health,
+    maxHealth,
+    pose,
+    swingProgress,
+    targetIndex,
+    isTargeted,
+    weapon,
+    armor,
+  );
 }

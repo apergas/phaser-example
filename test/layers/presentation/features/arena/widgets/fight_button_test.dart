@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/layers/presentation/features/arena/widgets/fight_button.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/layers/presentation/features/arena/widgets/fight_button.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
 import '../../../../../helpers/spanish_translations.dart';

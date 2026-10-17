@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/tool_kind.dart';
+import 'package:farming/core/config/constants/enum/tool_kind.dart';
 
 import '../../../../mocks/domain/entities/player/inventory_entity_mock.dart';
 

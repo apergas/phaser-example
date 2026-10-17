@@ -1,6 +1,6 @@
-import 'package:rpg/core/config/constants/enum/tree_kind.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/domain/entities/tree/tree_entity.dart';
+import 'package:farming/core/config/constants/enum/tree_kind.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/domain/entities/tree/tree_entity.dart';
 
 abstract final class TreeEntityMock {
   static const TreeEntity mock = TreeEntity(

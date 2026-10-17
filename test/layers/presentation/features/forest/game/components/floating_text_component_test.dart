@@ -1,10 +1,10 @@
 import 'package:flame/components.dart';
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/presentation/features/forest/game/components/floating_text_component.dart';
-import 'package:rpg/layers/presentation/features/forest/game/render/render_depth.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/presentation/features/forest/game/components/floating_text_component.dart';
+import 'package:farming/layers/presentation/features/forest/game/render/render_depth.dart';
 
 import '../../../../../../helpers/spanish_translations.dart';
 

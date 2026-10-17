@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/forest/facing.dart';
-import 'package:rpg/core/config/constants/enum/forest/player_sheet.dart';
-import 'package:rpg/core/config/constants/enum/forest/work_tool.dart';
-import 'package:rpg/layers/presentation/features/forest/game/render/player_frame.dart';
-import 'package:rpg/layers/presentation/features/forest/game/render/player_frames.dart';
+import 'package:farming/core/config/constants/enum/forest/facing.dart';
+import 'package:farming/core/config/constants/enum/forest/player_sheet.dart';
+import 'package:farming/core/config/constants/enum/forest/work_tool.dart';
+import 'package:farming/layers/presentation/features/forest/game/render/player_frame.dart';
+import 'package:farming/layers/presentation/features/forest/game/render/player_frames.dart';
 
 import '../../../../../../mocks/presentation/features/forest/player_pose_mock.dart';
 import '../../../../../../mocks/presentation/features/forest/player_render_data_mock.dart';

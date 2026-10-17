@@ -1,8 +1,8 @@
-import 'package:rpg/layers/data/datasources/level/local/dbo/decoration_dbo.dart';
-import 'package:rpg/layers/data/datasources/level/local/dbo/item_dbo.dart';
-import 'package:rpg/layers/data/datasources/level/local/dbo/level_dbo.dart';
-import 'package:rpg/layers/data/datasources/level/local/dbo/point_dbo.dart';
-import 'package:rpg/layers/data/datasources/level/local/dbo/tree_dbo.dart';
+import 'package:farming/layers/data/datasources/level/local/dbo/decoration_dbo.dart';
+import 'package:farming/layers/data/datasources/level/local/dbo/item_dbo.dart';
+import 'package:farming/layers/data/datasources/level/local/dbo/level_dbo.dart';
+import 'package:farming/layers/data/datasources/level/local/dbo/point_dbo.dart';
+import 'package:farming/layers/data/datasources/level/local/dbo/tree_dbo.dart';
 
 abstract final class LevelDBOMock {
   static const PointDBO _playerStart = PointDBO(x: 200, y: 150);

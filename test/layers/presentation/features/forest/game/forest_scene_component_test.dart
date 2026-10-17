@@ -3,12 +3,12 @@ import 'dart:math' as math;
 import 'package:flame/game.dart';
 import 'package:flame_test/flame_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/layers/presentation/features/forest/game/components/placement_ghost_component.dart';
-import 'package:rpg/layers/presentation/features/forest/game/components/ground_component.dart';
-import 'package:rpg/layers/presentation/features/forest/game/components/tree_component.dart';
-import 'package:rpg/layers/presentation/features/forest/game/forest_scene_component.dart';
-import 'package:rpg/layers/presentation/features/forest/game/particles/particle_burst_component.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/layers/presentation/features/forest/game/components/placement_ghost_component.dart';
+import 'package:farming/layers/presentation/features/forest/game/components/ground_component.dart';
+import 'package:farming/layers/presentation/features/forest/game/components/tree_component.dart';
+import 'package:farming/layers/presentation/features/forest/game/forest_scene_component.dart';
+import 'package:farming/layers/presentation/features/forest/game/particles/particle_burst_component.dart';
 
 import '../../../../../mocks/presentation/features/forest/game/forest_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/game/lpc_assets_mock.dart';
@@ -224,5 +224,19 @@ void main() {
     expect(scene.clutter, hasLength(1));
     expect(scene.buildings, isEmpty);
     expect(scene.children.whereType<GroundComponent>(), hasLength(1));
+  });
+  testWithFlameGame('testWhenTappingABuildingThenOnlyItsOpaquePixelsCount', (game) async {
+    // given
+    final scene = await _mountedScene(game);
+    scene.show(ForestDataMock.housePlaced);
+    await game.ready();
+
+    // when
+    final wall = scene.buildingAt(Vector2(202, 200));
+    final gap = scene.buildingAt(Vector2(197, 200));
+
+    // then
+    expect(wall, 'building-1');
+    expect(gap, isNull);
   });
 }

@@ -1,15 +1,14 @@
 import 'dart:ui';
 
-import 'package:rpg/core/config/constants/enum/enemy_kind.dart';
-import 'package:rpg/layers/presentation/features/arena/game/atlas/arena_assets.dart';
-import 'package:rpg/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart';
-import 'package:rpg/layers/presentation/features/forest/game/atlas/atlas_frame.dart';
+import 'package:farming/core/config/constants/enum/enemy_kind.dart';
+import 'package:farming/layers/presentation/features/arena/game/atlas/arena_assets.dart';
+import 'package:farming/layers/presentation/features/arena/game/atlas/arena_sprite_names.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/atlas_frame.dart';
 
 abstract final class ArenaAssetsMock {
   static const int frameSize = 8;
 
   static final List<String> frameNames = [
-    ArenaSpriteNames.grass,
     ArenaSpriteNames.fence,
     for (final fighter in [ArenaSpriteNames.hero, ...EnemyKind.values.map(ArenaSpriteNames.enemy)]) ...[
       for (var column = 0; column < 2; column++) ArenaSpriteNames.idle(fighter, column),
@@ -22,6 +21,7 @@ abstract final class ArenaAssetsMock {
   static ArenaAssets create() {
     return ArenaAssets(
       atlas: _image(frameSize, frameSize),
+      ground: _image(32, 32),
       frames: {
         for (final name in frameNames)
           name: AtlasFrame(name: name, x: 0, y: 0, width: frameSize, height: frameSize, pivotX: 0.5, pivotY: 1),

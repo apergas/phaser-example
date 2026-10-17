@@ -1,0 +1,49 @@
+Hero armour in the arena (used by build_assets.py -> arena.png)
+================================================================
+
+Layers of the Universal LPC Spritesheet Character Generator, commit 58ce1aa479e4df32845a73a5d0afc221c3a893c2:
+https://github.com/liberatedpixelcup/Universal-LPC-Spritesheet-Character-Generator
+Each file is spritesheets/<path>/{idle,walk,slash}.png, renamed to <name>__{idle,walk,slash}.png.
+The leather armour and the bracers are the barbarians' (sources/barbarians, CREDITS-barbarians.txt).
+
+torso_chainmail_male        <- torso/chainmail/male
+  Johannes Sjölund (wulax), Napsio (Vitruvian Studio), JaidynReiman
+  minor edits by bluecarrot16, reduced colors by Napsio, adjusted Male colors and Idle/Sit/Emote/Climb/Run by JaidynReiman
+  OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0
+  https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+
+torso_armour_plate_male     <- torso/armour/plate/male
+  Napsio (Vitruvian Studio), JaidynReiman, bluecarrot16, Michael Whitlock (bigbeargames), Johannes Sjölund (wulax)
+  original by wulax, recolor by bigbeargames, color reduced to 7 colors and adapted to v3 bases by bluecarrot16,
+  run/jump/sit/climb/revised combat by JaidynReiman, reduced colors to 6 (based on Napsio's Vitruvian)
+  OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0
+  https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+  https://opengameart.org/content/lpc-combat-armor-for-women
+
+arms_armour_plate_male      <- arms/armour/plate/male
+  Michael Whitlock (bigbeargames), Matthew Krohn (makrohn), Johannes Sjölund (wulax), bluecarrot16, JaidynReiman
+  original by wulax, recolors by bigbeargames; adapted to v3 bases and further recolors by bluecarrot16,
+  climb/emote/jump by JaidynReiman
+  OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0
+  https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+  http://opengameart.org/content/lpc-clothing-updates
+
+shoulders_pauldrons_male    <- shoulders/pauldrons/male
+  Matthew Krohn (makrohn), Johannes Sjölund (wulax), bluecarrot16, JaidynReiman
+  adapted to female base by makrohn, adapted to v3 bases by bluecarrot16, climb/jump/sit/emote/run/revised combat by
+  JaidynReiman
+  OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0
+  https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+  http://opengameart.org/content/lpc-clothing-updates
+
+legs_armour_plate_male      <- legs/armour/plate/male
+  bluecarrot16, JaidynReiman, Michael Whitlock (bigbeargames), Matthew Krohn (makrohn), Johannes Sjölund (wulax)
+  reduced to 7 colors and adapted to v3 bases by bluecarrot16, climb/jump/sit/emote/run by JaidynReiman
+  OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0
+  https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+
+hat_helmet_nasal_adult      <- hat/helmet/nasal/adult
+  bluecarrot16
+  CC-BY 3.0, CC-BY 4.0, OGA-BY 3.0, GPL 2.0, GPL 3.0
+  https://opengameart.org/content/lpc-helmets
+  https://opengameart.org/content/lpc-expanded-hats-facial-helmets

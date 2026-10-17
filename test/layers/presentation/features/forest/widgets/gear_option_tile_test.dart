@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/gear_id.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/gear_option_tile.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/hud_button.dart';
+import 'package:farming/core/config/constants/enum/gear_id.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/gear_option_tile.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/hud_button.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
 import '../../../../../helpers/spanish_translations.dart';

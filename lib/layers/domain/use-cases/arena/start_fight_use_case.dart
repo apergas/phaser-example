@@ -19,7 +19,12 @@ final class StartFightUseCase {
     final hero = world.hero;
     final level = ArenaLevels.byId(levelId);
     if (!hero.isUnlocked(level)) return const FightLockedEntity();
-    final fight = Combat.resolve(level: level, heroStats: hero.stats, skills: hero.skills, seed: hero.fightsFought);
+    final fight = Combat.resolve(
+      level: level,
+      heroStats: hero.stats,
+      skillLevels: hero.skillLevels,
+      seed: hero.fightsFought,
+    );
     final log = fight.isVictory ? fight.copyWith(reward: hero.rewardFor(level)) : fight;
     if (log.isVictory) world.earn(log.reward);
     world.updateHero((current) => current.afterFight(log));

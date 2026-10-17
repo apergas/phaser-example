@@ -24,10 +24,6 @@ final class ArenaReplayTicked extends ArenaEvent {
   const ArenaReplayTicked({required this.deltaMs});
 }
 
-final class ArenaReplaySkipped extends ArenaEvent {
-  const ArenaReplaySkipped();
-}
-
 final class ArenaClosed extends ArenaEvent {
   const ArenaClosed();
 }

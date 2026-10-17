@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/decoration_kind.dart';
-import 'package:rpg/core/config/constants/enum/tool_kind.dart';
-import 'package:rpg/core/config/constants/enum/tree_kind.dart';
-import 'package:rpg/layers/presentation/features/forest/game/atlas/lpc_atlas.dart';
-import 'package:rpg/layers/presentation/features/forest/game/atlas/sprite_names.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/decoration_kind.dart';
+import 'package:farming/core/config/constants/enum/tool_kind.dart';
+import 'package:farming/core/config/constants/enum/tree_kind.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/lpc_atlas.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/sprite_names.dart';
 
 import '../../../../../../mocks/presentation/features/forest/game/atlas_frame_mock.dart';
 import '../../../../../../mocks/presentation/features/forest/game/lpc_atlas_source_mock.dart';

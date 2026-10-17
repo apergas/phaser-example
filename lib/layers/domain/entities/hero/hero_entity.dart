@@ -6,14 +6,14 @@ import '../../../../core/config/constants/enum/skill_id.dart';
 class HeroEntity {
   final int weaponTier;
   final int armorTier;
-  final Set<SkillId> skills;
+  final Map<SkillId, int> skillLevels;
   final Set<ArenaLevelId> clearedLevels;
   final int fightsFought;
 
   const HeroEntity({
     this.weaponTier = 0,
     this.armorTier = 0,
-    this.skills = const {},
+    this.skillLevels = const {},
     this.clearedLevels = const {},
     this.fightsFought = 0,
   }) : assert(weaponTier >= 0),
@@ -23,14 +23,14 @@ class HeroEntity {
   HeroEntity copyWith({
     int? weaponTier,
     int? armorTier,
-    Set<SkillId>? skills,
+    Map<SkillId, int>? skillLevels,
     Set<ArenaLevelId>? clearedLevels,
     int? fightsFought,
   }) {
     return HeroEntity(
       weaponTier: weaponTier ?? this.weaponTier,
       armorTier: armorTier ?? this.armorTier,
-      skills: skills ?? this.skills,
+      skillLevels: skillLevels ?? this.skillLevels,
       clearedLevels: clearedLevels ?? this.clearedLevels,
       fightsFought: fightsFought ?? this.fightsFought,
     );
@@ -41,7 +41,7 @@ class HeroEntity {
       other is HeroEntity &&
       other.weaponTier == weaponTier &&
       other.armorTier == armorTier &&
-      const SetEquality<SkillId>().equals(other.skills, skills) &&
+      const MapEquality<SkillId, int>().equals(other.skillLevels, skillLevels) &&
       const SetEquality<ArenaLevelId>().equals(other.clearedLevels, clearedLevels) &&
       other.fightsFought == fightsFought;
 
@@ -49,7 +49,7 @@ class HeroEntity {
   int get hashCode => Object.hash(
     weaponTier,
     armorTier,
-    const SetEquality<SkillId>().hash(skills),
+    const MapEquality<SkillId, int>().hash(skillLevels),
     const SetEquality<ArenaLevelId>().hash(clearedLevels),
     fightsFought,
   );

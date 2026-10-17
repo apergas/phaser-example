@@ -71,7 +71,7 @@ final RegExp _mutableFieldPattern = RegExp(
 List<String> importsOf(String source) => _importPattern.allMatches(source).map((match) => match.group(1)!).toList();
 
 String resolveImport({required String importingFile, required String import}) {
-  if (import.startsWith('package:rpg/')) return 'lib/${import.substring('package:rpg/'.length)}';
+  if (import.startsWith('package:farming/')) return 'lib/${import.substring('package:farming/'.length)}';
   if (import.startsWith('package:') || import.startsWith('dart:')) return import;
   return Uri.file(importingFile).resolve(import).path;
 }
@@ -237,7 +237,7 @@ void main() {
 
     test('testWhenResolvingAPackageImportOfTheAppThenItPointsIntoLib', () {
       // given
-      const import = 'package:rpg/layers/data/x.dart';
+      const import = 'package:farming/layers/data/x.dart';
 
       // when
       final target = resolveImport(importingFile: 'lib/main.dart', import: import);
@@ -263,8 +263,8 @@ void main() {
       addTearDown(() => directory.deleteSync(recursive: true));
       final file = File('${directory.path}/navify_like.dart')
         ..writeAsStringSync('''
-import 'package:rpg/layers/presentation/widgets/custom-popup/custom_pop_up.dart';
-import 'package:rpg/layers/presentation/app/container_app.dart';
+import 'package:farming/layers/presentation/widgets/custom-popup/custom_pop_up.dart';
+import 'package:farming/layers/presentation/app/container_app.dart';
 ''');
       final allowed = {
         file.path: ['lib/layers/presentation/widgets/custom-popup/custom_pop_up.dart'],
@@ -352,7 +352,8 @@ sealed class SampleEntity {
     test('testWhenAFileOutsideTheWorldImportsAnInternalThenItIsReported', () {
       // given
       final sources = {
-        'lib/layers/data/level_repository_impl.dart': "import 'package:rpg/layers/domain/world/world_state.dart';\n",
+        'lib/layers/data/level_repository_impl.dart':
+            "import 'package:farming/layers/domain/world/world_state.dart';\n",
         'lib/layers/domain/quests/quests.dart': "import '../world/navigation.dart';\n",
         'lib/layers/domain/usecases/use_case.dart': "import '../world/world.dart';\n",
         'lib/layers/domain/world/world.dart': "import 'world_state.dart';\n",

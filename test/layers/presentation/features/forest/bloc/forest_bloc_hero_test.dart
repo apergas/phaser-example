@@ -1,12 +1,12 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/gear_id.dart';
-import 'package:rpg/core/config/constants/enum/quest_id.dart';
-import 'package:rpg/core/config/constants/enum/quest_line.dart';
-import 'package:rpg/layers/presentation/features/forest/bloc/forest_bloc.dart';
-import 'package:rpg/layers/presentation/features/forest/models/forest_effect.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/gear_id.dart';
+import 'package:farming/core/config/constants/enum/quest_id.dart';
+import 'package:farming/core/config/constants/enum/quest_line.dart';
+import 'package:farming/layers/presentation/features/forest/bloc/forest_bloc.dart';
+import 'package:farming/layers/presentation/features/forest/models/forest_effect.dart';
 
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
@@ -239,6 +239,41 @@ void main() {
       expect(
         ForestBlocMock.shownMessages(navigationService).last,
         Internationalize.forestMessageQuestLineCompleted(line: QuestLine.hero),
+      );
+    },
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenSeveralHeroQuestsCloseTheLineInTheSameTickThenOnlyTheLineMessageIsShownOnce',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        GearScenarioMock.withAllWorkshops(hero: HeroEntityMock.championWithEveryQuestDone),
+        navigationService: navigationService,
+      );
+    },
+    act: (bloc) async {
+      // when
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestTicked(deltaMs: ForestBlocMock.frameMs));
+      await ForestBlocMock.processEvents();
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      final messages = ForestBlocMock.shownMessages(navigationService);
+      final lineDone = Internationalize.forestMessageQuestLineCompleted(line: QuestLine.hero);
+      expect(messages.where((message) => message == lineDone), hasLength(1));
+      expect(
+        messages.where(
+          (message) =>
+              message ==
+              Internationalize.forestMessageQuestCompleted(
+                title: Internationalize.forestQuestTitle(id: QuestId.becomeChampion),
+              ),
+        ),
+        isEmpty,
       );
     },
   );

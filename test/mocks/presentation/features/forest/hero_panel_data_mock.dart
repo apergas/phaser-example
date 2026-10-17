@@ -1,5 +1,5 @@
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/layers/presentation/features/forest/models/hero_panel_data.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/layers/presentation/features/forest/models/hero_panel_data.dart';
 
 import 'gear_row_data_mock.dart';
 import 'skill_item_data_mock.dart';

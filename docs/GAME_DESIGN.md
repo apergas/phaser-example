@@ -175,10 +175,11 @@ La aldea por sí sola acaba siendo "talar y construir". Se propone un segundo mo
 ```
 Aldea: madera / piedra ──▶ Herrería, Armería, Torre de magia ──▶ equipo y habilidades ──▶ más Poder
   ▲                                                                                        │
-  └──────────────── oro (y más adelante trofeos) ◀──────────── Arena: ganar niveles ◀──────┘
+  └──────────── oro y maná (y más adelante trofeos) ◀──────── Arena: ganar niveles ◀──────┘
 ```
 
-- El **oro** sólo se gana en la arena; el equipo y las habilidades sólo se compran en la aldea.
+- El **oro** sólo se gana en la arena; desde *Tres bandidos* la arena da también **maná**, que junto con el oro paga
+  las habilidades. El equipo y las habilidades sólo se compran en la aldea.
 - Ningún modo bloquea al otro: la aldea se juega igual sin pisar la arena, y la arena se puede repetir para conseguir
   oro aunque no se avance.
 
@@ -189,19 +190,20 @@ Aldea: madera / piedra ──▶ Herrería, Armería, Torre de magia ──▶ e
 | **Ataque** | Un rango "de tanto a tanto" (hacha 3–5): cada golpe elige un valor del rango. |
 | **Defensa** | Se resta al daño recibido (cada golpe hace al menos 1). |
 | **Vida** | Golpes que aguanta. Se recupera entera al terminar cada pelea. |
-| **Poder** | Resumen que se ve en el HUD y junto a cada nivel: `ataque medio × 3 + defensa × 4 + vida / 2`, +10 % por habilidad. Sirve para orientarse; quien decide la pelea es la simulación. |
+| **Poder** | Resumen que se ve en el HUD y junto a cada nivel: `ataque medio × 3 + defensa × 4 + vida / 2`, +10 % por nivel de habilidad. Sirve para orientarse; quien decide la pelea es la simulación. |
 
 Valores de partida: Ataque 3–5, Defensa 1, Vida 30 (Poder 31). Con todo el equipo y las tres habilidades, Ataque
 12–16, Defensa 8, Vida 75 (Poder 144). Las cifras son las del equilibrado de la fase C7, protegidas por
 `test/layers/domain/combat/balance_test.dart`.
 
-**Edificios de mejora** (se construyen con recursos de la aldea; lo que venden se paga **sólo con oro** de la arena):
+**Edificios de mejora** (se construyen con recursos de la aldea; el equipo se paga **sólo con oro** de la arena y las
+habilidades con **oro y maná**):
 
 | Edificio | Qué vende | Niveles |
 |---|---|---|
 | **Herrería** | Armas (+Ataque) | Hacha de leñador (la de talar, nivel inicial) → Espada corta → Espada de hierro → Espada de acero |
 | **Armería** | Armaduras (+Defensa, +Vida) | Ropa de trabajo (inicial) → Cuero → Cota de malla → Placas |
-| **Torre de magia** | Habilidades pasivas | *Golpe doble* (cada tercer ataque golpea dos veces), *Segundo aliento* (una vez por pelea, al bajar del 30 % de vida recupera el 40 %), *Esquiva* (20 % de evitar un golpe) |
+| **Torre de magia** | Habilidades pasivas, con tres niveles cada una | *Golpe doble* (cada tercer ataque golpea dos veces), *Segundo aliento* (una vez por pelea, al bajar del 30 % de vida recupera el 40 %), *Esquiva* (20 % de evitar un golpe) |
 
 Se llama *Torre de magia* y no "taller mágico" para no confundirla con el *Taller* de herramientas (sección 3.2).
 Si existe la piedra, la piden los edificios, no el equipo.
@@ -216,29 +218,70 @@ Si existe la piedra, la piden los edificios, no el equipo.
 | Armadura de cuero | Defensa 3 · Vida 40 | 40 de oro |
 | Cota de malla | Defensa 5 · Vida 55 | 70 de oro |
 | Armadura de placas | Defensa 8 · Vida 75 | 120 de oro |
-| *Golpe doble* / *Esquiva* / *Segundo aliento* | — | 60 / 90 / 130 de oro (con la Torre de magia: 30 de madera y 40 de oro) |
+| *Golpe doble* / *Esquiva* / *Segundo aliento* (nivel 1) | — | 60 de oro y 20 de maná / 90 y 30 / 130 y 45 (con la Torre de magia: 30 de madera y 40 de oro) |
 
 **Niveles de la arena** (equilibrados en la fase C7; cada enemigo: Ataque / Defensa / Vida):
 
-| Nivel | Enemigos | Poder | Recompensa (primera vez) | Héroe esperado | Gana con él | Con un escalón menos |
-|---|---|---|---|---|---|---|
-| 1 | Bandido novato (2–4 / 0 / 20) | 19 | 10 de oro | Inicial | casi siempre | — |
-| 2 | Lobo (4–6 / 1 / 20) | 29 | 20 de oro | Inicial | 60–95 % | — |
-| 3 | Bandido veterano (4–6 / 2 / 36) | 41 | 30 de oro | Espada corta | 60–95 % | < 50 % |
-| 4 | Dos lobos (6–8 / 1 / 18) | 68 | 40 de oro | + Armadura de cuero | 60–95 % | < 50 % |
-| 5 | Oso (8–12 / 3 / 40) | 62 | 55 de oro | + Espada de hierro | 60–95 % | < 50 % |
-| 6 | Tres bandidos (7–9 / 1 / 26) | 123 | 75 de oro | + Cota de malla | 60–95 % | < 50 % |
-| 7 | Bárbaro (10–14 / 4 / 58) | 81 | 90 de oro | + *Golpe doble* | 60–95 % | < 50 % |
-| 8 | Manada de tres lobos (8–12 / 1 / 22) | 135 | 100 de oro | + *Esquiva* | 60–95 % | < 50 % |
-| 9 | Dos bárbaros (8–12 / 4 / 52) | 144 | 120 de oro | + Espada de acero | 60–95 % | < 50 % |
-| 10 | Jefe bárbaro (16–20 / 5 / 72) y dos guardias (7–11 / 2 / 31) | 210 | 150 de oro | + Armadura de placas | 60–95 % | < 50 % |
+| Nivel | Enemigos | Poder | Oro (primera vez) | Maná (primera vez) | Héroe esperado | Gana con él | Con un escalón menos |
+|---|---|---|---|---|---|---|---|
+| 1 | Bandido novato (2–4 / 0 / 20) | 19 | 10 | — | Inicial | casi siempre | — |
+| 2 | Lobo (4–6 / 1 / 20) | 29 | 20 | — | Inicial | 60–95 % | — |
+| 3 | Bandido veterano (4–6 / 2 / 36) | 41 | 30 | — | Espada corta | 60–95 % | < 50 % |
+| 4 | Dos lobos (6–8 / 1 / 18) | 68 | 40 | — | + Armadura de cuero | 60–95 % | < 50 % |
+| 5 | Oso (8–12 / 3 / 40) | 62 | 55 | — | + Espada de hierro | 60–95 % | < 50 % |
+| 6 | Tres bandidos (7–9 / 1 / 26) | 123 | 75 | 20 | + Cota de malla | 60–95 % | < 50 % |
+| 7 | Bárbaro (10–14 / 4 / 58) | 81 | 90 | 25 | + *Golpe doble* | 60–95 % | < 50 % |
+| 8 | Manada de tres lobos (8–12 / 1 / 22) | 135 | 100 | 30 | + *Esquiva* | 60–95 % | < 50 % |
+| 9 | Dos bárbaros (8–12 / 4 / 52) | 144 | 120 | 35 | + Espada de acero | 60–95 % | < 50 % |
+| 10 | Jefe bárbaro (16–20 / 5 / 72) y dos guardias (7–11 / 2 / 31) | 210 | 150 | 50 | + Armadura de placas | 60–95 % | < 50 % |
 
 - "Gana con él" y "con un escalón menos" son el porcentaje de victorias en 100 peleas (semillas 0–99). El Poder del
   nivel no sube siempre: el oso pega fuerte pero es uno solo, y los grupos cuentan a todos sus miembros.
-- Con el oro de la primera victoria de cada nivel anterior, más repetir como mucho tres veces el último, se paga el
-  héroe esperado del nivel siguiente. *Segundo aliento* queda como mejora opcional para el final.
+- Con el oro y el maná de la primera victoria de cada nivel anterior, más repetir como mucho tres veces el último, se
+  paga el héroe esperado del nivel siguiente. Maná: 38 ≥ 20 en el bárbaro, 69 ≥ 50 en la manada, 105 ≥ 50 y 143 ≥ 50.
+  Con todo ganado una vez hay 160 de maná y las tres habilidades cuestan 95. *Segundo aliento* queda como mejora
+  opcional para el final.
 
-- Un nivel se desbloquea al ganar el anterior. Repetir un nivel ganado da un tercio del oro.
+**Habilidades de los enemigos** (fase C11). Desde *Tres bandidos* cada enemigo puede usar la habilidad de su tipo,
+con los mismos efectos que la del héroe: bandidos *Esquiva* (al recibir un golpe del héroe), bárbaros, lobos y osos
+*Golpe doble* (tras su ataque, un segundo golpe) y el jefe bárbaro *Golpe doble* y *Segundo aliento* (una sola tirada
+por pelea, la primera vez que baja del 30 %). Cada uso sale con una probabilidad por nivel; los niveles 1–5 no tienen.
+Victorias del héroe esperado con ellas:
+
+| Nivel | Probabilidad | Gana con él (semillas 0–99 / 0–999) | Con un escalón menos (0–99) |
+|---|---|---|---|
+| 6 Tres bandidos | 1,5 % | 89,0 / 86,6 % | 0 % |
+| 7 Bárbaro | 2 % | 73,0 / 75,1 % | 6 % |
+| 8 Manada de tres lobos | 2,5 % | 78,0 / 71,9 % | 15 % |
+| 9 Dos bárbaros | 3 % | 79,0 / 74,0 % | 2 % |
+| 10 Jefe bárbaro | 3,5 % | 64,0 / 60,8 % | 0 % |
+
+Las probabilidades son bajas a propósito: con 10–30 % el héroe esperado ganaba solo el 17–62 %, y el jefe marca el
+techo (con 4 % baja a 59,7 % con 0–999).
+
+**Niveles de habilidad** (fase C12). Aprender una habilidad es el nivel 1; *Mejorar* en la Torre de magia sube al
+siguiente (hasta el 3) pagando ×1,5 y ×2,25 el coste del nivel 1 (los .5, hacia arriba al múltiplo de 5). El nivel
+solo cambia números, no las tiradas: en nivel 1 las peleas son las de siempre, y los enemigos usan el nivel 1.
+
+| Habilidad | Nv 1 | Nv 2 | Nv 3 | Coste Nv 1 / 2 / 3 (oro / maná) |
+|---|---|---|---|---|
+| *Golpe doble* | cada 3 ataques | el segundo golpe +15 % | el segundo golpe +30 % | 60 / 20 · 90 / 30 · 135 / 45 |
+| *Esquiva* | 20 % | 25 % | 30 % | 90 / 30 · 135 / 45 · 205 / 70 |
+| *Segundo aliento* | cura 40 % | cura 50 % | cura 60 % | 130 / 45 · 195 / 70 · 295 / 100 |
+
+Mejorar es una ventaja, no un requisito: el héroe esperado con sus habilidades en nivel 3 gana como mucho el 95 %, y un
+escalón por detrás sigue por debajo del 50 %. Subir a nivel 3 las dos habilidades del héroe esperado cuesta 565 de oro
+y 190 de maná (unas 10 repeticiones del jefe); todos los niveles de las tres, 1335 y 455.
+
+| Nivel | Nv 1 (0–99 / 0–999) | Nv 2 | Nv 3 | Escalón menos 0–99 (Nv 1 / Nv 3) |
+|---|---|---|---|---|
+| 7 Bárbaro | 73,0 / 75,1 % | 83,0 / 85,6 % | 88,0 / 91,5 % | 6 / 6 % |
+| 8 Manada de tres lobos | 78,0 / 71,9 % | 86,0 / 83,4 % | 94,0 / 93,3 % | 15 / 41 % |
+| 9 Dos bárbaros | 79,0 / 74,0 % | 86,0 / 86,8 % | 93,0 / 93,7 % | 2 / 32 % |
+| 10 Jefe bárbaro | 64,0 / 60,8 % | 80,0 / 76,8 % | 91,0 / 88,7 % | 0 / 1 % |
+
+- Un nivel se desbloquea al ganar el anterior. Repetir un nivel ganado da un tercio de cada recurso (*Tres bandidos*:
+  25 de oro y 6 de maná).
 - Perder no quita nada: se vuelve a la aldea con un consejo ("Te falta Defensa", "Prueba con la Cota de malla").
 
 **La pelea.**

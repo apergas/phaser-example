@@ -1,5 +1,5 @@
-import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
-import 'package:rpg/layers/presentation/features/arena/bloc/arena_bloc.dart';
+import 'package:farming/core/config/constants/enum/arena_level_id.dart';
+import 'package:farming/layers/presentation/features/arena/bloc/arena_bloc.dart';
 
 import 'arena_effect_mock.dart';
 import 'arena_level_item_data_mock.dart';
@@ -23,6 +23,8 @@ abstract final class ArenaDataMock {
     fighters: const [FighterRenderDataMock.heroIdle, FighterRenderDataMock.rookieBanditHurt],
     effects: const [ArenaEffectMock.banditHitForFour],
   );
+
+  static ArenaData get banditHitForNothing => replaying.copyWith(effects: const [ArenaEffectMock.banditHitForNothing]);
 
   static ArenaData get heroDodged => replaying.copyWith(effects: const [ArenaEffectMock.heroDodged]);
 

@@ -1,6 +1,6 @@
-import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
-import 'package:rpg/core/config/constants/enum/skill_id.dart';
-import 'package:rpg/layers/domain/entities/hero/hero_entity.dart';
+import 'package:farming/core/config/constants/enum/arena_level_id.dart';
+import 'package:farming/core/config/constants/enum/skill_id.dart';
+import 'package:farming/layers/domain/entities/hero/hero_entity.dart';
 
 abstract final class HeroEntityMock {
   static const HeroEntity mock = HeroEntity();
@@ -56,6 +56,8 @@ abstract final class HeroEntityMock {
     clearedLevels: {ArenaLevelId.banditRookie, ArenaLevelId.banditVeteran},
     fightsFought: 2,
   );
+
+  static const HeroEntity banditTrioCleared = HeroEntity(clearedLevels: {ArenaLevelId.banditTrio});
 
   static const HeroEntity packHunter = HeroEntity(
     weaponTier: 3,

@@ -1,29 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/core/config/constants/enum/blueprint_id.dart';
-import 'package:rpg/core/config/constants/enum/forest/hero_panel_section.dart';
-import 'package:rpg/core/config/constants/enum/gear_id.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/core/config/constants/enum/skill_id.dart';
-import 'package:rpg/layers/presentation/features/forest/models/hud_data.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/build_menu.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/build_option_tile.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/gear_option_tile.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/hero_panel.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/hud_button.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/hud_overlay.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/quest_panel.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/quest_row.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/resource_bar.dart';
-import 'package:rpg/layers/presentation/features/forest/widgets/skill_tile.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/forest/hero_panel_section.dart';
+import 'package:farming/core/config/constants/enum/gear_id.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/core/config/constants/enum/skill_id.dart';
+import 'package:farming/layers/presentation/features/forest/models/hud_data.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/build_menu.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/build_option_tile.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/gear_option_tile.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/hero_panel.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/hud_button.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/hud_overlay.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/quest_panel.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/quest_row.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/resource_bar.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/skill_tile.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
+import '../../../../../helpers/roboto_font.dart';
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/presentation/features/forest/hud_data_mock.dart';
 
 void main() {
-  setUpAll(loadSpanishTranslations);
+  setUpAll(() async {
+    loadSpanishTranslations();
+    await loadRobotoFont();
+  });
 
   Future<List<BlueprintId>> pumpOverlay(
     WidgetTester tester,
@@ -280,6 +284,8 @@ void main() {
       expect(rect.right, lessThanOrEqualTo(640));
       expect(rect.bottom, lessThanOrEqualTo(360));
     }
+    final firstButton = tester.getRect(find.widgetWithText(HudButton, Internationalize.forestQuests));
+    expect(firstButton.left, resourceBar.left);
   });
 
   testWidgets('testWhenTheScreenIsWideThenTheFourButtonsStayOnTheResourceBarLine', (tester) async {
@@ -320,9 +326,35 @@ void main() {
     final heroButton = tester.getRect(find.widgetWithText(HudButton, Internationalize.forestHero));
     expect(tester.takeException(), isNull);
     expect(panel.top, greaterThanOrEqualTo(heroButton.bottom));
-    expect(panel.left, greaterThanOrEqualTo(0));
+    expect(panel.left, tester.getRect(find.byType(ResourceBar)).left);
     expect(panel.right, lessThanOrEqualTo(640));
     expect(panel.bottom, lessThanOrEqualTo(360));
+  });
+
+  testWidgets('testWhenEveryResourceShowsFourDigitsThenTheBreakpointLeavesRoomForTheButtonsBesideTheBar', (
+    tester,
+  ) async {
+    // given
+    const margin = 12.0;
+    const gap = 8.0;
+    const slack = 24.0;
+    tester.view.physicalSize = const Size(HudOverlay.buttonsBelowWidth, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // when
+    await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+
+    // then
+    final bar = tester.getSize(find.byType(ResourceBar)).width;
+    final buttons = tester
+        .getSize(
+          find
+              .ancestor(of: find.widgetWithText(HudButton, Internationalize.forestQuests), matching: find.byType(Row))
+              .first,
+        )
+        .width;
+    expect(margin + bar + gap + buttons + margin + slack, lessThanOrEqualTo(HudOverlay.buttonsBelowWidth));
   });
 
   testWidgets('testWhenTheScreenIsJustBelowTheBreakpointThenTheButtonsGoUnderTheResourceBar', (tester) async {

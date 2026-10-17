@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/player_activity.dart';
-import 'package:rpg/layers/domain/world/extensions/activity_rules.dart';
+import 'package:farming/core/config/constants/enum/player_activity.dart';
+import 'package:farming/layers/domain/world/extensions/activity_rules.dart';
 
 import '../../../../mocks/domain/entities/player/activity_entity_mock.dart';
 import '../../../../mocks/domain/entities/player/intent_entity_mock.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/assets/i18n/internationalize.dart';
-import 'package:rpg/layers/presentation/features/arena/widgets/level_tile.dart';
-import 'package:rpg/layers/presentation/theme/colors/custom_colors.dart';
+import 'package:farming/core/assets/i18n/internationalize.dart';
+import 'package:farming/layers/presentation/features/arena/widgets/level_tile.dart';
+import 'package:farming/layers/presentation/theme/colors/custom_colors.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
 import '../../../../../helpers/spanish_translations.dart';
@@ -22,7 +22,7 @@ void main() {
         child: LevelTile(level: level, isSelected: true, isEnabled: true, onTap: () => taps++),
       ),
     );
-    await tester.tap(find.text(level.name));
+    await tester.tap(find.text(level.name).first);
 
     // then
     expect(find.text(level.enemiesText), findsOneWidget);
@@ -42,7 +42,7 @@ void main() {
         child: LevelTile(level: level, isSelected: false, isEnabled: true, onTap: () => taps++),
       ),
     );
-    await tester.tap(find.text(level.name));
+    await tester.tap(find.text(level.name).first);
 
     // then
     expect(find.bySemanticsLabel(Internationalize.arenaLocked), findsOneWidget);

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/skill_id.dart';
+import 'package:farming/core/config/constants/enum/skill_id.dart';
 
 import '../../../../mocks/domain/entities/hero/hero_entity_mock.dart';
 

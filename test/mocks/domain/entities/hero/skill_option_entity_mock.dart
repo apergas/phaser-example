@@ -1,8 +1,8 @@
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/core/config/constants/enum/skill_id.dart';
-import 'package:rpg/core/config/constants/enum/skill_option_state.dart';
-import 'package:rpg/layers/domain/entities/hero/skill_option_entity.dart';
-import 'package:rpg/layers/domain/rules/skills.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/core/config/constants/enum/skill_id.dart';
+import 'package:farming/core/config/constants/enum/skill_option_state.dart';
+import 'package:farming/layers/domain/entities/hero/skill_option_entity.dart';
+import 'package:farming/layers/domain/rules/skills.dart';
 
 abstract final class SkillOptionEntityMock {
   static SkillOptionEntity known(SkillId id) =>
@@ -19,6 +19,9 @@ abstract final class SkillOptionEntityMock {
   static SkillOptionEntity get doubleStrikeTenGoldShort =>
       make(SkillId.doubleStrike, SkillOptionState.unaffordable, missing: {Resource.gold: 10});
 
+  static SkillOptionEntity get doubleStrikeTwentyManaShort =>
+      make(SkillId.doubleStrike, SkillOptionState.unaffordable, missing: {Resource.mana: 20});
+
   static List<SkillOptionEntity> get newHeroWithoutTower => [
     make(SkillId.doubleStrike, SkillOptionState.needsBuilding),
     make(SkillId.dodge, SkillOptionState.needsBuilding),
@@ -27,8 +30,8 @@ abstract final class SkillOptionEntityMock {
 
   static List<SkillOptionEntity> get readyToLearnDoubleStrike => [
     doubleStrikeAvailable,
-    make(SkillId.dodge, SkillOptionState.unaffordable, missing: {Resource.gold: 30}),
-    make(SkillId.secondWind, SkillOptionState.unaffordable, missing: {Resource.gold: 70}),
+    make(SkillId.dodge, SkillOptionState.unaffordable, missing: {Resource.gold: 30, Resource.mana: 10}),
+    make(SkillId.secondWind, SkillOptionState.unaffordable, missing: {Resource.gold: 70, Resource.mana: 25}),
   ];
 
   static List<SkillOptionEntity> get afterLearningDoubleStrike => [

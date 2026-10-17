@@ -12,10 +12,11 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
                                    axe pickup, the house, the forge, the armory and the mage tower
                                    (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
-  arena.png + arena.json           JSON-hash atlas for the arena: hero, bandit, barbarian and barbarian chief idle
-                                   (64px, axe in hand) and slash (128px) frames in their one facing (pivot = feet), the wolf
-                                   and bear idle, attack and down frames facing left, the grass cell and a fence
-                                   segment
+  arena.png + arena.json           JSON-hash atlas for the arena: the hero (with the axe and each sword, in
+                                   each armour: work clothes, leather, chain mail, plate), bandit,
+                                   veteran bandit, barbarian and barbarian chief idle and walk (64px, weapon in hand) and
+                                   slash (128px) frames in their one facing (pivot = feet), the wolf
+                                   and bear idle, attack and down frames facing left, a fence segment
 
 Requires Pillow. Licences and authors: see CREDITS.md next to the outputs.
 """
@@ -105,6 +106,22 @@ def work_sheet(slash: Image.Image, tool_name: str) -> Image.Image:
             sheet.alpha_composite(frame, (column * WORK_FRAME + offset, row * WORK_FRAME + offset))
     sheet.alpha_composite(front)
     return sheet
+
+
+def with_weapon(body: Image.Image, weapon: str, animation: str) -> Image.Image:
+    """The body between a sword's back and front layers (sources/tools/<weapon>_<animation>_{bg,fg}.png)."""
+    sheet = tool(f"{weapon}_{animation}_bg")
+    sheet.alpha_composite(body)
+    sheet.alpha_composite(tool(f"{weapon}_{animation}_fg"))
+    return sheet
+
+
+def armed_sheets(recolours: dict, layers: list, weapon: str) -> tuple:
+    """Idle, walk and slash sheets of a fighter holding the axe or one of the swords."""
+    idle, walk, slash = (body_sheet(animation, recolours, layers) for animation in ("idle", "walk", "slash"))
+    if weapon == "axe":
+        return with_idle_axe(idle), Image.alpha_composite(walk, tool("axe_walk")), work_sheet(slash, "axe")
+    return with_weapon(idle, weapon, "idle"), with_weapon(walk, weapon, "walk"), work_sheet(slash, weapon)
 
 
 def build_character() -> None:
@@ -330,6 +347,10 @@ BANDIT_RECOLOURS = {
     "legs_pants_male": (CLOTH_RAMP, [(28, 22, 24), (44, 34, 36), (62, 48, 48), (82, 64, 62), (104, 82, 78)]),
     "hair_plain_adult": (HAIR_RAMP, [(20, 16, 16), (32, 26, 24), (46, 38, 34), (60, 50, 44), (76, 64, 56)]),
 }
+VETERAN_RECOLOURS = {
+    **BANDIT_RECOLOURS,
+    "torso_clothes_longsleeve_longsleeve_male": (CLOTH_RAMP, [(18, 26, 52), (28, 42, 82), (40, 60, 112), (56, 82, 140), (76, 106, 168)]),
+}
 BARBARIAN_SKIN = [(78, 38, 30), (120, 72, 50), (146, 96, 66), (172, 122, 88), (196, 156, 126)]
 # Barbarians: leather armour, shorts, bracers, a long beard and a helmet instead of hair (sources/barbarians). The
 # chief swaps the helmet for the viking one and wears a black beard and red shorts; the arena draws him x1.25.
@@ -355,14 +376,47 @@ CHIEF_RECOLOURS = {
     "legs_shorts_male": (CLOTH_RAMP, [(48, 14, 16), (82, 22, 24), (112, 32, 30), (140, 46, 40), (168, 64, 54)]),
     "beards_beard_winter_male": (HAIR_RAMP, [(20, 16, 16), (32, 26, 24), (46, 38, 34), (60, 50, 44), (76, 64, 56)]),
 }
-# Fighter -> (recolours, LPC row, layers): the hero faces right (row 3), the enemies face left (row 1).
-ARENA_FIGHTERS = {
-    "hero": (RECOLOURS, 3, CHARACTER_LAYERS),
-    "bandit": (BANDIT_RECOLOURS, 1, CHARACTER_LAYERS),
-    "barbarian": (BARBARIAN_RECOLOURS, 1, BARBARIAN_LAYERS),
-    "barbarian-chief": (CHIEF_RECOLOURS, 1, CHIEF_LAYERS),
+# Hero armour suffix -> layers, bottom to top (same zPos order as the generator). No suffix: the work clothes of the
+# forest. Leather: the barbarians' armour and bracers over the shirt. Chain mail: over the shirt. Plate: plate legs
+# instead of the pants, chain mail under the breastplate, plate arms, pauldrons and the nasal helmet over the hair.
+HERO_ARMOURS = {
+    "": CHARACTER_LAYERS,
+    "-leather": [
+        *CHARACTER_LAYERS[:4],
+        ("barbarians", "torso_armour_leather_male"),
+        ("barbarians", "arms_bracers_male"),
+        *CHARACTER_LAYERS[4:],
+    ],
+    "-chain-mail": [*CHARACTER_LAYERS[:4], ("armour", "torso_chainmail_male"), *CHARACTER_LAYERS[4:]],
+    "-plate": [
+        ("character", "body_bodies_male"),
+        ("character", "feet_boots_basic_male"),
+        ("armour", "legs_armour_plate_male"),
+        ("character", "torso_clothes_longsleeve_longsleeve_male"),
+        ("armour", "torso_chainmail_male"),
+        ("armour", "torso_armour_plate_male"),
+        ("armour", "arms_armour_plate_male"),
+        ("armour", "shoulders_pauldrons_male"),
+        ("character", "head_heads_human_male"),
+        ("character", "hair_plain_adult"),
+        ("armour", "hat_helmet_nasal_adult"),
+    ],
 }
-ARENA_GRASS = (1, 23)  # (column, row) of terrain_atlas.png, the same grass as the forest ground
+# Hero weapon suffix -> the axe or a sword sheet in sources/tools (the LPC arming sword in bronze, iron or steel).
+HERO_WEAPONS = {"": "axe", "-short-sword": "sword-bronze", "-iron-sword": "sword-iron", "-steel-sword": "sword-steel"}
+# Fighter -> (recolours, LPC row, layers, weapon): the hero faces right (row 3), the enemies face left (row 1). The
+# hero has one set per weapon and armour: hero[-<weapon>][-<armour>].
+ARENA_FIGHTERS = {
+    **{
+        f"hero{weapon_suffix}{armour_suffix}": (RECOLOURS, 3, layers, weapon)
+        for weapon_suffix, weapon in HERO_WEAPONS.items()
+        for armour_suffix, layers in HERO_ARMOURS.items()
+    },
+    "bandit": (BANDIT_RECOLOURS, 1, CHARACTER_LAYERS, "axe"),
+    "bandit-veteran": (VETERAN_RECOLOURS, 1, CHARACTER_LAYERS, "sword-iron"),
+    "barbarian": (BARBARIAN_RECOLOURS, 1, BARBARIAN_LAYERS, "axe"),
+    "barbarian-chief": (CHIEF_RECOLOURS, 1, CHIEF_LAYERS, "axe"),
+}
 ARENA_FENCE_BOX = (480, 608, 544, 640)  # terrain_atlas.png: a post and a rail, 64x32, tiles horizontally
 IDLE_PIVOT = {"x": 0.5, "y": round(62 / FRAME, 4)}
 SLASH_PIVOT = {"x": 0.5, "y": round((32 + 62) / WORK_FRAME, 4)}
@@ -404,17 +458,15 @@ def add_beasts(frames: dict, pivots: dict) -> None:
 def build_arena() -> None:
     terrain = Image.open(SOURCES / "terrain" / "terrain_atlas.png").convert("RGBA")
     frames, pivots = {}, {}
-    for fighter, (recolours, row, layers) in ARENA_FIGHTERS.items():
-        idle = with_idle_axe(body_sheet("idle", recolours, layers))
-        slash = work_sheet(body_sheet("slash", recolours, layers), "axe")
+    for fighter, (recolours, row, layers, weapon) in ARENA_FIGHTERS.items():
+        idle, walk, slash = armed_sheets(recolours, layers, weapon)
         for column, image in enumerate(cells(idle, row, FRAME)):
             frames[f"{fighter}-idle-{column}"], pivots[f"{fighter}-idle-{column}"] = image, IDLE_PIVOT
+        for column, image in enumerate(cells(walk, row, FRAME)):
+            frames[f"{fighter}-walk-{column}"], pivots[f"{fighter}-walk-{column}"] = image, IDLE_PIVOT
         for column, image in enumerate(cells(slash, row, WORK_FRAME)):
             frames[f"{fighter}-slash-{column}"], pivots[f"{fighter}-slash-{column}"] = image, SLASH_PIVOT
     add_beasts(frames, pivots)
-    column, row = ARENA_GRASS
-    frames["arena-grass"] = terrain.crop((column * CELL, row * CELL, (column + 1) * CELL, (row + 1) * CELL))
-    pivots["arena-grass"] = {"x": 0, "y": 0}
     frames["arena-fence"] = trim(terrain.crop(ARENA_FENCE_BOX), "arena-fence")
     pivots["arena-fence"] = {"x": 0, "y": 1}
     write_atlas("arena", frames, pivots)

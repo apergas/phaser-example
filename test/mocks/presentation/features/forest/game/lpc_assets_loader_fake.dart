@@ -1,5 +1,5 @@
-import 'package:rpg/layers/presentation/features/forest/game/atlas/lpc_assets.dart';
-import 'package:rpg/layers/presentation/features/forest/game/atlas/lpc_assets_loader.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/lpc_assets.dart';
+import 'package:farming/layers/presentation/features/forest/game/atlas/lpc_assets_loader.dart';
 
 class LpcAssetsLoaderFake implements LpcAssetsLoader {
   LpcAssetsLoaderFake(this.assets);

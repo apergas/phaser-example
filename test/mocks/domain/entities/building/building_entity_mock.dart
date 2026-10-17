@@ -1,6 +1,6 @@
-import 'package:rpg/layers/domain/entities/building/building_entity.dart';
-import 'package:rpg/layers/domain/entities/geometry/position_entity.dart';
-import 'package:rpg/layers/domain/rules/blueprints.dart';
+import 'package:farming/layers/domain/entities/building/building_entity.dart';
+import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
+import 'package:farming/layers/domain/rules/blueprints.dart';
 
 abstract final class BuildingEntityMock {
   static const BuildingEntity mock = BuildingEntity(

@@ -5,9 +5,10 @@ import '../../../forest/game/atlas/atlas_frame.dart';
 
 class ArenaAssets {
   final Image atlas;
+  final Image ground;
   final Map<String, AtlasFrame> frames;
 
-  const ArenaAssets({required this.atlas, required this.frames});
+  const ArenaAssets({required this.atlas, required this.ground, required this.frames});
 
   AtlasFrame frame(String name) {
     final atlasFrame = frames[name];

@@ -72,6 +72,15 @@ Para trabajar en una tarea **no hace falta leer el proyecto**. Lee sólo esto:
 | **C5** Torre de magia y habilidades | ✅ [C5-mage-tower.md](C5-mage-tower.md) | D | C3 | Edificio *Torre de magia*; catálogo `Skills`; `LearnSkillUseCase`; pestaña *Habilidades* del panel *Héroe*. Los efectos en la pelea ya los aplica el motor de C1. |
 | **C6** Bárbaros y jefe | ✅ [C6-barbarians.md](C6-barbarians.md) | C | C4 | Arte de bárbaros y jefe; peleas de grupo bien colocadas (hasta 3 enemigos); pantalla de victoria final. |
 | **C7** Misiones del héroe y equilibrado | ✅ [C7-hero-quests-balance.md](C7-hero-quests-balance.md) | D | C1, C3, C5 | Línea de misiones *Héroe*; daño por rangos; equipo sólo con oro; test de equilibrado (victorias, escalón anterior y oro) y números finales. |
+| **C8** Pulido de la arena | ✅ [C8-arena-polish.md](C8-arena-polish.md) | C | C0–C7 | Lo de [`ARENA-FIXES.md`](ARENA-FIXES.md): veterano y armas propios, luchadores que se acercan a golpear, HUD del móvil a la izquierda, mensajes de misiones agrupados y pendientes de C2/C3. |
+| **X** Alineación con iOS | ✅ [X-ios-alignment.md](X-ios-alignment.md) | Único | C8 | Nombre `Farming`, ids `com.apergas.farming`, paquete `farming`, icono del roble, textos táctiles y no reiniciar la obra en curso. Commits `[PROJECT-X]`. |
+| **C9** Maná | ✅ [C9-mana.md](C9-mana.md) | Único | X | Recurso *maná*: lo dan los niveles 6–10 junto con el oro y lo cuestan, con el oro, las habilidades. Hecha en iOS. |
+| **C10** Pelea sin saltar | ✅ [C10-no-skip.md](C10-no-skip.md) | Único | C9 | Sin *Saltar*: la repetición se ve entera y no hay botón mientras dura. Hecha en iOS. |
+| **C11** Habilidades de los enemigos | ✅ [C11-enemy-skills.md](C11-enemy-skills.md) | Único | C10 | Desde *Tres bandidos* los enemigos usan su habilidad (1,5–3,5 %). Hecha en iOS. |
+| **C12** Niveles de habilidad | ✅ [C12-skill-levels.md](C12-skill-levels.md) | Único | C9, C11 | Tres niveles por habilidad del héroe: *Mejorar* paga ×1,5 y ×2,25 y mejora el efecto. Hecha en iOS. |
+| **C13** Armadura visible del héroe | ✅ [C13-hero-armour.md](C13-hero-armour.md) | Único | C12 | El héroe lleva en la arena la armadura que tiene puesta: juegos de frames precompuestos arma × armadura. No está en iOS. |
+
+**Desde el 2026-10-17** el juego vuelve a desarrollarse en Flutter tras su paso por iOS (`$IOS` = `/Users/axelperezgaspar/farming-ios`), donde se hicieron C9–C12. Un solo desarrollador, en serie: X → C9 → C10 → C11 → C12 en `feature/PROJECT-X-arena`; después `feature/PROJECT-X-arena` → `develop` y la aldea (README de la aldea, secciones 2 y 5). Cada ficha cita el plan detallado y los commits de iOS. Como el combate usa el mismo `SeededRandom` y el mismo orden de tiradas, las tablas de equilibrado de iOS se tienen que reproducir exactas.
 
 ### Flujos de trabajo (dos desarrolladores)
 
@@ -218,3 +227,7 @@ Aquí se apunta todo lo que se haga distinto de lo que dicen los planes: qué, p
   - **Revisión final:** dos tests más del BLoC del bosque para el mensaje de la línea *Héroe* (cerrarla, y completar una misión con la línea aún abierta), con los mocks `GearScenarioMock.withAllWorkshops` y `HeroEntityMock.championWithEveryQuestDone`; el test de equilibrado cambia de nombre (el primer nivel está exento del tope); fuera de `GAME_DESIGN.md` la idea "Misiones de héroe", ya hecha. 639 tests.
   - **Pendiente para el pulido:** si varias misiones de una línea se completan en el mismo tick (al volver de la arena), salen varios mensajes seguidos, y el de la línea completada puede repetirse.
   - **Prueba manual:** en Chrome, al empezar: panel *Misiones* con *Aldea* y *Héroe* (0/11), panel *Héroe* con "Ataque 3–5" y precios sólo en oro (espada corta 30, cuero 40). El resto de la cadena del héroe lo cubren los tests de flujo y del BLoC.
+- **C8 (2026-10-09):**
+  - **Ramas:** a petición del usuario, todo en `feature/PROJECT-X-arena` (ya igualada con `develop` tras la #53), sin rama de fase ni PR por ahora. Cinco tareas con subagentes, una revisión por tarea y una revisión final; los parches del plan se aplicaron tal cual.
+  - **Revisión final:** sin fallos de código; se renombró un parámetro que tapaba una variable en `ArenaBloc._previewFighters`, se ordenó un import y se corrigió una cifra del plan (la vuelta dura 280 ms, no 240).
+  - **Prueba manual:** en Chrome, el héroe con la espada de bronce, el veterano con camisa azul y espada, y el ir, golpear y volver de cada turno. En el emulador Android (915 × 412): el panel de derrota tapaba la cabeza y la barra de vida del guardia de arriba en el nivel del jefe. Se arregló en la misma fase: por debajo de 480 px de alto, el panel de resultado ocupa el 20 % del ancho, a la derecha (`ARENA-FIXES.md` §7). iOS no se probó.

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/layers/presentation/features/arena/game/render/arena_framing.dart';
+import 'package:farming/layers/presentation/features/arena/game/render/arena_framing.dart';
 
 void main() {
   test('testWhenFramingTheStageThenTheGrassCoversTheWholeView', () {

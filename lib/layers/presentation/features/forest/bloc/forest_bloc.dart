@@ -15,10 +15,13 @@ import '../../../../../core/config/constants/enum/gear_option_state.dart';
 import '../../../../../core/config/constants/enum/gear_slot.dart';
 import '../../../../../core/config/constants/enum/learn_skill_result.dart';
 import '../../../../../core/config/constants/enum/player_activity.dart';
+import '../../../../../core/config/constants/enum/quest_id.dart';
+import '../../../../../core/config/constants/enum/quest_line.dart';
 import '../../../../../core/config/constants/enum/resource.dart';
 import '../../../../../core/config/constants/enum/skill_id.dart';
 import '../../../../../core/config/constants/enum/skill_option_state.dart';
 import '../../../../../core/config/constants/enum/tool_kind.dart';
+import '../../../../../core/config/constants/enum/resume_construction_result.dart';
 import '../../../../../core/error-handling/exceptions/app_exceptions.dart';
 import '../../../../../core/error-handling/exceptions/custom_exception.dart';
 import '../../../../../core/services/navigation/source/navigation_service.dart';
@@ -37,6 +40,7 @@ import '../../../../domain/rules/skills.dart';
 import '../../../../domain/use-cases/game/advance_game_use_case.dart';
 import '../../../../domain/use-cases/game/can_place_building_use_case.dart';
 import '../../../../domain/use-cases/game/chop_tree_use_case.dart';
+import '../../../../domain/use-cases/game/resume_construction_use_case.dart';
 import '../../../../domain/use-cases/game/construct_building_use_case.dart';
 import '../../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_player_status_use_case.dart';
@@ -49,6 +53,7 @@ import '../../../../domain/use-cases/hero/get_gear_options_use_case.dart';
 import '../../../../domain/use-cases/hero/get_hero_status_use_case.dart';
 import '../../../../domain/use-cases/hero/get_skill_options_use_case.dart';
 import '../../../../domain/use-cases/hero/learn_skill_use_case.dart';
+import '../../../../domain/world/extensions/hero_rules.dart';
 import '../../../../domain/world/extensions/inventory_rules.dart';
 import '../../arena/arena_page.dart';
 import '../models/build_item_data.dart';
@@ -74,6 +79,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final ChopTreeUseCase _chopTreeUseCase;
   final CanPlaceBuildingUseCase _canPlaceBuildingUseCase;
   final ConstructBuildingUseCase _constructBuildingUseCase;
+  final ResumeConstructionUseCase _resumeConstructionUseCase;
   final AdvanceGameUseCase _advanceGameUseCase;
   final GetPlayerStatusUseCase _getPlayerStatusUseCase;
   final GetWorldSnapshotUseCase _getWorldSnapshotUseCase;
@@ -85,6 +91,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final GetSkillOptionsUseCase _getSkillOptionsUseCase;
   final LearnSkillUseCase _learnSkillUseCase;
   final NavigationService _navigationService;
+  final bool _isTouchInput;
 
   PositionEntity? _lastPosition;
   Facing _facing = Facing.down;
@@ -97,6 +104,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._chopTreeUseCase,
     required this._canPlaceBuildingUseCase,
     required this._constructBuildingUseCase,
+    required this._resumeConstructionUseCase,
     required this._advanceGameUseCase,
     required this._getPlayerStatusUseCase,
     required this._getWorldSnapshotUseCase,
@@ -108,6 +116,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._getSkillOptionsUseCase,
     required this._learnSkillUseCase,
     required this._navigationService,
+    required this._isTouchInput,
   }) : super(const ForestInitial()) {
     on<ForestEvent>((event, emit) async {
       await switch (event) {
@@ -152,9 +161,14 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     }
     final effects = <ForestEffect>[];
     final fromX = _getPlayerStatusUseCase().position.x;
-    for (final gameEvent in _advanceGameUseCase(deltaMs: event.deltaMs)) {
+    final gameEvents = _advanceGameUseCase(deltaMs: event.deltaMs);
+    for (final gameEvent in gameEvents) {
       _react(gameEvent, fromX: fromX, effects: effects);
     }
+    _announceQuests([
+      for (final gameEvent in gameEvents)
+        if (gameEvent is QuestCompletedEventEntity) gameEvent.questId,
+    ]);
     emit(ForestSuccess(data: _buildData(effects: effects)));
   }
 
@@ -169,7 +183,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         _place(placement.blueprint, event.position, effects: effects);
       }
     } else if (!event.isSecondary) {
-      _orderAt(event.position, treeId: event.treeId);
+      _orderAt(event.position, treeId: event.treeId, buildingId: event.buildingId);
     }
     emit(ForestSuccess(data: _buildData(effects: effects)));
   }
@@ -199,7 +213,10 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     emit(ForestSuccess(data: _buildData(effects: const [])));
   }
 
-  void _orderAt(PositionEntity position, {required String? treeId}) {
+  void _orderAt(PositionEntity position, {required String? treeId, required String? buildingId}) {
+    if (buildingId != null && _resumeConstructionUseCase(buildingId: buildingId) == ResumeConstructionResult.ok) {
+      return;
+    }
     if (treeId == null) {
       _movePlayerUseCase(x: position.x, y: position.y);
       return;
@@ -227,7 +244,12 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     final position = _lastPosition ?? _getPlayerStatusUseCase().position;
     _placement = PlacementData(blueprint: blueprint, position: position, isValid: false);
     _movePlacement(position);
-    _showMessage(Internationalize.forestMessagePlacing(name: Internationalize.forestBlueprint(id: blueprint)));
+    final name = Internationalize.forestBlueprint(id: blueprint);
+    _showMessage(
+      _isTouchInput
+          ? Internationalize.forestMessagePlacingTouch(name: name)
+          : Internationalize.forestMessagePlacing(name: name),
+    );
   }
 
   void _place(BlueprintId blueprint, PositionEntity position, {required List<ForestEffect> effects}) {
@@ -279,10 +301,18 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         effects.add(SkillLearnedEffect(skill: id));
       case LearnSkillResult.missingBuilding:
         _showMessage(Internationalize.forestHeroNeedsBuilding(name: _skillBuildingName));
-      case LearnSkillResult.alreadyKnown:
-        _showMessage(Internationalize.forestMessageSkillAlreadyKnown);
       case LearnSkillResult.notEnoughResources:
         _showMessage(Internationalize.forestMessageNotEnoughResources);
+      case LearnSkillResult.upgraded:
+        _showMessage(
+          Internationalize.forestMessageSkillUpgraded(
+            name: Internationalize.forestSkillName(id: id),
+            level: _getHeroStatusUseCase().hero.levelOf(id),
+          ),
+        );
+        effects.add(SkillLearnedEffect(skill: id));
+      case LearnSkillResult.maxed:
+        _showMessage(Internationalize.forestMessageSkillMaxLevel);
     }
   }
 
@@ -290,7 +320,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     switch (gameEvent) {
       case ItemPickedUpEventEntity(:final itemId, :final kind):
         _showMessage(switch (kind) {
-          ToolKind.axe => Internationalize.forestMessagePickedUpAxe,
+          ToolKind.axe =>
+            _isTouchInput ? Internationalize.forestMessagePickedUpAxeTouch : Internationalize.forestMessagePickedUpAxe,
         });
         effects.add(ItemPickedUpEffect(itemId: itemId));
       case PlayerBlockedEventEntity():
@@ -307,15 +338,25 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
           Internationalize.forestMessageBuildingCompleted(name: Internationalize.forestBlueprint(id: blueprint)),
         );
         effects.add(BuildingCompletedEffect(buildingId: buildingId));
-      case QuestCompletedEventEntity(:final questId):
-        final quests = _getQuestsUseCase();
-        final line = quests.firstWhere((quest) => quest.id == questId).line;
-        final lineDone = quests.where((quest) => quest.line == line).every((quest) => quest.isCompleted);
-        _showMessage(
-          lineDone
-              ? Internationalize.forestMessageQuestLineCompleted(line: line)
-              : Internationalize.forestMessageQuestCompleted(title: Internationalize.forestQuestTitle(id: questId)),
-        );
+      case QuestCompletedEventEntity():
+        break;
+    }
+  }
+
+  void _announceQuests(List<QuestId> completed) {
+    if (completed.isEmpty) return;
+    final quests = _getQuestsUseCase();
+    for (final line in QuestLine.values) {
+      final ofLine = quests.where((quest) => quest.line == line);
+      final done = completed.where((id) => ofLine.any((quest) => quest.id == id)).toList();
+      if (done.isEmpty) continue;
+      if (ofLine.every((quest) => quest.isCompleted)) {
+        _showMessage(Internationalize.forestMessageQuestLineCompleted(line: line));
+        continue;
+      }
+      for (final id in done) {
+        _showMessage(Internationalize.forestMessageQuestCompleted(title: Internationalize.forestQuestTitle(id: id)));
+      }
     }
   }
 
@@ -449,17 +490,33 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
 
   SkillItemData _skillItem(SkillOptionEntity option) {
     final skill = option.skill;
+    final isKnown = option.level > 0;
+    final nextLevel = option.nextLevel;
+    final nextCost = option.nextCost;
     return SkillItemData(
       id: skill.id,
       name: Internationalize.forestSkillName(id: skill.id),
-      description: Internationalize.forestSkillDescription(id: skill.id),
-      costText: option.state == SkillOptionState.known ? null : _amounts(skill.cost),
+      description: Internationalize.forestSkillDescription(id: skill.id, level: isKnown ? option.level : 1),
+      levelText: isKnown ? Internationalize.forestHeroSkillLevel(level: option.level, max: skill.maxLevel) : null,
+      nextText: isKnown && nextLevel != null
+          ? Internationalize.forestHeroSkillNext(
+              level: nextLevel,
+              effect: Internationalize.forestSkillDescription(id: skill.id, level: nextLevel),
+            )
+          : null,
+      costText: nextCost == null ? null : _amounts(nextCost),
       reasonText: switch (option.state) {
+        SkillOptionState.available => null,
         SkillOptionState.needsBuilding => Internationalize.forestHeroNeedsBuilding(name: _skillBuildingName),
         SkillOptionState.unaffordable => Internationalize.forestMissing(amounts: _amounts(option.missing)),
-        SkillOptionState.known || SkillOptionState.available => null,
+        SkillOptionState.maxed => null,
       },
-      isKnown: option.state == SkillOptionState.known,
+      buttonText: switch (nextLevel) {
+        null => null,
+        _ when isKnown => Internationalize.forestHeroUpgrade,
+        _ => Internationalize.forestHeroLearn,
+      },
+      isKnown: isKnown,
       canLearn: option.canLearn,
     );
   }

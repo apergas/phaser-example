@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg/core/config/constants/enum/arena_level_id.dart';
-import 'package:rpg/layers/presentation/features/arena/widgets/level_list.dart';
-import 'package:rpg/layers/presentation/features/arena/widgets/level_tile.dart';
+import 'package:farming/core/config/constants/enum/arena_level_id.dart';
+import 'package:farming/layers/presentation/features/arena/widgets/level_list.dart';
+import 'package:farming/layers/presentation/features/arena/widgets/level_tile.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
 import '../../../../../helpers/spanish_translations.dart';
@@ -19,7 +19,7 @@ void main() {
     );
 
     // when
-    await tester.tap(find.text(levels[1].name));
+    await tester.tap(find.text(levels[1].name).first);
 
     // then
     expect(selected, [ArenaLevelId.banditVeteran]);
@@ -35,7 +35,7 @@ void main() {
     );
 
     // when
-    await tester.tap(find.text(levels[1].name));
+    await tester.tap(find.text(levels[1].name).first);
 
     // then
     expect(selected, isEmpty);

@@ -1,4 +1,4 @@
-import 'package:rpg/core/config/constants/enum/resource.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
 
 abstract final class FundsMock {
   static const Map<Resource, int> tenGold = {Resource.gold: 10};
@@ -19,7 +19,13 @@ abstract final class FundsMock {
 
   static const Map<Resource, int> fiveGoldShortOfShortSword = {Resource.gold: 25};
 
-  static const Map<Resource, int> doubleStrikePrice = {Resource.gold: 60};
+  static const Map<Resource, int> doubleStrikePrice = {Resource.gold: 60, Resource.mana: 20};
 
-  static const Map<Resource, int> tenGoldShortOfDoubleStrike = {Resource.gold: 50};
+  static const Map<Resource, int> tenGoldShortOfDoubleStrike = {Resource.gold: 50, Resource.mana: 20};
+
+  static const Map<Resource, int> doubleStrikeGoldWithoutMana = {Resource.gold: 60};
+
+  static const Map<Resource, int> banditTrioReward = {Resource.gold: 75, Resource.mana: 20};
+
+  static const Map<Resource, int> banditTrioRepeatReward = {Resource.gold: 25, Resource.mana: 6};
 }

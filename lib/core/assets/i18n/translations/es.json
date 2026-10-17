@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "RPG"
+    "title": "Farming"
   },
   "common": {
     "error": "Error",
@@ -30,14 +30,16 @@
     },
     "resource": {
       "wood": "Madera",
-      "gold": "Oro"
+      "gold": "Oro",
+      "mana": "Maná"
     },
     "tool": {
       "axe": "Hacha"
     },
     "amount": {
       "wood": "{amount} de madera",
-      "gold": "{amount} de oro"
+      "gold": "{amount} de oro",
+      "mana": "{amount} de maná"
     },
     "blueprint": {
       "house": "Casa",
@@ -67,18 +69,21 @@
       "needAxe": "Necesitas un hacha para talar.",
       "blockedPath": "Hay algo en medio. Acércate por otro lado.",
       "pickedUpAxe": "¡Hacha recogida! Haz clic en un árbol para talarlo.",
+      "pickedUpAxeTouch": "¡Hacha recogida! Toca un árbol para talarlo.",
       "blockedSite": "Ahí no cabe. Busca un sitio despejado.",
       "notEnoughResources": "No tienes recursos suficientes.",
       "buildingStarted": "Manos a la obra…",
       "questLineCompleted": "¡Has completado las misiones de {line}!",
       "woodGained": "+{wood} de madera",
       "placing": "Elige dónde construir: {name}. Clic derecho o Esc para cancelar.",
+      "placingTouch": "Elige dónde construir: {name}. Arrastra el dedo para moverlo y toca Construir aquí o Cancelar.",
       "buildingCompleted": "Construcción terminada: {name}",
       "questCompleted": "Misión completada: {title}",
       "gearPurchased": "Has comprado: {name}",
       "gearNotNextTier": "Antes tienes que comprar la pieza anterior.",
       "skillLearned": "Has aprendido: {name}",
-      "skillAlreadyKnown": "Ya conoces esa habilidad."
+      "skillUpgraded": "Has mejorado: {name} (Nv {level})",
+      "skillMaxLevel": "Esa habilidad ya está al nivel máximo."
     },
     "hero": {
       "title": "Héroe",
@@ -103,7 +108,10 @@
       "needsBuilding": "Construye la {name}",
       "maxed": "Ya tienes la mejor pieza",
       "learn": "Aprender",
-      "known": "Aprendida"
+      "upgrade": "Mejorar",
+      "skillLevel": "Nv {level}/{max}",
+      "skillNext": "Nv {level}: {effect}",
+      "skillMax": "Máximo"
     },
     "gear": {
       "woodcutterAxe": "Hacha de leñador",
@@ -118,15 +126,21 @@
     "skill": {
       "doubleStrike": {
         "name": "Golpe doble",
-        "description": "Cada tercer ataque golpea dos veces."
+        "description": "Cada tercer ataque golpea dos veces.",
+        "descriptionLevel2": "Cada tercer ataque golpea dos veces y el segundo golpe hace un 15 % más de daño.",
+        "descriptionLevel3": "Cada tercer ataque golpea dos veces y el segundo golpe hace un 30 % más de daño."
       },
       "secondWind": {
         "name": "Segundo aliento",
-        "description": "Una vez por pelea, por debajo del 30 % de vida recupera el 40 %."
+        "description": "Una vez por pelea, por debajo del 30 % de vida recupera el 40 %.",
+        "descriptionLevel2": "Una vez por pelea, por debajo del 30 % de vida recupera el 50 %.",
+        "descriptionLevel3": "Una vez por pelea, por debajo del 30 % de vida recupera el 60 %."
       },
       "dodge": {
         "name": "Esquiva",
-        "description": "Un 20 % de posibilidades de esquivar cada golpe."
+        "description": "Un 20 % de posibilidades de esquivar cada golpe.",
+        "descriptionLevel2": "Un 25 % de posibilidades de esquivar cada golpe.",
+        "descriptionLevel3": "Un 30 % de posibilidades de esquivar cada golpe."
       }
     },
     "placement": {
@@ -142,12 +156,11 @@
     "title": "Arena",
     "heroPower": "Tu Poder: {power}",
     "power": "Poder {power}",
-    "reward": "+{amount} de oro",
+    "reward": "+{amounts}",
     "cleared": "Ganado",
     "locked": "Cerrado",
     "fight": "Empezar pelea",
     "back": "Volver",
-    "skip": "Saltar",
     "retry": "Reintentar",
     "victory": "¡Victoria!",
     "champion": "¡Campeón de la arena!",
@@ -173,7 +186,8 @@
       "barbarian": "Bárbaro",
       "barbarianChief": "Jefe bárbaro",
       "wolf": "Lobo",
-      "bear": "Oso"
+      "bear": "Oso",
+      "banditVeteran": "Bandido veterano"
     },
     "advice": {
       "almostThere": "¡Casi lo tienes! Vuelve a intentarlo.",

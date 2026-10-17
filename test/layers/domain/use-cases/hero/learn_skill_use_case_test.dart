@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rpg/core/config/constants/enum/learn_skill_result.dart';
-import 'package:rpg/core/config/constants/enum/resource.dart';
-import 'package:rpg/core/config/constants/enum/skill_id.dart';
-import 'package:rpg/layers/domain/use-cases/hero/learn_skill_use_case.dart';
-import 'package:rpg/layers/domain/world/extensions/hero_rules.dart';
-import 'package:rpg/layers/domain/world/extensions/inventory_rules.dart';
-import 'package:rpg/layers/domain/world/world.dart';
+import 'package:farming/core/config/constants/enum/learn_skill_result.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/core/config/constants/enum/skill_id.dart';
+import 'package:farming/layers/domain/use-cases/hero/learn_skill_use_case.dart';
+import 'package:farming/layers/domain/world/extensions/hero_rules.dart';
+import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
+import 'package:farming/layers/domain/world/world.dart';
 
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import '../../../../mocks/domain/entities/hero/hero_entity_mock.dart';
@@ -80,6 +80,20 @@ void main() {
     expect(world.funds.amount(Resource.gold), 50);
   });
 
+  test('testWhenThereIsEnoughGoldButNoManaThenNothingIsPaidOrLearned', () {
+    // given
+    final world = playing(SkillScenarioMock.withTower(funds: FundsMock.doubleStrikeGoldWithoutMana));
+
+    // when
+    final result = sut(id: SkillId.doubleStrike);
+
+    // then
+    expect(result, LearnSkillResult.notEnoughResources);
+    expect(world.hero, HeroEntityMock.mock);
+    expect(world.funds.amount(Resource.gold), 60);
+    expect(world.funds.amount(Resource.mana), 0);
+  });
+
   test('testWhenSeveralChecksFailThenTheyAreReportedInOrder', () {
     // given
     playing(SkillScenarioMock.withoutTower(hero: HeroEntityMock.withDoubleStrike));
@@ -107,5 +121,6 @@ void main() {
     expect(world.hero, HeroEntityMock.withDoubleStrike);
     expect((powerBefore, world.hero.power), (31, 34));
     expect(world.funds.amount(Resource.gold), 0);
+    expect(world.funds.amount(Resource.mana), 0);
   });
 }

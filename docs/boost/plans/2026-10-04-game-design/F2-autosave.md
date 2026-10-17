@@ -1,5 +1,7 @@
 # F2 · Guardado de la partida — Implementation Plan
 
+> **Implementado el 2026-10-18 sin tests (regla del usuario); lo que falta de test está en *Para T1*.** Una sola rama `feature/PROJECT-F2-autosave`: el plan primero (escrito con el código tras F8; en iOS no hay implementación, solo ficha), un commit por tarea (TF2.1–TF2.6) y el cierre. El código se aplicó tal como está en el plan (solo `dart format` partió dos líneas de `SaveTreeMapperDBO` y `SaveHeroMapperDBO`). `build_runner` borró `test/layers/data/repositories/session/game_session_repository_impl_test.mocks.dart` (mockeaba el datasource borrado) y se restauró con `git checkout -- test`: se regenera en T1. Desvíos respecto a la ficha, en *Desvíos respecto a la ficha*: la sesión vive en `GameSessionRepositoryImpl` y desaparece `data/datasources/session/` (E5 borrada), se guardan también decoraciones y tamaño del mundo, la versión la comprueba `SaveMapperDBO`, `hitsTaken` < total, sin excepción propia para un fallo al guardar, y *Partida* sexto y último botón con umbrales 1820 / 1100 (a 640 px la fila se encoge al ~83 %). Verificado: `flutter analyze lib`, `flutter build web` y `flutter build apk --debug`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use boost:subagent-driven-development (recommended) or boost:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Read the **Global Constraints** in [README.md](README.md) first; they apply to every task.
 
 | | |

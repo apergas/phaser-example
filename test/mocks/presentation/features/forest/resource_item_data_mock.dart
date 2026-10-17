@@ -15,6 +15,12 @@ abstract final class ResourceItemDataMock {
     amount: amount,
   );
 
+  static ResourceItemData mana(int amount) => ResourceItemData(
+    resource: Resource.mana,
+    name: Internationalize.forestResource(resource: Resource.mana),
+    amount: amount,
+  );
+
   static ResourceItemData of(Resource resource, int amount) => ResourceItemData(
     resource: resource,
     name: Internationalize.forestResource(resource: resource),

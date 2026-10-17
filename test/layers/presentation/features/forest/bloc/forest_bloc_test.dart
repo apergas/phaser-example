@@ -155,7 +155,11 @@ void main() {
         expect((pose as WorkPose).tool, WorkTool.axe);
         expect(effects.whereType<TreeHitEffect>().length, 5);
         expect(effects, contains(ForestEffectMock.treeFelled));
-        expect(bloc.state.data.hud!.resources, [ResourceItemDataMock.wood(6), ResourceItemDataMock.gold(0)]);
+        expect(bloc.state.data.hud!.resources, [
+          ResourceItemDataMock.wood(6),
+          ResourceItemDataMock.gold(0),
+          ResourceItemDataMock.mana(0),
+        ]);
       },
     );
   });

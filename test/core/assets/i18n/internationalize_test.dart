@@ -24,6 +24,7 @@ void main() {
 
     // when
     final cost = Internationalize.forestAmount(resource: Resource.wood, amount: amount);
+    final mana = Internationalize.forestAmount(resource: Resource.mana, amount: 20);
     final missing = Internationalize.forestMissing(
       amounts: Internationalize.forestAmount(resource: Resource.wood, amount: 5),
     );
@@ -31,6 +32,7 @@ void main() {
 
     // then
     expect(cost, '15 de madera');
+    expect(mana, '20 de maná');
     expect(missing, 'Faltan 5 de madera');
     expect(gained, '+6 de madera');
   });
@@ -101,6 +103,7 @@ void main() {
     final texts = [
       Internationalize.forestResource(resource: Resource.wood),
       Internationalize.forestResource(resource: Resource.gold),
+      Internationalize.forestResource(resource: Resource.mana),
       Internationalize.forestTool(tool: ToolKind.axe),
       Internationalize.forestBuild,
       Internationalize.forestQuests,
@@ -127,6 +130,7 @@ void main() {
     expect(texts, [
       'Madera',
       'Oro',
+      'Maná',
       'Hacha',
       'Construir',
       'Misiones',

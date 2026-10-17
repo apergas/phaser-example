@@ -74,7 +74,7 @@ JaidynReiman. OGA-BY 3.0 —
 <https://github.com/ElizaWy/LPC/tree/main/Characters/Props/Sword%2001%20-%20Arming%20Sword>,
 <https://opengameart.org/content/lpc-expanded-sit-run-jump-more>.
 
-The grass (`arena-grass`) and the fence (`arena-fence`) come from the LPC Tile Atlas (see
+The fence (`arena-fence`) comes from the LPC Tile Atlas, and the grass is the forest `ground.png` (see
 *Ground and decor* above). CC-BY-SA 3.0 / GPL 3.0.
 
 ### Barbarians (`barbarian-*`, `barbarian-chief-*` frames in `arena.png`)

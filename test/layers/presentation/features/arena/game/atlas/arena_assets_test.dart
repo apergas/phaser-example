@@ -44,6 +44,7 @@ void main() {
     expect((slash.width, slash.height, slash.pivotY), (128, 128, 0.7344));
     expect((fence.width, fence.height, fence.pivotX, fence.pivotY), (64, 32, 0.0, 1.0));
     expect(assets.atlas.width, 1024);
+    expect((assets.ground.width, assets.ground.height), (32, 32));
   });
 
   testWidgets('testWhenLoadingTheRealArtThenTheBeastsStandOnTheirPaws', (tester) async {

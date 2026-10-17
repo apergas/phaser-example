@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import '../building/building_entity.dart';
 import '../decoration/decoration_entity.dart';
 import '../item/ground_item_entity.dart';
+import '../rock/rock_entity.dart';
 import '../tree/stump_entity.dart';
 import '../tree/tree_entity.dart';
 
@@ -14,6 +15,7 @@ class WorldSnapshotEntity {
   final List<DecorationEntity> decorations;
   final List<BuildingEntity> buildings;
   final List<StumpEntity> stumps;
+  final List<RockEntity> rocks;
 
   const WorldSnapshotEntity({
     required this.width,
@@ -23,6 +25,7 @@ class WorldSnapshotEntity {
     required this.decorations,
     required this.buildings,
     required this.stumps,
+    required this.rocks,
   });
 
   @override
@@ -34,7 +37,8 @@ class WorldSnapshotEntity {
       const ListEquality<GroundItemEntity>().equals(other.items, items) &&
       const ListEquality<DecorationEntity>().equals(other.decorations, decorations) &&
       const ListEquality<BuildingEntity>().equals(other.buildings, buildings) &&
-      const ListEquality<StumpEntity>().equals(other.stumps, stumps);
+      const ListEquality<StumpEntity>().equals(other.stumps, stumps) &&
+      const ListEquality<RockEntity>().equals(other.rocks, rocks);
 
   @override
   int get hashCode => Object.hash(
@@ -45,5 +49,6 @@ class WorldSnapshotEntity {
     const ListEquality<DecorationEntity>().hash(decorations),
     const ListEquality<BuildingEntity>().hash(buildings),
     const ListEquality<StumpEntity>().hash(stumps),
+    const ListEquality<RockEntity>().hash(rocks),
   );
 }

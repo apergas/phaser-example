@@ -19,6 +19,7 @@ abstract final class StatsRecording {
       BuildingCompletedEventEntity() => stats.completingBuilding(),
       QuestCompletedEventEntity() || TreeSproutedEventEntity() => stats,
       TreeRegrownEventEntity() => stats.regrowingTree(),
+      RockHitEventEntity() || RockBrokenEventEntity() => stats,
     };
   }
 }

@@ -120,3 +120,28 @@ final class TreeRegrownEventEntity extends GameEventEntity {
   @override
   int get hashCode => Object.hash(TreeRegrownEventEntity, tree);
 }
+
+final class RockHitEventEntity extends GameEventEntity {
+  final String rockId;
+
+  const RockHitEventEntity({required this.rockId});
+
+  @override
+  bool operator ==(Object other) => other is RockHitEventEntity && other.rockId == rockId;
+
+  @override
+  int get hashCode => Object.hash(RockHitEventEntity, rockId);
+}
+
+final class RockBrokenEventEntity extends GameEventEntity {
+  final String rockId;
+  final int stone;
+
+  const RockBrokenEventEntity({required this.rockId, required this.stone});
+
+  @override
+  bool operator ==(Object other) => other is RockBrokenEventEntity && other.rockId == rockId && other.stone == stone;
+
+  @override
+  int get hashCode => Object.hash(RockBrokenEventEntity, rockId, stone);
+}

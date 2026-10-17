@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../../core/config/constants/enum/chop_result.dart';
+import '../../../core/config/constants/enum/mine_result.dart';
 import '../../../core/config/constants/enum/resource.dart';
 import '../../../core/config/constants/enum/resume_construction_result.dart';
 import '../entities/building/blueprint_entity.dart';
@@ -17,9 +18,11 @@ import '../entities/player/activity_entity.dart';
 import '../entities/player/intent_entity.dart';
 import '../entities/player/inventory_entity.dart';
 import '../entities/player/player_entity.dart';
+import '../entities/rock/rock_entity.dart';
 import '../entities/tree/stump_entity.dart';
 import '../entities/tree/tree_entity.dart';
 import 'construction.dart';
+import 'mining.dart';
 import 'extensions/inventory_rules.dart';
 import 'extensions/player_rules.dart';
 import 'navigation.dart';
@@ -38,6 +41,7 @@ class World {
     required List<TreeEntity> trees,
     List<GroundItemEntity> items = const [],
     List<DecorationEntity> decorations = const [],
+    List<RockEntity> rocks = const [],
     HeroEntity hero = const HeroEntity(),
   }) : this._(
          WorldState(
@@ -47,6 +51,7 @@ class World {
            trees: trees,
            items: items,
            decorations: decorations,
+           rocks: rocks,
            hero: hero,
          ),
        );
@@ -72,6 +77,8 @@ class World {
 
   List<StumpEntity> get stumps => _state.stumps.values.toList();
 
+  List<RockEntity> get rocks => _state.rocks.values.toList();
+
   StatsEntity get stats => _state.stats;
 
   HeroEntity get hero => _state.hero;
@@ -95,6 +102,12 @@ class World {
   ChopResult orderChop(String treeId) {
     final result = Woodcutting.check(_state, treeId);
     if (result == ChopResult.ok) _navigation.goWorkOn(ChopIntentEntity(treeId: treeId));
+    return result;
+  }
+
+  MineResult orderMine(String rockId) {
+    final result = Mining.check(_state, rockId);
+    if (result == MineResult.ok) _navigation.goWorkOn(MineIntentEntity(rockId: rockId));
     return result;
   }
 

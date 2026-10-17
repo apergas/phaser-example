@@ -66,6 +66,8 @@ import 'package:farming/layers/domain/use-cases/game/get_quests_use_case.dart'
     as _i94;
 import 'package:farming/layers/domain/use-cases/game/get_world_snapshot_use_case.dart'
     as _i579;
+import 'package:farming/layers/domain/use-cases/game/mine_rock_use_case.dart'
+    as _i50;
 import 'package:farming/layers/domain/use-cases/game/move_player_use_case.dart'
     as _i844;
 import 'package:farming/layers/domain/use-cases/game/resume_construction_use_case.dart'
@@ -176,6 +178,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i579.GetWorldSnapshotUseCase>(
       () => _i579.GetWorldSnapshotUseCase(
+        sessionRepository: gh<_i663.GameSessionRepository>(),
+      ),
+    );
+    gh.factory<_i50.MineRockUseCase>(
+      () => _i50.MineRockUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );

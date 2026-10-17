@@ -55,6 +55,7 @@ class ForestWorld extends World
         position: position,
         treeId: scene.treeAt(point),
         buildingId: scene.buildingAt(point),
+        rockId: scene.rockAt(point),
         isSecondary: isSecondary,
       ),
     );

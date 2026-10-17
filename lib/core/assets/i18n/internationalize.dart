@@ -92,6 +92,7 @@ class Internationalize {
   };
   static String get forestMessageWelcome => '$_forest.message.welcome'.tr();
   static String get forestMessageNeedAxe => '$_forest.message.needAxe'.tr();
+  static String get forestMessageNeedPickaxe => '$_forest.message.needPickaxe'.tr();
   static String get forestMessageBlockedPath => '$_forest.message.blockedPath'.tr();
   static String get forestMessagePickedUpAxe => '$_forest.message.pickedUpAxe'.tr();
   static String get forestMessagePickedUpAxeTouch => '$_forest.message.pickedUpAxeTouch'.tr();
@@ -104,6 +105,8 @@ class Internationalize {
       '$_forest.message.questLineCompleted'.tr(namedArgs: {'line': forestQuestLine(line: line)});
   static String forestMessageWoodGained({required int wood}) =>
       '$_forest.message.woodGained'.tr(namedArgs: {'wood': '$wood'});
+  static String forestMessageStoneGained({required int amount}) =>
+      '$_forest.message.stoneGained'.tr(namedArgs: {'amount': '$amount'});
   static String forestMessagePlacing({required String name}) =>
       '$_forest.message.placing'.tr(namedArgs: {'name': name});
   static String forestMessagePlacingTouch({required String name}) =>
@@ -118,6 +121,8 @@ class Internationalize {
   static String get forestRetry => '$_forest.retry'.tr();
   static String forestFloatingWoodGained({required int wood}) =>
       '$_forest.floating.woodGained'.tr(namedArgs: {'wood': '$wood'});
+  static String forestFloatingStoneGained({required int amount}) =>
+      '$_forest.floating.stoneGained'.tr(namedArgs: {'amount': '$amount'});
   static String get forestHero => '$_forest.hero.title'.tr();
   static String get forestHeroPower => '$_forest.hero.power'.tr();
   static String get forestHeroChampion => '$_forest.hero.champion'.tr();

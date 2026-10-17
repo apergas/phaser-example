@@ -9,6 +9,7 @@ extension ActivityRules on ActivityEntity {
     WorkingActivityEntity(:final intent) => switch (intent) {
       ChopIntentEntity() => PlayerActivity.chopping,
       ConstructIntentEntity() => PlayerActivity.constructing,
+      MineIntentEntity() => PlayerActivity.mining,
     },
   };
 }

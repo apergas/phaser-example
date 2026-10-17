@@ -7,6 +7,7 @@ import '../../../../../../core/utils/kebab_case.dart';
 abstract final class SpriteNames {
   static const String stump = 'stump';
   static const String sapling = 'sapling';
+  static const String rock = 'rock-large';
 
   static String tree(TreeKind kind) => 'tree-${kind.name.toKebabCase()}';
 

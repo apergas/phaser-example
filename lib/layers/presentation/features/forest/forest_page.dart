@@ -11,6 +11,7 @@ import '../../../../core/services/navigation/source/navigation_service.dart';
 import '../../../domain/use-cases/game/advance_game_use_case.dart';
 import '../../../domain/use-cases/game/can_place_building_use_case.dart';
 import '../../../domain/use-cases/game/chop_tree_use_case.dart';
+import '../../../domain/use-cases/game/mine_rock_use_case.dart';
 import '../../../domain/use-cases/game/resume_construction_use_case.dart';
 import '../../../domain/use-cases/game/construct_building_use_case.dart';
 import '../../../domain/use-cases/game/get_build_options_use_case.dart';
@@ -48,6 +49,7 @@ class ForestPage extends StatelessWidget {
         startGameUseCase: locator.get<StartGameUseCase>(),
         movePlayerUseCase: locator.get<MovePlayerUseCase>(),
         chopTreeUseCase: locator.get<ChopTreeUseCase>(),
+        mineRockUseCase: locator.get<MineRockUseCase>(),
         canPlaceBuildingUseCase: locator.get<CanPlaceBuildingUseCase>(),
         constructBuildingUseCase: locator.get<ConstructBuildingUseCase>(),
         resumeConstructionUseCase: locator.get<ResumeConstructionUseCase>(),

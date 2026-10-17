@@ -22,7 +22,7 @@ El juego se migró a SwiftUI + SpriteKit en `/Users/axelperezgaspar/farming-ios`
 | Base (bosque, construcción, héroe, arena C0–C8) | ✅ | ✅ portada (M0–M7) |
 | Reanudar una obra a medias | ✅ `a16317c`, en `feature/PROJECT-X-arena` (#54) | ✅ (D18), con la guarda de no reiniciar la obra en curso |
 | Nombre *Farming*, icono del roble, textos táctiles | ✅ ([X](2026-10-06-hero-arena/X-ios-alignment.md)), sin unir aún | ✅ |
-| C9 Maná | — | ✅ |
+| C9 Maná | 🟢 plan | ✅ |
 | C10 Pelea sin saltar | — | ✅ |
 | C11 Habilidades de los enemigos | — | ✅ |
 | C12 Niveles de habilidad | — | ✅ |
@@ -82,7 +82,7 @@ Lo que **no** se trae de iOS: lo propio de Swift/SpriteKit (cambio de eje Y, ais
 | C8 Pulido de la arena | ✅ | `feature/PROJECT-X-arena` (sin PR) | Lo de `ARENA-FIXES.md`. 649 tests. |
 | Reanudar obras | ✅ | `feature/PROJECT-X-arena` (#54) | Tocar una obra a medias vuelve a martillearla sin pagar. 655 tests. |
 | X Alineación con iOS | ✅ | `feature/PROJECT-X-ios-alignment` (#55, sin PR) | Nombre `Farming`, ids `com.apergas.farming`, paquete `farming`, icono, arranque `#0E150E`, textos táctiles y no reiniciar la obra en curso. 658 tests. Probada en Chrome y en el emulador Android 16 (nombre, icono adaptativo, arranque verde, textos táctiles, la obra no se para); iOS sin probar. |
-| C9 Maná | 📝 ficha | — | Hecha en iOS (`f8f7792`). Maná en los niveles 6–10 (20/25/30/35/50) y en las habilidades (20/30/45); balance por recurso. |
+| C9 Maná | 🟢 plan listo | `feature/PROJECT-C9-mana` | Hecha en iOS (`f8f7792`). Maná en los niveles 6–10 (20/25/30/35/50) y en las habilidades (20/30/45); balance por recurso. Plan de 5 tareas comprobado en un worktree (665 tests); umbral del HUD 1030, medido con Roboto. |
 | C10 Pelea sin saltar | 📝 ficha | — | Hecha en iOS (`cec553e`). Sin *Saltar* ni botón durante la repetición. |
 | C11 Habilidades de los enemigos | 📝 ficha | — | Hecha en iOS (`283d176`). Probabilidades 1,5/2/2,5/3/3,5 % en los niveles 6–10; orden de tiradas fijo. |
 | C12 Niveles de habilidad | 📝 ficha | — | Hecha en iOS (`c6a2107`). Tres niveles, costes ×1,5 / ×2,25, techo del 95 % en nivel 3. |

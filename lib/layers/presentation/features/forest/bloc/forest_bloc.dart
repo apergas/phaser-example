@@ -60,6 +60,8 @@ import '../../../../domain/use-cases/game/get_upgrade_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_world_snapshot_use_case.dart';
 import '../../../../domain/use-cases/game/mine_rock_use_case.dart';
 import '../../../../domain/use-cases/game/move_player_use_case.dart';
+import '../../../../domain/use-cases/game/new_game_use_case.dart';
+import '../../../../domain/use-cases/game/save_game_use_case.dart';
 import '../../../../domain/use-cases/game/start_game_use_case.dart';
 import '../../../../domain/use-cases/hero/buy_gear_use_case.dart';
 import '../../../../domain/use-cases/hero/get_gear_options_use_case.dart';
@@ -110,6 +112,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final LearnSkillUseCase _learnSkillUseCase;
   final GetUpgradeOptionsUseCase _getUpgradeOptionsUseCase;
   final BuyUpgradeUseCase _buyUpgradeUseCase;
+  final SaveGameUseCase _saveGameUseCase;
+  final NewGameUseCase _newGameUseCase;
   final NavigationService _navigationService;
   final bool _isTouchInput;
 
@@ -117,6 +121,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   Facing _facing = Facing.down;
   PlacementData? _placement;
   bool _hasGreeted = false;
+  double _msSinceSave = 0;
 
   ForestBloc({
     required this._startGameUseCase,
@@ -140,6 +145,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._learnSkillUseCase,
     required this._getUpgradeOptionsUseCase,
     required this._buyUpgradeUseCase,
+    required this._saveGameUseCase,
+    required this._newGameUseCase,
     required this._navigationService,
     required this._isTouchInput,
   }) : super(const ForestInitial()) {
@@ -155,6 +162,9 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         ForestSkillLearnRequested() => _onSkillLearnRequested(event, emit),
         ForestArenaRequested() => _onArenaRequested(event, emit),
         ForestUpgradeRequested() => _onUpgradeRequested(event, emit),
+        ForestPaused() => _onPaused(event, emit),
+        ForestSaveRequested() => _onSaveRequested(event, emit),
+        ForestNewGameRequested() => _onNewGameRequested(event, emit),
       };
     });
   }
@@ -164,17 +174,10 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
 
     try {
       _startGameUseCase();
-      _hasGreeted = false;
-      _placement = null;
-      _facing = Facing.down;
-      _lastPosition = _getPlayerStatusUseCase().position;
+      _resetSession();
       emit(ForestSuccess(data: _buildData(effects: const [])));
     } on AppException catch (exception) {
-      _navigationService.showErrorPopUp(
-        title: exception.title,
-        message: exception.message,
-        buttonTitle: Internationalize.commonAccept,
-      );
+      _showError(exception);
       emit(ForestFailure(data: state.data, exception: exception));
     }
   }
@@ -198,6 +201,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       for (final gameEvent in gameEvents)
         if (gameEvent is QuestCompletedEventEntity) gameEvent.questId,
     ]);
+    _msSinceSave += event.deltaMs;
+    if (_msSinceSave >= Rules.autosaveIntervalMs || gameEvents.any(_isWorthSaving)) _autosave();
     emit(ForestSuccess(data: _buildData(effects: effects)));
   }
 
@@ -238,8 +243,10 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   Future<void> _onArenaRequested(ForestArenaRequested event, Emitter<ForestState> emit) async {
     if (state is! ForestSuccess) return;
     _placement = null;
-    _navigationService.push(const ArenaPage());
+    final arenaClosed = _navigationService.push(const ArenaPage());
     emit(ForestSuccess(data: _buildData(effects: const [])));
+    await arenaClosed;
+    _autosave();
   }
 
   void _orderAt(
@@ -341,6 +348,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       case BuyGearResult.ok:
         _showMessage(Internationalize.forestMessageGearPurchased(name: Internationalize.forestGear(id: id)));
         effects.add(GearPurchasedEffect(gear: id));
+        _autosave();
       case BuyGearResult.missingBuilding:
         _showMessage(Internationalize.forestHeroNeedsBuilding(name: _workshopName(Gear.byId(id))));
       case BuyGearResult.notNextTier:
@@ -362,6 +370,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       case LearnSkillResult.ok:
         _showMessage(Internationalize.forestMessageSkillLearned(name: Internationalize.forestSkillName(id: id)));
         effects.add(SkillLearnedEffect(skill: id));
+        _autosave();
       case LearnSkillResult.missingBuilding:
         _showMessage(Internationalize.forestHeroNeedsBuilding(name: _skillBuildingName));
       case LearnSkillResult.notEnoughResources:
@@ -374,6 +383,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
           ),
         );
         effects.add(SkillLearnedEffect(skill: id));
+        _autosave();
       case LearnSkillResult.maxed:
         _showMessage(Internationalize.forestMessageSkillMaxLevel);
     }
@@ -391,6 +401,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       case UpgradeResult.ok:
         _showMessage(Internationalize.forestMessageUpgradePurchased(name: Internationalize.forestUpgradeName(id: id)));
         effects.add(UpgradePurchasedEffect(upgrade: id));
+        _autosave();
       case UpgradeResult.notEnoughResources:
         _showMessage(Internationalize.forestMessageNotEnoughResources);
       case UpgradeResult.noWorkshop:
@@ -399,6 +410,69 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         _showMessage(Internationalize.forestMessageUpgradeOwned);
     }
   }
+
+  Future<void> _onPaused(ForestPaused event, Emitter<ForestState> emit) async {
+    if (state is! ForestSuccess) return;
+    _autosave();
+  }
+
+  Future<void> _onSaveRequested(ForestSaveRequested event, Emitter<ForestState> emit) async {
+    if (state is! ForestSuccess) return;
+    _msSinceSave = 0;
+    try {
+      _saveGameUseCase();
+      _showMessage(Internationalize.forestGameSaved);
+    } on AppException catch (exception) {
+      _showError(exception);
+    }
+  }
+
+  Future<void> _onNewGameRequested(ForestNewGameRequested event, Emitter<ForestState> emit) async {
+    if (state is! ForestSuccess) return;
+    emit(ForestInProgress(data: state.data));
+
+    try {
+      _newGameUseCase();
+      _resetSession();
+      emit(ForestSuccess(data: _buildData(effects: const [])));
+    } on AppException catch (exception) {
+      _showError(exception);
+      emit(ForestFailure(data: state.data, exception: exception));
+    }
+  }
+
+  void _resetSession() {
+    _hasGreeted = false;
+    _placement = null;
+    _facing = Facing.down;
+    _msSinceSave = 0;
+    _lastPosition = _getPlayerStatusUseCase().position;
+  }
+
+  bool _autosave() {
+    _msSinceSave = 0;
+    try {
+      _saveGameUseCase();
+      return true;
+    } on AppException {
+      return false;
+    }
+  }
+
+  bool _isWorthSaving(GameEventEntity gameEvent) => switch (gameEvent) {
+    ItemPickedUpEventEntity() ||
+    TreeFelledEventEntity() ||
+    BuildingCompletedEventEntity() ||
+    QuestCompletedEventEntity() ||
+    RockBrokenEventEntity() ||
+    DepositedEventEntity() => true,
+    PlayerBlockedEventEntity() ||
+    TreeHitEventEntity() ||
+    BuildingHammeredEventEntity() ||
+    TreeSproutedEventEntity() ||
+    TreeRegrownEventEntity() ||
+    RockHitEventEntity() => false,
+  };
 
   void _react(GameEventEntity gameEvent, {required double fromX, required List<ForestEffect> effects}) {
     switch (gameEvent) {
@@ -464,6 +538,14 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
 
   void _showMessage(String message) {
     _navigationService.showSnackbar(message: message);
+  }
+
+  void _showError(AppException exception) {
+    _navigationService.showErrorPopUp(
+      title: exception.title,
+      message: exception.message,
+      buttonTitle: Internationalize.commonAccept,
+    );
   }
 
   ForestData _buildData({required List<ForestEffect> effects}) {

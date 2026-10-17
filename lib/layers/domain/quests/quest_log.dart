@@ -9,10 +9,14 @@ import 'quest.dart';
 import 'quests.dart';
 
 class QuestLog {
-  QuestLog({List<Quest>? quests}) : _quests = quests ?? Quests.all;
+  QuestLog({List<Quest>? quests, Set<QuestId> completed = const {}})
+    : _quests = quests ?? Quests.all,
+      _completed = {...completed};
 
   final List<Quest> _quests;
-  final Set<QuestId> _completed = {};
+  final Set<QuestId> _completed;
+
+  Set<QuestId> get completed => Set.unmodifiable(_completed);
 
   List<QuestCompletedEventEntity> update(World world) {
     final fulfilled = _quests

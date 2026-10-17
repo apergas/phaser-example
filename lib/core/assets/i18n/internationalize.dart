@@ -40,6 +40,9 @@ class Internationalize {
       '$_error.unknownItemKindMessage'.tr(namedArgs: {'detail': detail});
   static String get errorNoGameInProgressTitle => '$_error.noGameInProgressTitle'.tr();
   static String get errorNoGameInProgressMessage => '$_error.noGameInProgressMessage'.tr();
+  static String get errorInvalidSaveTitle => '$_error.invalidSaveTitle'.tr();
+  static String errorInvalidSaveMessage({required String reason}) =>
+      '$_error.invalidSaveMessage'.tr(namedArgs: {'reason': reason});
 
   static const String _forest = 'forest';
   static String forestResource({required Resource resource}) => switch (resource) {
@@ -56,6 +59,13 @@ class Internationalize {
   static String get forestQuests => '$_forest.hud.quests'.tr();
   static String get forestArena => '$_forest.hud.arena'.tr();
   static String get forestWorkshop => '$_forest.hud.workshop'.tr();
+  static String get forestGame => '$_forest.hud.game'.tr();
+  static String get forestGameSave => '$_forest.game.save'.tr();
+  static String get forestGameSaved => '$_forest.game.saved'.tr();
+  static String get forestGameNewGame => '$_forest.game.newGame'.tr();
+  static String get forestGameNewGameConfirm => '$_forest.game.newGameConfirm'.tr();
+  static String get forestGameConfirm => '$_forest.game.confirm'.tr();
+  static String get forestGameCancel => '$_forest.game.cancel'.tr();
   static String get forestStock => '$_forest.hud.stock'.tr();
   static String forestCarry({required int amount, required int capacity}) =>
       '$_forest.hud.carry'.tr(namedArgs: {'amount': '$amount', 'capacity': '$capacity'});

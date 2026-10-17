@@ -5,21 +5,26 @@ import '../../../../core/config/constants/enum/skill_id.dart';
 
 class SkillEntity {
   final SkillId id;
-  final Map<Resource, int> cost;
+  final List<Map<Resource, int>> costs;
 
-  const SkillEntity({required this.id, required this.cost});
+  const SkillEntity({required this.id, required this.costs});
 
-  SkillEntity copyWith({SkillId? id, Map<Resource, int>? cost}) {
-    return SkillEntity(id: id ?? this.id, cost: cost ?? this.cost);
+  int get maxLevel => costs.length;
+
+  Map<Resource, int> costOf(int level) => costs[level - 1];
+
+  SkillEntity copyWith({SkillId? id, List<Map<Resource, int>>? costs}) {
+    return SkillEntity(id: id ?? this.id, costs: costs ?? this.costs);
   }
 
-  @override
-  bool operator ==(Object other) =>
-      other is SkillEntity && other.id == id && const MapEquality<Resource, int>().equals(other.cost, cost);
+  static const ListEquality<Map<Resource, int>> _costsEquality = ListEquality(MapEquality<Resource, int>());
 
   @override
-  int get hashCode => Object.hash(id, const MapEquality<Resource, int>().hash(cost));
+  bool operator ==(Object other) => other is SkillEntity && other.id == id && _costsEquality.equals(other.costs, costs);
 
   @override
-  String toString() => 'SkillEntity(id: $id, cost: $cost)';
+  int get hashCode => Object.hash(id, _costsEquality.hash(costs));
+
+  @override
+  String toString() => 'SkillEntity(id: $id, costs: $costs)';
 }

@@ -17,8 +17,11 @@ class SkillTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final levelText = item.levelText;
+    final nextText = item.nextText;
     final costText = item.costText;
     final reasonText = item.reasonText;
+    final buttonText = item.buttonText;
     return DecoratedBox(
       decoration: BoxDecoration(color: CustomColors.hudOptionBackground, borderRadius: BorderRadius.circular(6)),
       child: Padding(
@@ -31,13 +34,30 @@ class SkillTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 2,
                 children: [
-                  Text(
-                    item.name,
-                    style: CustomTextStyles.system15w600.copyWith(
-                      color: item.isKnown || item.canLearn ? CustomColors.hudText : CustomColors.hudMuted,
-                    ),
+                  Row(
+                    spacing: 6,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          item.name,
+                          style: CustomTextStyles.system15w600.copyWith(
+                            color: item.isKnown || item.canLearn ? CustomColors.hudText : CustomColors.hudMuted,
+                          ),
+                        ),
+                      ),
+                      if (levelText != null)
+                        Text(
+                          levelText,
+                          style: CustomTextStyles.system12w500.copyWith(
+                            color: CustomColors.hudAccent,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
+                    ],
                   ),
                   Text(item.description, style: CustomTextStyles.system12w500.copyWith(color: CustomColors.hudMuted)),
+                  if (nextText != null)
+                    Text(nextText, style: CustomTextStyles.system12w500.copyWith(color: CustomColors.hudText)),
                   if (costText != null)
                     Text(
                       costText,
@@ -50,16 +70,12 @@ class SkillTile extends StatelessWidget {
                 ],
               ),
             ),
-            if (item.isKnown)
-              Text(
-                Internationalize.forestHeroKnown,
-                style: CustomTextStyles.system12w500.copyWith(color: CustomColors.questDone),
-              )
+            if (buttonText != null)
+              HudButton(key: learnKey(item.id), label: buttonText, onPressed: item.canLearn ? onLearn : null)
             else
-              HudButton(
-                key: learnKey(item.id),
-                label: Internationalize.forestHeroLearn,
-                onPressed: item.canLearn ? onLearn : null,
+              Text(
+                Internationalize.forestHeroSkillMax,
+                style: CustomTextStyles.system12w500.copyWith(color: CustomColors.questDone),
               ),
           ],
         ),

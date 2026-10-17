@@ -5,6 +5,7 @@ import '../../entities/hero/combat_stats_entity.dart';
 import '../../entities/hero/hero_entity.dart';
 import '../../rules/gear.dart';
 import '../../rules/rules.dart';
+import '../../rules/skills.dart';
 
 extension HeroRules on HeroEntity {
   int tierOf(GearSlot slot) => switch (slot) {
@@ -45,7 +46,7 @@ extension HeroRules on HeroEntity {
   };
 
   HeroEntity withSkill(SkillId skill, {required int level}) {
-    assert(level >= 1);
+    assert(level >= 1 && level <= Skills.byId(skill).maxLevel);
     return copyWith(skillLevels: {...skillLevels, skill: level});
   }
 }

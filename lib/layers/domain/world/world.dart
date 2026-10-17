@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../../core/config/constants/enum/chop_result.dart';
+import '../../../core/config/constants/enum/construction_rejection.dart';
 import '../../../core/config/constants/enum/deposit_result.dart';
 import '../../../core/config/constants/enum/mine_result.dart';
 import '../../../core/config/constants/enum/resource.dart';
@@ -139,8 +140,8 @@ class World {
     return ResumeConstructionResult.ok;
   }
 
-  bool canPlace(BlueprintEntity blueprint, PositionEntity position) =>
-      Construction.canPlace(_state, blueprint, position);
+  ConstructionRejection? placementRejection(BlueprintEntity blueprint, PositionEntity position) =>
+      Construction.rejection(_state, blueprint, position);
 
   InventoryEntity get funds => _state.stock;
 

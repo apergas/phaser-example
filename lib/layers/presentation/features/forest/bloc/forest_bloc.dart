@@ -280,7 +280,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     if (placement == null) return;
     _placement = placement.copyWith(
       position: position,
-      isValid: _canPlaceBuildingUseCase(blueprint: placement.blueprint, x: position.x, y: position.y),
+      isValid: _canPlaceBuildingUseCase(blueprint: placement.blueprint, x: position.x, y: position.y) == null,
     );
   }
 
@@ -307,11 +307,11 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         _placement = null;
         _showMessage(Internationalize.forestMessageBuildingStarted);
         effects.add(BuildingPlacedEffect(building: building));
-      case ConstructionRejectedEntity(reason: ConstructionRejection.blocked):
-        _showMessage(Internationalize.forestMessageBlockedSite);
       case ConstructionRejectedEntity(reason: ConstructionRejection.notEnoughResources):
         _placement = null;
         _showMessage(Internationalize.forestMessageNotEnoughResources);
+      case ConstructionRejectedEntity(:final reason):
+        _showMessage(Internationalize.forestPlacementRejection(rejection: reason));
     }
   }
 

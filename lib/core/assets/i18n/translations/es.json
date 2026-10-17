@@ -56,7 +56,8 @@
       "armory": "Armería",
       "mageTower": "Torre de magia",
       "camp": "Campamento",
-      "storehouse": "Almacén"
+      "storehouse": "Almacén",
+      "quarry": "Cantera"
     },
     "quest": {
       "gatherWood": "Lleva 15 de madera al almacén",
@@ -167,7 +168,8 @@
     },
     "placement": {
       "confirm": "Construir aquí",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "needsRock": "La cantera tiene que ir junto a una roca."
     },
     "accessibility": {
       "gameWorld": "Mundo de juego: bosque con árboles, el personaje y los edificios"

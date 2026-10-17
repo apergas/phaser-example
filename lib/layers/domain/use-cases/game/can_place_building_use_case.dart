@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/config/constants/enum/blueprint_id.dart';
+import '../../../../core/config/constants/enum/construction_rejection.dart';
 import '../../entities/geometry/position_entity.dart';
 import '../../repositories/session/game_session_repository.dart';
 import '../../rules/blueprints.dart';
@@ -11,7 +12,7 @@ final class CanPlaceBuildingUseCase {
 
   const CanPlaceBuildingUseCase({required this._sessionRepository});
 
-  bool call({required BlueprintId blueprint, required double x, required double y}) {
-    return _sessionRepository.current().world.canPlace(Blueprints.of(blueprint), PositionEntity(x: x, y: y));
+  ConstructionRejection? call({required BlueprintId blueprint, required double x, required double y}) {
+    return _sessionRepository.current().world.placementRejection(Blueprints.of(blueprint), PositionEntity(x: x, y: y));
   }
 }

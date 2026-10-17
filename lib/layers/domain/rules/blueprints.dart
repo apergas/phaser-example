@@ -1,6 +1,8 @@
 import '../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../core/config/constants/enum/resource.dart';
 import '../entities/building/blueprint_entity.dart';
+import '../entities/building/placement_rule_entity.dart';
+import 'rules.dart';
 
 abstract final class Blueprints {
   static const BlueprintEntity house = BlueprintEntity(
@@ -16,6 +18,14 @@ abstract final class Blueprints {
     hitsToBuild: 8,
     footprintRadius: 40,
     isDropOff: true,
+  );
+
+  static const BlueprintEntity quarry = BlueprintEntity(
+    id: BlueprintId.quarry,
+    cost: {Resource.wood: 25},
+    hitsToBuild: 8,
+    footprintRadius: 40,
+    placementRule: NearRockPlacementRuleEntity(range: Rules.quarryRockRange),
   );
 
   static const BlueprintEntity forge = BlueprintEntity(
@@ -48,7 +58,7 @@ abstract final class Blueprints {
     isDropOff: true,
   );
 
-  static const List<BlueprintEntity> all = [house, storehouse, forge, armory, mageTower, camp];
+  static const List<BlueprintEntity> all = [house, storehouse, quarry, forge, armory, mageTower, camp];
 
   static BlueprintEntity of(BlueprintId id) => all.firstWhere((blueprint) => blueprint.id == id);
 }

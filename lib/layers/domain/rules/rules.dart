@@ -18,6 +18,7 @@ abstract final class Rules {
   static const int rockStoneYield = 8;
   static const int rockHitsToBreak = 8;
   static const int carryCapacity = 10;
+  static const double quarryRockRange = 120;
   static const Map<TreeKind, TreeStatsEntity> treeKindStats = {
     TreeKind.slim: TreeStatsEntity(woodYield: 4, hitsToFell: 3),
     TreeKind.round: TreeStatsEntity(woodYield: 5, hitsToFell: 5),

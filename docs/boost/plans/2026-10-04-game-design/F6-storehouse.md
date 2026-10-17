@@ -1,5 +1,7 @@
 # F6 · Almacén y capacidad de carga — Implementation Plan
 
+> **Implementado el 2026-10-17 sin tests (regla del usuario); lo que falta de test está en *Para T1*.** Una sola rama `feature/PROJECT-F6-storehouse`, un commit por tarea (TF6.1–TF6.5) y el cierre; el plan se escribió a partir del código ya compilado, así que su commit quedó detrás de los de las tareas. Desvíos respecto a iOS y a la ficha: `BuildingDBO` con `x`/`y` sueltos y `BlueprintId.name` en lugar de un valor bruto (decisiones 4 y 7); `DepositResult` en el orden de la ficha y el evento `DepositedEventEntity`, que la ficha no nombraba (decisión 5); tocar una casa terminada sigue andando como antes en Flutter (decisión 6); umbrales del HUD medidos con Roboto: 1460 y 960 en vez de 1500 y 1000 pt (decisión 13). Planos, campamento, decoración quitada, frames (`forest.png` idéntico byte a byte) y cifras, idénticos a iOS.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use boost:subagent-driven-development (recommended) or boost:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Read the **Global Constraints** in [README.md](README.md) first; they apply to every task.
 
 | | |

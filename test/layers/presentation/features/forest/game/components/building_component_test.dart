@@ -52,18 +52,18 @@ void main() {
     expect(building.scale.y, closeTo(1, 1e-6));
   });
 
-  testWithFlameGame('testWhenTheBuildingIsBornFinishedLikeTheCampThenItIsOpaqueWithoutABounce', (game) async {
+  testWithFlameGame('testWhenTheBuildingIsBornFinishedLikeALoadedHouseThenItIsOpaqueWithoutABounce', (game) async {
     // given
-    final camp = BuildingComponent(assets: LpcAssetsMock.create(), building: ForestDataMock.camp);
+    final house = BuildingComponent(assets: LpcAssetsMock.create(), building: ForestDataMock.loadedHouse);
 
     // when
-    await game.ensureAdd(camp);
+    await game.ensureAdd(house);
     game.update(0.1);
 
     // then
-    expect(camp.isComplete, isTrue);
-    expect(camp.opacity, 1);
-    expect(camp.scale.y, 1);
-    expect(camp.position, Vector2(200, 202));
+    expect(house.isComplete, isTrue);
+    expect(house.opacity, 1);
+    expect(house.scale.y, 1);
+    expect(house.position, Vector2(200, 200));
   });
 }

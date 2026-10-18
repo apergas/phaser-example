@@ -73,7 +73,7 @@ abstract final class SaveScenarioMock {
     items: [GroundItemEntityMock.mock],
     decorations: [DecorationEntityMock.mock],
     buildings: [
-      BuildingEntityMock.camp,
+      BuildingEntityMock.finishedHouse,
       BuildingEntityMock.completed(Blueprints.house, id: 'building-1', position: const PositionEntity(x: 600, y: 300)),
       BuildingEntityMock.site(
         Blueprints.forge,

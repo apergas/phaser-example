@@ -29,7 +29,6 @@ abstract final class RenderConstants {
     BlueprintId.forge => 24,
     BlueprintId.armory => 24,
     BlueprintId.mageTower => 24,
-    BlueprintId.camp => 12,
     BlueprintId.workshop => 24,
   };
 

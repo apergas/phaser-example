@@ -26,7 +26,7 @@ void main() {
     expect(world.items, [GroundItemEntityMock.mock]);
     expect(world.decorations, [DecorationEntityMock.mock]);
     expect(world.buildings.map((building) => (building.id, building.hitsDone)), [
-      ('camp', 1),
+      ('house', 8),
       ('building-1', 8),
       ('building-3', 4),
     ]);
@@ -59,6 +59,6 @@ void main() {
     // then
     expect(world.buildings, hasLength(3));
     expect(changeCounter, throwsUnsupportedError);
-    expect(world.buildings.first, BuildingEntityMock.camp);
+    expect(world.buildings.first, BuildingEntityMock.finishedHouse);
   });
 }

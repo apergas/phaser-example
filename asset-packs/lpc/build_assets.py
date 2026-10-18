@@ -9,8 +9,8 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
   hero-{chop,hammer}.png           128x128 work animations: body slash frames between the tool's
                                    back and front layers (same layout as the LPC generator)
   forest.png + forest.json         JSON-hash atlas (TexturePacker format): trees and sapling (pivot = trunk base), decor, stump,
-                                   large rock, axe and pickaxe pickups, the house, the forge, the armory, the mage tower,
-                                   the camp and the workshop (pivot = bottom centre)
+                                   large rock, axe and pickaxe pickups, the house, the forge, the armory, the mage tower
+                                   and the workshop (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
   arena.png + arena.json           JSON-hash atlas for the arena: the hero (with the axe and each sword, in
                                    each armour: work clothes, leather, chain mail, plate), bandit,
@@ -194,10 +194,6 @@ CHIMNEY_INSET = 20  # distance from the chimney's right edge to the roof's right
 MAGE_TOWER_ROOF = [(30, 16, 40), (38, 20, 52), (62, 30, 92), (78, 40, 112), (96, 52, 136), (110, 62, 152), (134, 84, 178), (168, 120, 210), (190, 150, 226)]
 MAGE_TOWER_WALL_BOX = (96, 256, 192, 352)  # cottage.png, stone wall with long diagonal braces
 MAGE_TOWER_ROOF_STRETCH = 1.4  # the violet roof is drawn 40 % taller, like a spire
-CAMP_LOG_BOX = (776, 576, 792, 606)  # terrain_atlas.png, a straight piece of trunk; lying down it is a log
-CAMP_LOG_GAP = 2  # pixels between the two bottom logs
-CAMP_LOG_OVERLAP = 4  # the top log sinks into the two below
-CAMP_STUMP_OVERLAP = 6  # the stump stands in front of the log pile
 
 
 def trim(image: Image.Image, name: str) -> Image.Image:
@@ -294,20 +290,6 @@ def build_workshop() -> Image.Image:
     return build_cottage(FORGE_WALL_BOX, WORKSHOP_ROOF)
 
 
-def build_camp(terrain: Image.Image) -> Image.Image:
-    """The camp, the first building on the map: the tree stump in front of a pile of three logs."""
-    log = trim(terrain.crop(CAMP_LOG_BOX), "camp log").rotate(90, expand=True)
-    pile = Image.new("RGBA", (log.width * 2 + CAMP_LOG_GAP, log.height * 2 - CAMP_LOG_OVERLAP))
-    pile.alpha_composite(log, (0, log.height - CAMP_LOG_OVERLAP))
-    pile.alpha_composite(log, (log.width + CAMP_LOG_GAP, log.height - CAMP_LOG_OVERLAP))
-    pile.alpha_composite(log, ((pile.width - log.width) // 2, 0))
-    stump = terrain.crop(STUMP_BOX)
-    image = Image.new("RGBA", (stump.width + pile.width - CAMP_STUMP_OVERLAP, max(stump.height, pile.height)))
-    image.alpha_composite(pile, (stump.width - CAMP_STUMP_OVERLAP, image.height - pile.height))
-    image.alpha_composite(stump, (0, image.height - stump.height))
-    return image
-
-
 def build_forest() -> None:
     trees_sheet = Image.open(SOURCES / "terrain" / "trees-green.png").convert("RGBA")
     terrain = Image.open(SOURCES / "terrain" / "terrain_atlas.png").convert("RGBA")
@@ -347,8 +329,6 @@ def build_forest() -> None:
     pivots["armory"] = {"x": 0.5, "y": 1}
     frames["mage-tower"] = build_mage_tower()
     pivots["mage-tower"] = {"x": 0.5, "y": 1}
-    frames["camp"] = build_camp(terrain)
-    pivots["camp"] = {"x": 0.5, "y": 1}
     frames["workshop"] = build_workshop()
     pivots["workshop"] = {"x": 0.5, "y": 1}
 

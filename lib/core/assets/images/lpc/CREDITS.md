@@ -57,7 +57,6 @@ The mage tower roof is recoloured violet and stretched 40 % taller.
 The workshop (`workshop` frame) is the cottage with the forge's stone wall and the thatched roof recoloured green.
 
 The stump (`stump` frame) comes from the LPC Tile Atlas above.
-The camp (`camp` frame) is that stump in front of three logs cut from a tree trunk of the LPC Tile Atlas above.
 The large rock (`rock-large` frame) is a grey boulder of the LPC Tile Atlas above.
 The sapling (`sapling` frame) is a young plant from the farming crops of the LPC Tile Atlas above (Daniel Eddeland).
 

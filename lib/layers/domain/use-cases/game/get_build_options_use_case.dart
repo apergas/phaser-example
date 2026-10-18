@@ -14,7 +14,6 @@ final class GetBuildOptionsUseCase {
   List<BuildOptionEntity> call() {
     final funds = _sessionRepository.current().world.funds;
     return Blueprints.all
-        .where((blueprint) => blueprint.isBuildable)
         .map(
           (blueprint) => BuildOptionEntity(
             blueprint: blueprint.id,

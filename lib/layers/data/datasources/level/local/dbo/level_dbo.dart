@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 
-import 'building_dbo.dart';
 import 'decoration_dbo.dart';
 import 'item_dbo.dart';
 import 'point_dbo.dart';
@@ -15,7 +14,6 @@ class LevelDBO {
   final List<ItemDBO>? items;
   final List<DecorationDBO>? decorations;
   final List<RockDBO>? rocks;
-  final List<BuildingDBO>? buildings;
 
   const LevelDBO({
     this.width,
@@ -25,7 +23,6 @@ class LevelDBO {
     this.items,
     this.decorations,
     this.rocks,
-    this.buildings,
   });
 
   @override
@@ -37,8 +34,7 @@ class LevelDBO {
       const ListEquality<TreeDBO>().equals(other.trees, trees) &&
       const ListEquality<ItemDBO>().equals(other.items, items) &&
       const ListEquality<DecorationDBO>().equals(other.decorations, decorations) &&
-      const ListEquality<RockDBO>().equals(other.rocks, rocks) &&
-      const ListEquality<BuildingDBO>().equals(other.buildings, buildings);
+      const ListEquality<RockDBO>().equals(other.rocks, rocks);
 
   @override
   int get hashCode => Object.hash(
@@ -49,11 +45,10 @@ class LevelDBO {
     const ListEquality<ItemDBO>().hash(items),
     const ListEquality<DecorationDBO>().hash(decorations),
     const ListEquality<RockDBO>().hash(rocks),
-    const ListEquality<BuildingDBO>().hash(buildings),
   );
 
   @override
   String toString() =>
       'LevelDBO(width: $width, height: $height, playerStart: $playerStart, trees: $trees, items: $items, '
-      'decorations: $decorations, rocks: $rocks, buildings: $buildings)';
+      'decorations: $decorations, rocks: $rocks)';
 }

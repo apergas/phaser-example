@@ -175,7 +175,7 @@ void main() {
 
     // then
     expect(untranslated, isEmpty);
-    expect(names, ['Casa', 'Herrería', 'Armería', 'Torre de magia', 'Campamento', 'Taller']);
+    expect(names, ['Casa', 'Herrería', 'Armería', 'Torre de magia', 'Taller']);
   });
 
   test('testWhenFormattingTheVillageTextsThenUsesTheSpanishTexts', () {

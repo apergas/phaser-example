@@ -16,7 +16,7 @@ abstract final class SaveBuildingDBOMock {
     hitsDone: 8,
   );
   static const SaveBuildingDBO site = SaveBuildingDBO(id: 'building-1', blueprint: 'house', x: 0, y: 0);
-  static const SaveBuildingDBO camp = SaveBuildingDBO(id: 'camp', blueprint: 'camp', x: 300, y: 100, hitsDone: 1);
+  static const SaveBuildingDBO house = SaveBuildingDBO(id: 'house', blueprint: 'house', x: 300, y: 100, hitsDone: 8);
   static const SaveBuildingDBO finishedHouse = SaveBuildingDBO(
     id: 'building-1',
     blueprint: 'house',

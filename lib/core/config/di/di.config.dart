@@ -31,8 +31,6 @@ import 'package:farming/layers/data/datasources/save/source/game_save_local_data
     as _i768;
 import 'package:farming/layers/data/repositories/level/level_repository_impl.dart'
     as _i571;
-import 'package:farming/layers/data/repositories/level/mappers/building_mapper_dbo.dart'
-    as _i959;
 import 'package:farming/layers/data/repositories/level/mappers/decoration_mapper_dbo.dart'
     as _i188;
 import 'package:farming/layers/data/repositories/level/mappers/ground_item_mapper_dbo.dart'
@@ -144,7 +142,6 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final storageModule = _$StorageModule();
     gh.factory<_i284.AppExceptionHandler>(() => _i284.AppExceptionHandler());
-    gh.factory<_i959.BuildingMapperDBO>(() => _i959.BuildingMapperDBO());
     gh.factory<_i188.DecorationMapperDBO>(() => _i188.DecorationMapperDBO());
     gh.factory<_i875.GroundItemMapperDBO>(() => _i875.GroundItemMapperDBO());
     gh.factory<_i453.PositionMapperDBO>(() => _i453.PositionMapperDBO());
@@ -275,6 +272,15 @@ extension GetItInjectableX on _i174.GetIt {
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );
+    gh.factory<_i459.LevelMapperDBO>(
+      () => _i459.LevelMapperDBO(
+        positionMapperDBO: gh<_i453.PositionMapperDBO>(),
+        treeMapperDBO: gh<_i553.TreeMapperDBO>(),
+        decorationMapperDBO: gh<_i188.DecorationMapperDBO>(),
+        groundItemMapperDBO: gh<_i875.GroundItemMapperDBO>(),
+        rockMapperDBO: gh<_i1063.RockMapperDBO>(),
+      ),
+    );
     gh.singleton<_i195.Logger>(() => _i189.CustomLoggerImpl());
     gh.factory<_i1028.LevelLocalDatasource>(
       () => const _i783.LevelLocalDatasourceImpl(),
@@ -283,16 +289,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i657.GameSaveLocalDatasourceImpl(
         preferences: gh<_i460.SharedPreferencesWithCache>(),
         logger: gh<_i195.Logger>(),
-      ),
-    );
-    gh.factory<_i459.LevelMapperDBO>(
-      () => _i459.LevelMapperDBO(
-        positionMapperDBO: gh<_i453.PositionMapperDBO>(),
-        treeMapperDBO: gh<_i553.TreeMapperDBO>(),
-        decorationMapperDBO: gh<_i188.DecorationMapperDBO>(),
-        groundItemMapperDBO: gh<_i875.GroundItemMapperDBO>(),
-        rockMapperDBO: gh<_i1063.RockMapperDBO>(),
-        buildingMapperDBO: gh<_i959.BuildingMapperDBO>(),
       ),
     );
     gh.singleton<_i296.BlocLogger>(

@@ -43,7 +43,5 @@ abstract final class BuildingEntityMock {
 
   static const PositionEntity dropOffSite = PositionEntity(x: 300, y: 100);
 
-  static BuildingEntity get camp => completed(Blueprints.camp, id: 'camp', position: dropOffSite);
-
   static BuildingEntity get finishedHouse => completed(Blueprints.house, id: 'house', position: dropOffSite);
 }

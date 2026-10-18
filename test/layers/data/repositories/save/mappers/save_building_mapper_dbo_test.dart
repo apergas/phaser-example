@@ -17,25 +17,25 @@ void main() {
 
   test('testWhenMappingBuildingsToDboThenTheyKeepTheBlueprintByNameAndTheProgress', () {
     // given
-    final buildings = [BuildingEntityMock.halfBuilt, BuildingEntityMock.camp];
+    final buildings = [BuildingEntityMock.halfBuilt, BuildingEntityMock.finishedHouse];
 
     // when
     final dbos = buildings.map(sut.toDBO).toList();
 
     // then
-    expect(dbos, [SaveBuildingDBOMock.halfBuilt, SaveBuildingDBOMock.camp]);
+    expect(dbos, [SaveBuildingDBOMock.halfBuilt, SaveBuildingDBOMock.house]);
   });
 
   test('testWhenMappingDbosToBuildingsThenTheBlueprintComesFromTheCatalogue', () {
     // given
-    const dbos = [SaveBuildingDBOMock.halfBuilt, SaveBuildingDBOMock.camp, SaveBuildingDBOMock.forgeSite];
+    const dbos = [SaveBuildingDBOMock.halfBuilt, SaveBuildingDBOMock.house, SaveBuildingDBOMock.forgeSite];
 
     // when
     final buildings = dbos.map(sut.toEntity).toList();
 
     // then
     expect(buildings[0], BuildingEntityMock.halfBuilt);
-    expect(buildings[1], BuildingEntityMock.camp);
+    expect(buildings[1], BuildingEntityMock.finishedHouse);
     expect(buildings[2].blueprint, Blueprints.forge);
     expect(buildings[2].position, const PositionEntity(x: 900, y: 300));
     expect(buildings[2].hitsDone, 4);

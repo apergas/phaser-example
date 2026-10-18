@@ -14,14 +14,12 @@ abstract final class BlueprintEntityMock {
     Map<Resource, int> cost = const {Resource.wood: 15},
     int hitsToBuild = 8,
     double footprintRadius = 40,
-    bool isBuildable = true,
   }) {
     return BlueprintEntity(
       id: BlueprintId.house,
       cost: cost,
       hitsToBuild: hitsToBuild,
       footprintRadius: footprintRadius,
-      isBuildable: isBuildable,
     );
   }
 
@@ -51,13 +49,5 @@ abstract final class BlueprintEntityMock {
     cost: {Resource.wood: 30, Resource.gold: 40, Resource.stone: 10},
     hitsToBuild: 12,
     footprintRadius: 40,
-  );
-
-  static const BlueprintEntity camp = BlueprintEntity(
-    id: BlueprintId.camp,
-    cost: {},
-    hitsToBuild: 1,
-    footprintRadius: 30,
-    isBuildable: false,
   );
 }

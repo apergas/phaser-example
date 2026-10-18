@@ -8,7 +8,6 @@ import 'package:farming/layers/data/datasources/level/local/dbo/rock_dbo.dart';
 import 'package:farming/layers/data/datasources/level/local/dbo/tree_dbo.dart';
 import 'package:farming/layers/data/datasources/level/local/level_local_datasource_impl.dart';
 
-import '../../../../../mocks/data/datasources/level/building_dbo_mock.dart';
 import '../../../../../mocks/data/datasources/level/item_dbo_mock.dart';
 import '../../../../../mocks/data/datasources/level/point_dbo_mock.dart';
 import '../../../../../mocks/data/datasources/level/rock_dbo_mock.dart';
@@ -68,7 +67,6 @@ void main() {
     });
     expect(trees.fold<int>(0, (sum, tree) => sum + (tree.wood ?? 0)), 388);
     expect(level.items, [ItemDBOMock.pickaxe]);
-    expect(level.buildings, [BuildingDBOMock.camp]);
   });
 
   test('testWhenFetchingThenTwelveRocksMatchTheGoldenPositions', () {
@@ -119,23 +117,23 @@ void main() {
     }
   });
 
-  test('testWhenFetchingThenNinetyThreeDecorationsKeepTheirIdsAndTheOnesOnRocksThePickaxeOrTheCampAreGone', () {
+  test('testWhenFetchingThenNinetyFourDecorationsKeepTheirIdsAndTheOnesOnRocksOrThePickaxeAreGone', () {
     // given
     final level = sut.fetch();
-    const removed = {6, 12, 17, 30, 34, 37, 40, 42, 49, 68, 78, 81, 85, 105};
+    const removed = {6, 12, 17, 30, 34, 37, 40, 42, 49, 68, 81, 85, 105};
 
     // when
     final ids = (level.decorations ?? const []).map((decoration) => decoration.id).toList();
 
     // then
-    expect(ids, hasLength(93));
+    expect(ids, hasLength(94));
     expect(ids, [
       for (var index = 1; index <= 107; index++)
         if (!removed.contains(index)) 'decoration-$index',
     ]);
   });
 
-  test('testWhenFetchingThenNoDecorationIsCloseToTheCampOrARock', () {
+  test('testWhenFetchingThenNoDecorationIsCloseToThePickaxeOrARock', () {
     // given
     final level = sut.fetch();
     final rocks = level.rocks ?? const <RockDBO>[];
@@ -147,7 +145,6 @@ void main() {
     for (final decoration in decorations) {
       final x = decoration.x ?? 0;
       final y = decoration.y ?? 0;
-      expect(sqrt(pow(x - 700, 2) + pow(y - 592, 2)), greaterThanOrEqualTo(64), reason: decoration.id);
       expect(sqrt(pow(x - 1012, 2) + pow(y - 812, 2)), greaterThanOrEqualTo(32), reason: decoration.id);
       for (final rock in rocks) {
         expect(
@@ -181,7 +178,7 @@ void main() {
     final decorations = level.decorations ?? const [];
 
     // then
-    expect(decorations.length, 93);
+    expect(decorations.length, 94);
     expect(decorations.map((decoration) => decoration.kind).toSet(), {'tall-grass', 'leaves', 'mushrooms', 'rock'});
     for (final decoration in decorations) {
       final x = decoration.x ?? 0;

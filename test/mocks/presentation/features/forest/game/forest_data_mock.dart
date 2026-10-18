@@ -87,11 +87,11 @@ abstract final class ForestDataMock {
     hitsToBreak: 7,
   );
 
-  static final BuildingEntity camp = BuildingEntity(
-    id: 'camp',
-    blueprint: Blueprints.camp,
-    position: const PositionEntity(x: 200, y: 190),
-    hitsDone: 1,
+  static final BuildingEntity loadedHouse = BuildingEntity(
+    id: 'house',
+    blueprint: Blueprints.house,
+    position: const PositionEntity(x: 200, y: 176),
+    hitsDone: 8,
   );
 
   static WorldSnapshotEntity _snapshot({
@@ -278,8 +278,8 @@ abstract final class ForestDataMock {
     effects: const [RockHitEffect(rockId: 'rock-1', fromX: 270)],
   );
 
-  static final ForestData loadedWithCamp = ForestData(
-    world: _snapshot(buildings: [camp]),
+  static final ForestData loadedWithAHouse = ForestData(
+    world: _snapshot(buildings: [loadedHouse]),
     player: player,
   );
 }

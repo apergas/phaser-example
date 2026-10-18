@@ -58,7 +58,7 @@ void main() {
     expectSameGame(session, expected);
     expect(session.world.trees.map((tree) => (tree.id, tree.hitsTaken)), [('tree-1', 3), ('neighbour', 0)]);
     expect(session.world.buildings.map((building) => (building.id, building.hitsDone)), [
-      ('camp', 1),
+      ('house', 8),
       ('building-1', 8),
       ('building-3', 4),
     ]);

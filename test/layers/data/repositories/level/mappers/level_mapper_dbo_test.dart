@@ -1,10 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:farming/core/config/constants/enum/blueprint_id.dart';
 import 'package:farming/core/config/constants/enum/decoration_kind.dart';
 import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/core/config/constants/enum/tree_kind.dart';
 import 'package:farming/core/error-handling/exceptions/app_exceptions.dart';
-import 'package:farming/layers/data/repositories/level/mappers/building_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/decoration_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/ground_item_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/level_mapper_dbo.dart';
@@ -25,7 +23,6 @@ void main() {
       decorationMapperDBO: DecorationMapperDBO(),
       groundItemMapperDBO: GroundItemMapperDBO(),
       rockMapperDBO: RockMapperDBO(),
-      buildingMapperDBO: BuildingMapperDBO(),
     );
   });
 
@@ -52,32 +49,19 @@ void main() {
     expect(world.decorations.single.kind, DecorationKind.tallGrass);
     expect(world.decorations.single.position, const PositionEntity(x: 300, y: 200));
     expect(world.player.inventory.tools, {ToolKind.axe});
-    expect([...world.rocks, ...world.buildings], isEmpty);
+    expect(world.rocks, isEmpty);
+    expect(world.buildings, isEmpty);
   });
 
-  test('testWhenTheLevelHasRocksAndBuildingsThenTheWorldHasThemToo', () {
+  test('testWhenTheLevelHasRocksThenTheWorldHasThemToo', () {
     // given
-    const dbo = LevelDBOMock.mockWithRocksAndBuildings;
+    const dbo = LevelDBOMock.mockWithRocks;
 
     // when
     final world = sut.toEntity(dbo);
 
     // then
     expect(world.rocks.map((rock) => rock.id), ['rock-a']);
-    expect(world.buildings.map((building) => (building.id, building.blueprint.id, building.isComplete)), [
-      ('shop', BlueprintId.workshop, true),
-    ]);
-  });
-
-  test('testWhenALevelBuildingHasAnUnknownBlueprintThenThrowsInvalidLevelException', () {
-    // given
-    const dbo = LevelDBOMock.mockWithUnknownBlueprint;
-
-    // when
-    void map() => sut.toEntity(dbo);
-
-    // then
-    expect(map, throwsA(isA<InvalidLevelException>()));
   });
 
   test('testWhenMappingTwiceThenEachWorldIsIndependent', () {

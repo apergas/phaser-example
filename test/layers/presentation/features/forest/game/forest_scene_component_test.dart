@@ -356,12 +356,12 @@ void main() {
     await game.ensureAdd(scene);
 
     // when
-    scene.show(ForestDataMock.loadedWithCamp);
+    scene.show(ForestDataMock.loadedWithAHouse);
     await game.ready();
 
     // then
-    expect(scene.buildings.keys, ['camp']);
-    expect(scene.buildings['camp']!.isComplete, isTrue);
+    expect(scene.buildings.keys, ['house']);
+    expect(scene.buildings['house']!.isComplete, isTrue);
     expect(scene.clutter, isEmpty);
   });
 }

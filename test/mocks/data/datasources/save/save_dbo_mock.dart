@@ -19,12 +19,12 @@ abstract final class SaveDBOMock {
   static const List<String> _quests = ['gatherWood', 'buildHouse', 'buildForge'];
   static const List<String> _versionOneQuests = ['gatherWood', 'buildHouse', 'buildQuarry', 'buildForge'];
   static const List<SaveBuildingDBO> _buildings = [
-    SaveBuildingDBOMock.camp,
+    SaveBuildingDBOMock.house,
     SaveBuildingDBOMock.finishedHouse,
     SaveBuildingDBOMock.forgeSite,
   ];
   static const List<SaveBuildingDBO> _versionOneBuildings = [
-    SaveBuildingDBOMock.camp,
+    SaveBuildingDBOMock.house,
     SaveBuildingDBOMock.finishedHouse,
     SaveBuildingDBOMock.storehouse,
     SaveBuildingDBOMock.forgeSite,

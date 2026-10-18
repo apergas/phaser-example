@@ -16,18 +16,15 @@ void main() {
     expect(blueprint, BlueprintEntityMock.mock);
   });
 
-  test('testWhenAskingForTheVillageBuildingsThenTheyHaveTheirCostsAndHits', () {
+  test('testWhenAskingForTheWorkshopThenItCostsWoodAndStoneAndTakesTenHits', () {
     // given
-    const ids = [BlueprintId.workshop, BlueprintId.camp];
+    const id = BlueprintId.workshop;
 
     // when
-    final blueprints = ids.map(Blueprints.of).toList();
+    final blueprint = Blueprints.of(id);
 
     // then
-    expect(blueprints, [
-      BlueprintEntityMock.workshop,
-      BlueprintEntityMock.camp,
-    ]);
+    expect(blueprint, BlueprintEntityMock.workshop);
   });
 
   test('testWhenAskingForTheWorkshopsThenTheyCostTwentyFiveWoodAndTenStoneAndTakeTenHits', () {
@@ -53,27 +50,16 @@ void main() {
     expect(blueprint, BlueprintEntityMock.mageTower);
   });
 
-  test('testWhenListingBlueprintsThenTheHouseAndTheWorkshopComeFirstAndTheCampLast', () {
+  test('testWhenListingBlueprintsThenEveryBuildingAppearsOnceWithTheHouseAndTheWorkshopFirst', () {
     // given
     final ids = Blueprints.all.map((blueprint) => blueprint.id).toList();
 
     // when
-    final positions = (ids.first, ids.indexOf(BlueprintId.workshop), ids.last);
+    final positions = (ids.first, ids.indexOf(BlueprintId.workshop));
 
     // then
     expect(ids.toSet(), BlueprintId.values.toSet());
     expect(ids, hasLength(BlueprintId.values.length));
-    expect(positions, (BlueprintId.house, 1, BlueprintId.camp));
-  });
-
-  test('testWhenAskingWhichBlueprintsCanBeBuiltThenOnlyTheCampCannot', () {
-    // given
-    const blueprints = Blueprints.all;
-
-    // when
-    final notBuildable = blueprints.where((blueprint) => !blueprint.isBuildable).map((blueprint) => blueprint.id);
-
-    // then
-    expect(notBuildable, [BlueprintId.camp]);
+    expect(positions, (BlueprintId.house, 1));
   });
 }

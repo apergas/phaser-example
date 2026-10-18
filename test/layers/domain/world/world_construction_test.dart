@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/layers/domain/world/extensions/stock_rules.dart';
-import 'package:farming/core/config/constants/enum/construction_rejection.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/core/config/constants/enum/resume_construction_result.dart';
 import 'package:farming/layers/domain/entities/game/construction_result_entity.dart';
@@ -179,19 +178,5 @@ void main() {
     // then
     expect(result, isA<ConstructionStartedEntity>());
     expect(world.stock.amount(Resource.wood), 2);
-  });
-
-  test('testWhenTryingToPlaceTheCampThenItIsBlocked', () {
-    // given
-    final world = WorldMock.withSeventeenWood();
-
-    // when
-    final rejection = world.placementRejection(Blueprints.camp, const PositionEntity(x: 300, y: 100));
-    final result = world.orderConstruction(Blueprints.camp, const PositionEntity(x: 300, y: 100));
-
-    // then
-    expect(rejection, ConstructionRejection.blocked);
-    expect(result, ConstructionResultEntityMock.blocked);
-    expect(world.buildings, isEmpty);
   });
 }

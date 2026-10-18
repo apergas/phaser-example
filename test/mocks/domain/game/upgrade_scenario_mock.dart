@@ -1,8 +1,6 @@
 import 'package:farming/core/config/constants/enum/resource.dart';
-import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/layers/domain/entities/building/building_entity.dart';
 import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
-import 'package:farming/layers/domain/entities/player/inventory_entity.dart';
 import 'package:farming/layers/domain/entities/player/player_entity.dart';
 import 'package:farming/layers/domain/rules/blueprints.dart';
 import 'package:farming/layers/domain/world/world.dart';
@@ -21,13 +19,6 @@ abstract final class UpgradeScenarioMock {
   static const Map<Resource, int> axeAndAlmostThePickaxe = {Resource.wood: 15, Resource.stone: 15};
 
   static const Map<Resource, int> fiveStoneShortOfTheIronAxe = {Resource.wood: 15, Resource.stone: 10};
-
-  static const PlayerEntity carryingTheIronAxePrice = PlayerEntity(
-    position: PositionEntity(x: 100, y: 100),
-    speed: 100,
-    radius: 8,
-    inventory: InventoryEntity(resources: {Resource.wood: 5, Resource.stone: 5}, tools: {ToolKind.axe}),
-  );
 
   static BuildingEntity get workshop =>
       BuildingEntityMock.completed(Blueprints.workshop, id: 'workshop', position: workshopPosition);

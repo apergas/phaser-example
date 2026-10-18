@@ -23,8 +23,6 @@ abstract final class BuildOptionEntityMock {
 
   static const List<BlueprintEntity> buildable = [
     BlueprintEntityMock.mock,
-    BlueprintEntityMock.storehouse,
-    BlueprintEntityMock.quarry,
     BlueprintEntityMock.workshop,
     BlueprintEntityMock.forge,
     BlueprintEntityMock.armory,

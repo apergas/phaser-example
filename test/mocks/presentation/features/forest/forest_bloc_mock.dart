@@ -2,7 +2,6 @@ import 'package:mockito/mockito.dart';
 import 'package:farming/layers/domain/entities/game/game_session_entity.dart';
 import 'package:farming/layers/domain/use-cases/game/advance_game_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/buy_upgrade_use_case.dart';
-import 'package:farming/layers/domain/use-cases/game/deposit_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/get_stock_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/get_upgrade_options_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/mine_rock_use_case.dart';
@@ -68,7 +67,6 @@ abstract final class ForestBlocMock {
       canPlaceBuildingUseCase: CanPlaceBuildingUseCase(sessionRepository: sessionRepository),
       constructBuildingUseCase: ConstructBuildingUseCase(sessionRepository: sessionRepository),
       resumeConstructionUseCase: ResumeConstructionUseCase(sessionRepository: sessionRepository),
-      depositUseCase: DepositUseCase(sessionRepository: sessionRepository),
       advanceGameUseCase: AdvanceGameUseCase(sessionRepository: sessionRepository),
       getPlayerStatusUseCase: GetPlayerStatusUseCase(sessionRepository: sessionRepository),
       getWorldSnapshotUseCase: GetWorldSnapshotUseCase(sessionRepository: sessionRepository),

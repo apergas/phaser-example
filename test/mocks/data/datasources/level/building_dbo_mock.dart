@@ -2,7 +2,7 @@ import 'package:farming/layers/data/datasources/level/local/dbo/building_dbo.dar
 
 abstract final class BuildingDBOMock {
   static const camp = BuildingDBO(id: 'camp', blueprint: 'camp', x: 700, y: 592);
-  static const storehouse = BuildingDBO(id: 'store', blueprint: 'storehouse', x: 300, y: 200);
+  static const workshop = BuildingDBO(id: 'shop', blueprint: 'workshop', x: 300, y: 200);
   static const withoutId = BuildingDBO(blueprint: 'camp', x: 1, y: 2);
   static const withoutPosition = BuildingDBO(id: 'camp', blueprint: 'camp');
   static const unknownBlueprint = BuildingDBO(id: 'castle-1', blueprint: 'castle', x: 0, y: 0);

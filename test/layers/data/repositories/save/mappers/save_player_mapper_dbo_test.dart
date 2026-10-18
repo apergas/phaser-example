@@ -5,7 +5,6 @@ import 'package:farming/layers/data/repositories/save/mappers/save_position_mapp
 import 'package:farming/layers/data/datasources/save/local/dbo/save_player_dbo.dart';
 import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/rules/rules.dart';
-import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../../../mocks/data/datasources/save/save_player_dbo_mock.dart';
 import '../../../../../mocks/data/repositories/save/invalid_save_matcher.dart';
@@ -66,39 +65,6 @@ void main() {
     expect(player.position, const PositionEntity(x: 420, y: 380));
   });
 
-  test('testWhenTheLoadIsExactlyTheCapacityThenThePlayerLoads', () {
-    // given
-    const dbo = SavePlayerDBOMock.atCapacity;
-
-    // when
-    final player = sut.toEntity(dbo);
-
-    // then
-    expect(player.inventory.load, Rules.carryCapacity);
-  });
-
-  test('testWhenTheLoadIsAboveTheCapacityThenItThrows', () {
-    // given
-    const dbo = SavePlayerDBOMock.overloaded;
-
-    // when
-    void map() => sut.toEntity(dbo);
-
-    // then
-    expect(map, throwsInvalidSave('player carries 11 of 10'));
-  });
-
-  test('testWhenThePlayerCarriesGoldBeyondTheCapacityThenItStillLoads', () {
-    // given
-    const dbo = SavePlayerDBOMock.carryingGold;
-
-    // when
-    final player = sut.toEntity(dbo);
-
-    // then
-    expect(player.inventory.load, 10);
-  });
-
   test('testWhenTheInventoryIsInvalidThenItThrowsNamingThePlayer', () {
     // given
     const dbo = SavePlayerDBOMock.withBadInventory;
@@ -107,7 +73,7 @@ void main() {
     void map() => sut.toEntity(dbo);
 
     // then
-    expect(map, throwsInvalidSave('player: unknown resource "diamond"'));
+    expect(map, throwsInvalidSave('player: unknown tool "hammer"'));
   });
 
   test('testWhenACoordinateIsMissingThenItThrows', () {

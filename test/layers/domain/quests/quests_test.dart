@@ -10,6 +10,7 @@ import 'package:farming/layers/domain/quests/quests.dart';
 import 'package:farming/layers/domain/rules/blueprints.dart';
 import 'package:farming/layers/domain/world/world.dart';
 
+import '../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 import '../../../mocks/domain/entities/building/building_entity_mock.dart';
 import '../../../mocks/domain/entities/game/stats_entity_mock.dart';
 import '../../../mocks/domain/entities/hero/hero_entity_mock.dart';
@@ -29,7 +30,7 @@ void main() {
     ],
   );
 
-  test('testWhenListingTheQuestsThenThereAreNineteenElevenOfTheVillageBeforeEightOfTheHero', () {
+  test('testWhenListingTheQuestsThenThereAreEighteenTenOfTheVillageBeforeEightOfTheHero', () {
     // given
     final quests = Quests.all;
 
@@ -37,10 +38,10 @@ void main() {
     final lines = quests.map((quest) => quest.line).toList();
 
     // then
-    expect(quests, hasLength(19));
-    expect(lines.where((line) => line == QuestLine.village), hasLength(11));
-    expect(lines.indexOf(QuestLine.hero), 11);
-    expect(lines.skip(11).toSet(), {QuestLine.hero});
+    expect(quests, hasLength(18));
+    expect(lines.where((line) => line == QuestLine.village), hasLength(10));
+    expect(lines.indexOf(QuestLine.hero), 10);
+    expect(lines.skip(10).toSet(), {QuestLine.hero});
   });
 
   test('testWhenListingTheVillageQuestsThenTheyFollowTheChapterOrderWithTheirTargets', () {
@@ -60,7 +61,6 @@ void main() {
       (QuestId.buildTwoHouses, 2),
       (QuestId.seeATreeRegrow, 1),
       (QuestId.gatherTwentyStone, 20),
-      (QuestId.buildQuarry, 1),
       (QuestId.buildWorkshop, 1),
       (QuestId.upgradeAxe, 1),
     ]);
@@ -86,22 +86,9 @@ void main() {
     ]);
   });
 
-  test('testWhenTheWoodIsCarriedButNotStoredThenTheWoodQuestsDoNotCountIt', () {
-    // given
-    final world = WorldMock.restored(
-      player: PlayerEntityMock.mock.copyWith(inventory: InventoryEntityMock.make(wood: 10)),
-    );
-
-    // when
-    final measures = (progress(QuestId.gatherWood, world), progress(QuestId.gatherFortyWood, world));
-
-    // then
-    expect(measures, (0, 0));
-  });
-
   test('testWhenTheWoodAndStoneAreStoredThenTheGatheringQuestsCountThem', () {
     // given
-    final world = WorldMock.restored(stock: InventoryEntityMock.make(wood: 42, stone: 21));
+    final world = WorldMock.restored(stock: StockEntityMock.make(wood: 42, stone: 21));
 
     // when
     final measures = [
@@ -145,7 +132,7 @@ void main() {
   test('testWhenBuildingsAreFinishedThenTheBuildingQuestsCountThemAndSitesDoNot', () {
     // given
     final world = withBuildings(
-      [Blueprints.house, Blueprints.quarry, Blueprints.workshop, Blueprints.forge, Blueprints.armory],
+      [Blueprints.house, Blueprints.workshop, Blueprints.forge, Blueprints.armory],
       sites: [Blueprints.house, Blueprints.mageTower],
     );
 
@@ -154,7 +141,6 @@ void main() {
       for (final id in [
         QuestId.buildHouse,
         QuestId.buildTwoHouses,
-        QuestId.buildQuarry,
         QuestId.buildWorkshop,
         QuestId.buildForge,
         QuestId.buildArmory,
@@ -164,7 +150,7 @@ void main() {
     ];
 
     // then
-    expect(measures, [1, 1, 1, 1, 1, 1, 0]);
+    expect(measures, [1, 1, 1, 1, 1, 0]);
     expect(progress(QuestId.buildTwoHouses, withBuildings([Blueprints.house, Blueprints.house])), 2);
   });
 

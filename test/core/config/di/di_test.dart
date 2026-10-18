@@ -14,6 +14,8 @@ import 'package:farming/layers/data/repositories/save/mappers/save_building_mapp
 import 'package:farming/layers/data/repositories/save/mappers/save_decoration_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_ground_item_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_hero_mapper_dbo.dart';
+import 'package:farming/layers/data/repositories/save/mappers/save_migration_mapper_dbo.dart';
+import 'package:farming/layers/data/repositories/save/mappers/save_stock_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_inventory_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_player_mapper_dbo.dart';
@@ -32,7 +34,6 @@ import 'package:farming/layers/domain/use-cases/game/buy_upgrade_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/can_place_building_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/chop_tree_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/construct_building_use_case.dart';
-import 'package:farming/layers/domain/use-cases/game/deposit_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/get_build_options_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/get_player_status_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/get_quests_use_case.dart';
@@ -104,7 +105,6 @@ void main() {
       locator.isRegistered<CanPlaceBuildingUseCase>(),
       locator.isRegistered<ChopTreeUseCase>(),
       locator.isRegistered<ConstructBuildingUseCase>(),
-      locator.isRegistered<DepositUseCase>(),
       locator.isRegistered<GetBuildOptionsUseCase>(),
       locator.isRegistered<GetPlayerStatusUseCase>(),
       locator.isRegistered<GetQuestsUseCase>(),
@@ -137,10 +137,12 @@ void main() {
       locator.isRegistered<SaveHeroMapperDBO>(),
       locator.isRegistered<SaveInventoryMapperDBO>(),
       locator.isRegistered<SaveMapperDBO>(),
+      locator.isRegistered<SaveMigrationMapperDBO>(),
       locator.isRegistered<SavePlayerMapperDBO>(),
       locator.isRegistered<SavePositionMapperDBO>(),
       locator.isRegistered<SaveRockMapperDBO>(),
       locator.isRegistered<SaveStatsMapperDBO>(),
+      locator.isRegistered<SaveStockMapperDBO>(),
       locator.isRegistered<SaveStumpMapperDBO>(),
       locator.isRegistered<SaveTreeMapperDBO>(),
       locator.isRegistered<LevelRepository>(),

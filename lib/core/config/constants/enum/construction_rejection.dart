@@ -1,1 +1,1 @@
-enum ConstructionRejection { notEnoughResources, blocked, needsNearbyRock }
+enum ConstructionRejection { notEnoughResources, blocked }

@@ -66,15 +66,15 @@ void main() {
 
   test('testWhenNamingTheVillageSpritesThenFollowsTheAtlasFrameNamesAndFrontOffsets', () {
     // given
-    const ids = [BlueprintId.camp, BlueprintId.storehouse, BlueprintId.quarry, BlueprintId.workshop];
+    const ids = [BlueprintId.camp, BlueprintId.workshop];
 
     // when
     final names = ids.map(SpriteNames.building).toList();
     final offsets = ids.map(RenderConstants.buildingFrontOffset).toList();
 
     // then
-    expect(names, ['camp', 'storehouse', 'quarry', 'workshop']);
-    expect(offsets, [12, 24, 16, 24]);
+    expect(names, ['camp', 'workshop']);
+    expect(offsets, [12, 24]);
     expect(
       (SpriteNames.sapling, SpriteNames.rock, SpriteNames.item(ToolKind.pickaxe)),
       (

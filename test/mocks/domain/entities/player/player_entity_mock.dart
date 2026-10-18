@@ -1,4 +1,3 @@
-import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/entities/player/activity_entity.dart';
@@ -21,20 +20,6 @@ abstract final class PlayerEntityMock {
     speed: 100,
     radius: 8,
     inventory: InventoryEntity(tools: {ToolKind.axe}),
-  );
-
-  static const PlayerEntity withFifteenWood = PlayerEntity(
-    position: PositionEntity(x: 100, y: 100),
-    speed: 100,
-    radius: 8,
-    inventory: InventoryEntity(resources: {Resource.wood: 15}),
-  );
-
-  static const PlayerEntity withSeventeenWood = PlayerEntity(
-    position: PositionEntity(x: 100, y: 100),
-    speed: 100,
-    radius: 8,
-    inventory: InventoryEntity(resources: {Resource.wood: 17}),
   );
 
   static const PlayerEntity centered = PlayerEntity(position: PositionEntity(x: 50, y: 50), speed: 100, radius: 8);
@@ -70,59 +55,6 @@ abstract final class PlayerEntityMock {
     speed: 100,
     radius: 8,
     inventory: InventoryEntity(tools: {ToolKind.axe, ToolKind.pickaxe}, toolLevels: {ToolKind.pickaxe: 2}),
-  );
-
-  static const PlayerEntity withPickaxeAndSixWood = PlayerEntity(
-    position: PositionEntity(x: 100, y: 100),
-    speed: 100,
-    radius: 8,
-    inventory: InventoryEntity(resources: {Resource.wood: 6}, tools: {ToolKind.axe, ToolKind.pickaxe}),
-  );
-
-  static const PlayerEntity withPickaxeAndFullLoad = PlayerEntity(
-    position: PositionEntity(x: 100, y: 100),
-    speed: 100,
-    radius: 8,
-    inventory: InventoryEntity(resources: {Resource.wood: 10}, tools: {ToolKind.axe, ToolKind.pickaxe}),
-  );
-
-  static const PlayerEntity withAxeAndNineWood = PlayerEntity(
-    position: PositionEntity(x: 100, y: 100),
-    speed: 100,
-    radius: 8,
-    inventory: InventoryEntity(resources: {Resource.wood: 9}, tools: {ToolKind.axe}),
-  );
-
-  static const PlayerEntity withAxeAndFullLoad = PlayerEntity(
-    position: PositionEntity(x: 100, y: 100),
-    speed: 100,
-    radius: 8,
-    inventory: InventoryEntity(resources: {Resource.wood: 10}, tools: {ToolKind.axe}),
-  );
-
-  static const PlayerEntity withFullLoadAndNoAxe = PlayerEntity(
-    position: PositionEntity(x: 100, y: 100),
-    speed: 100,
-    radius: 8,
-    inventory: InventoryEntity(resources: {Resource.wood: 10}),
-  );
-
-  static const PlayerEntity carryingMixedLoad = PlayerEntity(
-    position: PositionEntity(x: 100, y: 100),
-    speed: 100,
-    radius: 8,
-    inventory: InventoryEntity(
-      resources: {Resource.wood: 6, Resource.stone: 3, Resource.gold: 5, Resource.mana: 2},
-      tools: {ToolKind.axe, ToolKind.pickaxe},
-      toolLevels: {ToolKind.axe: 2},
-    ),
-  );
-
-  static const PlayerEntity carryingOnlyGoldAndMana = PlayerEntity(
-    position: PositionEntity(x: 100, y: 100),
-    speed: 100,
-    radius: 8,
-    inventory: InventoryEntity(resources: {Resource.gold: 50, Resource.mana: 20}, tools: {ToolKind.axe}),
   );
 
   static const PlayerEntity withIronAxe = PlayerEntity(

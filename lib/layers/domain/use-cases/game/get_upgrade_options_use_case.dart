@@ -7,6 +7,7 @@ import '../../repositories/session/game_session_repository.dart';
 import '../../rules/upgrades.dart';
 import '../../world/extensions/building_rules.dart';
 import '../../world/extensions/inventory_rules.dart';
+import '../../world/extensions/stock_rules.dart';
 import '../../world/world.dart';
 
 @Injectable()

@@ -1,7 +1,6 @@
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/layers/domain/entities/building/blueprint_entity.dart';
-import 'package:farming/layers/domain/entities/building/placement_rule_entity.dart';
 
 abstract final class BlueprintEntityMock {
   static const BlueprintEntity mock = BlueprintEntity(
@@ -16,8 +15,6 @@ abstract final class BlueprintEntityMock {
     int hitsToBuild = 8,
     double footprintRadius = 40,
     bool isBuildable = true,
-    Set<Resource> accepts = const {},
-    PlacementRuleEntity placementRule = const AnywherePlacementRuleEntity(),
   }) {
     return BlueprintEntity(
       id: BlueprintId.house,
@@ -25,27 +22,8 @@ abstract final class BlueprintEntityMock {
       hitsToBuild: hitsToBuild,
       footprintRadius: footprintRadius,
       isBuildable: isBuildable,
-      accepts: accepts,
-      placementRule: placementRule,
     );
   }
-
-  static const BlueprintEntity storehouse = BlueprintEntity(
-    id: BlueprintId.storehouse,
-    cost: {Resource.wood: 20},
-    hitsToBuild: 8,
-    footprintRadius: 40,
-    accepts: {Resource.wood, Resource.stone},
-  );
-
-  static const BlueprintEntity quarry = BlueprintEntity(
-    id: BlueprintId.quarry,
-    cost: {Resource.wood: 25},
-    hitsToBuild: 8,
-    footprintRadius: 40,
-    accepts: {Resource.stone},
-    placementRule: NearRockPlacementRuleEntity(range: 120),
-  );
 
   static const BlueprintEntity workshop = BlueprintEntity(
     id: BlueprintId.workshop,
@@ -81,6 +59,5 @@ abstract final class BlueprintEntityMock {
     hitsToBuild: 1,
     footprintRadius: 30,
     isBuildable: false,
-    accepts: {Resource.wood, Resource.stone},
   );
 }

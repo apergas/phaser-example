@@ -10,7 +10,7 @@ import '../../../../../helpers/spanish_translations.dart';
 void main() {
   setUpAll(loadSpanishTranslations);
 
-  String needsRock() => Internationalize.forestPlacementRejection(rejection: ConstructionRejection.needsNearbyRock);
+  String blocked() => Internationalize.forestPlacementRejection(rejection: ConstructionRejection.blocked);
 
   testWidgets('testWhenConfirmIsTappedThenOnConfirmIsCalled', (tester) async {
     // given
@@ -42,7 +42,7 @@ void main() {
 
   testWidgets('testWhenThereIsAReasonThenItIsShownAndRead', (tester) async {
     // given
-    final reason = needsRock();
+    final reason = blocked();
 
     // when
     await tester.pumpHud(PlacementBar(reason: reason, onConfirm: () {}, onCancel: () {}));
@@ -59,7 +59,7 @@ void main() {
     await tester.pumpHud(PlacementBar(reason: null, onConfirm: () {}, onCancel: () {}));
 
     // then
-    expect(find.text(needsRock()), findsNothing);
+    expect(find.text(blocked()), findsNothing);
     final label = find.ancestor(of: find.text(' '), matching: find.byType(Opacity));
     expect(tester.widget<Opacity>(label.first).opacity, 0);
     expect(
@@ -76,7 +76,7 @@ void main() {
     final without = tester.getSize(find.byType(PlacementBar)).height;
 
     // when
-    await tester.pumpHud(PlacementBar(reason: needsRock(), onConfirm: () {}, onCancel: () {}));
+    await tester.pumpHud(PlacementBar(reason: blocked(), onConfirm: () {}, onCancel: () {}));
 
     // then
     expect(tester.getSize(find.byType(PlacementBar)).height, without);

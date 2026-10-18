@@ -5,6 +5,7 @@ import 'package:farming/core/config/constants/enum/quest_id.dart';
 import 'package:farming/layers/data/datasources/save/local/dbo/save_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_mapper_dbo.dart';
 
+import '../../../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 import '../../../../../mocks/data/datasources/save/save_dbo_mock.dart';
 import '../../../../../mocks/data/repositories/save/invalid_save_matcher.dart';
 import '../../../../../mocks/data/repositories/save/save_mapper_dbo_factory.dart';
@@ -12,7 +13,6 @@ import '../../../../../mocks/data/repositories/save/same_game_matcher.dart';
 import '../../../../../mocks/data/repositories/save/save_round_trip_mock.dart';
 import '../../../../../mocks/domain/entities/game/stats_entity_mock.dart';
 import '../../../../../mocks/domain/entities/hero/hero_entity_mock.dart';
-import '../../../../../mocks/domain/entities/player/inventory_entity_mock.dart';
 import '../../../../../mocks/domain/game/save_scenario_mock.dart';
 
 void main() {
@@ -130,7 +130,7 @@ void main() {
     expect((session.world.width, session.world.height), (400, 300));
     expect(session.world.hero, HeroEntityMock.mock);
     expect(session.world.stats, StatsEntityMock.empty);
-    expect(session.world.stock, InventoryEntityMock.mock);
+    expect(session.world.stock, StockEntityMock.mock);
     expect(session.world.buildings, isEmpty);
     expect(session.world.stumps, isEmpty);
   });
@@ -143,8 +143,23 @@ void main() {
     final attempts = [for (final dbo in dbos) () => sut.toEntity(dbo)];
 
     // then
-    expect(attempts[0], throwsInvalidSave('unknown version 2'));
+    expect(attempts[0], throwsInvalidSave('unknown version 3'));
     expect(attempts[1], throwsInvalidSave('unknown version null'));
+  });
+
+  test('testWhenMappingAVersionOneSaveThenTheGameLoadsWithTheLoadInTheStockAndWithoutTheRemovedPieces', () {
+    // given
+    final dbo = SaveDBOMock.versionOne;
+
+    // when
+    final session = sut.toEntity(dbo);
+
+    // then
+    final expected = SaveScenarioMock.everything();
+    expect(session.world.stock, SaveScenarioMock.stockWithTheVersionOneLoad);
+    expect(session.world.player, expected.player);
+    expect(session.world.buildings, expected.buildings);
+    expect(session.quests.completed, SaveScenarioMock.completedQuests);
   });
 
   test('testWhenTheWorldWidthIsMissingOrNotPositiveThenItThrows', () {

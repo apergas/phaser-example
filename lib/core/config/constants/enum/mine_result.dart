@@ -1,1 +1,1 @@
-enum MineResult { ok, noPickaxe, unknownRock, carryFull }
+enum MineResult { ok, noPickaxe, unknownRock }

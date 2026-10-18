@@ -1,6 +1,6 @@
 # Progreso del desarrollo
 
-> Planes: [héroe y arena](2026-10-06-hero-arena/README.md) · [aldea](2026-10-04-game-design/README.md) · [arreglos y mejoras](2026-10-17-extras/README.md). Última actualización: 2026-10-17.
+> Planes: [héroe y arena](2026-10-06-hero-arena/README.md) · [aldea](2026-10-04-game-design/README.md) · [arreglos y mejoras](2026-10-17-extras/README.md). Última actualización: 2026-10-18.
 
 | Icono | Estado |
 |---|---|
@@ -53,6 +53,7 @@
 | [Rayas negras en el suelo de la arena](2026-10-17-extras/arena-ground-seams.md) | ✅ | `develop` (#61) |
 | [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | ✅ | `develop` (#71) |
 | [T1 Tests](2026-10-17-extras/T1-tests.md) | ✅ | `develop` (1206 tests, 260 en Chrome) |
+| [Recursos directos al almacén, sin carga, almacén ni cantera](2026-10-17-extras/auto-stock.md) | ✅ | `develop` (1179 tests, 276 en Chrome) |
 
 ## Siguiente paso
 
@@ -62,3 +63,4 @@
 | ✅ | Aldea: empezar con el hacha, F1, F3, F4 (bloque 1), F5–F8 (bloque 2) y F2 (bloque 3), unidos a `develop` | `feature/PROJECT-X-town` → `develop` |
 | ✅ | Prueba manual del bloque de la aldea en Chrome (tala, carga y entrega en el campamento, autoguardado al recargar, *Partida* ▸ *Guardar* / *Nueva partida*) y arranque en Android 16; iOS sin probar | — |
 | ✅ | T1 Tests | `feature/PROJECT-T1-tests` → `develop` |
+| ✅ | Recursos directos al almacén | `feature/PROJECT-X-auto-stock` → `develop` |

@@ -3,9 +3,9 @@ import 'package:mockito/mockito.dart';
 import 'package:farming/layers/domain/use-cases/game/get_stock_use_case.dart';
 import 'package:farming/layers/domain/world/world.dart';
 
+import '../../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
-import '../../../../mocks/domain/entities/player/inventory_entity_mock.dart';
 import '../../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../../mocks/domain/world/world_mock.dart';
 
@@ -23,12 +23,12 @@ void main() {
     return world;
   }
 
-  test('testWhenReadingTheStockThenItIsTheStoredResourcesAndNotTheCarriedOnes', () {
+  test('testWhenReadingTheStockThenItIsTheStoredResources', () {
     // given
     playing(
       WorldMock.restored(
-        player: PlayerEntityMock.carryingMixedLoad,
-        stock: InventoryEntityMock.make(wood: 6, stone: 3),
+        player: PlayerEntityMock.withPickaxe,
+        stock: StockEntityMock.make(wood: 6, stone: 3),
       ),
     );
 
@@ -36,17 +36,17 @@ void main() {
     final stock = sut();
 
     // then
-    expect(stock, InventoryEntityMock.make(wood: 6, stone: 3));
+    expect(stock, StockEntityMock.make(wood: 6, stone: 3));
   });
 
   test('testWhenNothingWasStoredThenTheStockIsEmpty', () {
     // given
-    playing(WorldMock.restored(player: PlayerEntityMock.carryingMixedLoad));
+    playing(WorldMock.restored(player: PlayerEntityMock.withPickaxe));
 
     // when
     final stock = sut();
 
     // then
-    expect(stock, InventoryEntityMock.mock);
+    expect(stock, StockEntityMock.mock);
   });
 }

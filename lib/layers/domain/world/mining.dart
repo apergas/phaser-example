@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import '../../../core/config/constants/enum/mine_result.dart';
 import '../../../core/config/constants/enum/resource.dart';
 import '../../../core/config/constants/enum/tool_kind.dart';
@@ -8,10 +6,9 @@ import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
 import '../entities/player/intent_entity.dart';
 import '../rules/rules.dart';
-import 'extensions/building_rules.dart';
 import 'extensions/inventory_rules.dart';
-import 'extensions/player_rules.dart';
 import 'extensions/rock_rules.dart';
+import 'extensions/stock_rules.dart';
 import 'work.dart';
 import 'world_state.dart';
 
@@ -21,17 +18,11 @@ final class Mining implements Work<MineIntentEntity> {
   static MineResult check(WorldState state, String rockId) {
     if (!state.rocks.containsKey(rockId)) return MineResult.unknownRock;
     if (!state.player.inventory.hasTool(ToolKind.pickaxe)) return MineResult.noPickaxe;
-    if (state.player.inventory.isLoadFull) return MineResult.carryFull;
     return MineResult.ok;
   }
 
   @override
-  double intervalMs(WorldState state, MineIntentEntity intent) {
-    final rock = state.rocks[intent.rockId];
-    if (rock == null) return Rules.mineIntervalMs;
-    final isBoosted = state.buildings.values.any((building) => building.boostsMining(rock.position));
-    return isBoosted ? Rules.quarryMineIntervalMs : Rules.mineIntervalMs;
-  }
+  double intervalMs(WorldState state, MineIntentEntity intent) => Rules.chopIntervalMs;
 
   @override
   ObstacleEntity? target(WorldState state, MineIntentEntity intent) => state.rocks[intent.rockId]?.footprint;
@@ -55,9 +46,8 @@ final class Mining implements Work<MineIntentEntity> {
       return false;
     }
     state.rocks.remove(rock.id);
-    final stone = min(rock.stoneYield, state.player.inventory.freeLoad);
-    state.player = state.player.withInventory(state.player.inventory.add(Resource.stone, stone));
-    events.add(RockBrokenEventEntity(rockId: rock.id, stone: stone));
+    state.stock = state.stock.add(Resource.stone, rock.stoneYield);
+    events.add(RockBrokenEventEntity(rockId: rock.id, stone: rock.stoneYield));
     return true;
   }
 }

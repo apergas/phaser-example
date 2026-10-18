@@ -1,1 +1,1 @@
-enum ChopResult { ok, noAxe, unknownTree, carryFull }
+enum ChopResult { ok, noAxe, unknownTree }

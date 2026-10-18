@@ -51,7 +51,7 @@ void main() {
     // then
     expect(name, 'Casa');
     expect(quests, [
-      'Lleva 15 de madera al almacén',
+      'Reúne 15 de madera',
       'Construye una casa',
       'Construye la Herrería',
       'Gana un nivel de la arena',
@@ -67,7 +67,6 @@ void main() {
       'Ten 2 casas terminadas',
       'Ve rebrotar un árbol',
       'Ten 20 de piedra en el almacén',
-      'Construye una cantera',
       'Construye el Taller',
       'Compra el Hacha de hierro',
     ]);
@@ -176,24 +175,20 @@ void main() {
 
     // then
     expect(untranslated, isEmpty);
-    expect(names, ['Casa', 'Herrería', 'Armería', 'Torre de magia', 'Campamento', 'Almacén', 'Cantera', 'Taller']);
+    expect(names, ['Casa', 'Herrería', 'Armería', 'Torre de magia', 'Campamento', 'Taller']);
   });
 
   test('testWhenFormattingTheVillageTextsThenUsesTheSpanishTexts', () {
     // given
-    final amounts = Internationalize.forestAmount(resource: Resource.wood, amount: 10);
+    const stone = Resource.stone;
 
     // when
     final texts = [
-      Internationalize.forestAmount(resource: Resource.stone, amount: 3),
+      Internationalize.forestAmount(resource: stone, amount: 3),
       Internationalize.forestMessageStoneGained(amount: 8),
       Internationalize.forestFloatingWoodGained(wood: 5),
       Internationalize.forestFloatingStoneGained(amount: 8),
-      Internationalize.forestMessageCarryFull,
-      Internationalize.forestMessageDeposited(amounts: amounts),
-      Internationalize.forestMessageNothingToDeposit,
       Internationalize.forestStock,
-      Internationalize.forestCarry(amount: 7, capacity: 10),
       Internationalize.forestQuestsDone(count: 1),
       Internationalize.forestQuestsDone(count: 3),
     ];
@@ -204,11 +199,7 @@ void main() {
       '+8 de piedra',
       '+5',
       '+8',
-      'Llevas la carga llena. Déjala en el campamento o en un almacén.',
-      'Guardado en el almacén: 10 de madera',
-      'No llevas nada que guardar.',
       'Almacén',
-      'Carga 7/10',
       '1 hecha',
       '3 hechas',
     ]);
@@ -225,7 +216,6 @@ void main() {
     expect(texts, [
       'No tienes recursos suficientes.',
       'Ahí no cabe. Busca un sitio despejado.',
-      'La cantera tiene que ir junto a una roca.',
     ]);
   });
 

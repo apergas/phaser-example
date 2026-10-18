@@ -8,13 +8,13 @@ import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
 import '../entities/hero/hero_entity.dart';
 import '../entities/item/ground_item_entity.dart';
-import '../entities/player/inventory_entity.dart';
 import '../entities/player/player_entity.dart';
 import '../entities/rock/rock_entity.dart';
+import '../entities/stock/stock_entity.dart';
 import '../entities/tree/stump_entity.dart';
 import '../entities/tree/tree_entity.dart';
-import 'extensions/inventory_rules.dart';
 import 'extensions/obstacle_rules.dart';
+import 'extensions/stock_rules.dart';
 
 class WorldState {
   WorldState({
@@ -29,7 +29,7 @@ class WorldState {
     this.hero = const HeroEntity(),
     List<StumpEntity> stumps = const [],
     this.stats = const StatsEntity(),
-    this.stock = const InventoryEntity(),
+    this.stock = const StockEntity(),
     Map<String, int> idCounters = const {},
   }) : assert(width > 0 && height > 0),
        trees = {for (final tree in trees) tree.id: tree},
@@ -51,7 +51,7 @@ class WorldState {
   final Map<String, BuildingEntity> buildings;
   final Map<String, StumpEntity> stumps;
   StatsEntity stats;
-  InventoryEntity stock;
+  StockEntity stock;
   final Map<String, int> _idCounters;
 
   Map<String, int> get idCounters => Map.unmodifiable(_idCounters);

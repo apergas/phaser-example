@@ -11,6 +11,7 @@ import '../world/extensions/building_rules.dart';
 import '../world/extensions/hero_rules.dart';
 import '../world/extensions/inventory_rules.dart';
 import '../world/extensions/stats_rules.dart';
+import '../world/extensions/stock_rules.dart';
 import '../world/world.dart';
 import 'quest.dart';
 
@@ -63,12 +64,6 @@ abstract final class Quests {
       line: QuestLine.village,
       target: 20,
       measure: (world) => world.funds.amount(Resource.stone),
-    ),
-    _MeasuredQuest(
-      id: QuestId.buildQuarry,
-      line: QuestLine.village,
-      target: 1,
-      measure: (world) => _built(world, BlueprintId.quarry),
     ),
     _MeasuredQuest(
       id: QuestId.buildWorkshop,

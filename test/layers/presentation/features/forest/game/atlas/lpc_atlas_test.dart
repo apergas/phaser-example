@@ -79,12 +79,12 @@ void main() {
   test('testWhenParsingTheGeneratedAtlasThenTheVillageBuildingsHaveTheirFrames', () {
     // given
     final source = File('lib/core/assets/images/lpc/forest.json').readAsStringSync();
-    const ids = [BlueprintId.camp, BlueprintId.storehouse, BlueprintId.quarry, BlueprintId.workshop];
+    const ids = [BlueprintId.camp, BlueprintId.workshop];
 
     // when
     final frames = LpcAtlas.parse(source);
 
     // then
-    expect(ids.map((id) => frames.containsKey(SpriteNames.building(id))), [true, true, true, true]);
+    expect(ids.map((id) => frames.containsKey(SpriteNames.building(id))), [true, true]);
   });
 }

@@ -2,16 +2,12 @@ import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/entities/rock/rock_entity.dart';
 
 abstract final class RockEntityMock {
-  static const PositionEntity quarryNearTheRock = PositionEntity(x: 300, y: 259);
-
-  static const PositionEntity quarryAtTheBoostRange = PositionEntity(x: 300, y: 260);
-
   static const RockEntity intact = RockEntity(
     id: 'rock-1',
     position: PositionEntity(x: 300, y: 100),
     radius: 22,
     stoneYield: 8,
-    hitsToBreak: 8,
+    hitsToBreak: 7,
   );
 
   static const RockEntity almostBroken = RockEntity(
@@ -19,8 +15,8 @@ abstract final class RockEntityMock {
     position: PositionEntity(x: 300, y: 100),
     radius: 22,
     stoneYield: 8,
-    hitsToBreak: 8,
-    hitsTaken: 7,
+    hitsToBreak: 7,
+    hitsTaken: 6,
   );
 
   static const RockEntity broken = RockEntity(
@@ -28,8 +24,8 @@ abstract final class RockEntityMock {
     position: PositionEntity(x: 300, y: 100),
     radius: 22,
     stoneYield: 8,
-    hitsToBreak: 8,
-    hitsTaken: 8,
+    hitsToBreak: 7,
+    hitsTaken: 7,
   );
 
   static const RockEntity onceHit = RockEntity(
@@ -37,7 +33,7 @@ abstract final class RockEntityMock {
     position: PositionEntity(x: 300, y: 100),
     radius: 22,
     stoneYield: 8,
-    hitsToBreak: 8,
+    hitsToBreak: 7,
     hitsTaken: 1,
   );
 
@@ -46,7 +42,7 @@ abstract final class RockEntityMock {
     position: PositionEntity(x: 233, y: 100),
     radius: 22,
     stoneYield: 8,
-    hitsToBreak: 8,
+    hitsToBreak: 7,
   );
 
   static const RockEntity nearStump = RockEntity(
@@ -54,6 +50,6 @@ abstract final class RockEntityMock {
     position: PositionEntity(x: 235, y: 100),
     radius: 22,
     stoneYield: 8,
-    hitsToBreak: 8,
+    hitsToBreak: 7,
   );
 }

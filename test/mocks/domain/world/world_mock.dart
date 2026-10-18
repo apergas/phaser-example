@@ -1,8 +1,8 @@
+import 'package:farming/layers/domain/entities/stock/stock_entity.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/layers/domain/entities/building/building_entity.dart';
 import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
 import 'package:farming/layers/domain/entities/game/stats_entity.dart';
-import 'package:farming/layers/domain/entities/player/inventory_entity.dart';
 import 'package:farming/layers/domain/entities/rock/rock_entity.dart';
 import 'package:farming/layers/domain/entities/tree/stump_entity.dart';
 import 'package:farming/layers/domain/entities/hero/hero_entity.dart';
@@ -48,7 +48,7 @@ abstract final class WorldMock {
     List<BuildingEntity> buildings = const [],
     HeroEntity hero = HeroEntityMock.mock,
     StatsEntity stats = const StatsEntity(),
-    InventoryEntity stock = const InventoryEntity(),
+    StockEntity stock = const StockEntity(),
     Map<String, int> idCounters = const {},
   }) {
     return World.restore(

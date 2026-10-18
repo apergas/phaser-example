@@ -41,10 +41,6 @@ abstract final class GameScenarioMock {
     trees: [TreeEntityMock.mock.copyWith(position: const PositionEntity(x: 120, y: 100))],
   );
 
-  static World tenWood() => WorldMock.make(
-    player: PlayerEntityMock.mock.copyWith(inventory: const InventoryEntity(resources: {Resource.wood: 10})),
-  );
-
   static World tenWoodInStock() => WorldMock.withStock(const {Resource.wood: 10});
 
   static World besideARock() => WorldMock.make(rocks: [RockEntityMock.intact]);

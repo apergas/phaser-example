@@ -67,8 +67,6 @@ class Internationalize {
   static String get forestGameConfirm => '$_forest.game.confirm'.tr();
   static String get forestGameCancel => '$_forest.game.cancel'.tr();
   static String get forestStock => '$_forest.hud.stock'.tr();
-  static String forestCarry({required int amount, required int capacity}) =>
-      '$_forest.hud.carry'.tr(namedArgs: {'amount': '$amount', 'capacity': '$capacity'});
   static String get forestQuestDone => '$_forest.hud.questDone'.tr();
   static String forestQuestsDone({required int count}) =>
       '$_forest.hud.questsDone'.plural(count, namedArgs: {'count': '$count'});
@@ -85,8 +83,6 @@ class Internationalize {
     BlueprintId.armory => '$_forest.blueprint.armory'.tr(),
     BlueprintId.mageTower => '$_forest.blueprint.mageTower'.tr(),
     BlueprintId.camp => '$_forest.blueprint.camp'.tr(),
-    BlueprintId.storehouse => '$_forest.blueprint.storehouse'.tr(),
-    BlueprintId.quarry => '$_forest.blueprint.quarry'.tr(),
     BlueprintId.workshop => '$_forest.blueprint.workshop'.tr(),
   };
   static String forestQuestTitle({required QuestId id}) => switch (id) {
@@ -106,7 +102,6 @@ class Internationalize {
     QuestId.buildTwoHouses => '$_forest.quest.buildTwoHouses'.tr(),
     QuestId.seeATreeRegrow => '$_forest.quest.seeATreeRegrow'.tr(),
     QuestId.gatherTwentyStone => '$_forest.quest.gatherTwentyStone'.tr(),
-    QuestId.buildQuarry => '$_forest.quest.buildQuarry'.tr(),
     QuestId.buildWorkshop => '$_forest.quest.buildWorkshop'.tr(),
     QuestId.upgradeAxe => '$_forest.quest.upgradeAxe'.tr(),
   };
@@ -131,10 +126,6 @@ class Internationalize {
       '$_forest.message.woodGained'.tr(namedArgs: {'wood': '$wood'});
   static String forestMessageStoneGained({required int amount}) =>
       '$_forest.message.stoneGained'.tr(namedArgs: {'amount': '$amount'});
-  static String get forestMessageCarryFull => '$_forest.message.carryFull'.tr();
-  static String forestMessageDeposited({required String amounts}) =>
-      '$_forest.message.deposited'.tr(namedArgs: {'amounts': amounts});
-  static String get forestMessageNothingToDeposit => '$_forest.message.nothingToDeposit'.tr();
   static String forestMessagePlacing({required String name}) =>
       '$_forest.message.placing'.tr(namedArgs: {'name': name});
   static String forestMessagePlacingTouch({required String name}) =>
@@ -148,7 +139,6 @@ class Internationalize {
   static String forestPlacementRejection({required ConstructionRejection rejection}) => switch (rejection) {
     ConstructionRejection.notEnoughResources => forestMessageNotEnoughResources,
     ConstructionRejection.blocked => forestMessageBlockedSite,
-    ConstructionRejection.needsNearbyRock => '$_forest.placement.needsRock'.tr(),
   };
   static String get forestAccessibilityGameWorld => '$_forest.accessibility.gameWorld'.tr();
   static String get forestRetry => '$_forest.retry'.tr();

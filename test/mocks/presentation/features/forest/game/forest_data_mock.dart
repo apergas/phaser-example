@@ -84,7 +84,7 @@ abstract final class ForestDataMock {
     position: const PositionEntity(x: 300, y: 250),
     radius: 22,
     stoneYield: 8,
-    hitsToBreak: 8,
+    hitsToBreak: 7,
   );
 
   static final BuildingEntity camp = BuildingEntity(

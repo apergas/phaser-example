@@ -7,8 +7,8 @@ import 'package:farming/layers/domain/rules/blueprints.dart';
 import 'package:farming/layers/domain/world/extensions/position_geometry.dart';
 import 'package:farming/layers/domain/world/world.dart';
 
+import '../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
-import '../../../mocks/domain/entities/player/inventory_entity_mock.dart';
 import '../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../mocks/domain/entities/rock/rock_entity_mock.dart';
 import '../../../mocks/domain/entities/tree/stump_entity_mock.dart';
@@ -152,7 +152,7 @@ void main() {
     // given
     World stockedWithStump() => WorldMock.restored(
       stumps: [StumpEntityMock.fresh],
-      stock: InventoryEntityMock.make(wood: 15),
+      stock: StockEntityMock.make(wood: 15),
     );
     final near = stockedWithStump();
     final far = stockedWithStump();

@@ -1,8 +1,5 @@
-import 'package:collection/collection.dart';
-
 import '../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../../core/config/constants/enum/quest_id.dart';
-import '../../../../core/config/constants/enum/resource.dart';
 import '../../../../core/config/constants/enum/tool_kind.dart';
 import '../tree/tree_entity.dart';
 
@@ -147,20 +144,4 @@ final class RockBrokenEventEntity extends GameEventEntity {
 
   @override
   int get hashCode => Object.hash(RockBrokenEventEntity, rockId, stone);
-}
-
-final class DepositedEventEntity extends GameEventEntity {
-  final String buildingId;
-  final Map<Resource, int> load;
-
-  const DepositedEventEntity({required this.buildingId, required this.load});
-
-  @override
-  bool operator ==(Object other) =>
-      other is DepositedEventEntity &&
-      other.buildingId == buildingId &&
-      const MapEquality<Resource, int>().equals(other.load, load);
-
-  @override
-  int get hashCode => Object.hash(DepositedEventEntity, buildingId, const MapEquality<Resource, int>().hash(load));
 }

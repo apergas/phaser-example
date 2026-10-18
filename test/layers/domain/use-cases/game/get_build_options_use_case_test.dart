@@ -5,7 +5,6 @@ import 'package:farming/layers/domain/use-cases/game/get_build_options_use_case.
 
 import '../../../../mocks/domain/entities/game/build_option_entity_mock.dart';
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
-import '../../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../../mocks/domain/game/game_scenario_mock.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
 import '../../../../mocks/domain/world/world_mock.dart';
@@ -29,8 +28,6 @@ void main() {
     // then
     expect(ids, [
       BlueprintId.house,
-      BlueprintId.storehouse,
-      BlueprintId.quarry,
       BlueprintId.workshop,
       BlueprintId.forge,
       BlueprintId.armory,
@@ -72,18 +69,5 @@ void main() {
     // then
     expect(options, BuildOptionEntityMock.everyBuildableWithStock(wood: 17));
     expect(options.first, BuildOptionEntityMock.mock);
-  });
-
-  test('testWhenTheWoodIsOnlyCarriedThenWhatIsMissingIsMeasuredInTheStock', () {
-    // given
-    when(
-      sessionRepository.current(),
-    ).thenReturn(GameSessionEntityMock.playing(WorldMock.make(player: PlayerEntityMock.withSeventeenWood)));
-
-    // when
-    final options = sut();
-
-    // then
-    expect(options, BuildOptionEntityMock.everyBuildableWithStock());
   });
 }

@@ -5,11 +5,11 @@ import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/quests/quest_log.dart';
 import 'package:farming/layers/domain/rules/blueprints.dart';
 
+import '../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/game/quest_progress_entity_mock.dart';
 import '../../../mocks/domain/entities/game/stats_entity_mock.dart';
 import '../../../mocks/domain/entities/hero/hero_entity_mock.dart';
-import '../../../mocks/domain/entities/player/inventory_entity_mock.dart';
 import '../../../mocks/domain/world/funds_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
 
@@ -23,8 +23,8 @@ void main() {
 
     // then
     final village = status.where((quest) => quest.line == QuestLine.village).toList();
-    expect(status, hasLength(19));
-    expect(village, hasLength(11));
+    expect(status, hasLength(18));
+    expect(village, hasLength(10));
     expect(village.take(2), const [
       QuestProgressEntityMock.gatherWoodCurrent,
       QuestProgressEntityMock.buildHousePending,
@@ -78,12 +78,12 @@ void main() {
 
   test('testWhenWoodIsSpentAfterCompletingThenWoodQuestsStayCompleted', () {
     // given
-    final world = WorldMock.withStock(InventoryEntityMock.make(wood: 40).resources);
+    final world = WorldMock.withStock(StockEntityMock.fortyWood);
     final questLog = QuestLog();
     final completed = questLog.update(world).map((event) => event.questId).toList();
 
     // when
-    world.spend(InventoryEntityMock.make(wood: 40).resources);
+    world.spend(StockEntityMock.fortyWood);
 
     // then
     final status = questLog.status(world);
@@ -94,7 +94,7 @@ void main() {
 
   test('testWhenProgressExceedsTargetThenItIsCapped', () {
     // given
-    final world = WorldMock.withStock(InventoryEntityMock.make(wood: 40).resources);
+    final world = WorldMock.withStock(StockEntityMock.fortyWood);
 
     // when
     final woodQuest = QuestLog().status(world).firstWhere((quest) => quest.id == QuestId.gatherWood);

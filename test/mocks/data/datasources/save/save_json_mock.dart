@@ -5,6 +5,7 @@ import 'save_dbo_mock.dart';
 abstract final class SaveJsonMock {
   static final String valid = jsonEncode(SaveDBOMock.everything.toJson());
   static final String otherVersion = jsonEncode(SaveDBOMock.otherVersion.toJson());
+  static final String versionOne = jsonEncode(SaveDBOMock.versionOne.toJson());
   static final String outOfRange = jsonEncode(SaveDBOMock.withBadTree.toJson());
   static final String withoutPlayer = jsonEncode(SaveDBOMock.withoutPlayer.toJson());
   static const String broken = '{"version": 1, "width": 16';

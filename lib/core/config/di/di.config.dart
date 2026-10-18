@@ -59,6 +59,8 @@ import 'package:farming/layers/data/repositories/save/mappers/save_inventory_map
     as _i911;
 import 'package:farming/layers/data/repositories/save/mappers/save_mapper_dbo.dart'
     as _i440;
+import 'package:farming/layers/data/repositories/save/mappers/save_migration_mapper_dbo.dart'
+    as _i881;
 import 'package:farming/layers/data/repositories/save/mappers/save_player_mapper_dbo.dart'
     as _i589;
 import 'package:farming/layers/data/repositories/save/mappers/save_position_mapper_dbo.dart'
@@ -67,6 +69,8 @@ import 'package:farming/layers/data/repositories/save/mappers/save_rock_mapper_d
     as _i143;
 import 'package:farming/layers/data/repositories/save/mappers/save_stats_mapper_dbo.dart'
     as _i24;
+import 'package:farming/layers/data/repositories/save/mappers/save_stock_mapper_dbo.dart'
+    as _i583;
 import 'package:farming/layers/data/repositories/save/mappers/save_stump_mapper_dbo.dart'
     as _i396;
 import 'package:farming/layers/data/repositories/save/mappers/save_tree_mapper_dbo.dart'
@@ -93,8 +97,6 @@ import 'package:farming/layers/domain/use-cases/game/chop_tree_use_case.dart'
     as _i803;
 import 'package:farming/layers/domain/use-cases/game/construct_building_use_case.dart'
     as _i349;
-import 'package:farming/layers/domain/use-cases/game/deposit_use_case.dart'
-    as _i867;
 import 'package:farming/layers/domain/use-cases/game/get_build_options_use_case.dart'
     as _i109;
 import 'package:farming/layers/domain/use-cases/game/get_player_status_use_case.dart'
@@ -152,10 +154,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i911.SaveInventoryMapperDBO>(
       () => _i911.SaveInventoryMapperDBO(),
     );
+    gh.factory<_i881.SaveMigrationMapperDBO>(
+      () => _i881.SaveMigrationMapperDBO(),
+    );
     gh.factory<_i829.SavePositionMapperDBO>(
       () => _i829.SavePositionMapperDBO(),
     );
     gh.factory<_i24.SaveStatsMapperDBO>(() => _i24.SaveStatsMapperDBO());
+    gh.factory<_i583.SaveStockMapperDBO>(() => _i583.SaveStockMapperDBO());
     await gh.singletonAsync<_i460.SharedPreferencesWithCache>(
       () => storageModule.preferences,
       preResolve: true,
@@ -196,11 +202,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i349.ConstructBuildingUseCase>(
       () => _i349.ConstructBuildingUseCase(
-        sessionRepository: gh<_i663.GameSessionRepository>(),
-      ),
-    );
-    gh.factory<_i867.DepositUseCase>(
-      () => _i867.DepositUseCase(
         sessionRepository: gh<_i663.GameSessionRepository>(),
       ),
     );
@@ -348,7 +349,8 @@ extension GetItInjectableX on _i174.GetIt {
         groundItemMapperDBO: gh<_i840.SaveGroundItemMapperDBO>(),
         decorationMapperDBO: gh<_i105.SaveDecorationMapperDBO>(),
         buildingMapperDBO: gh<_i2.SaveBuildingMapperDBO>(),
-        inventoryMapperDBO: gh<_i911.SaveInventoryMapperDBO>(),
+        stockMapperDBO: gh<_i583.SaveStockMapperDBO>(),
+        migrationMapperDBO: gh<_i881.SaveMigrationMapperDBO>(),
         playerMapperDBO: gh<_i589.SavePlayerMapperDBO>(),
         heroMapperDBO: gh<_i815.SaveHeroMapperDBO>(),
         statsMapperDBO: gh<_i24.SaveStatsMapperDBO>(),

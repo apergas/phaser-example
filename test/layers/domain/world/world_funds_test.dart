@@ -1,9 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:farming/layers/domain/world/extensions/stock_rules.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
-import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../mocks/domain/entities/player/inventory_entity_mock.dart';
-import '../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../mocks/domain/world/funds_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
 
@@ -89,18 +88,5 @@ void main() {
     expect(paid, isFalse);
     expect(world.stock.amount(Resource.wood), 17);
     expect(world.stock.amount(Resource.gold), 0);
-  });
-
-  test('testWhenThePlayerCarriesWoodThenItIsNotPartOfTheFunds', () {
-    // given
-    final world = WorldMock.make(player: PlayerEntityMock.withSeventeenWood);
-
-    // when
-    final paid = world.spend(FundsMock.fiveWoodAndFourGold);
-
-    // then
-    expect(paid, isFalse);
-    expect(world.funds.amount(Resource.wood), 0);
-    expect(world.player.inventory.amount(Resource.wood), 17);
   });
 }

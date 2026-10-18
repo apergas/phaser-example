@@ -12,10 +12,6 @@ abstract final class ConstructionResultEntityMock {
     reason: ConstructionRejection.notEnoughResources,
   );
 
-  static const ConstructionRejectedEntity needsNearbyRock = ConstructionRejectedEntity(
-    reason: ConstructionRejection.needsNearbyRock,
-  );
-
   static ConstructionStartedEntity makeStarted() =>
       ConstructionStartedEntity(building: BuildingEntityMock.mock.copyWith());
 

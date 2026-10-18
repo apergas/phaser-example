@@ -43,12 +43,12 @@ Todo esto (plan, README y `PROGRESS.md`) va en **la misma rama de la tarea**, en
 
 ## 4. PR y tracker
 
-Confirma con el usuario antes de hacer *push* y abrir el PR.
+No esperes a que el usuario apruebe el PR: tras abrirlo, únelo tú en local a `develop` con `--no-ff` y haz *push* (paso 5).
 
 ```bash
-git fetch origin && git merge origin/feature/PROJECT-X-town   # arena (C*): origin/feature/PROJECT-X-arena
+git fetch origin && git merge origin/develop
 git push -u origin HEAD
-gh pr create --repo apergas/phaser-example --base feature/PROJECT-X-town --title "[PROJECT-<fase>]: <title>" --body "<resumen>
+gh pr create --repo apergas/phaser-example --base develop --title "[PROJECT-<fase>]: <title>" --body "<resumen>
 
 Cómo probarlo:
 <pasos de la tarea>
@@ -59,9 +59,8 @@ gh issue comment <n> --repo apergas/phaser-example --body "PR abierto: <url>. Ve
 
 - **Conflicto al unir ramas en `lib/core/assets/images/lpc/forest.{png,json}` o `arena.{png,json}`:** toma la versión de `develop`, ejecuta `cd asset-packs/lpc && python3 build_assets.py` y añade el resultado.
 - **Conflicto en `di.config.dart` o en un `*.mocks.dart`:** toma cualquiera de las dos versiones, ejecuta `dart run build_runner build --delete-conflicting-outputs` y añade el resultado.
-- **Arena (fases C\*):** la PR va a `feature/PROJECT-X-arena` (`--base feature/PROJECT-X-arena`), no a `develop`. Ver la sección 3.0 del README de la arena.
-- **Aldea (fases F\*):** la PR va a `feature/PROJECT-X-town`. El paso de `town` a `develop` es por bloques (sección 3.0 del README de la aldea) y no lo hace esta skill.
-- **Documentación** (planes, README, `PROGRESS.md`): viaja con el código, en la rama de la tarea y en su mismo PR. Llega a `develop` cuando lo hace la rama de integración.
+- **Destino:** toda PR va a `develop`; ya no hay ramas de integración (desde el 2026-10-18). El paso de `develop` a `main` lo hace solo el usuario.
+- **Documentación** (planes, README, `PROGRESS.md`): viaja con el código, en la rama de la tarea y en su mismo PR. Llega a `develop` con ella.
 - Tras resolver un conflicto, vuelve a ejecutar la batería del paso 1.
 - Si existe el Project, mueve la tarjeta a *Review*.
 
@@ -75,5 +74,6 @@ Resume al usuario:
 
 ## 5. Después de unir el PR
 
-- Borra la rama de la tarea en local (`git branch -d <rama>`, tras `git fetch --prune`; GitHub ya borra la remota al unir). Si queda la remota, `git push origin --delete <rama>`. Nunca borres `main`, `develop`, `feature/PROJECT-X-arena` ni `feature/PROJECT-X-town`.
+- Une la rama: `git switch develop && git pull --ff-only && git merge --no-ff <rama> -m "[PROJECT-<fase>]: Merge <rama>" && git push`. Cierra la issue y mueve la tarjeta a *Done*.
+- Borra la rama de la tarea en local (`git branch -d <rama>`, tras `git fetch --prune`). Si queda la remota, `git push origin --delete <rama>`. Nunca borres `main` ni `develop`.
 - Borra también los worktrees de esa tarea (`git worktree remove`).

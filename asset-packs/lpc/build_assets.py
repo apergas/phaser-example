@@ -10,7 +10,7 @@ Outputs (into lib/core/assets/images/lpc/, the one copy the Flutter app reads on
                                    back and front layers (same layout as the LPC generator)
   forest.png + forest.json         JSON-hash atlas (TexturePacker format): trees and sapling (pivot = trunk base), decor, stump,
                                    large rock, axe and pickaxe pickups, the house, the forge, the armory, the mage tower,
-                                   the storehouse, the camp, the quarry and the workshop (pivot = bottom centre)
+                                   the camp and the workshop (pivot = bottom centre)
   ground.png                       grass tile(s) for the tilemap (32x32 each, in a row)
   arena.png + arena.json           JSON-hash atlas for the arena: the hero (with the axe and each sword, in
                                    each armour: work clothes, leather, chain mail, plate), bandit,
@@ -194,18 +194,10 @@ CHIMNEY_INSET = 20  # distance from the chimney's right edge to the roof's right
 MAGE_TOWER_ROOF = [(30, 16, 40), (38, 20, 52), (62, 30, 92), (78, 40, 112), (96, 52, 136), (110, 62, 152), (134, 84, 178), (168, 120, 210), (190, 150, 226)]
 MAGE_TOWER_WALL_BOX = (96, 256, 192, 352)  # cottage.png, stone wall with long diagonal braces
 MAGE_TOWER_ROOF_STRETCH = 1.4  # the violet roof is drawn 40 % taller, like a spire
-STOREHOUSE_WALL_BOX = (288, 0, 384, 96)  # cottage.png, ochre wall with vertical posts
-CRATE_BOX = (672, 576, 704, 608)  # terrain_atlas.png, a closed wooden chest with iron bands
-CRATE_SCALE = 0.75  # the crates beside the storehouse door are drawn at three quarters of their size
-CRATE_INSET = 14  # distance from each crate to the side of the storehouse image
 CAMP_LOG_BOX = (776, 576, 792, 606)  # terrain_atlas.png, a straight piece of trunk; lying down it is a log
 CAMP_LOG_GAP = 2  # pixels between the two bottom logs
 CAMP_LOG_OVERLAP = 4  # the top log sinks into the two below
 CAMP_STUMP_OVERLAP = 6  # the stump stands in front of the log pile
-QUARRY_FENCE_TILES = 2  # the quarry is two arena fence pieces wide
-QUARRY_BLOCK_DROP = 10  # the stone blocks beside the boulder sit this much lower than its top
-QUARRY_BLOCK_INSET = 4  # distance from each stone block to the side of the quarry image
-QUARRY_FENCE_OVERLAP = 14  # the fence covers the foot of the rock pile
 
 
 def trim(image: Image.Image, name: str) -> Image.Image:
@@ -302,17 +294,8 @@ def build_workshop() -> Image.Image:
     return build_cottage(FORGE_WALL_BOX, WORKSHOP_ROOF)
 
 
-def build_storehouse(terrain: Image.Image) -> Image.Image:
-    image = build_cottage(STOREHOUSE_WALL_BOX)
-    crate = trim(terrain.crop(CRATE_BOX), "crate")
-    crate = crate.resize((round(crate.width * CRATE_SCALE), round(crate.height * CRATE_SCALE)), Image.NEAREST)
-    image.alpha_composite(crate, (CRATE_INSET, image.height - crate.height))
-    image.alpha_composite(crate, (image.width - CRATE_INSET - crate.width, image.height - crate.height))
-    return image
-
-
 def build_camp(terrain: Image.Image) -> Image.Image:
-    """The first drop-off point: the tree stump in front of a pile of three logs."""
+    """The camp, the first building on the map: the tree stump in front of a pile of three logs."""
     log = trim(terrain.crop(CAMP_LOG_BOX), "camp log").rotate(90, expand=True)
     pile = Image.new("RGBA", (log.width * 2 + CAMP_LOG_GAP, log.height * 2 - CAMP_LOG_OVERLAP))
     pile.alpha_composite(log, (0, log.height - CAMP_LOG_OVERLAP))
@@ -322,22 +305,6 @@ def build_camp(terrain: Image.Image) -> Image.Image:
     image = Image.new("RGBA", (stump.width + pile.width - CAMP_STUMP_OVERLAP, max(stump.height, pile.height)))
     image.alpha_composite(pile, (stump.width - CAMP_STUMP_OVERLAP, image.height - pile.height))
     image.alpha_composite(stump, (0, image.height - stump.height))
-    return image
-
-
-def build_quarry(terrain: Image.Image) -> Image.Image:
-    """A pile of rocks (the large boulder between two cracked stone blocks) behind a wooden fence."""
-    boulder = trim(terrain.crop(ROCK_BOX), "quarry boulder")
-    block = trim(terrain.crop(CHIMNEY_BOX), "quarry block")
-    fence = trim(terrain.crop(ARENA_FENCE_BOX), "quarry fence")
-    width = fence.width * QUARRY_FENCE_TILES
-    pile = max(boulder.height, block.height + QUARRY_BLOCK_DROP)
-    image = Image.new("RGBA", (width, pile + fence.height - QUARRY_FENCE_OVERLAP))
-    image.alpha_composite(block, (QUARRY_BLOCK_INSET, pile - block.height))
-    image.alpha_composite(block, (width - QUARRY_BLOCK_INSET - block.width, pile - block.height))
-    image.alpha_composite(boulder, ((width - boulder.width) // 2, pile - boulder.height))
-    for index in range(QUARRY_FENCE_TILES):
-        image.alpha_composite(fence, (index * fence.width, image.height - fence.height))
     return image
 
 
@@ -380,12 +347,8 @@ def build_forest() -> None:
     pivots["armory"] = {"x": 0.5, "y": 1}
     frames["mage-tower"] = build_mage_tower()
     pivots["mage-tower"] = {"x": 0.5, "y": 1}
-    frames["storehouse"] = build_storehouse(terrain)
-    pivots["storehouse"] = {"x": 0.5, "y": 1}
     frames["camp"] = build_camp(terrain)
     pivots["camp"] = {"x": 0.5, "y": 1}
-    frames["quarry"] = build_quarry(terrain)
-    pivots["quarry"] = {"x": 0.5, "y": 1}
     frames["workshop"] = build_workshop()
     pivots["workshop"] = {"x": 0.5, "y": 1}
 

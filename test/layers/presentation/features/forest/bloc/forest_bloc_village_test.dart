@@ -18,12 +18,10 @@ import 'package:farming/layers/presentation/features/forest/models/player_pose.d
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
 import '../../../../../mocks/domain/game/upgrade_scenario_mock.dart';
-import '../../../../../mocks/presentation/features/forest/carry_item_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_bloc_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_effect_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_scenario_mock.dart';
 import '../../../../../mocks/presentation/features/forest/hud_data_mock.dart';
-import '../../../../../mocks/presentation/features/forest/player_pose_mock.dart';
 import '../../../../../mocks/presentation/features/forest/quest_item_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/tool_item_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/upgrade_item_data_mock.dart';
@@ -112,7 +110,7 @@ void main() {
       verify: (bloc) {
         // then
         final hud = bloc.state.data.hud!;
-        expect(hud.questBadge, '2/19');
+        expect(hud.questBadge, '2/18');
         expect(hud.quests, QuestItemDataMock.afterTheFirstTwoVillageQuests);
       },
     );
@@ -139,7 +137,7 @@ void main() {
     late PlayerPose pose;
 
     blocTest<ForestBloc, ForestState>(
-      'testWhenMiningARockThenSwingsThePickaxeHitsAndBreaksItForEightStone',
+      'testWhenMiningARockThenSwingsThePickaxeHitsSevenTimesAndBreaksItForEightStone',
       build: () => make(ForestScenarioMock.pickaxeAndRock()),
       act: (bloc) async {
         // given
@@ -157,12 +155,12 @@ void main() {
       verify: (bloc) {
         // then
         expect((pose as WorkPose).tool, WorkTool.pickaxe);
-        expect(effects.whereType<RockHitEffect>(), hasLength(8));
+        expect(effects.whereType<RockHitEffect>(), hasLength(7));
         expect(effects.whereType<RockHitEffect>().first, ForestEffectMock.rockHitFromTheStart);
         expect(effects, contains(ForestEffectMock.rockBroken));
         expect(messages(), contains(Internationalize.forestMessageStoneGained(amount: 8)));
         expect(bloc.state.data.world!.rocks, isEmpty);
-        expect(bloc.state.data.hud!.carry, CarryItemDataMock.of(8));
+        expect(bloc.state.data.hud!.stock, HudDataMock.stockWith(stone: 8));
       },
     );
 
@@ -184,33 +182,6 @@ void main() {
     );
 
     blocTest<ForestBloc, ForestState>(
-      'testWhenABuildingAndARockAreBothTappedThenTheBuildingWins',
-      build: () => make(ForestScenarioMock.carryingAtTheCampAndARock()),
-      act: (bloc) {
-        // when
-        bloc
-          ..add(const ForestStarted())
-          ..add(
-            const ForestMapClicked(
-              position: ForestScenarioMock.rockSpot,
-              rockId: 'rock-1',
-              buildingId: ForestScenarioMock.campId,
-            ),
-          );
-        ForestBlocMock.tickFor(bloc, 4000);
-      },
-      wait: Duration.zero,
-      verify: (bloc) {
-        // then
-        expect(world.rocks.single.hitsTaken, 0);
-        expect(
-          messages(),
-          contains(Internationalize.forestMessageDeposited(amounts: ForestScenarioMock.sevenWoodText)),
-        );
-      },
-    );
-
-    blocTest<ForestBloc, ForestState>(
       'testWhenTheHudIsBuiltThenItListsTheFourResourcesAndBothTools',
       build: () => make(ForestScenarioMock.pickaxeAndRock()),
       act: (bloc) {
@@ -228,103 +199,70 @@ void main() {
     );
   });
 
-  group('carry and deposits', () {
+  group('buildings', () {
     blocTest<ForestBloc, ForestState>(
-      'testWhenTheCarryIsFullThenTappingATreeOrARockSaysSo',
-      build: () => make(ForestScenarioMock.fullLoadWithTreeAndRock()),
+      'testWhenAFinishedBuildingAndARockAreBothTappedThenTheRockIsMined',
+      build: () => make(ForestScenarioMock.campAndARock()),
       act: (bloc) {
         // when
         bloc
           ..add(const ForestStarted())
-          ..add(const ForestMapClicked(position: ForestScenarioMock.treeCanopy, treeId: 'tree-1'))
-          ..add(const ForestMapClicked(position: ForestScenarioMock.secondHouseSite, rockId: 'rock-1'));
+          ..add(
+            const ForestMapClicked(
+              position: ForestScenarioMock.rockSpot,
+              rockId: 'rock-1',
+              buildingId: ForestScenarioMock.campId,
+            ),
+          );
+        ForestBlocMock.tickFor(bloc, 2500);
       },
       wait: Duration.zero,
       verify: (bloc) {
         // then
-        expect(
-          messages().where((message) => message == Internationalize.forestMessageCarryFull),
-          hasLength(2),
-        );
-        expect(bloc.state.data.hud!.carry, CarryItemDataMock.full);
+        expect((bloc.state.data.player!.pose as WorkPose).tool, WorkTool.pickaxe);
+        expect(messages(), [Internationalize.forestMessageWelcome]);
       },
     );
 
     blocTest<ForestBloc, ForestState>(
-      'testWhenTheTreeFillsTheCarryThenTheWoodIsAnnouncedAndThenTheFullCarry',
-      build: () => make(ForestScenarioMock.nineWoodAndAnOak()),
+      'testWhenAnUnfinishedBuildingAndARockAreBothTappedThenTheBuildingWins',
+      build: () => make(ForestScenarioMock.houseSiteAndARock()),
       act: (bloc) {
         // when
         bloc
           ..add(const ForestStarted())
-          ..add(const ForestMapClicked(position: ForestScenarioMock.treeCanopy, treeId: 'tree-1'));
-        ForestBlocMock.tickFor(bloc, 8000);
+          ..add(const ForestMapClicked(position: ForestScenarioMock.rockSpot, rockId: 'rock-1', buildingId: 'house'));
+        ForestBlocMock.tickFor(bloc, 4000);
       },
       wait: Duration.zero,
       verify: (bloc) {
         // then
-        final shown = messages();
-        final wood = shown.indexOf(Internationalize.forestMessageWoodGained(wood: 1));
-        expect(wood, greaterThanOrEqualTo(0));
-        expect(shown[wood + 1], Internationalize.forestMessageCarryFull);
-        expect(bloc.state.data.hud!.carry, CarryItemDataMock.full);
+        expect(world.rocks.single.hitsTaken, 0);
+        expect(world.buildings.single.hitsDone, greaterThan(0));
       },
     );
 
-    late PlayerPose depositingPose;
-
     blocTest<ForestBloc, ForestState>(
-      'testWhenTappingTheCampWithALoadThenThePlayerStoresItWithoutAWarningStandingStill',
-      build: () => make(ForestScenarioMock.carryingAtTheCamp()),
-      act: (bloc) async {
+      'testWhenTappingTheCampThenThePlayerJustWalksThereSilently',
+      build: () => make(ForestScenarioMock.atTheCamp()),
+      act: (bloc) {
         // when
         bloc
           ..add(const ForestStarted())
-          ..add(const ForestMapClicked(position: ForestScenarioMock.rockSpot, buildingId: ForestScenarioMock.campId));
-        await ForestBlocMock.processEvents();
-        expect(messages(), isEmpty);
-        while (world.player.activity is! WorkingActivityEntity) {
-          ForestBlocMock.tickFor(bloc, ForestBlocMock.frameMs);
-          await ForestBlocMock.processEvents();
-        }
-        ForestBlocMock.tickFor(bloc, ForestBlocMock.frameMs);
-        await ForestBlocMock.processEvents();
-        depositingPose = bloc.state.data.player!.pose;
+          ..add(const ForestMapClicked(position: ForestScenarioMock.groundEast, buildingId: ForestScenarioMock.campId));
         ForestBlocMock.tickFor(bloc, 1000);
       },
       wait: Duration.zero,
       verify: (bloc) {
         // then
-        expect(depositingPose, PlayerPoseMock.idle);
-        expect(
-          messages(),
-          contains(Internationalize.forestMessageDeposited(amounts: ForestScenarioMock.sevenWoodText)),
-        );
-        expect(bloc.state.data.hud!.stock, HudDataMock.stockWith(wood: 7));
-        expect(bloc.state.data.hud!.carry, CarryItemDataMock.empty);
+        expect(bloc.state.data.player!.position, ForestScenarioMock.groundEast);
+        expect(messages(), [Internationalize.forestMessageWelcome]);
       },
     );
 
     blocTest<ForestBloc, ForestState>(
-      'testWhenTappingTheCampWithNothingToStoreThenSaysSo',
-      build: () => make(ForestScenarioMock.nothingToDepositAtTheCamp()),
-      act: (bloc) {
-        // when
-        bloc
-          ..add(const ForestStarted())
-          ..add(const ForestMapClicked(position: ForestScenarioMock.rockSpot, buildingId: ForestScenarioMock.campId));
-      },
-      wait: Duration.zero,
-      verify: (bloc) {
-        // then
-        expect(messages(), [Internationalize.forestMessageNothingToDeposit]);
-        expect(world.player.activity, isA<IdleActivityEntity>());
-      },
-    );
-
-    blocTest<ForestBloc, ForestState>(
-      'testWhenTappingAHouseSiteWithALoadThenTheWorkIsResumed',
-      build: () => make(ForestScenarioMock.carryingNextToAHouseSite()),
+      'testWhenTappingAHouseSiteThenTheWorkIsResumed',
+      build: () => make(ForestScenarioMock.nextToAHouseSite()),
       act: (bloc) {
         // when
         bloc
@@ -343,7 +281,7 @@ void main() {
 
     blocTest<ForestBloc, ForestState>(
       'testWhenTappingAFinishedHouseThenThePlayerJustWalksThere',
-      build: () => make(ForestScenarioMock.carryingNextToAFinishedHouse()),
+      build: () => make(ForestScenarioMock.nextToAFinishedHouse()),
       act: (bloc) {
         // when
         bloc
@@ -355,59 +293,43 @@ void main() {
       verify: (bloc) {
         // then
         expect(bloc.state.data.player!.position, ForestScenarioMock.groundEast);
-        expect(messages(), isNot(contains(Internationalize.forestMessageNothingToDeposit)));
-        expect(world.player.inventory, ForestScenarioMock.carryingSevenWood.inventory);
-      },
-    );
-
-    blocTest<ForestBloc, ForestState>(
-      'testWhenCarryingSevenWoodThenTheHudSaysSevenOfTenAndNotFull',
-      build: () => make(ForestScenarioMock.carryingAtTheCamp()),
-      act: (bloc) {
-        // when
-        bloc.add(const ForestStarted());
-      },
-      wait: Duration.zero,
-      verify: (bloc) {
-        // then
-        expect(bloc.state.data.hud!.carry, CarryItemDataMock.sevenOfTen);
-        expect(bloc.state.data.hud!.carry.isFull, isFalse);
+        expect(world.player.activity, isA<IdleActivityEntity>());
       },
     );
   });
 
-  group('quarry placement', () {
+  group('placement', () {
     late PlacementData? opened;
-    late PlacementData? far;
-    late PlacementData? near;
+    late PlacementData? onTheRock;
+    late PlacementData? free;
 
     blocTest<ForestBloc, ForestState>(
-      'testWhenPlacingTheQuarryThenTheReasonFollowsTheRockAndATapFarAwayWarnsAndKeepsPlacing',
-      build: () => make(ForestScenarioMock.quarryPriceAndARock()),
+      'testWhenPlacingAHouseThenTheReasonFollowsThePointerAndATapOnARockWarnsAndKeepsPlacing',
+      build: () => make(ForestScenarioMock.fifteenWoodAndARock()),
       act: (bloc) async {
         // when
         bloc
           ..add(const ForestStarted())
-          ..add(const ForestBuildRequested(blueprint: BlueprintId.quarry));
+          ..add(const ForestBuildRequested(blueprint: BlueprintId.house));
         await ForestBlocMock.processEvents();
         opened = bloc.state.data.placement;
-        bloc.add(const ForestPointerMoved(position: ForestScenarioMock.farFromTheRock));
+        bloc.add(const ForestPointerMoved(position: ForestScenarioMock.rockSpot));
         await ForestBlocMock.processEvents();
-        far = bloc.state.data.placement;
-        bloc.add(const ForestPointerMoved(position: ForestScenarioMock.nearTheRock));
+        onTheRock = bloc.state.data.placement;
+        bloc.add(const ForestPointerMoved(position: ForestScenarioMock.secondHouseSite));
         await ForestBlocMock.processEvents();
-        near = bloc.state.data.placement;
-        bloc.add(const ForestMapClicked(position: ForestScenarioMock.farFromTheRock));
+        free = bloc.state.data.placement;
+        bloc.add(const ForestMapClicked(position: ForestScenarioMock.rockSpot));
       },
       wait: Duration.zero,
       verify: (bloc) {
         // then
-        expect(opened!.invalidReason, ConstructionRejection.needsNearbyRock);
-        expect(far!.invalidReason, ConstructionRejection.needsNearbyRock);
-        expect(near!.invalidReason, isNull);
+        expect(opened!.invalidReason, ConstructionRejection.blocked);
+        expect(onTheRock!.invalidReason, ConstructionRejection.blocked);
+        expect(free!.invalidReason, isNull);
         expect(
           messages(),
-          contains(Internationalize.forestPlacementRejection(rejection: ConstructionRejection.needsNearbyRock)),
+          contains(Internationalize.forestPlacementRejection(rejection: ConstructionRejection.blocked)),
         );
         expect(bloc.state.data.placement, isNotNull);
         expect(world.buildings, isEmpty);

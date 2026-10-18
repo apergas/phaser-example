@@ -29,15 +29,15 @@ void main() {
     expect(building.hitsDone, Blueprints.camp.hitsToBuild);
   });
 
-  test('testWhenMappingAStorehouseThenItArrivesFinishedToo', () {
+  test('testWhenMappingAWorkshopThenItArrivesFinishedToo', () {
     // given
-    const dbo = BuildingDBOMock.storehouse;
+    const dbo = BuildingDBOMock.workshop;
 
     // when
     final building = sut.toEntity(dbo, index: 0);
 
     // then
-    expect((building.blueprint, building.isComplete), (Blueprints.storehouse, true));
+    expect((building.blueprint, building.isComplete), (Blueprints.workshop, true));
   });
 
   test('testWhenTheBuildingHasNoIdThenItIsNamedAfterItsPositionInTheList', () {

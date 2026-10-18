@@ -45,13 +45,5 @@ abstract final class BuildingEntityMock {
 
   static BuildingEntity get camp => completed(Blueprints.camp, id: 'camp', position: dropOffSite);
 
-  static BuildingEntity get storehouse => completed(Blueprints.storehouse, id: 'storehouse', position: dropOffSite);
-
-  static BuildingEntity get storehouseSite => site(Blueprints.storehouse, id: 'storehouse', position: dropOffSite);
-
-  static BuildingEntity get quarry => completed(Blueprints.quarry, id: 'quarry', position: dropOffSite);
-
-  static BuildingEntity get quarrySite => site(Blueprints.quarry, id: 'quarry', position: dropOffSite);
-
   static BuildingEntity get finishedHouse => completed(Blueprints.house, id: 'house', position: dropOffSite);
 }

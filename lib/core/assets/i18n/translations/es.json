@@ -34,7 +34,6 @@
       "missing": "Faltan {amounts}",
       "arena": "Arena",
       "stock": "Almacén",
-      "carry": "Carga {amount}/{capacity}",
       "workshop": "Taller",
       "game": "Partida"
     },
@@ -60,12 +59,10 @@
       "armory": "Armería",
       "mageTower": "Torre de magia",
       "camp": "Campamento",
-      "storehouse": "Almacén",
-      "quarry": "Cantera",
       "workshop": "Taller"
     },
     "quest": {
-      "gatherWood": "Lleva 15 de madera al almacén",
+      "gatherWood": "Reúne 15 de madera",
       "buildHouse": "Construye una casa",
       "buildForge": "Construye la Herrería",
       "winFirstFight": "Gana un nivel de la arena",
@@ -81,7 +78,6 @@
       "buildTwoHouses": "Ten 2 casas terminadas",
       "seeATreeRegrow": "Ve rebrotar un árbol",
       "gatherTwentyStone": "Ten 20 de piedra en el almacén",
-      "buildQuarry": "Construye una cantera",
       "buildWorkshop": "Construye el Taller",
       "upgradeAxe": "Compra el Hacha de hierro"
     },
@@ -104,9 +100,6 @@
       "questLineCompleted": "¡Has completado las misiones de {line}!",
       "woodGained": "+{wood} de madera",
       "stoneGained": "+{amount} de piedra",
-      "carryFull": "Llevas la carga llena. Déjala en el campamento o en un almacén.",
-      "deposited": "Guardado en el almacén: {amounts}",
-      "nothingToDeposit": "No llevas nada que guardar.",
       "placing": "Elige dónde construir: {name}. Clic derecho o Esc para cancelar.",
       "placingTouch": "Elige dónde construir: {name}. Arrastra el dedo para moverlo y toca Construir aquí o Cancelar.",
       "buildingCompleted": "Construcción terminada: {name}",
@@ -192,8 +185,7 @@
     },
     "placement": {
       "confirm": "Construir aquí",
-      "cancel": "Cancelar",
-      "needsRock": "La cantera tiene que ir junto a una roca."
+      "cancel": "Cancelar"
     },
     "accessibility": {
       "gameWorld": "Mundo de juego: bosque con árboles, el personaje y los edificios"

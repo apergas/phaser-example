@@ -15,7 +15,6 @@ enum QuestId {
   buildTwoHouses,
   seeATreeRegrow,
   gatherTwentyStone,
-  buildQuarry,
   buildWorkshop,
   upgradeAxe,
 }

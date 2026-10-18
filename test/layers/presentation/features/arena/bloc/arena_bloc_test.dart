@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:farming/layers/domain/world/extensions/stock_rules.dart';
 import 'package:farming/core/config/constants/enum/arena/fighter_pose.dart';
 import 'package:farming/core/config/constants/enum/arena/power_tone.dart';
 import 'package:farming/core/config/constants/enum/arena_level_id.dart';
@@ -8,7 +9,6 @@ import 'package:farming/core/config/constants/enum/fight_side.dart';
 import 'package:farming/core/config/constants/enum/gear_id.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/layers/domain/rules/arena_levels.dart';
-import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 import 'package:farming/layers/domain/world/world.dart';
 import 'package:farming/layers/presentation/features/arena/bloc/arena_bloc.dart';
 import 'package:farming/layers/presentation/features/arena/models/arena_effect.dart';

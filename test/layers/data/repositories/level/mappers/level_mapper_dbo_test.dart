@@ -65,7 +65,7 @@ void main() {
     // then
     expect(world.rocks.map((rock) => rock.id), ['rock-a']);
     expect(world.buildings.map((building) => (building.id, building.blueprint.id, building.isComplete)), [
-      ('store', BlueprintId.storehouse, true),
+      ('shop', BlueprintId.workshop, true),
     ]);
   });
 

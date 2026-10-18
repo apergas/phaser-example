@@ -67,7 +67,7 @@ abstract final class LevelDBOMock {
     items: _items,
     decorations: _decorations,
     rocks: [RockDBOMock.mock],
-    buildings: [BuildingDBOMock.storehouse],
+    buildings: [BuildingDBOMock.workshop],
   );
 
   static const LevelDBO mockWithOtherRocks = LevelDBO(
@@ -78,7 +78,7 @@ abstract final class LevelDBOMock {
     items: _items,
     decorations: _decorations,
     rocks: [RockDBOMock.withoutId],
-    buildings: [BuildingDBOMock.storehouse],
+    buildings: [BuildingDBOMock.workshop],
   );
 
   static const LevelDBO mockWithOtherBuildings = LevelDBO(

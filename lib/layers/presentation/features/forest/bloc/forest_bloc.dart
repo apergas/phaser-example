@@ -7,7 +7,6 @@ import '../../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../../../core/config/constants/enum/buy_gear_result.dart';
 import '../../../../../core/config/constants/enum/chop_result.dart';
 import '../../../../../core/config/constants/enum/construction_rejection.dart';
-import '../../../../../core/config/constants/enum/deposit_result.dart';
 import '../../../../../core/config/constants/enum/forest/facing.dart';
 import '../../../../../core/config/constants/enum/forest/quest_item_status.dart';
 import '../../../../../core/config/constants/enum/forest/work_tool.dart';
@@ -51,7 +50,6 @@ import '../../../../domain/use-cases/game/can_place_building_use_case.dart';
 import '../../../../domain/use-cases/game/chop_tree_use_case.dart';
 import '../../../../domain/use-cases/game/resume_construction_use_case.dart';
 import '../../../../domain/use-cases/game/construct_building_use_case.dart';
-import '../../../../domain/use-cases/game/deposit_use_case.dart';
 import '../../../../domain/use-cases/game/get_build_options_use_case.dart';
 import '../../../../domain/use-cases/game/get_player_status_use_case.dart';
 import '../../../../domain/use-cases/game/get_quests_use_case.dart';
@@ -70,9 +68,9 @@ import '../../../../domain/use-cases/hero/get_skill_options_use_case.dart';
 import '../../../../domain/use-cases/hero/learn_skill_use_case.dart';
 import '../../../../domain/world/extensions/hero_rules.dart';
 import '../../../../domain/world/extensions/inventory_rules.dart';
+import '../../../../domain/world/extensions/stock_rules.dart';
 import '../../arena/arena_page.dart';
 import '../models/build_item_data.dart';
-import '../models/carry_item_data.dart';
 import '../models/forest_effect.dart';
 import '../models/gear_item_data.dart';
 import '../models/gear_row_data.dart';
@@ -98,7 +96,6 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   final CanPlaceBuildingUseCase _canPlaceBuildingUseCase;
   final ConstructBuildingUseCase _constructBuildingUseCase;
   final ResumeConstructionUseCase _resumeConstructionUseCase;
-  final DepositUseCase _depositUseCase;
   final AdvanceGameUseCase _advanceGameUseCase;
   final GetPlayerStatusUseCase _getPlayerStatusUseCase;
   final GetWorldSnapshotUseCase _getWorldSnapshotUseCase;
@@ -131,7 +128,6 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     required this._canPlaceBuildingUseCase,
     required this._constructBuildingUseCase,
     required this._resumeConstructionUseCase,
-    required this._depositUseCase,
     required this._advanceGameUseCase,
     required this._getPlayerStatusUseCase,
     required this._getWorldSnapshotUseCase,
@@ -193,9 +189,6 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     final gameEvents = _advanceGameUseCase(deltaMs: event.deltaMs);
     for (final gameEvent in gameEvents) {
       _react(gameEvent, fromX: fromX, effects: effects);
-    }
-    if (gameEvents.any(_isGathering) && _getPlayerStatusUseCase().inventory.isLoadFull) {
-      _showMessage(Internationalize.forestMessageCarryFull);
     }
     _announceQuests([
       for (final gameEvent in gameEvents)
@@ -262,8 +255,6 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
           break;
         case MineResult.noPickaxe:
           _showMessage(Internationalize.forestMessageNeedPickaxe);
-        case MineResult.carryFull:
-          _showMessage(Internationalize.forestMessageCarryFull);
       }
       return;
     }
@@ -276,24 +267,11 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
         break;
       case ChopResult.noAxe:
         _showMessage(Internationalize.forestMessageNeedAxe);
-      case ChopResult.carryFull:
-        _showMessage(Internationalize.forestMessageCarryFull);
     }
   }
 
-  bool _orderAtBuilding(String buildingId) {
-    switch (_depositUseCase(buildingId: buildingId)) {
-      case DepositResult.ok:
-        return true;
-      case DepositResult.unknownBuilding:
-        return false;
-      case DepositResult.notADropOff:
-        return _resumeConstructionUseCase(buildingId: buildingId) == ResumeConstructionResult.ok;
-      case DepositResult.emptyLoad:
-        _showMessage(Internationalize.forestMessageNothingToDeposit);
-        return true;
-    }
-  }
+  bool _orderAtBuilding(String buildingId) =>
+      _resumeConstructionUseCase(buildingId: buildingId) == ResumeConstructionResult.ok;
 
   void _movePlacement(PositionEntity position) {
     final placement = _placement;
@@ -464,8 +442,7 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     TreeFelledEventEntity() ||
     BuildingCompletedEventEntity() ||
     QuestCompletedEventEntity() ||
-    RockBrokenEventEntity() ||
-    DepositedEventEntity() => true,
+    RockBrokenEventEntity() => true,
     PlayerBlockedEventEntity() ||
     TreeHitEventEntity() ||
     BuildingHammeredEventEntity() ||
@@ -511,13 +488,8 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
       case RockBrokenEventEntity(:final rockId, :final stone):
         _showMessage(Internationalize.forestMessageStoneGained(amount: stone));
         effects.add(RockBrokenEffect(rockId: rockId, stone: stone));
-      case DepositedEventEntity(:final load):
-        _showMessage(Internationalize.forestMessageDeposited(amounts: _amounts(load)));
     }
   }
-
-  bool _isGathering(GameEventEntity gameEvent) =>
-      gameEvent is TreeFelledEventEntity || gameEvent is RockBrokenEventEntity;
 
   void _announceQuests(List<QuestId> completed) {
     if (completed.isEmpty) return;
@@ -593,7 +565,6 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
     PlayerActivity.chopping => WorkTool.axe,
     PlayerActivity.constructing => WorkTool.hammer,
     PlayerActivity.mining => WorkTool.pickaxe,
-    PlayerActivity.depositing => null,
   };
 
   Facing _facingFor(double dx, double dy) {
@@ -612,10 +583,6 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
             amount: stock.amount(resource),
           ),
       ],
-      carry: CarryItemData(
-        text: Internationalize.forestCarry(amount: status.inventory.load, capacity: Rules.carryCapacity),
-        isFull: status.inventory.isLoadFull,
-      ),
       tools: [
         for (final tool in ToolKind.values)
           ToolItemData(

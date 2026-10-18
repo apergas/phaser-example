@@ -1,23 +1,9 @@
 import '../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../../core/config/constants/enum/quest_id.dart';
-import '../../../../core/config/constants/enum/tool_kind.dart';
 import '../tree/tree_entity.dart';
 
 sealed class GameEventEntity {
   const GameEventEntity();
-}
-
-final class ItemPickedUpEventEntity extends GameEventEntity {
-  final String itemId;
-  final ToolKind kind;
-
-  const ItemPickedUpEventEntity({required this.itemId, required this.kind});
-
-  @override
-  bool operator ==(Object other) => other is ItemPickedUpEventEntity && other.itemId == itemId && other.kind == kind;
-
-  @override
-  int get hashCode => Object.hash(ItemPickedUpEventEntity, itemId, kind);
 }
 
 final class PlayerBlockedEventEntity extends GameEventEntity {

@@ -20,9 +20,6 @@ Clothes and hair recoloured.
 | Basic boots | JaidynReiman, bluecarrot16, Nila122 | OGA-BY 3.0, CC-BY-SA 3.0, GPL 2.0, GPL 3.0 |
 | Axe and hammer (tools) | bluecarrot16, JaidynReiman, Pierre Vigier (pvigier), Tuomo Untinen (reemax) | OGA-BY 3.0, CC-BY 4.0, CC-BY-SA 3.0+, GPL 2.0+ |
 
-The axe pickup sprite in `forest.png` is cropped from the axe tool sheet. The pickaxe pickup sprite
-(`pickaxe-pickup`) is that same axe, mirrored and recoloured grey (there is no LPC pickaxe among the sources).
-
 Sources: <https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles>,
 <https://opengameart.org/content/lpc-hand-tools>,
 <https://opengameart.org/content/lpc-medieval-fantasy-character-sprites>,
@@ -57,7 +54,6 @@ The mage tower roof is recoloured violet and stretched 40 % taller.
 The workshop (`workshop` frame) is the cottage with the forge's stone wall and the thatched roof recoloured green.
 
 The stump (`stump` frame) comes from the LPC Tile Atlas above.
-The camp (`camp` frame) is that stump in front of three logs cut from a tree trunk of the LPC Tile Atlas above.
 The large rock (`rock-large` frame) is a grey boulder of the LPC Tile Atlas above.
 The sapling (`sapling` frame) is a young plant from the farming crops of the LPC Tile Atlas above (Daniel Eddeland).
 

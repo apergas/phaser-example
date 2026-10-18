@@ -15,8 +15,6 @@
     "unknownTreeKindMessage": "El nivel tiene un árbol de un tipo desconocido: {detail}",
     "unknownDecorationKindTitle": "Decoración desconocida",
     "unknownDecorationKindMessage": "El nivel tiene una decoración de un tipo desconocido: {detail}",
-    "unknownItemKindTitle": "Objeto desconocido",
-    "unknownItemKindMessage": "El nivel tiene un objeto de un tipo desconocido: {detail}",
     "noGameInProgressTitle": "No hay partida",
     "noGameInProgressMessage": "No hay ninguna partida en curso.",
     "invalidSaveTitle": "Partida guardada no válida",
@@ -58,7 +56,6 @@
       "forge": "Herrería",
       "armory": "Armería",
       "mageTower": "Torre de magia",
-      "camp": "Campamento",
       "workshop": "Taller"
     },
     "quest": {
@@ -90,10 +87,6 @@
       "needAxe": "Necesitas un hacha para talar.",
       "needPickaxe": "Necesitas un pico para picar.",
       "blockedPath": "Hay algo en medio. Acércate por otro lado.",
-      "pickedUpAxe": "¡Hacha recogida! Haz clic en un árbol para talarlo.",
-      "pickedUpAxeTouch": "¡Hacha recogida! Toca un árbol para talarlo.",
-      "pickedUpPickaxe": "¡Pico recogido! Haz clic en una roca para picarla.",
-      "pickedUpPickaxeTouch": "¡Pico recogido! Toca una roca para picarla.",
       "blockedSite": "Ahí no cabe. Busca un sitio despejado.",
       "notEnoughResources": "No tienes recursos suficientes.",
       "buildingStarted": "Manos a la obra…",

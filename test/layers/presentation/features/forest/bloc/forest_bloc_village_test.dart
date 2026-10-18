@@ -202,7 +202,7 @@ void main() {
   group('buildings', () {
     blocTest<ForestBloc, ForestState>(
       'testWhenAFinishedBuildingAndARockAreBothTappedThenTheRockIsMined',
-      build: () => make(ForestScenarioMock.campAndARock()),
+      build: () => make(ForestScenarioMock.finishedHouseAndARock()),
       act: (bloc) {
         // when
         bloc
@@ -211,7 +211,7 @@ void main() {
             const ForestMapClicked(
               position: ForestScenarioMock.rockSpot,
               rockId: 'rock-1',
-              buildingId: ForestScenarioMock.campId,
+              buildingId: ForestScenarioMock.houseId,
             ),
           );
         ForestBlocMock.tickFor(bloc, 2500);
@@ -220,7 +220,6 @@ void main() {
       verify: (bloc) {
         // then
         expect((bloc.state.data.player!.pose as WorkPose).tool, WorkTool.pickaxe);
-        expect(messages(), [Internationalize.forestMessageWelcome]);
       },
     );
 
@@ -239,24 +238,6 @@ void main() {
         // then
         expect(world.rocks.single.hitsTaken, 0);
         expect(world.buildings.single.hitsDone, greaterThan(0));
-      },
-    );
-
-    blocTest<ForestBloc, ForestState>(
-      'testWhenTappingTheCampThenThePlayerJustWalksThereSilently',
-      build: () => make(ForestScenarioMock.atTheCamp()),
-      act: (bloc) {
-        // when
-        bloc
-          ..add(const ForestStarted())
-          ..add(const ForestMapClicked(position: ForestScenarioMock.groundEast, buildingId: ForestScenarioMock.campId));
-        ForestBlocMock.tickFor(bloc, 1000);
-      },
-      wait: Duration.zero,
-      verify: (bloc) {
-        // then
-        expect(bloc.state.data.player!.position, ForestScenarioMock.groundEast);
-        expect(messages(), [Internationalize.forestMessageWelcome]);
       },
     );
 

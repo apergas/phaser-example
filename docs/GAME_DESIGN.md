@@ -41,7 +41,7 @@ Recoger hacha ──▶ Talar árboles (+5–6 madera) ──▶ Construir casa 
 | Mapa | Bosque de 1600×1200 generado con semillas fijas (mismo mapa en todas las plataformas): 70 árboles de 14 formas, decoración de suelo (hierba, hojas, setas, rocas). |
 | Personaje | Uno solo, controlado directamente. Camina (110 u/s), choca con troncos y edificios, se coloca solo junto al objetivo. |
 | Recursos | Sólo **madera**. Cada árbol: 5 hachazos, 5–6 de madera. Los árboles **no vuelven a crecer** (388 de madera en todo el mapa). |
-| Herramientas | Hacha (se recoge del suelo). El martillo aparece al construir pero no es un objeto del inventario. |
+| Herramientas | Hacha y pico desde el principio (ninguno se recoge del suelo). El martillo aparece al construir pero no es un objeto del inventario. |
 | Edificios | Sólo **Casa**: 15 de madera, 8 martillazos. Se coloca con previsualización válida/no válida. Una vez terminada **no hace nada**. |
 | Misiones | 3, lineales y permanentes: recoger hacha, tener 15 de madera, construir una casa. Después, no hay más objetivos. |
 | Presentación | HUD con madera, botón *Construir*, panel *Misiones*, mensajes, partículas al talar/construir. Barra de colocación en táctil. |
@@ -99,7 +99,7 @@ Que cada edificio **desbloquee o produzca** algo:
 | Edificio | Coste orientativo | Función |
 |---|---|---|
 | Casa | 15 madera | +2 de población (permite aldeanos). |
-| Almacén / Campamento maderero | 20 madera | Punto de entrega; recolección cercana más rápida. *Hecho en F6 y quitado en la mejora Recursos directos al almacén; el campamento queda en el mapa sin función.* |
+| Almacén / Campamento maderero | 20 madera | Punto de entrega; recolección cercana más rápida. *Hecho en F6 y quitado en la mejora Recursos directos al almacén; el campamento, que se quedó en el mapa sin función, se quitó en la mejora Empezar con el pico y sin el campamento.* |
 | Granja / Huerto | 30 madera | Produce comida con el tiempo o se cosecha como un trabajo. |
 | Cantera | 25 madera | Habilita la piedra o la acelera. *Hecha en F7 y quitada en la mejora Recursos directos al almacén: una roca da 7 golpes al ritmo del hacha.* |
 | Taller / Herrería | madera + piedra | Fabrica y mejora herramientas. |

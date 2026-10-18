@@ -18,7 +18,7 @@ void main() {
     sut = GetBuildOptionsUseCase(sessionRepository: sessionRepository);
   });
 
-  test('testWhenListingOptionsThenEveryBuildableBlueprintAppearsInOrderWithoutTheCamp', () {
+  test('testWhenListingOptionsThenEveryBlueprintAppearsInOrder', () {
     // given
     when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(WorldMock.make()));
 

@@ -10,7 +10,6 @@ import 'package:farming/layers/domain/rules/blueprints.dart';
 import 'package:farming/layers/domain/world/world.dart';
 
 import '../../../domain/entities/building/building_entity_mock.dart';
-import '../../../domain/entities/item/ground_item_entity_mock.dart';
 import '../../../domain/entities/player/player_entity_mock.dart';
 import '../../../domain/entities/rock/rock_entity_mock.dart';
 import '../../../domain/entities/tree/stump_entity_mock.dart';
@@ -22,7 +21,6 @@ abstract final class ForestScenarioMock {
   static const PositionEntity groundEast = PositionEntity(x: 150, y: 100);
   static const PositionEntity playerStart = PositionEntity(x: 100, y: 100);
   static const PositionEntity eastTreeCanopy = PositionEntity(x: 300, y: 80);
-  static const PositionEntity pickaxeSpot = PositionEntity(x: 110, y: 100);
   static const PositionEntity treeCanopy = PositionEntity(x: 200, y: 80);
   static const PositionEntity siteNextToFarTree = PositionEntity(x: 410, y: 400);
   static const PositionEntity freeSite = PositionEntity(x: 250, y: 250);
@@ -30,7 +28,7 @@ abstract final class ForestScenarioMock {
   static const PositionEntity houseSiteEast = PositionEntity(x: 300, y: 100);
   static const PositionEntity secondHouseSite = PositionEntity(x: 300, y: 300);
   static const PositionEntity rockSpot = PositionEntity(x: 300, y: 100);
-  static const String campId = 'camp';
+  static const String houseId = 'house';
 
   static const PlayerEntity withAxe = PlayerEntityMock.withAxe;
 
@@ -44,16 +42,6 @@ abstract final class ForestScenarioMock {
 
   static World treeEast() =>
       WorldMock.make(trees: [TreeEntityMock.mock.copyWith(position: const PositionEntity(x: 300, y: 100))]);
-
-  static World pickaxeNextToPlayer() => WorldMock.make(
-    player: withAxe,
-    items: [GroundItemEntityMock.pickaxe.copyWith(position: pickaxeSpot)],
-  );
-
-  static World pickaxeOnThePlayer() => WorldMock.make(
-    player: withAxe,
-    items: [GroundItemEntityMock.pickaxe.copyWith(position: playerStart)],
-  );
 
   static World axeInHandWithTree() => WorldMock.make(player: withAxe, trees: [TreeEntityMock.mock]);
 
@@ -95,11 +83,9 @@ abstract final class ForestScenarioMock {
     trees: [TreeEntityMock.farEast],
   );
 
-  static World atTheCamp() => WorldMock.make(player: withAxe, buildings: [BuildingEntityMock.camp]);
-
-  static World campAndARock() => WorldMock.make(
+  static World finishedHouseAndARock() => WorldMock.make(
     player: PlayerEntityMock.withPickaxe,
-    buildings: [BuildingEntityMock.camp.copyWith(position: const PositionEntity(x: 300, y: 300))],
+    buildings: [BuildingEntityMock.finishedHouse.copyWith(position: const PositionEntity(x: 300, y: 300))],
     rocks: [RockEntityMock.intact],
   );
 

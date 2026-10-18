@@ -23,7 +23,6 @@ abstract final class SaveRoundTripMock {
         trees: trees,
         stumps: world.stumps,
         rocks: world.rocks,
-        items: world.items,
         decorations: world.decorations,
         buildings: world.buildings,
         hero: world.hero,

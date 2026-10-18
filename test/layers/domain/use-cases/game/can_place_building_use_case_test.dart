@@ -29,15 +29,4 @@ void main() {
     expect(onTree, ConstructionRejection.blocked);
     expect(onGrass, isNull);
   });
-
-  test('testWhenCheckingTheCampThenItCannotBePlaced', () {
-    // given
-    when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.besideARock()));
-
-    // when
-    final camp = sut(blueprint: BlueprintId.camp, x: 600, y: 600);
-
-    // then
-    expect(camp, ConstructionRejection.blocked);
-  });
 }

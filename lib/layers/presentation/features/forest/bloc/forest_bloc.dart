@@ -438,7 +438,6 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
   }
 
   bool _isWorthSaving(GameEventEntity gameEvent) => switch (gameEvent) {
-    ItemPickedUpEventEntity() ||
     TreeFelledEventEntity() ||
     BuildingCompletedEventEntity() ||
     QuestCompletedEventEntity() ||
@@ -453,16 +452,6 @@ class ForestBloc extends Bloc<ForestEvent, ForestState> {
 
   void _react(GameEventEntity gameEvent, {required double fromX, required List<ForestEffect> effects}) {
     switch (gameEvent) {
-      case ItemPickedUpEventEntity(:final itemId, :final kind):
-        _showMessage(switch (kind) {
-          ToolKind.axe =>
-            _isTouchInput ? Internationalize.forestMessagePickedUpAxeTouch : Internationalize.forestMessagePickedUpAxe,
-          ToolKind.pickaxe =>
-            _isTouchInput
-                ? Internationalize.forestMessagePickedUpPickaxeTouch
-                : Internationalize.forestMessagePickedUpPickaxe,
-        });
-        effects.add(ItemPickedUpEffect(itemId: itemId));
       case PlayerBlockedEventEntity():
         _showMessage(Internationalize.forestMessageBlockedPath);
       case TreeHitEventEntity(:final treeId):

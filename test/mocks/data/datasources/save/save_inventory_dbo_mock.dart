@@ -5,9 +5,11 @@ abstract final class SaveInventoryDBOMock {
     tools: ['axe', 'pickaxe'],
     toolLevels: {'axe': 2},
   );
+  static const SaveInventoryDBO withoutPickaxe = SaveInventoryDBO(tools: ['axe'], toolLevels: {'axe': 2});
+  static const SaveInventoryDBO onlyThePickaxe = SaveInventoryDBO(tools: ['pickaxe']);
   static const SaveInventoryDBO versionOnePlayer = SaveInventoryDBO(
     resources: {'wood': 4, 'stone': 3},
-    tools: ['axe', 'pickaxe'],
+    tools: ['axe'],
     toolLevels: {'axe': 2},
   );
   static const SaveInventoryDBO versionOneWithNegativeCarry = SaveInventoryDBO(

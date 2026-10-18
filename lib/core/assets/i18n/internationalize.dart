@@ -35,9 +35,6 @@ class Internationalize {
   static String get errorUnknownDecorationKindTitle => '$_error.unknownDecorationKindTitle'.tr();
   static String errorUnknownDecorationKindMessage({required String detail}) =>
       '$_error.unknownDecorationKindMessage'.tr(namedArgs: {'detail': detail});
-  static String get errorUnknownItemKindTitle => '$_error.unknownItemKindTitle'.tr();
-  static String errorUnknownItemKindMessage({required String detail}) =>
-      '$_error.unknownItemKindMessage'.tr(namedArgs: {'detail': detail});
   static String get errorNoGameInProgressTitle => '$_error.noGameInProgressTitle'.tr();
   static String get errorNoGameInProgressMessage => '$_error.noGameInProgressMessage'.tr();
   static String get errorInvalidSaveTitle => '$_error.invalidSaveTitle'.tr();
@@ -82,7 +79,6 @@ class Internationalize {
     BlueprintId.forge => '$_forest.blueprint.forge'.tr(),
     BlueprintId.armory => '$_forest.blueprint.armory'.tr(),
     BlueprintId.mageTower => '$_forest.blueprint.mageTower'.tr(),
-    BlueprintId.camp => '$_forest.blueprint.camp'.tr(),
     BlueprintId.workshop => '$_forest.blueprint.workshop'.tr(),
   };
   static String forestQuestTitle({required QuestId id}) => switch (id) {
@@ -113,10 +109,6 @@ class Internationalize {
   static String get forestMessageNeedAxe => '$_forest.message.needAxe'.tr();
   static String get forestMessageNeedPickaxe => '$_forest.message.needPickaxe'.tr();
   static String get forestMessageBlockedPath => '$_forest.message.blockedPath'.tr();
-  static String get forestMessagePickedUpAxe => '$_forest.message.pickedUpAxe'.tr();
-  static String get forestMessagePickedUpAxeTouch => '$_forest.message.pickedUpAxeTouch'.tr();
-  static String get forestMessagePickedUpPickaxe => '$_forest.message.pickedUpPickaxe'.tr();
-  static String get forestMessagePickedUpPickaxeTouch => '$_forest.message.pickedUpPickaxeTouch'.tr();
   static String get forestMessageBlockedSite => '$_forest.message.blockedSite'.tr();
   static String get forestMessageNotEnoughResources => '$_forest.message.notEnoughResources'.tr();
   static String get forestMessageBuildingStarted => '$_forest.message.buildingStarted'.tr();

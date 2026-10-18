@@ -504,33 +504,9 @@
     "y": 0.85
    }
   },
-  "camp": {
-   "frame": {
-    "x": 115,
-    "y": 393,
-    "w": 106,
-    "h": 41
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 106,
-    "h": 41
-   },
-   "sourceSize": {
-    "w": 106,
-    "h": 41
-   },
-   "pivot": {
-    "x": 0.5,
-    "y": 1
-   }
-  },
   "sapling": {
    "frame": {
-    "x": 223,
+    "x": 115,
     "y": 393,
     "w": 18,
     "h": 30
@@ -554,7 +530,7 @@
   },
   "decor-leaves": {
    "frame": {
-    "x": 243,
+    "x": 135,
     "y": 393,
     "w": 31,
     "h": 29
@@ -578,7 +554,7 @@
   },
   "decor-mushrooms": {
    "frame": {
-    "x": 276,
+    "x": 168,
     "y": 393,
     "w": 28,
     "h": 28
@@ -600,57 +576,9 @@
     "y": 1
    }
   },
-  "axe-pickup": {
-   "frame": {
-    "x": 306,
-    "y": 393,
-    "w": 24,
-    "h": 27
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 24,
-    "h": 27
-   },
-   "sourceSize": {
-    "w": 24,
-    "h": 27
-   },
-   "pivot": {
-    "x": 0.5,
-    "y": 0.5
-   }
-  },
-  "pickaxe-pickup": {
-   "frame": {
-    "x": 332,
-    "y": 393,
-    "w": 24,
-    "h": 27
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 24,
-    "h": 27
-   },
-   "sourceSize": {
-    "w": 24,
-    "h": 27
-   },
-   "pivot": {
-    "x": 0.5,
-    "y": 0.5
-   }
-  },
   "decor-rock": {
    "frame": {
-    "x": 358,
+    "x": 198,
     "y": 393,
     "w": 31,
     "h": 25
@@ -674,7 +602,7 @@
   },
   "decor-tall-grass": {
    "frame": {
-    "x": 391,
+    "x": 231,
     "y": 393,
     "w": 23,
     "h": 22

@@ -7,18 +7,6 @@ sealed class ForestEffect {
   const ForestEffect();
 }
 
-final class ItemPickedUpEffect extends ForestEffect {
-  final String itemId;
-
-  const ItemPickedUpEffect({required this.itemId});
-
-  @override
-  bool operator ==(Object other) => identical(this, other) || other is ItemPickedUpEffect && other.itemId == itemId;
-
-  @override
-  int get hashCode => Object.hash(ItemPickedUpEffect, itemId);
-}
-
 final class TreeHitEffect extends ForestEffect {
   final String treeId;
   final double fromX;

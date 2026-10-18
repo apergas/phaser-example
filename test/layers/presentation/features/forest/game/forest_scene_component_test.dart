@@ -38,7 +38,6 @@ void main() {
 
     // then
     expect(scene.trees.keys, ['tree-1', 'tree-2']);
-    expect(scene.items.keys, ['axe']);
     expect(scene.clutter, hasLength(1));
     expect(scene.children.whereType<GroundComponent>(), hasLength(1));
     expect(scene.player, isNotNull);
@@ -94,35 +93,6 @@ void main() {
       scene.children.whereType<FloatingTextComponent>().map((text) => text.text),
       [Internationalize.forestFloatingWoodGained(wood: 5)],
     );
-  });
-
-  testWithFlameGame('testWhenTheAxeIsPickedUpThenItPopsAndVanishes', (game) async {
-    // given
-    final scene = await _mountedScene(game);
-    final axe = scene.items['axe']!;
-
-    // when
-    scene.show(ForestDataMock.axePickedUp);
-    game.update(0.31);
-    await game.ready();
-
-    // then
-    expect(scene.items, isEmpty);
-    expect(axe.isMounted, isFalse);
-  });
-
-  testWithFlameGame('testWhenAnItemLeavesTheWorldWithoutEffectThenIsRemoved', (game) async {
-    // given
-    final scene = await _mountedScene(game);
-    final axe = scene.items['axe']!;
-
-    // when
-    scene.show(ForestDataMock.axeGone);
-    await game.ready();
-
-    // then
-    expect(scene.items, isEmpty);
-    expect(axe.isMounted, isFalse);
   });
 
   testWithFlameGame('testWhenAHouseIsPlacedThenAppearsAndClearsTheDecorationUnderIt', (game) async {
@@ -230,7 +200,6 @@ void main() {
     // then
     expect(scene.children.length, childrenBefore);
     expect(scene.trees.keys, ['tree-1', 'tree-2']);
-    expect(scene.items.keys, ['axe']);
     expect(scene.clutter, hasLength(1));
     expect(scene.buildings, isEmpty);
     expect(scene.children.whereType<GroundComponent>(), hasLength(1));
@@ -356,12 +325,12 @@ void main() {
     await game.ensureAdd(scene);
 
     // when
-    scene.show(ForestDataMock.loadedWithCamp);
+    scene.show(ForestDataMock.loadedWithAHouse);
     await game.ready();
 
     // then
-    expect(scene.buildings.keys, ['camp']);
-    expect(scene.buildings['camp']!.isComplete, isTrue);
+    expect(scene.buildings.keys, ['house']);
+    expect(scene.buildings['house']!.isComplete, isTrue);
     expect(scene.clutter, isEmpty);
   });
 }

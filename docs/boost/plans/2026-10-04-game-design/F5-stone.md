@@ -2,6 +2,8 @@
 
 > **Implementado el 2026-10-17 sin tests (regla del usuario); lo que falta de test está en *Para T1*.** Una sola rama `feature/PROJECT-F5-stone`, un commit por tarea (TF5.1–TF5.5). Desvíos respecto a iOS y a la ficha: `ForestMapClicked.rockId` en vez de un enum `MapTarget` (decisión 9); `RockDBO` con `x`/`y` sueltos (decisión 6); el pico es el único objeto del suelo (`items[0]`), porque el hacha ya no está en el mapa (decisión 7); umbrales del HUD medidos con Roboto: 1260 y 770 en vez de 1300 y 800 pt (decisión 14). Rocas, pico, decoración quitada y frames, idénticos a iOS.
 
+> **Después:** el pico en el suelo (y con él todo el sistema de objetos del suelo) se quitó en la mejora [Empezar con el pico y sin el campamento](../2026-10-17-extras/clean-start.md): el jugador empieza con el hacha y el pico.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use boost:subagent-driven-development (recommended) or boost:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Read the **Global Constraints** in [README.md](README.md) first; they apply to every task.
 
 | | |

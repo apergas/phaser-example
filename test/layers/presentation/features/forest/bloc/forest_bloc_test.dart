@@ -23,7 +23,6 @@ import '../../../../../mocks/presentation/features/forest/build_item_data_mock.d
 import '../../../../../mocks/presentation/features/forest/hud_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_effect_mock.dart';
 import '../../../../../mocks/presentation/features/forest/placement_data_mock.dart';
-import '../../../../../mocks/presentation/features/forest/player_pose_mock.dart';
 import '../../../../../mocks/presentation/features/forest/quest_item_data_mock.dart';
 
 void main() {
@@ -98,30 +97,6 @@ void main() {
     verify: (bloc) {
       // then
       expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessageNeedAxe));
-    },
-  );
-
-  blocTest<ForestBloc, ForestState>(
-    'testWhenPickingUpThePickaxeThenPlaysEffectAnnouncesAndHoldsIt',
-    build: () {
-      // given
-      return ForestBlocMock.make(ForestScenarioMock.pickaxeNextToPlayer(), navigationService: navigationService);
-    },
-    act: (bloc) {
-      // when
-      effects = ForestBlocMock.collectEffects(bloc);
-      bloc
-        ..add(const ForestStarted())
-        ..add(const ForestMapClicked(position: ForestScenarioMock.pickaxeSpot));
-      ForestBlocMock.tickFor(bloc, 300);
-    },
-    wait: Duration.zero,
-    verify: (bloc) {
-      // then
-      expect(effects, contains(ForestEffectMock.pickaxePickedUp));
-      expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessagePickedUpPickaxe));
-      expect(bloc.state.data.hud!.tools, HudDataMock.tools(isPickaxeOwned: true));
-      expect(bloc.state.data.player!.pose, PlayerPoseMock.idle);
     },
   );
 
@@ -259,32 +234,6 @@ void main() {
   });
 
   blocTest<ForestBloc, ForestState>(
-    'testWhenPickingUpThePickaxeOnATouchScreenThenTellsToTapARock',
-    build: () {
-      // given
-      return ForestBlocMock.make(
-        ForestScenarioMock.pickaxeNextToPlayer(),
-        navigationService: navigationService,
-        isTouchInput: true,
-      );
-    },
-    act: (bloc) {
-      // when
-      bloc
-        ..add(const ForestStarted())
-        ..add(const ForestMapClicked(position: ForestScenarioMock.pickaxeSpot));
-      ForestBlocMock.tickFor(bloc, 300);
-    },
-    wait: Duration.zero,
-    verify: (bloc) {
-      // then
-      final messages = ForestBlocMock.shownMessages(navigationService);
-      expect(messages, contains(Internationalize.forestMessagePickedUpPickaxeTouch));
-      expect(messages, isNot(contains(Internationalize.forestMessagePickedUpPickaxe)));
-    },
-  );
-
-  blocTest<ForestBloc, ForestState>(
     'testWhenPlacingOnATouchScreenThenTellsToDragAndTap',
     build: () {
       // given
@@ -410,7 +359,7 @@ void main() {
     'testWhenEachEventEmitsThenOnlyCarriesItsOwnEffects',
     build: () {
       // given
-      return ForestBlocMock.make(ForestScenarioMock.pickaxeOnThePlayer(), navigationService: navigationService);
+      return ForestBlocMock.make(ForestScenarioMock.stumpAboutToSprout(), navigationService: navigationService);
     },
     act: (bloc) {
       // when
@@ -423,7 +372,7 @@ void main() {
     expect: () => [
       isA<ForestInProgress>(),
       isA<ForestSuccess>(),
-      isA<ForestSuccess>().having((state) => state.data.effects, 'effects', [ForestEffectMock.pickaxePickedUp]),
+      isA<ForestSuccess>().having((state) => state.data.effects, 'effects', [ForestEffectMock.stumpSprouted]),
       isA<ForestSuccess>().having((state) => state.data.effects, 'effects', isEmpty),
     ],
   );

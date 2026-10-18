@@ -18,13 +18,10 @@ final class Construction implements Work<ConstructIntentEntity> {
   const Construction();
 
   static ConstructionRejection? rejection(WorldState state, BlueprintEntity blueprint, PositionEntity position) {
-    if (!blueprint.isBuildable) return ConstructionRejection.blocked;
     final radius = blueprint.footprintRadius;
     final player = state.player;
     final overlapsPlayer = position.distanceTo(player.position) < radius + player.radius;
-    final overlapsItem = state.items.values.any((item) => position.distanceTo(item.position) < radius);
-    final fits =
-        state.isInside(position, radius) && !state.isBlocked(position, radius) && !overlapsPlayer && !overlapsItem;
+    final fits = state.isInside(position, radius) && !state.isBlocked(position, radius) && !overlapsPlayer;
     return fits ? null : ConstructionRejection.blocked;
   }
 

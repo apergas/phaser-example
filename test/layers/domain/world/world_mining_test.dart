@@ -12,6 +12,7 @@ import '../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../mocks/domain/entities/rock/rock_entity_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
 import '../../../mocks/domain/entities/stock/stock_entity_mock.dart';
+import '../../../mocks/domain/game/level_scenario_mock.dart';
 
 void main() {
   const tickMs = 50.0;
@@ -140,5 +141,16 @@ void main() {
     expect(times, hasLength(5));
     expect(gaps(times).toSet(), {Rules.chopIntervalMs});
     expect(world.stock, StockEntityMock.eightStone);
+  });
+
+  test('testWhenTheLevelStartsThenEveryRockCanBeMinedWithoutPickingUpAPickaxe', () {
+    // given
+    final world = LevelScenarioMock.forest();
+
+    // when
+    final results = world.rocks.map((rock) => world.orderMine(rock.id)).toSet();
+
+    // then
+    expect(results, {MineResult.ok});
   });
 }

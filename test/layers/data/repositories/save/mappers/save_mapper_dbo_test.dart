@@ -58,7 +58,7 @@ void main() {
     expectSameGame(session, expected);
     expect(session.world.trees.map((tree) => (tree.id, tree.hitsTaken)), [('tree-1', 3), ('neighbour', 0)]);
     expect(session.world.buildings.map((building) => (building.id, building.hitsDone)), [
-      ('camp', 1),
+      ('house', 8),
       ('building-1', 8),
       ('building-3', 4),
     ]);
@@ -143,7 +143,7 @@ void main() {
     final attempts = [for (final dbo in dbos) () => sut.toEntity(dbo)];
 
     // then
-    expect(attempts[0], throwsInvalidSave('unknown version 3'));
+    expect(attempts[0], throwsInvalidSave('unknown version 4'));
     expect(attempts[1], throwsInvalidSave('unknown version null'));
   });
 

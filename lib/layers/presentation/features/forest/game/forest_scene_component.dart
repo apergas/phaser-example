@@ -18,7 +18,6 @@ import 'components/atlas_sprite_component.dart';
 import 'components/building_component.dart';
 import 'components/floating_text_component.dart';
 import 'components/ground_component.dart';
-import 'components/ground_item_component.dart';
 import 'components/placement_ghost_component.dart';
 import 'components/player_component.dart';
 import 'components/rock_component.dart';
@@ -32,7 +31,6 @@ class ForestSceneComponent extends Component {
   final LpcAssets _assets;
   final math.Random _random;
   final Map<String, TreeComponent> _trees = {};
-  final Map<String, GroundItemComponent> _items = {};
   final Map<String, BuildingComponent> _buildings = {};
   final Map<String, StumpComponent> _stumps = {};
   final Map<String, RockComponent> _rocks = {};
@@ -46,8 +44,6 @@ class ForestSceneComponent extends Component {
   ForestSceneComponent({required this._assets, math.Random? random}) : _random = random ?? math.Random();
 
   Map<String, TreeComponent> get trees => Map.unmodifiable(_trees);
-
-  Map<String, GroundItemComponent> get items => Map.unmodifiable(_items);
 
   Map<String, BuildingComponent> get buildings => Map.unmodifiable(_buildings);
 
@@ -120,8 +116,6 @@ class ForestSceneComponent extends Component {
 
   void _play(ForestEffect effect) {
     switch (effect) {
-      case ItemPickedUpEffect(:final itemId):
-        _onItemPickedUp(itemId);
       case TreeHitEffect(:final treeId, :final fromX):
         _onTreeHit(treeId, fromX);
       case TreeFelledEffect(:final treeId, :final fromX, :final wood):
@@ -147,10 +141,6 @@ class ForestSceneComponent extends Component {
       case UpgradePurchasedEffect():
         _sparkleOnPlayer(ParticleKind.sparkle);
     }
-  }
-
-  void _onItemPickedUp(String itemId) {
-    _items.remove(itemId)?.pickUp();
   }
 
   void _onTreeHit(String treeId, double fromX) {
@@ -277,20 +267,6 @@ class ForestSceneComponent extends Component {
     }
     for (final rock in world.rocks) {
       _rocks.putIfAbsent(rock.id, () => _added(RockComponent(assets: _assets, rock: rock)));
-    }
-
-    final itemIds = {for (final item in world.items) item.id};
-    for (final id in _items.keys.where((id) => !itemIds.contains(id)).toList()) {
-      final item = _items.remove(id)!;
-      item.shadow.removeFromParent();
-      item.removeFromParent();
-    }
-    for (final item in world.items) {
-      _items.putIfAbsent(item.id, () {
-        final component = GroundItemComponent(assets: _assets, item: item);
-        add(component.shadow);
-        return _added(component);
-      });
     }
 
     for (final building in world.buildings) {

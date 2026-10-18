@@ -30,7 +30,6 @@ void main() {
     expect(snapshot.width, 1000);
     expect(snapshot.height, 1000);
     expect(snapshot.trees, [TreeEntityMock.mock]);
-    expect(snapshot.items, isEmpty);
     expect(snapshot.decorations, isEmpty);
     expect(snapshot.buildings, isEmpty);
   });

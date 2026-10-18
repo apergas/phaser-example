@@ -12,7 +12,6 @@ import '../entities/game/stats_entity.dart';
 import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
 import '../entities/hero/hero_entity.dart';
-import '../entities/item/ground_item_entity.dart';
 import '../entities/player/activity_entity.dart';
 import '../entities/player/intent_entity.dart';
 import '../entities/player/player_entity.dart';
@@ -25,7 +24,6 @@ import 'mining.dart';
 import 'extensions/player_rules.dart';
 import 'extensions/stock_rules.dart';
 import 'navigation.dart';
-import 'pick_up_items.dart';
 import 'regrowth.dart';
 import 'stats_recording.dart';
 import 'woodcutting.dart';
@@ -38,7 +36,6 @@ class World {
     required double height,
     required PlayerEntity player,
     required List<TreeEntity> trees,
-    List<GroundItemEntity> items = const [],
     List<DecorationEntity> decorations = const [],
     List<RockEntity> rocks = const [],
     List<BuildingEntity> buildings = const [],
@@ -49,7 +46,6 @@ class World {
            height: height,
            player: player,
            trees: trees,
-           items: items,
            decorations: decorations,
            rocks: rocks,
            buildings: buildings,
@@ -64,7 +60,6 @@ class World {
     required List<TreeEntity> trees,
     required List<StumpEntity> stumps,
     required List<RockEntity> rocks,
-    required List<GroundItemEntity> items,
     required List<DecorationEntity> decorations,
     required List<BuildingEntity> buildings,
     required HeroEntity hero,
@@ -77,7 +72,6 @@ class World {
            height: height,
            player: player,
            trees: trees,
-           items: items,
            decorations: decorations,
            rocks: rocks,
            buildings: buildings,
@@ -101,8 +95,6 @@ class World {
   PlayerEntity get player => _state.player;
 
   List<TreeEntity> get trees => _state.trees.values.toList();
-
-  List<GroundItemEntity> get items => _state.items.values.toList();
 
   List<DecorationEntity> get decorations => _state.decorations;
 
@@ -190,7 +182,6 @@ class World {
       case IdleActivityEntity():
         break;
     }
-    pickUpItems(_state, events);
     StatsRecording.record(_state, events);
     return events;
   }

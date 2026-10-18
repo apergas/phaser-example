@@ -7,7 +7,6 @@ void expectSameGame(GameSessionEntity actual, GameSessionEntity expected) {
   expect(actual.world.trees, expected.world.trees);
   expect(actual.world.stumps, expected.world.stumps);
   expect(actual.world.rocks, expected.world.rocks);
-  expect(actual.world.items, expected.world.items);
   expect(actual.world.decorations, expected.world.decorations);
   expect(actual.world.buildings, expected.world.buildings);
   expect(actual.world.hero, expected.world.hero);

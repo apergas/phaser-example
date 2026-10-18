@@ -55,6 +55,7 @@
 | [T1 Tests](2026-10-17-extras/T1-tests.md) | ✅ | `develop` (1206 tests, 260 en Chrome) |
 | [Recursos directos al almacén, sin carga, almacén ni cantera](2026-10-17-extras/auto-stock.md) | ✅ | `develop` (1179 tests, 276 en Chrome) |
 | [Botones del HUD en el móvil](2026-10-17-extras/compact-hud-buttons.md) | ✅ | `develop` |
+| [Empezar con el pico y sin el campamento](2026-10-17-extras/clean-start.md) | ✅ | `develop` (1156 tests, 257 en Chrome) |
 
 ## Siguiente paso
 
@@ -66,3 +67,4 @@
 | ✅ | T1 Tests | `feature/PROJECT-T1-tests` → `develop` |
 | ✅ | Recursos directos al almacén | `feature/PROJECT-X-auto-stock` → `develop` |
 | ✅ | Botones del HUD en el móvil | `feature/PROJECT-X-compact-hud-buttons` → `develop` |
+| ✅ | Empezar con el pico y sin el campamento | `feature/PROJECT-X-clean-start` → `develop` |

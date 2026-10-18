@@ -3,16 +3,13 @@ import 'package:farming/core/config/constants/enum/tree_kind.dart';
 import 'package:farming/layers/data/datasources/level/source/level_local_datasource.dart';
 import 'package:farming/layers/data/datasources/save/source/game_save_local_datasource.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:farming/layers/data/repositories/level/mappers/building_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/decoration_mapper_dbo.dart';
-import 'package:farming/layers/data/repositories/level/mappers/ground_item_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/level_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/position_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/rock_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/tree_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_building_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_decoration_mapper_dbo.dart';
-import 'package:farming/layers/data/repositories/save/mappers/save_ground_item_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_hero_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_migration_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_stock_mapper_dbo.dart';
@@ -124,16 +121,13 @@ void main() {
       locator.isRegistered<LearnSkillUseCase>(),
       locator.isRegistered<GetArenaUseCase>(),
       locator.isRegistered<StartFightUseCase>(),
-      locator.isRegistered<BuildingMapperDBO>(),
       locator.isRegistered<DecorationMapperDBO>(),
-      locator.isRegistered<GroundItemMapperDBO>(),
       locator.isRegistered<LevelMapperDBO>(),
       locator.isRegistered<PositionMapperDBO>(),
       locator.isRegistered<RockMapperDBO>(),
       locator.isRegistered<TreeMapperDBO>(),
       locator.isRegistered<SaveBuildingMapperDBO>(),
       locator.isRegistered<SaveDecorationMapperDBO>(),
-      locator.isRegistered<SaveGroundItemMapperDBO>(),
       locator.isRegistered<SaveHeroMapperDBO>(),
       locator.isRegistered<SaveInventoryMapperDBO>(),
       locator.isRegistered<SaveMapperDBO>(),
@@ -176,7 +170,7 @@ void main() {
     expect(snapshot.trees.fold<int>(0, (total, tree) => total + tree.woodYield), 411);
     expect(snapshot.trees.first.kind, TreeKind.broad);
     expect(snapshot.rocks.length, 12);
-    expect(snapshot.decorations.length, 93);
+    expect(snapshot.decorations.length, 95);
   });
 
   test('testWhenUseCasesAreResolvedSeparatelyThenTheyShareTheSameGame', () async {

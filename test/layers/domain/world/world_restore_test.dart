@@ -5,7 +5,6 @@ import 'package:farming/layers/domain/rules/blueprints.dart';
 
 import '../../../mocks/domain/entities/building/building_entity_mock.dart';
 import '../../../mocks/domain/entities/decoration/decoration_entity_mock.dart';
-import '../../../mocks/domain/entities/item/ground_item_entity_mock.dart';
 import '../../../mocks/domain/entities/rock/rock_entity_mock.dart';
 import '../../../mocks/domain/entities/tree/stump_entity_mock.dart';
 import '../../../mocks/domain/entities/tree/tree_entity_mock.dart';
@@ -23,10 +22,9 @@ void main() {
     expect(world.trees, [TreeEntityMock.withThreeHitsTaken, TreeEntityMock.neighbour]);
     expect(world.stumps, [StumpEntityMock.elsewhereAlmostSapling, StumpEntityMock.sapling.copyWith(id: 'tree-9')]);
     expect(world.rocks, [RockEntityMock.onceHit]);
-    expect(world.items, [GroundItemEntityMock.mock]);
     expect(world.decorations, [DecorationEntityMock.mock]);
     expect(world.buildings.map((building) => (building.id, building.hitsDone)), [
-      ('camp', 1),
+      ('house', 8),
       ('building-1', 8),
       ('building-3', 4),
     ]);
@@ -59,6 +57,6 @@ void main() {
     // then
     expect(world.buildings, hasLength(3));
     expect(changeCounter, throwsUnsupportedError);
-    expect(world.buildings.first, BuildingEntityMock.camp);
+    expect(world.buildings.first, BuildingEntityMock.finishedHouse);
   });
 }

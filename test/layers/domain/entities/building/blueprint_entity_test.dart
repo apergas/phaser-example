@@ -25,21 +25,9 @@ void main() {
       BlueprintEntityMock.make(cost: StockEntityMock.tenWood),
       BlueprintEntityMock.make(hitsToBuild: 4),
       BlueprintEntityMock.make(footprintRadius: 20),
-      BlueprintEntityMock.make(isBuildable: false),
     ];
 
     // then
     expect(others.where((other) => other == blueprint), isEmpty);
-  });
-
-  test('testWhenCreatedWithoutExtrasThenItIsBuildable', () {
-    // given
-    const blueprint = BlueprintEntityMock.mock;
-
-    // when
-    final isBuildable = blueprint.isBuildable;
-
-    // then
-    expect(isBuildable, isTrue);
   });
 }

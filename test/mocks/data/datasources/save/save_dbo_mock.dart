@@ -7,7 +7,6 @@ import 'package:farming/layers/data/datasources/save/local/dbo/save_tree_dbo.dar
 import 'save_building_dbo_mock.dart';
 import 'save_decoration_dbo_mock.dart';
 import 'save_hero_dbo_mock.dart';
-import 'save_item_dbo_mock.dart';
 import 'save_player_dbo_mock.dart';
 import 'save_rock_dbo_mock.dart';
 import 'save_stats_dbo_mock.dart';
@@ -19,12 +18,19 @@ abstract final class SaveDBOMock {
   static const List<String> _quests = ['gatherWood', 'buildHouse', 'buildForge'];
   static const List<String> _versionOneQuests = ['gatherWood', 'buildHouse', 'buildQuarry', 'buildForge'];
   static const List<SaveBuildingDBO> _buildings = [
+    SaveBuildingDBOMock.house,
+    SaveBuildingDBOMock.finishedHouse,
+    SaveBuildingDBOMock.forgeSite,
+  ];
+  static const List<SaveBuildingDBO> _versionTwoBuildings = [
     SaveBuildingDBOMock.camp,
+    SaveBuildingDBOMock.house,
     SaveBuildingDBOMock.finishedHouse,
     SaveBuildingDBOMock.forgeSite,
   ];
   static const List<SaveBuildingDBO> _versionOneBuildings = [
     SaveBuildingDBOMock.camp,
+    SaveBuildingDBOMock.house,
     SaveBuildingDBOMock.finishedHouse,
     SaveBuildingDBOMock.storehouse,
     SaveBuildingDBOMock.forgeSite,
@@ -53,7 +59,6 @@ abstract final class SaveDBOMock {
       trees: trees,
       stumps: const [SaveStumpDBOMock.elsewhereAlmostSapling, SaveStumpDBOMock.otherSapling],
       rocks: const [SaveRockDBOMock.onceHit],
-      items: const [SaveItemDBOMock.axe],
       decorations: const [SaveDecorationDBOMock.rock],
       buildings: buildings,
       idCounters: idCounters,
@@ -63,7 +68,15 @@ abstract final class SaveDBOMock {
 
   static final SaveDBO everything = _build();
   static final SaveDBO sameAsEverything = _build();
-  static final SaveDBO otherVersion = _build(version: 3);
+  static final SaveDBO otherVersion = _build(version: 4);
+  static final SaveDBO versionTwo = _build(
+    version: 2,
+    player: SavePlayerDBOMock.withoutPickaxe,
+    buildings: _versionTwoBuildings,
+  );
+  static final SaveDBO versionTwoWithThePickaxe = _build(version: 2, buildings: _versionTwoBuildings);
+  static final SaveDBO versionTwoWithoutInventory = _build(version: 2, player: SavePlayerDBOMock.withoutInventory);
+  static final SaveDBO versionTwoWithoutInventoryMigrated = _build(player: SavePlayerDBOMock.withOnlyThePickaxe);
   static final SaveDBO versionOne = _build(
     version: 1,
     player: SavePlayerDBOMock.versionOne,

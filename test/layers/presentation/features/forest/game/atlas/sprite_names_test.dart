@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
 import 'package:farming/core/config/constants/enum/decoration_kind.dart';
-import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/core/config/constants/enum/tree_kind.dart';
 import 'package:farming/layers/presentation/features/forest/game/atlas/sprite_names.dart';
 import 'package:farming/layers/presentation/features/forest/game/render/render_constants.dart';
@@ -21,20 +20,17 @@ void main() {
     expect(decorationName, 'decor-tall-grass');
   });
 
-  test('testWhenNamingBuildingsAndItemsThenFollowsTheAtlasFrameNames', () {
+  test('testWhenNamingBuildingsThenFollowsTheAtlasFrameNames', () {
     // given
     const house = BlueprintId.house;
-    const axe = ToolKind.axe;
 
     // when
     final buildingName = SpriteNames.building(house);
     final frontOffset = RenderConstants.buildingFrontOffset(house);
-    final itemName = SpriteNames.item(axe);
 
     // then
     expect(buildingName, 'house');
     expect(frontOffset, 24);
-    expect(itemName, 'axe-pickup');
   });
 
   test('testWhenNamingTheWorkshopsThenUsesTheirFramesAndTheHouseFrontOffset', () {
@@ -66,22 +62,18 @@ void main() {
 
   test('testWhenNamingTheVillageSpritesThenFollowsTheAtlasFrameNamesAndFrontOffsets', () {
     // given
-    const ids = [BlueprintId.camp, BlueprintId.workshop];
+    const ids = [BlueprintId.workshop];
 
     // when
     final names = ids.map(SpriteNames.building).toList();
     final offsets = ids.map(RenderConstants.buildingFrontOffset).toList();
 
     // then
-    expect(names, ['camp', 'workshop']);
-    expect(offsets, [12, 24]);
+    expect(names, ['workshop']);
+    expect(offsets, [24]);
     expect(
-      (SpriteNames.sapling, SpriteNames.rock, SpriteNames.item(ToolKind.pickaxe)),
-      (
-        'sapling',
-        'rock-large',
-        'pickaxe-pickup',
-      ),
+      (SpriteNames.sapling, SpriteNames.rock),
+      ('sapling', 'rock-large'),
     );
   });
 }

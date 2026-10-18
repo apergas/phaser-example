@@ -3,24 +3,24 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../../../../../mocks/data/datasources/level/level_dbo_mock.dart';
 
 void main() {
-  test('testWhenTheLevelsHaveTheSameRocksAndBuildingsThenTheyAreEqual', () {
+  test('testWhenTheLevelsHaveTheSameRocksThenTheyAreEqual', () {
     // given
-    const level = LevelDBOMock.mockWithRocksAndBuildings;
+    const level = LevelDBOMock.mockWithRocks;
 
     // when
-    final copy = LevelDBOMock.mockWithRocksAndBuildings;
+    final copy = LevelDBOMock.mockWithRocks;
 
     // then
     expect(copy, level);
     expect(copy.hashCode, level.hashCode);
   });
 
-  test('testWhenTheRocksOrTheBuildingsDifferThenTheLevelsAreNotEqual', () {
+  test('testWhenTheRocksDifferThenTheLevelsAreNotEqual', () {
     // given
-    const level = LevelDBOMock.mockWithRocksAndBuildings;
+    const level = LevelDBOMock.mockWithRocks;
 
     // when
-    final others = [LevelDBOMock.mockWithOtherRocks, LevelDBOMock.mockWithOtherBuildings, LevelDBOMock.mock];
+    final others = [LevelDBOMock.mockWithOtherRocks, LevelDBOMock.mock];
 
     // then
     expect(others.where((other) => other == level), isEmpty);

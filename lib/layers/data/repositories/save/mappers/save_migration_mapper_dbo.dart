@@ -11,10 +11,13 @@ import '../../../datasources/save/local/dbo/save_stock_dbo.dart';
 class SaveMigrationMapperDBO {
   static const Set<String> _removedBlueprints = {'storehouse', 'quarry'};
   static const Set<String> _removedQuests = {'buildQuarry'};
+  static const String _removedBlueprintOfVersionTwo = 'camp';
+  static const String _pickaxe = 'pickaxe';
 
   SaveDBO toCurrent(SaveDBO dbo) => switch (dbo.version) {
     SaveDBO.currentVersion => dbo,
-    1 => _fromVersionOne(dbo),
+    2 => _fromVersionTwo(dbo),
+    1 => _fromVersionTwo(_fromVersionOne(dbo)),
     _ => throw InvalidSaveException(data: 'unknown version ${dbo.version}'),
   };
 
@@ -26,7 +29,7 @@ class SaveMigrationMapperDBO {
       if (amount < 0) throw InvalidSaveException(data: 'player: $amount $resource');
     }
     return SaveDBO(
-      version: SaveDBO.currentVersion,
+      version: 2,
       width: dbo.width,
       height: dbo.height,
       player: player == null
@@ -44,11 +47,40 @@ class SaveMigrationMapperDBO {
       trees: dbo.trees,
       stumps: dbo.stumps,
       rocks: dbo.rocks,
-      items: dbo.items,
       decorations: dbo.decorations,
       buildings: dbo.buildings?.where(_isKept).toList(),
       idCounters: dbo.idCounters,
       completedQuests: dbo.completedQuests?.where((quest) => !_removedQuests.contains(quest)).toList(),
+    );
+  }
+
+  SaveDBO _fromVersionTwo(SaveDBO dbo) {
+    final player = dbo.player;
+    return SaveDBO(
+      version: SaveDBO.currentVersion,
+      width: dbo.width,
+      height: dbo.height,
+      player: player == null
+          ? null
+          : SavePlayerDBO(x: player.x, y: player.y, inventory: _withPickaxe(player.inventory)),
+      hero: dbo.hero,
+      stats: dbo.stats,
+      stock: dbo.stock,
+      trees: dbo.trees,
+      stumps: dbo.stumps,
+      rocks: dbo.rocks,
+      decorations: dbo.decorations,
+      buildings: dbo.buildings?.where((building) => building.blueprint != _removedBlueprintOfVersionTwo).toList(),
+      idCounters: dbo.idCounters,
+      completedQuests: dbo.completedQuests,
+    );
+  }
+
+  SaveInventoryDBO _withPickaxe(SaveInventoryDBO? inventory) {
+    final tools = inventory?.tools ?? const <String>[];
+    return SaveInventoryDBO(
+      tools: tools.contains(_pickaxe) ? tools : [...tools, _pickaxe],
+      toolLevels: inventory?.toolLevels,
     );
   }
 

@@ -113,6 +113,9 @@ class ForestSceneComponent extends Component {
     for (final decoration in world.decorations) {
       _addClutter(SpriteNames.decoration(decoration.kind), decoration.position, decoration.position.y);
     }
+    for (final building in world.buildings) {
+      _clearClutterUnder(_building(building));
+    }
   }
 
   void _play(ForestEffect effect) {

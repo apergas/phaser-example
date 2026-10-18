@@ -36,14 +36,14 @@
 | Fase | Estado | Dónde está | Notas |
 |---|---|---|---|
 | F0 Generalizar recursos, herramientas y edificios | ✅ | `develop` (#6) | Incluye el arreglo de las líneas del suelo. |
-| [F1 Árboles con personalidad](2026-10-04-game-design/F1-tree-kinds.md) | ✅ | `feature/PROJECT-F1-tree-kinds` | Bloque 1. Sin tests (T1). |
-| [F3 Rebrote de árboles](2026-10-04-game-design/F3-regrowth.md) | ✅ | `feature/PROJECT-F3-regrowth` | Bloque 1. Sin tests (T1). |
-| [F4 Misiones, capítulo 1](2026-10-04-game-design/F4-quests-chapter-1.md) | ✅ | `feature/PROJECT-F4-quests-chapter-1` | Bloque 1. Sin tests (T1). |
-| [F5 Piedra y pico](2026-10-04-game-design/F5-stone.md) | ✅ | `feature/PROJECT-F5-stone` | Bloque 2. Sin tests (T1). |
-| [F6 Almacén y capacidad de carga](2026-10-04-game-design/F6-storehouse.md) | ✅ | `feature/PROJECT-F6-storehouse` | Bloque 2. Sin tests (T1). |
-| [F7 Cantera](2026-10-04-game-design/F7-quarry.md) | ✅ | `feature/PROJECT-F7-quarry` | Bloque 2. Sin tests (T1). |
-| [F8 Taller y mejoras de herramientas](2026-10-04-game-design/F8-workshop.md) | ✅ | `feature/PROJECT-F8-workshop` | Bloque 2. Sin tests (T1). |
-| [F2 Guardado de la partida](2026-10-04-game-design/F2-autosave.md) | 📝 ficha | — | Bloque 3: va la última. |
+| [F1 Árboles con personalidad](2026-10-04-game-design/F1-tree-kinds.md) | ✅ | `develop` (#72) | Bloque 1. Sin tests (T1). |
+| [F3 Rebrote de árboles](2026-10-04-game-design/F3-regrowth.md) | ✅ | `develop` (#73) | Bloque 1. Sin tests (T1). |
+| [F4 Misiones, capítulo 1](2026-10-04-game-design/F4-quests-chapter-1.md) | ✅ | `develop` (#74) | Bloque 1. Sin tests (T1). |
+| [F5 Piedra y pico](2026-10-04-game-design/F5-stone.md) | ✅ | `develop` (#76) | Bloque 2. Sin tests (T1). |
+| [F6 Almacén y capacidad de carga](2026-10-04-game-design/F6-storehouse.md) | ✅ | `develop` (#77) | Bloque 2. Sin tests (T1). |
+| [F7 Cantera](2026-10-04-game-design/F7-quarry.md) | ✅ | `develop` (#78) | Bloque 2. Sin tests (T1). |
+| [F8 Taller y mejoras de herramientas](2026-10-04-game-design/F8-workshop.md) | ✅ | `develop` (#79) | Bloque 2. Sin tests (T1). |
+| [F2 Guardado de la partida](2026-10-04-game-design/F2-autosave.md) | ✅ | `develop` (#81) | Bloque 3. Sin tests (T1). |
 | F9–F15 Comida, aldeanos, granja, estaciones, eras, mercader | 💭 en espera | — | No se planifican hasta terminar todo, T1 incluida; se hablan entonces. |
 
 ## Arreglos y mejoras
@@ -51,7 +51,7 @@
 | Arreglo o mejora | Estado | Dónde está |
 |---|---|---|
 | [Rayas negras en el suelo de la arena](2026-10-17-extras/arena-ground-seams.md) | ✅ | `develop` (#61) |
-| [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | ✅ | `feature/PROJECT-X-start-with-axe` |
+| [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | ✅ | `develop` (#71) |
 | [T1 Tests](2026-10-17-extras/T1-tests.md) | 📝 ficha | — (la última; desde TC9.4 no se escriben tests) |
 
 ## Siguiente paso
@@ -59,7 +59,6 @@
 | Orden | Qué | Rama |
 |---|---|---|
 | ✅ | Arena C9–C13; prueba manual del bloque en Chrome y Android 16 (iOS sin probar; los niveles 6–10 y las mejoras sin jugar a mano) y unión a `develop` | `feature/PROJECT-X-arena` → `develop` |
-| 1 | Empezar con el hacha (antes de F4) | desde `feature/PROJECT-X-town` |
-| 2 | F1 → F3 → F4 (bloque 1) → F5 → F6 → F7 → F8 (bloque 2) → F2 (bloque 3) | desde `feature/PROJECT-X-town`, tras `git merge develop` |
-| 3 | Prueba manual del bloque de la aldea (web, Android e iOS; las *Prueba manual* de F1–F8, F2 y los arreglos) | `feature/PROJECT-X-town` |
-| 4 | T1 Tests | desde `develop`, con todo unido |
+| ✅ | Aldea: empezar con el hacha, F1, F3, F4 (bloque 1), F5–F8 (bloque 2) y F2 (bloque 3), unidos a `develop` | `feature/PROJECT-X-town` → `develop` |
+| ✅ | Prueba manual del bloque de la aldea en Chrome (tala, carga y entrega en el campamento, autoguardado al recargar, *Partida* ▸ *Guardar* / *Nueva partida*) y arranque en Android 16; iOS sin probar | — |
+| 1 | T1 Tests | desde `develop`, con todo unido |

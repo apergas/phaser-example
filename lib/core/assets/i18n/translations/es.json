@@ -18,7 +18,9 @@
     "unknownItemKindTitle": "Objeto desconocido",
     "unknownItemKindMessage": "El nivel tiene un objeto de un tipo desconocido: {detail}",
     "noGameInProgressTitle": "No hay partida",
-    "noGameInProgressMessage": "No hay ninguna partida en curso."
+    "noGameInProgressMessage": "No hay ninguna partida en curso.",
+    "invalidSaveTitle": "Partida guardada no válida",
+    "invalidSaveMessage": "La partida guardada no es válida: {reason}"
   },
   "forest": {
     "hud": {
@@ -33,7 +35,8 @@
       "arena": "Arena",
       "stock": "Almacén",
       "carry": "Carga {amount}/{capacity}",
-      "workshop": "Taller"
+      "workshop": "Taller",
+      "game": "Partida"
     },
     "resource": {
       "wood": "Madera",
@@ -199,6 +202,14 @@
     "floating": {
       "woodGained": "+{wood}",
       "stoneGained": "+{amount}"
+    },
+    "game": {
+      "save": "Guardar",
+      "saved": "Partida guardada",
+      "newGame": "Nueva partida",
+      "newGameConfirm": "Se perderá la partida actual. ¿Empezar de nuevo?",
+      "confirm": "Empezar",
+      "cancel": "Cancelar"
     }
   },
   "arena": {

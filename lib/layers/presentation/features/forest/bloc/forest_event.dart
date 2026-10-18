@@ -67,3 +67,15 @@ final class ForestUpgradeRequested extends ForestEvent {
 
   const ForestUpgradeRequested({required this.upgrade});
 }
+
+final class ForestPaused extends ForestEvent {
+  const ForestPaused();
+}
+
+final class ForestSaveRequested extends ForestEvent {
+  const ForestSaveRequested();
+}
+
+final class ForestNewGameRequested extends ForestEvent {
+  const ForestNewGameRequested();
+}

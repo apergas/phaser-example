@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 
 import '../../../core/config/constants/enum/blueprint_id.dart';
@@ -29,4 +31,7 @@ abstract final class Upgrades {
 
   static UpgradeEntity? reached(ToolKind tool, int level) =>
       all.lastWhereOrNull((upgrade) => upgrade.tool == tool && upgrade.level <= level);
+
+  static int maxLevel(ToolKind tool) =>
+      all.where((upgrade) => upgrade.tool == tool).fold(1, (level, upgrade) => max(level, upgrade.level));
 }

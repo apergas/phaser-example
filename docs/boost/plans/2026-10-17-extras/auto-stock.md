@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | **Rama** | `feature/PROJECT-X-auto-stock`, desde `develop` |
-| **Estado** | Plan detallado |
+| **Estado** | Hecho (1179 tests, 276 en Chrome) |
 | **Cuándo** | T1 ya está en `develop` (#84): esta mejora escribe y arregla sus tests con TDD |
 
 **Qué se quiere** (pedido por el usuario el 2026-10-18): quitar la mecánica de llevar lo recogido al almacén. Al talar un árbol o romper una roca, la madera o la piedra se suman directamente al almacén de la aldea.
@@ -38,7 +38,7 @@ En Chrome: talar un pino suma 4 de madera al almacén al instante y una roca se 
 
 # Recursos directos al almacén — plan de implementación
 
-> **Para agentes:** `boost:executing-plans` (en línea) o `boost:subagent-driven-development`. Con TDD (`boost:test-driven-development`): T1 ya está en `develop`, así que cada tarea escribe o adapta sus tests antes del código y borra los de lo que desaparece. Los pasos usan casillas (`- [ ]`).
+> **Para agentes:** `boost:executing-plans` (en línea) o `boost:subagent-driven-development`. Con TDD (`boost:test-driven-development`): T1 ya está en `develop`, así que cada tarea escribe o adapta sus tests antes del código y borra los de lo que desaparece. Los pasos usan casillas (`- [x]`).
 
 **Objetivo:** talar un árbol o romper una roca suma toda su madera o piedra a `WorldState.stock`, sin carga, sin entrega, sin almacén ni cantera; las partidas de la versión 1 se migran al cargar.
 
@@ -90,10 +90,10 @@ class StockEntity {
 }
 ```
 
-- [ ] **Paso 1:** tests de `StockEntity` (igualdad, `copyWith`) y de `StockRules` (los de recursos de `inventory_rules_test.dart`: `amount`, `add` negativo/cero, `adding`, `missing`, `spend`), con `StockEntityMock`. Fallan: no existe.
-- [ ] **Paso 2:** crear la entidad y `StockRules` (las operaciones de recursos de `InventoryRules` sobre `StockEntity`).
-- [ ] **Paso 3:** cambiar `WorldState.stock`, `World` (`stock`, `funds`, `earn`, `restore`), `Construction.place`, `Depositing.impact`, `Quests`, los casos de uso y `ForestBloc` a `StockEntity` / `StockRules`; el mapper del guardado convierte el almacén con `SaveInventoryDBO(resources:)`. Adaptar mocks y tests del almacén a `StockEntityMock`.
-- [ ] **Paso 4:** `flutter analyze`, `flutter test`, formatear, commit `[PROJECT-X]: Keep the village stock in its own entity`.
+- [x] **Paso 1:** tests de `StockEntity` (igualdad, `copyWith`) y de `StockRules` (los de recursos de `inventory_rules_test.dart`: `amount`, `add` negativo/cero, `adding`, `missing`, `spend`), con `StockEntityMock`. Fallan: no existe.
+- [x] **Paso 2:** crear la entidad y `StockRules` (las operaciones de recursos de `InventoryRules` sobre `StockEntity`).
+- [x] **Paso 3:** cambiar `WorldState.stock`, `World` (`stock`, `funds`, `earn`, `restore`), `Construction.place`, `Depositing.impact`, `Quests`, los casos de uso y `ForestBloc` a `StockEntity` / `StockRules`; el mapper del guardado convierte el almacén con `SaveInventoryDBO(resources:)`. Adaptar mocks y tests del almacén a `StockEntityMock`.
+- [x] **Paso 4:** `flutter analyze`, `flutter test`, formatear, commit `[PROJECT-X]: Keep the village stock in its own entity`.
 
 ## Tarea 2: lo recogido va directo al almacén; fuera la carga y la entrega
 
@@ -115,11 +115,11 @@ state.stock = state.stock.add(Resource.stone, rock.stoneYield);
 events.add(RockBrokenEventEntity(rockId: rock.id, stone: rock.stoneYield));
 ```
 
-- [ ] **Paso 1:** tests nuevos: `testWhenATreeIsFelledThenItsWholeWoodGoesToTheStock` (con el almacén ya por encima de 10), `testWhenARockBreaksThenItsWholeStoneGoesToTheStock`; en el bloc, `testWhenAFinishedBuildingIsTappedThenThePlayerWalksThere` y `testWhenAnUnfinishedBuildingIsTappedThenConstructionResumes` (sin entrega), y que la barra ya no muestra la carga. Fallan.
-- [ ] **Paso 2:** el código de arriba en `Woodcutting` y `Mining`, sin `carryFull` en `check`; fuera `Depositing`, la intención, la actividad, el evento, el caso de uso, `DepositResult`, `acceptsDeposits`, `accepts`, la carga de `InventoryRules`, `ResourceRules`, `InventoryEntity.resources` y las reglas.
-- [ ] **Paso 3:** `ForestBloc`: fuera `_depositUseCase`, `_isGathering` y los avisos de carga llena; `_orderAtBuilding` solo reanuda obras; fuera `DepositedEventEntity` de `_isWorthSaving` y `_react`; `HudData` sin `carry`; `ResourceBar` sin `_carry()` ni `carryKey`; `ForestPage` sin `DepositUseCase`. Textos fuera de `Internationalize` y `es.json`.
-- [ ] **Paso 4:** borrar los tests de lo quitado y adaptar los demás (lo que empezaba con recursos en el inventario pasa a tenerlos en el almacén).
-- [ ] **Paso 5:** `dart run build_runner build --delete-conflicting-outputs` (DI sin `DepositUseCase`), `flutter analyze`, `flutter test`, formatear, commit `[PROJECT-X]: Send gathered resources straight to the stock`.
+- [x] **Paso 1:** tests nuevos: `testWhenATreeIsFelledThenItsWholeWoodGoesToTheStock` (con el almacén ya por encima de 10), `testWhenARockBreaksThenItsWholeStoneGoesToTheStock`; en el bloc, `testWhenAFinishedBuildingIsTappedThenThePlayerWalksThere` y `testWhenAnUnfinishedBuildingIsTappedThenConstructionResumes` (sin entrega), y que la barra ya no muestra la carga. Fallan.
+- [x] **Paso 2:** el código de arriba en `Woodcutting` y `Mining`, sin `carryFull` en `check`; fuera `Depositing`, la intención, la actividad, el evento, el caso de uso, `DepositResult`, `acceptsDeposits`, `accepts`, la carga de `InventoryRules`, `ResourceRules`, `InventoryEntity.resources` y las reglas.
+- [x] **Paso 3:** `ForestBloc`: fuera `_depositUseCase`, `_isGathering` y los avisos de carga llena; `_orderAtBuilding` solo reanuda obras; fuera `DepositedEventEntity` de `_isWorthSaving` y `_react`; `HudData` sin `carry`; `ResourceBar` sin `_carry()` ni `carryKey`; `ForestPage` sin `DepositUseCase`. Textos fuera de `Internationalize` y `es.json`.
+- [x] **Paso 4:** borrar los tests de lo quitado y adaptar los demás (lo que empezaba con recursos en el inventario pasa a tenerlos en el almacén).
+- [x] **Paso 5:** `dart run build_runner build --delete-conflicting-outputs` (DI sin `DepositUseCase`), `flutter analyze`, `flutter test`, formatear, commit `[PROJECT-X]: Send gathered resources straight to the stock`.
 
 ## Tarea 3: fuera el almacén, la cantera y su regla; roca de 7 golpes
 
@@ -141,11 +141,11 @@ static ConstructionRejection? rejection(WorldState state, BlueprintEntity bluepr
 }
 ```
 
-- [ ] **Paso 1:** tests: `testWhenARockIsMinedSevenTimesThenItBreaks`, `testWhenTheIronPickaxeHitsFiveTimesThenTheRockBreaks`, `testWhenMiningThenEachBlowTakesTheChoppingInterval`, `Blueprints.all` sin almacén ni cantera, `Quests.all` con 10 misiones en la aldea y 18 en total. Fallan.
-- [ ] **Paso 2:** quitar los dos planos del catálogo y del enum, la jerarquía `PlacementRuleEntity`, `PlacementRuleRules`, `needsNearbyRock`, `boostsMining`, las constantes y `buildQuarry`; `Rules.rockHitsToBreak = 7`; `Mining.intervalMs` con `Rules.chopIntervalMs`.
-- [ ] **Paso 3:** `SpriteNames`, `RenderConstants.buildingFrontOffset`, `Internationalize` (`forestBlueprint`, `forestQuestTitle`, `forestPlacementRejection`) y `es.json` sin esos casos.
-- [ ] **Paso 4:** en `build_assets.py`, quitar `build_storehouse`, `build_quarry`, sus constantes y frames y su mención en el docstring; `cd asset-packs/lpc && python3 build_assets.py`; `CREDITS.md` sin el almacén ni la cantera.
-- [ ] **Paso 5:** borrar y adaptar tests y mocks; `flutter analyze`, `flutter test`, formatear, commit `[PROJECT-X]: Remove the storehouse and the quarry`.
+- [x] **Paso 1:** tests: `testWhenARockIsMinedSevenTimesThenItBreaks`, `testWhenTheIronPickaxeHitsFiveTimesThenTheRockBreaks`, `testWhenMiningThenEachBlowTakesTheChoppingInterval`, `Blueprints.all` sin almacén ni cantera, `Quests.all` con 10 misiones en la aldea y 18 en total. Fallan.
+- [x] **Paso 2:** quitar los dos planos del catálogo y del enum, la jerarquía `PlacementRuleEntity`, `PlacementRuleRules`, `needsNearbyRock`, `boostsMining`, las constantes y `buildQuarry`; `Rules.rockHitsToBreak = 7`; `Mining.intervalMs` con `Rules.chopIntervalMs`.
+- [x] **Paso 3:** `SpriteNames`, `RenderConstants.buildingFrontOffset`, `Internationalize` (`forestBlueprint`, `forestQuestTitle`, `forestPlacementRejection`) y `es.json` sin esos casos.
+- [x] **Paso 4:** en `build_assets.py`, quitar `build_storehouse`, `build_quarry`, sus constantes y frames y su mención en el docstring; `cd asset-packs/lpc && python3 build_assets.py`; `CREDITS.md` sin el almacén ni la cantera.
+- [x] **Paso 5:** borrar y adaptar tests y mocks; `flutter analyze`, `flutter test`, formatear, commit `[PROJECT-X]: Remove the storehouse and the quarry`.
 
 ## Tarea 4: guardado versión 2 con migración
 
@@ -161,22 +161,24 @@ SaveDBO toCurrent(SaveDBO dbo) => switch (dbo.version) {
 };
 ```
 
-- [ ] **Paso 1:** tests de `SaveMigrationMapperDBO`: `testWhenAVersionOneSaveIsMigratedThenTheCarriedResourcesJoinTheStock`, `…ThenStorehousesAndQuarriesAreRemoved`, `…ThenTheQuarryQuestIsDropped`, `…ThenItBecomesVersionTwo`, `testWhenAVersionTwoSaveIsMigratedThenItIsUnchanged`, `testWhenAnUnknownVersionIsMigratedThenItThrowsInvalidSave`, `testWhenACarriedAmountIsNegativeThenItThrowsInvalidSave`; de `SaveStockMapperDBO` (ida y vuelta, recurso desconocido, importe negativo); de `GameSaveRepositoryImpl.load` con un JSON de la versión 1. Fallan.
-- [ ] **Paso 2:** crear `SaveStockDBO`, `SaveStockMapperDBO` y `SaveMigrationMapperDBO`; `SaveMapperDBO` los usa; `currentVersion = 2`.
-- [ ] **Paso 3:** `dart run build_runner build --delete-conflicting-outputs`, adaptar los tests del guardado (la versión de los mocks pasa a 2), `flutter analyze`, `flutter test`, `flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart`, formatear, commit `[PROJECT-X]: Migrate version 1 saves to the direct stock`.
+- [x] **Paso 1:** tests de `SaveMigrationMapperDBO`: `testWhenAVersionOneSaveIsMigratedThenTheCarriedResourcesJoinTheStock`, `…ThenStorehousesAndQuarriesAreRemoved`, `…ThenTheQuarryQuestIsDropped`, `…ThenItBecomesVersionTwo`, `testWhenAVersionTwoSaveIsMigratedThenItIsUnchanged`, `testWhenAnUnknownVersionIsMigratedThenItThrowsInvalidSave`, `testWhenACarriedAmountIsNegativeThenItThrowsInvalidSave`; de `SaveStockMapperDBO` (ida y vuelta, recurso desconocido, importe negativo); de `GameSaveRepositoryImpl.load` con un JSON de la versión 1. Fallan.
+- [x] **Paso 2:** crear `SaveStockDBO`, `SaveStockMapperDBO` y `SaveMigrationMapperDBO`; `SaveMapperDBO` los usa; `currentVersion = 2`.
+- [x] **Paso 3:** `dart run build_runner build --delete-conflicting-outputs`, adaptar los tests del guardado (la versión de los mocks pasa a 2), `flutter analyze`, `flutter test`, `flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart`, formatear, commit `[PROJECT-X]: Migrate version 1 saves to the direct stock`.
 
 ## Tarea 5: umbrales del HUD
 
 **Archivos:** `lib/layers/presentation/features/forest/widgets/hud_overlay.dart` y, si hace falta, `test/layers/presentation/features/forest/widgets/hud_overlay_test.dart`.
 
-- [ ] **Paso 1:** medir con un test de usar y tirar en el *scratchpad* (Roboto con `loadRobotoFont`, `HudDataMock.withEveryResourceAndTool`: 9999 de cada recurso y las dos herramientas mejoradas) el ancho de la barra con y sin nombres y de la fila de seis botones.
-- [ ] **Paso 2:** `buttonsBelowWidth` = 12 + barra con nombres + 8 + botones + 12 + 24, redondeado hacia arriba a la decena; `narrowWidth` = barra con nombres + 24 de márgenes + 24, redondeado igual. Los tests de los umbrales en verde.
-- [ ] **Paso 3:** `flutter test test/layers/presentation/features/forest/widgets`, formatear, commit `[PROJECT-X]: Measure the HUD breakpoints without the load`.
+- [x] **Paso 1:** medir con un test de usar y tirar en el *scratchpad* (Roboto con `loadRobotoFont`, `HudDataMock.withEveryResourceAndTool`: 9999 de cada recurso y las dos herramientas mejoradas) el ancho de la barra con y sin nombres y de la fila de seis botones.
+- [x] **Paso 2:** `buttonsBelowWidth` = 12 + barra con nombres + 8 + botones + 12 + 24, redondeado hacia arriba a la decena; `narrowWidth` = barra con nombres + 24 de márgenes + 24, redondeado igual. Los tests de los umbrales en verde.
+- [x] **Paso 3:** `flutter test test/layers/presentation/features/forest/widgets`, formatear, commit `[PROJECT-X]: Measure the HUD breakpoints without the load`.
+
+Medido con Roboto: barra con nombres 794,5 px (433,2 sin nombres), seis botones 714,7 px → `buttonsBelowWidth` 12 + 794,5 + 8 + 714,7 + 12 + 24 = 1565,2 → **1570** (antes 1820); `narrowWidth` 794,5 + 24 + 24 = 842,5 → **850** (antes 1100).
 
 ## Tarea 6: documentación y cierre
 
-- [ ] Fichero de instrucciones del proyecto: la carga, `Depositing`, el almacén y la cantera, la regla de colocación, el ritmo y los golpes de la minería, `StockEntity`, el guardado v2 y la migración, los conteos de misiones (10 en la aldea, 18 en total), los umbrales del HUD.
-- [ ] `docs/GAME_DESIGN.md`: lo que hablaba de carga, almacén y cantera.
-- [ ] Nota en `F6-storehouse.md` y `F7-quarry.md`: la carga, la entrega, el almacén y la cantera se quitaron en esta mejora.
-- [ ] Batería final: `build_runner` + `git diff --exit-code`, `flutter analyze`, `flutter test`, golden en Chrome.
-- [ ] `PROGRESS.md`: fila de la mejora ✅ en `develop` con los tests; *Siguiente paso* 1 → ✅. Casillas de este plan marcadas. Commit `[PROJECT-X]: Close the direct stock improvement`.
+- [x] Fichero de instrucciones del proyecto: la carga, `Depositing`, el almacén y la cantera, la regla de colocación, el ritmo y los golpes de la minería, `StockEntity`, el guardado v2 y la migración, los conteos de misiones (10 en la aldea, 18 en total), los umbrales del HUD.
+- [x] `docs/GAME_DESIGN.md`: lo que hablaba de carga, almacén y cantera.
+- [x] Nota en `F6-storehouse.md` y `F7-quarry.md`: la carga, la entrega, el almacén y la cantera se quitaron en esta mejora.
+- [x] Batería final: `build_runner` + `git diff --exit-code`, `flutter analyze`, `flutter test`, golden en Chrome.
+- [x] `PROGRESS.md`: fila de la mejora ✅ en `develop` con los tests; *Siguiente paso* 1 → ✅. Casillas de este plan marcadas. Commit `[PROJECT-X]: Close the direct stock improvement`.

@@ -88,7 +88,9 @@ Ideas agrupadas por tema. Cada una indica una **estimación de esfuerzo** (S/M/L
 - **Herramientas mejorables** (M): hacha de piedra → hierro: menos golpes por árbol. Introduce un sumidero de
   recursos y una sensación clara de progreso.
 - **Capacidad de carga** (M): el personaje lleva como máximo N unidades y debe volver a un almacén. Es el núcleo del
-  bucle de AoE ("ir y volver") y da sentido a dónde se colocan los edificios.
+  bucle de AoE ("ir y volver") y da sentido a dónde se colocan los edificios. *Se hizo en F6 y se quitó en la mejora
+  [Recursos directos al almacén](boost/plans/2026-10-17-extras/auto-stock.md): lo talado y lo picado va entero al
+  almacén de la aldea, sin carga ni entrega.*
 
 ### 3.2 Construcción con función
 
@@ -97,9 +99,9 @@ Que cada edificio **desbloquee o produzca** algo:
 | Edificio | Coste orientativo | Función |
 |---|---|---|
 | Casa | 15 madera | +2 de población (permite aldeanos). |
-| Almacén / Campamento maderero | 20 madera | Punto de entrega; recolección cercana más rápida. |
+| Almacén / Campamento maderero | 20 madera | Punto de entrega; recolección cercana más rápida. *Hecho en F6 y quitado en la mejora Recursos directos al almacén; el campamento queda en el mapa sin función.* |
 | Granja / Huerto | 30 madera | Produce comida con el tiempo o se cosecha como un trabajo. |
-| Cantera | 25 madera | Habilita la piedra o la acelera. |
+| Cantera | 25 madera | Habilita la piedra o la acelera. *Hecha en F7 y quitada en la mejora Recursos directos al almacén: una roca da 7 golpes al ritmo del hacha.* |
 | Taller / Herrería | madera + piedra | Fabrica y mejora herramientas. |
 | Pozo, caminos, vallas | baratos | Decoración útil: caminos aceleran al personaje, vallas delimitan. |
 | Monumento / Plaza | mucho de todo | Meta a largo plazo, "maravilla" pacífica del AoE. |
@@ -110,7 +112,8 @@ Otras ideas de construcción:
 - **Entrega de materiales a pie de obra** (M): pagar al colocar es simple; pagar por fases obliga a acarrear.
 - **Mejorar edificios** (M): casa → casa grande, almacén → granero.
 - **Demoler / mover** (S): devolver parte del coste.
-- **Reglas de colocación** (S–M): granjas sólo en terreno abierto, molino junto a agua, cantera junto a roca.
+- **Reglas de colocación** (S–M): granjas sólo en terreno abierto, molino junto a agua, cantera junto a roca. *La de
+  la cantera (F7) se quitó con ella; hoy ningún edificio tiene regla propia.*
 
 ### 3.3 Aldeanos (el salto a "tipo AoE")
 
@@ -349,8 +352,8 @@ Orden pensado para que cada paso aporte jugabilidad visible y prepare el siguien
    - `TreeKind` con efecto en madera y golpes.
    - 4–6 misiones más.
 2. **Segundo recurso y edificios útiles**
-   - Piedra + pico + cantera.
-   - Almacén con capacidad de carga del personaje.
+   - Piedra + pico + cantera (la cantera se quitó después).
+   - Almacén con capacidad de carga del personaje (quitado después: los recursos van directos al almacén).
    - Taller con mejora de herramientas.
 3. **Aldeanos**
    - Casa = población, comida = coste.

@@ -9,6 +9,36 @@ abstract final class InventoryEntityMock {
 
   static const InventoryEntity withAxe = InventoryEntity(tools: {ToolKind.axe});
 
+  static const InventoryEntity withIronAxe = InventoryEntity(tools: {ToolKind.axe}, toolLevels: {ToolKind.axe: 2});
+
+  static const InventoryEntity mixedLoad = InventoryEntity(
+    resources: {Resource.wood: 6, Resource.stone: 3, Resource.gold: 5, Resource.mana: 2},
+    tools: {ToolKind.axe, ToolKind.pickaxe},
+    toolLevels: {ToolKind.axe: 2},
+  );
+
+  static const InventoryEntity mixedLoadWithoutStone = InventoryEntity(
+    resources: {Resource.wood: 6, Resource.gold: 5, Resource.mana: 2},
+    tools: {ToolKind.axe, ToolKind.pickaxe},
+    toolLevels: {ToolKind.axe: 2},
+  );
+
+  static const InventoryEntity mixedLoadUnloaded = InventoryEntity(
+    resources: {Resource.gold: 5, Resource.mana: 2},
+    tools: {ToolKind.axe, ToolKind.pickaxe},
+    toolLevels: {ToolKind.axe: 2},
+  );
+
+  static const InventoryEntity fullOfWood = InventoryEntity(resources: {Resource.wood: 10});
+
+  static const InventoryEntity overloaded = InventoryEntity(resources: {Resource.wood: 9, Resource.stone: 4});
+
+  static const InventoryEntity onlyGoldAndMana = InventoryEntity(resources: {Resource.gold: 50, Resource.mana: 20});
+
+  static const Map<Resource, int> stoneOnly = {Resource.stone: 3};
+
+  static const Map<Resource, int> woodAndStone = {Resource.wood: 6, Resource.stone: 3};
+
   static const Map<Resource, int> tenWood = {Resource.wood: 10};
 
   static const Map<Resource, int> zeroWood = {Resource.wood: 0};

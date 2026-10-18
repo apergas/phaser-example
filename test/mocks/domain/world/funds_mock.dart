@@ -46,4 +46,6 @@ abstract final class FundsMock {
   static const Map<Resource, int> seventeenWood = {Resource.wood: 17};
 
   static const Map<Resource, int> fifteenWood = {Resource.wood: 15};
+
+  static const Map<Resource, int> quarryPrice = {Resource.wood: 25};
 }

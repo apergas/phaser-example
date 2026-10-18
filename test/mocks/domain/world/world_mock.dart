@@ -14,6 +14,7 @@ import 'package:farming/layers/domain/world/world.dart';
 import '../entities/hero/hero_entity_mock.dart';
 import '../entities/player/player_entity_mock.dart';
 import '../entities/tree/tree_entity_mock.dart';
+import 'funds_mock.dart';
 
 abstract final class WorldMock {
   static World make({
@@ -86,20 +87,20 @@ abstract final class WorldMock {
 
   static World withTreeBlockingPath() => make(trees: [TreeEntityMock.blockingPath]);
 
-  static World withFifteenWood() => make(player: PlayerEntityMock.withFifteenWood);
+  static World withFifteenWood() => withStock(FundsMock.fifteenWood);
 
-  static World withSeventeenWood() => make(player: PlayerEntityMock.withSeventeenWood);
+  static World withSeventeenWood() => withStock(FundsMock.seventeenWood);
 
   static World withFifteenWoodAndTreeAtSite() {
-    return make(player: PlayerEntityMock.withFifteenWood, trees: [TreeEntityMock.atSite]);
+    return make(trees: [TreeEntityMock.atSite])..earn(FundsMock.fifteenWood);
   }
 }
 
 extension WorldAdvanceFor on World {
-  List<GameEventEntity> advanceFor(double totalMs, {double stepMs = 16}) {
+  List<GameEventEntity> advanceFor(double totalMs, {double stepMs = 16, bool Function()? until}) {
     final events = <GameEventEntity>[];
     var elapsed = 0.0;
-    while (elapsed < totalMs) {
+    while (elapsed < totalMs && !(until?.call() ?? false)) {
       events.addAll(advance(stepMs));
       elapsed += stepMs;
     }

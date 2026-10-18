@@ -122,4 +122,167 @@ void main() {
     // then
     expect(act, throwsArgumentError);
   });
+
+  test('testWhenMeasuringTheLoadThenWoodAndStoneCountAndGoldAndManaDoNot', () {
+    // given
+    const inventory = InventoryEntityMock.mixedLoad;
+
+    // when
+    final load = (inventory.load, inventory.freeLoad, inventory.isLoadFull);
+
+    // then
+    expect(load, (9, 1, false));
+  });
+
+  test('testWhenTheLoadReachesTheCapacityThenItIsFullWithNoFreeRoom', () {
+    // given
+    const inventory = InventoryEntityMock.fullOfWood;
+
+    // when
+    final load = (inventory.load, inventory.freeLoad, inventory.isLoadFull);
+
+    // then
+    expect(load, (10, 0, true));
+  });
+
+  test('testWhenTheLoadIsAboveTheCapacityThenTheFreeRoomIsNeverNegative', () {
+    // given
+    const inventory = InventoryEntityMock.overloaded;
+
+    // when
+    final freeLoad = inventory.freeLoad;
+
+    // then
+    expect((inventory.load, freeLoad, inventory.isLoadFull), (13, 0, true));
+  });
+
+  test('testWhenReadingTheCargoThenOnlyCarriedResourcesWithSomeAmountAppear', () {
+    // given
+    const inventory = InventoryEntityMock.mixedLoad;
+
+    // when
+    final cargo = inventory.cargo;
+
+    // then
+    expect(cargo, InventoryEntityMock.woodAndStone);
+    expect(InventoryEntityMock.onlyGoldAndMana.cargo, isEmpty);
+  });
+
+  test('testWhenReadingTheCargoForSomeResourcesThenOnlyThoseAppear', () {
+    // given
+    const inventory = InventoryEntityMock.mixedLoad;
+
+    // when
+    final stone = inventory.cargoFor({Resource.stone});
+
+    // then
+    expect(stone, InventoryEntityMock.stoneOnly);
+    expect(InventoryEntityMock.withWood.cargoFor({Resource.stone}), isEmpty);
+  });
+
+  test('testWhenAddingAnAmountsMapThenZeroAndNegativeQuantitiesAreSkipped', () {
+    // given
+    const inventory = InventoryEntityMock.mock;
+
+    // when
+    final added = inventory.adding({Resource.wood: 4, Resource.stone: 0, Resource.gold: -2});
+
+    // then
+    expect(added, InventoryEntityMock.make(wood: 4));
+  });
+
+  test('testWhenUnloadingEverythingThenToolsGoldAndManaStay', () {
+    // given
+    const inventory = InventoryEntityMock.mixedLoad;
+
+    // when
+    final unloaded = inventory.unloading({Resource.wood, Resource.stone});
+
+    // then
+    expect(unloaded, InventoryEntityMock.mixedLoadUnloaded);
+  });
+
+  test('testWhenUnloadingOnlyStoneThenTheWoodToolsGoldAndManaStay', () {
+    // given
+    const inventory = InventoryEntityMock.mixedLoad;
+
+    // when
+    final unloaded = inventory.unloading({Resource.stone});
+
+    // then
+    expect(unloaded, InventoryEntityMock.mixedLoadWithoutStone);
+  });
+
+  test('testWhenAToolWasNeverUpgradedThenItsLevelIsOne', () {
+    // given
+    const inventory = InventoryEntityMock.withAxe;
+
+    // when
+    final levels = (inventory.toolLevel(ToolKind.axe), inventory.toolLevel(ToolKind.pickaxe));
+
+    // then
+    expect(levels, (1, 1));
+  });
+
+  test('testWhenSettingAToolLevelThenOnlyTheLevelChanges', () {
+    // given
+    const inventory = InventoryEntityMock.withAxe;
+
+    // when
+    final upgraded = inventory.withToolLevel(ToolKind.axe, 2);
+
+    // then
+    expect(upgraded, InventoryEntityMock.withIronAxe);
+  });
+
+  test('testWhenSettingAToolLevelBelowOneThenFails', () {
+    // given
+    const inventory = InventoryEntityMock.withAxe;
+
+    // when
+    void zero() => inventory.withToolLevel(ToolKind.axe, 0);
+
+    // then
+    expect(zero, throwsArgumentError);
+  });
+
+  test('testWhenTheToolIsAtLevelOneThenTheHitsNeededAreTheSame', () {
+    // given
+    const inventory = InventoryEntityMock.withAxe;
+
+    // when
+    final hits = [for (var base = 1; base <= 9; base++) inventory.hitsNeeded(ToolKind.axe, base)];
+
+    // then
+    expect(hits, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  });
+
+  test('testWhenTheToolIsAtLevelTwoThenItNeedsFortyPercentFewerHitsRoundedUp', () {
+    // given
+    const inventory = InventoryEntityMock.withIronAxe;
+
+    // when
+    final hits = [for (var base = 1; base <= 9; base++) inventory.hitsNeeded(ToolKind.axe, base)];
+
+    // then
+    expect(hits, [1, 2, 2, 3, 3, 4, 5, 5, 6]);
+    expect(inventory.hitsNeeded(ToolKind.pickaxe, 8), 8);
+  });
+
+  test('testWhenChangingResourcesOrToolsThenTheToolLevelsAreKept', () {
+    // given
+    const inventory = InventoryEntityMock.mixedLoad;
+
+    // when
+    final changed = [
+      inventory.add(Resource.wood, 1),
+      inventory.adding(InventoryEntityMock.tenWood),
+      inventory.unloading({Resource.wood}),
+      inventory.spend(InventoryEntityMock.twoWood)!,
+      inventory.addTool(ToolKind.pickaxe),
+    ];
+
+    // then
+    expect(changed.map((inventory) => inventory.toolLevel(ToolKind.axe)).toSet(), {2});
+  });
 }

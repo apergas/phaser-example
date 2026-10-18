@@ -64,4 +64,71 @@ abstract final class PlayerEntityMock {
     radius: 8,
     inventory: InventoryEntity(tools: {ToolKind.axe, ToolKind.pickaxe}),
   );
+
+  static const PlayerEntity withIronPickaxe = PlayerEntity(
+    position: PositionEntity(x: 100, y: 100),
+    speed: 100,
+    radius: 8,
+    inventory: InventoryEntity(tools: {ToolKind.axe, ToolKind.pickaxe}, toolLevels: {ToolKind.pickaxe: 2}),
+  );
+
+  static const PlayerEntity withPickaxeAndSixWood = PlayerEntity(
+    position: PositionEntity(x: 100, y: 100),
+    speed: 100,
+    radius: 8,
+    inventory: InventoryEntity(resources: {Resource.wood: 6}, tools: {ToolKind.axe, ToolKind.pickaxe}),
+  );
+
+  static const PlayerEntity withPickaxeAndFullLoad = PlayerEntity(
+    position: PositionEntity(x: 100, y: 100),
+    speed: 100,
+    radius: 8,
+    inventory: InventoryEntity(resources: {Resource.wood: 10}, tools: {ToolKind.axe, ToolKind.pickaxe}),
+  );
+
+  static const PlayerEntity withAxeAndNineWood = PlayerEntity(
+    position: PositionEntity(x: 100, y: 100),
+    speed: 100,
+    radius: 8,
+    inventory: InventoryEntity(resources: {Resource.wood: 9}, tools: {ToolKind.axe}),
+  );
+
+  static const PlayerEntity withAxeAndFullLoad = PlayerEntity(
+    position: PositionEntity(x: 100, y: 100),
+    speed: 100,
+    radius: 8,
+    inventory: InventoryEntity(resources: {Resource.wood: 10}, tools: {ToolKind.axe}),
+  );
+
+  static const PlayerEntity withFullLoadAndNoAxe = PlayerEntity(
+    position: PositionEntity(x: 100, y: 100),
+    speed: 100,
+    radius: 8,
+    inventory: InventoryEntity(resources: {Resource.wood: 10}),
+  );
+
+  static const PlayerEntity carryingMixedLoad = PlayerEntity(
+    position: PositionEntity(x: 100, y: 100),
+    speed: 100,
+    radius: 8,
+    inventory: InventoryEntity(
+      resources: {Resource.wood: 6, Resource.stone: 3, Resource.gold: 5, Resource.mana: 2},
+      tools: {ToolKind.axe, ToolKind.pickaxe},
+      toolLevels: {ToolKind.axe: 2},
+    ),
+  );
+
+  static const PlayerEntity carryingOnlyGoldAndMana = PlayerEntity(
+    position: PositionEntity(x: 100, y: 100),
+    speed: 100,
+    radius: 8,
+    inventory: InventoryEntity(resources: {Resource.gold: 50, Resource.mana: 20}, tools: {ToolKind.axe}),
+  );
+
+  static const PlayerEntity withIronAxe = PlayerEntity(
+    position: PositionEntity(x: 100, y: 100),
+    speed: 100,
+    radius: 8,
+    inventory: InventoryEntity(tools: {ToolKind.axe}, toolLevels: {ToolKind.axe: 2}),
+  );
 }

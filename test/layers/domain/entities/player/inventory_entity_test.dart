@@ -39,4 +39,18 @@ void main() {
     // then
     expect(copy, InventoryEntityMock.make(wood: 6, tools: {ToolKind.axe}));
   });
+
+  test('testWhenToolLevelsDifferThenInventoriesAreNotEqual', () {
+    // given
+    const inventory = InventoryEntityMock.withAxe;
+
+    // when
+    final equal = inventory == InventoryEntityMock.withIronAxe;
+    final copy = inventory.copyWith(toolLevels: InventoryEntityMock.withIronAxe.toolLevels);
+
+    // then
+    expect(equal, isFalse);
+    expect(copy, InventoryEntityMock.withIronAxe);
+    expect(copy.hashCode, InventoryEntityMock.withIronAxe.hashCode);
+  });
 }

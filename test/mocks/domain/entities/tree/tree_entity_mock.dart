@@ -76,4 +76,32 @@ abstract final class TreeEntityMock {
     woodYield: 4,
     hitsToFell: 3,
   );
+
+  static const TreeEntity oakOfEight = TreeEntity(
+    id: 'tree-1',
+    kind: TreeKind.oak,
+    position: PositionEntity(x: 200, y: 100),
+    trunkRadius: 12,
+    woodYield: 8,
+    hitsToFell: 7,
+  );
+
+  static const TreeEntity pineOfThree = TreeEntity(
+    id: 'tree-1',
+    kind: TreeKind.pine,
+    position: PositionEntity(x: 200, y: 100),
+    trunkRadius: 12,
+    woodYield: 4,
+    hitsToFell: 3,
+  );
+
+  static const TreeEntity withThreeHitsTaken = TreeEntity(
+    id: 'tree-1',
+    kind: TreeKind.oak,
+    position: PositionEntity(x: 200, y: 100),
+    trunkRadius: 10,
+    woodYield: 6,
+    hitsToFell: 5,
+    hitsTaken: 3,
+  );
 }

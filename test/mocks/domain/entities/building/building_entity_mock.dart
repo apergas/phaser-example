@@ -40,4 +40,18 @@ abstract final class BuildingEntityMock {
 
   static BuildingEntity site(BlueprintEntity blueprint, {String id = 'building-1', PositionEntity? position}) =>
       BuildingEntity(id: id, blueprint: blueprint, position: position ?? const PositionEntity(x: 600, y: 600));
+
+  static const PositionEntity dropOffSite = PositionEntity(x: 300, y: 100);
+
+  static BuildingEntity get camp => completed(Blueprints.camp, id: 'camp', position: dropOffSite);
+
+  static BuildingEntity get storehouse => completed(Blueprints.storehouse, id: 'storehouse', position: dropOffSite);
+
+  static BuildingEntity get storehouseSite => site(Blueprints.storehouse, id: 'storehouse', position: dropOffSite);
+
+  static BuildingEntity get quarry => completed(Blueprints.quarry, id: 'quarry', position: dropOffSite);
+
+  static BuildingEntity get quarrySite => site(Blueprints.quarry, id: 'quarry', position: dropOffSite);
+
+  static BuildingEntity get finishedHouse => completed(Blueprints.house, id: 'house', position: dropOffSite);
 }

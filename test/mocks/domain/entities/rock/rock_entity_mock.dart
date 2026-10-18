@@ -2,6 +2,10 @@ import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/entities/rock/rock_entity.dart';
 
 abstract final class RockEntityMock {
+  static const PositionEntity quarryNearTheRock = PositionEntity(x: 300, y: 259);
+
+  static const PositionEntity quarryAtTheBoostRange = PositionEntity(x: 300, y: 260);
+
   static const RockEntity intact = RockEntity(
     id: 'rock-1',
     position: PositionEntity(x: 300, y: 100),

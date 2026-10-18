@@ -6,6 +6,8 @@ abstract final class PlayerPoseMock {
 
   static WorkPose get workCopy => WorkPose(tool: WorkTool.axe, swingProgress: 0.5);
 
+  static WorkPose get mining => WorkPose(tool: WorkTool.pickaxe, swingProgress: 0.5);
+
   static IdlePose get idle => IdlePose(withAxe: true);
 
   static WalkPose get walk => WalkPose(withAxe: true);

@@ -16,7 +16,9 @@ abstract final class LpcAssetsMock {
   static final List<String> frameNames = [
     for (final id in BlueprintId.values) SpriteNames.building(id),
     SpriteNames.stump,
-    SpriteNames.item(ToolKind.axe),
+    SpriteNames.sapling,
+    SpriteNames.rock,
+    for (final kind in ToolKind.values) SpriteNames.item(kind),
     for (final kind in TreeKind.values) SpriteNames.tree(kind),
     for (final kind in DecorationKind.values) SpriteNames.decoration(kind),
   ];
@@ -34,7 +36,7 @@ abstract final class LpcAssetsMock {
             width: frameSize,
             height: frameSize,
             pivotX: 0.5,
-            pivotY: name == SpriteNames.item(ToolKind.axe) ? 0.5 : 1,
+            pivotY: ToolKind.values.map(SpriteNames.item).contains(name) ? 0.5 : 1,
           ),
       },
       forestMask: AlphaMask(width: frameSize, height: frameSize, rgba: _rightHalfOpaque()),

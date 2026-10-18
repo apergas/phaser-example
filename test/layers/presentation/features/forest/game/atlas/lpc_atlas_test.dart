@@ -47,6 +47,8 @@ void main() {
     final expected = [
       for (final id in BlueprintId.values) SpriteNames.building(id),
       SpriteNames.stump,
+      SpriteNames.sapling,
+      SpriteNames.rock,
       for (final kind in ToolKind.values) SpriteNames.item(kind),
       for (final kind in TreeKind.values) SpriteNames.tree(kind),
       for (final kind in DecorationKind.values) SpriteNames.decoration(kind),
@@ -57,5 +59,32 @@ void main() {
 
     // then
     expect(frames.keys, containsAll(expected));
+  });
+
+  test('testWhenParsingTheGeneratedAtlasThenTheStumpSaplingAndRockHaveTheirSizes', () {
+    // given
+    final source = File('lib/core/assets/images/lpc/forest.json').readAsStringSync();
+
+    // when
+    final frames = LpcAtlas.parse(source);
+
+    // then
+    final sizes = [
+      for (final name in [SpriteNames.stump, SpriteNames.sapling, SpriteNames.rock])
+        (frames[name]!.width, frames[name]!.height),
+    ];
+    expect(sizes, [(50, 41), (18, 30), (61, 45)]);
+  });
+
+  test('testWhenParsingTheGeneratedAtlasThenTheVillageBuildingsHaveTheirFrames', () {
+    // given
+    final source = File('lib/core/assets/images/lpc/forest.json').readAsStringSync();
+    const ids = [BlueprintId.camp, BlueprintId.storehouse, BlueprintId.quarry, BlueprintId.workshop];
+
+    // when
+    final frames = LpcAtlas.parse(source);
+
+    // then
+    expect(ids.map((id) => frames.containsKey(SpriteNames.building(id))), [true, true, true, true]);
   });
 }

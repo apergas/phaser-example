@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | **Rama** | `feature/PROJECT-X-clean-start`, desde `develop` |
-| **Estado** | Plan detallado |
+| **Estado** | Hecho (1156 tests, 257 en Chrome) |
 | **Cuándo** | Después de [recursos directos al almacén](auto-stock.md): T1 ya está en `develop`, así que esta mejora escribe y arregla sus tests con TDD |
 
 **Qué se quiere** (pedido por el usuario el 2026-10-18): "en el suelo siguen saliendo como unas maderas cuando apareces. quita eso" y "haz que al inicio ya dispongas del pico, que no haya que recogerlo".
@@ -21,12 +21,14 @@
 
 **Qué cambia:**
 - **Inicio:** `LevelMapperDBO` da al jugador el hacha y el pico (`InventoryEntity(tools: {ToolKind.axe, ToolKind.pickaxe})`). `MineResult.noPickaxe` y su aviso se quedan, como `ChopResult.noAxe`.
-- **Mapa:** la decoración que se quitaba por caer sobre el campamento o el pico se queda: de 93 piezas se pasa a 97 (vuelven `decoration-40`, `-78`, `-85` y `-105`, sin cambiar de id). Las rocas no se mueven: el sitio donde estaba el pico sigue libre de rocas (80 alrededor de (1012, 812)), porque sin esa comprobación entraría una roca nueva en (979, 771) y se correrían los ids de las demás.
+- **Mapa:** la decoración que se quitaba por caer sobre el campamento o el pico se queda: de 93 piezas se pasa a 95 (vuelven `decoration-78`, que tapaba el campamento, y `decoration-105`, que tapaba el pico, sin cambiar de id; `-40` y `-85` siguen fuera porque también caen junto a una roca). Las rocas no se mueven: el sitio donde estaba el pico sigue libre de rocas (80 alrededor de (1012, 812)), porque sin esa comprobación entraría una roca nueva en (979, 771) y se correrían los ids de las demás.
 - **Escena:** un edificio que nace terminado (opaco, sin barra ni rebote) y la limpieza de la decoración bajo los edificios al construir la escena se quedan, porque son los de una partida cargada.
 - **Guardado:** `SaveDBO.currentVersion` pasa a 3. Al cargar una partida de la versión 1 o 2 se quitan los campamentos, se olvidan los objetos del suelo y se añade el pico a las herramientas del jugador (sus `toolLevels` se quedan). La versión 1 pasa antes por su migración al almacén. Cualquier otra versión empieza una partida nueva.
 - **Documentación:** `CLAUDE.md` (el campamento, los edificios del nivel, el pico en el suelo, los objetos del suelo y el formato del guardado), `docs/GAME_DESIGN.md` si los menciona y una nota en la ficha de F5.
 - **Tests:** los del campamento, los edificios del nivel y los objetos del suelo se quitan; se adaptan los valores fijos del nivel (decoración) y se añaden los del inicio con el pico y la migración a la versión 3. La arena y el test de equilibrado no cambian.
 - **iOS** no se toca.
+
+**Hecho:** en la escena, el campamento de los tests de un edificio cargado pasa a ser una casa terminada (`ForestDataMock.loadedHouse`), y el test de flujo completo empieza con el hacha en la mano. `BuildingEntityMock.dropOffSite` conserva su nombre.
 
 ## Prueba manual
 
@@ -72,10 +74,10 @@ En Chrome: al empezar una partida nueva ya no hay troncos junto al jugador ni pi
 static const List<BlueprintEntity> all = [house, workshop, forge, armory, mageTower];
 ```
 
-- [ ] **Paso 1:** tests: `Blueprints.all` son los cinco planos construibles; el nivel ya no trae edificios (`World.buildings` vacío); la decoración del nivel tiene 97 piezas. Fallan.
-- [ ] **Paso 2:** quitar `camp` del catálogo y del enum, `isBuildable` y sus dos usos, `LevelDBO.buildings`, `BuildingDBO`, `BuildingMapperDBO`, `_camp` y `_campDecorationClearance`; los `switch` de `SpriteNames`, `RenderConstants` e `Internationalize` y `forest.blueprint.camp`.
-- [ ] **Paso 3:** `build_assets.py` sin `build_camp`, `CAMP_*` ni el frame; `cd asset-packs/lpc && python3 build_assets.py`; `CREDITS.md` sin la línea del campamento.
-- [ ] **Paso 4:** borrar y adaptar tests y mocks; `dart run build_runner build --delete-conflicting-outputs`, `flutter analyze`, `flutter test`, formatear, commit `[PROJECT-X]: Remove the camp`.
+- [x] **Paso 1:** tests: `Blueprints.all` son los cinco planos construibles; el nivel ya no trae edificios (`World.buildings` vacío); la decoración del nivel tiene 94 piezas (vuelve `decoration-78`). Fallan.
+- [x] **Paso 2:** quitar `camp` del catálogo y del enum, `isBuildable` y sus dos usos, `LevelDBO.buildings`, `BuildingDBO`, `BuildingMapperDBO`, `_camp` y `_campDecorationClearance`; los `switch` de `SpriteNames`, `RenderConstants` e `Internationalize` y `forest.blueprint.camp`.
+- [x] **Paso 3:** `build_assets.py` sin `build_camp`, `CAMP_*` ni el frame; `cd asset-packs/lpc && python3 build_assets.py`; `CREDITS.md` sin la línea del campamento.
+- [x] **Paso 4:** borrar y adaptar tests y mocks; `dart run build_runner build --delete-conflicting-outputs`, `flutter analyze`, `flutter test`, formatear, commit `[PROJECT-X]: Remove the camp`.
 
 ## Tarea 2: empezar con el pico; fuera los objetos del suelo
 
@@ -87,11 +89,11 @@ static const List<BlueprintEntity> all = [house, workshop, forge, armory, mageTo
 inventory: const InventoryEntity(tools: {ToolKind.axe, ToolKind.pickaxe}),
 ```
 
-- [ ] **Paso 1:** tests: `testWhenTheLevelIsMappedThenThePlayerHoldsTheAxeAndThePickaxe`, que se puede picar una roca nada más empezar y que la decoración y las rocas del nivel salen como se decidió. Fallan.
-- [ ] **Paso 2:** el pico en el inventario inicial; fuera el sistema de objetos del suelo en dominio, nivel, guardado (`SaveDBO.items` y su mapper) y escena; `_rockFreeSpot`.
-- [ ] **Paso 3:** `ForestBloc` sin el caso `ItemPickedUpEventEntity` en `_isWorthSaving` ni en `_react`; textos fuera de `Internationalize` y `es.json`.
-- [ ] **Paso 4:** `build_assets.py` sin los frames `axe-pickup` y `pickaxe-pickup` ni sus constantes; regenerar el atlas; `CREDITS.md` sin el párrafo de los objetos.
-- [ ] **Paso 5:** borrar y adaptar tests y mocks; `dart run build_runner build --delete-conflicting-outputs`, `flutter analyze`, `flutter test`, formatear, commit `[PROJECT-X]: Start with the pickaxe and remove ground items`.
+- [x] **Paso 1:** tests: `testWhenTheLevelIsMappedThenThePlayerHoldsTheAxeAndThePickaxe`, que se puede picar una roca nada más empezar y que la decoración (95 piezas, vuelve `decoration-105`) y las rocas del nivel salen como se decidió. Fallan.
+- [x] **Paso 2:** el pico en el inventario inicial; fuera el sistema de objetos del suelo en dominio, nivel, guardado (`SaveDBO.items` y su mapper) y escena; `_rockFreeSpot`.
+- [x] **Paso 3:** `ForestBloc` sin el caso `ItemPickedUpEventEntity` en `_isWorthSaving` ni en `_react`; textos fuera de `Internationalize` y `es.json`.
+- [x] **Paso 4:** `build_assets.py` sin los frames `axe-pickup` y `pickaxe-pickup` ni sus constantes; regenerar el atlas; `CREDITS.md` sin el párrafo de los objetos.
+- [x] **Paso 5:** borrar y adaptar tests y mocks; `dart run build_runner build --delete-conflicting-outputs`, `flutter analyze`, `flutter test`, formatear, commit `[PROJECT-X]: Start with the pickaxe and remove ground items`.
 
 ## Tarea 3: guardado versión 3 con migración
 
@@ -106,13 +108,13 @@ SaveDBO toCurrent(SaveDBO dbo) => switch (dbo.version) {
 };
 ```
 
-- [ ] **Paso 1:** tests: `testWhenAVersionTwoSaveIsMigratedThenTheCampIsRemoved`, `…ThenThePickaxeJoinsTheTools`, `…ThenToolLevelsAreKept`, `…ThenItBecomesVersionThree`, `testWhenAVersionTwoSaveHasNoInventoryThenItGetsThePickaxe`, `testWhenAVersionOneSaveIsMigratedThenItBecomesTheVersionThreeGame`, `testWhenAVersionThreeSaveIsMigratedThenItIsUnchanged`, la versión desconocida pasa a ser la 4; y `GameSaveRepositoryImpl.load` con un JSON de la versión 2 que tiene campamento y pico en el suelo. Fallan.
-- [ ] **Paso 2:** `_fromVersionTwo` y `currentVersion = 3`.
-- [ ] **Paso 3:** `flutter analyze`, `flutter test`, `flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart`, formatear, commit `[PROJECT-X]: Migrate older saves to the clean start`.
+- [x] **Paso 1:** tests: `testWhenAVersionTwoSaveIsMigratedThenTheCampIsRemoved`, `…ThenThePickaxeJoinsTheTools`, `…ThenToolLevelsAreKept`, `…ThenItBecomesVersionThree`, `testWhenAVersionTwoSaveHasNoInventoryThenItGetsThePickaxe`, `testWhenAVersionOneSaveIsMigratedThenItBecomesTheVersionThreeGame`, `testWhenAVersionThreeSaveIsMigratedThenItIsUnchanged`, la versión desconocida pasa a ser la 4; y `GameSaveRepositoryImpl.load` con un JSON de la versión 2 que tiene campamento y pico en el suelo. Fallan.
+- [x] **Paso 2:** `_fromVersionTwo` y `currentVersion = 3`.
+- [x] **Paso 3:** `flutter analyze`, `flutter test`, `flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart`, formatear, commit `[PROJECT-X]: Migrate older saves to the clean start`.
 
 ## Tarea 4: documentación y cierre
 
-- [ ] Fichero de instrucciones del proyecto: el campamento, los edificios del nivel, el pico en el suelo, los objetos del suelo, `isBuildable`, el orden de `Construction.rejection` y el guardado v3 con su migración.
-- [ ] `docs/GAME_DESIGN.md`, si los menciona; nota en `F5-stone.md`.
-- [ ] Batería final: `build_runner` + `git diff --exit-code`, `flutter analyze`, `flutter test`, golden en Chrome.
-- [ ] `README.md` de los extras y `PROGRESS.md`: fila de la mejora ✅ en `develop` con los tests y *Siguiente paso*. Casillas de este plan marcadas. Commit `[PROJECT-X]: Close the clean start improvement`.
+- [x] Fichero de instrucciones del proyecto: el campamento, los edificios del nivel, el pico en el suelo, los objetos del suelo, `isBuildable`, el orden de `Construction.rejection` y el guardado v3 con su migración.
+- [x] `docs/GAME_DESIGN.md`, si los menciona; nota en `F5-stone.md`.
+- [x] Batería final: `build_runner` + `git diff --exit-code`, `flutter analyze`, `flutter test`, golden en Chrome.
+- [x] `README.md` de los extras y `PROGRESS.md`: fila de la mejora ✅ en `develop` con los tests y *Siguiente paso*. Casillas de este plan marcadas. Commit `[PROJECT-X]: Close the clean start improvement`.

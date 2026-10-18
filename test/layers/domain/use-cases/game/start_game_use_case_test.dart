@@ -4,6 +4,7 @@ import 'package:farming/core/error-handling/exceptions/app_exceptions.dart';
 import 'package:farming/layers/domain/entities/game/game_session_entity.dart';
 import 'package:farming/layers/domain/use-cases/game/start_game_use_case.dart';
 
+import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import '../../../../mocks/domain/game/game_scenario_mock.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
 import '../../../../mocks/core/error-handling/app_exception_mock.dart';
@@ -11,15 +12,36 @@ import '../../../../mocks/core/error-handling/app_exception_mock.dart';
 void main() {
   late MockLevelRepository levelRepository;
   late MockGameSessionRepository sessionRepository;
+  late MockGameSaveRepository saveRepository;
   late StartGameUseCase sut;
 
   setUp(() {
     levelRepository = MockLevelRepository();
     sessionRepository = MockGameSessionRepository();
-    sut = StartGameUseCase(levelRepository: levelRepository, sessionRepository: sessionRepository);
+    saveRepository = MockGameSaveRepository();
+    when(saveRepository.load()).thenReturn(null);
+    sut = StartGameUseCase(
+      levelRepository: levelRepository,
+      sessionRepository: sessionRepository,
+      saveRepository: saveRepository,
+    );
   });
 
-  test('testWhenStartGameThenSavesLevelWorldWithFreshQuests', () {
+  test('testWhenThereIsASavedGameThenItIsTheSessionAndTheLevelIsNotLoaded', () {
+    // given
+    final saved = GameSessionEntityMock.make();
+    when(saveRepository.load()).thenReturn(saved);
+
+    // when
+    sut();
+
+    // then
+    verifyNever(levelRepository.load());
+    final session = verify(sessionRepository.save(captureAny)).captured.single as GameSessionEntity;
+    expect(session, same(saved));
+  });
+
+  test('testWhenThereIsNoSavedGameThenSavesLevelWorldWithFreshQuests', () {
     // given
     when(levelRepository.load()).thenReturn(GameScenarioMock.levelWithOneTree());
 
@@ -27,7 +49,7 @@ void main() {
     sut();
 
     // then
-    verify(levelRepository.load()).called(1);
+    verifyInOrder([saveRepository.load(), levelRepository.load()]);
     final saved = verify(sessionRepository.save(captureAny)).captured.single as GameSessionEntity;
     expect(saved.world.trees.map((tree) => tree.id), ['tree-1']);
     expect(saved.quests.status(saved.world).any((quest) => quest.isCompleted), isFalse);

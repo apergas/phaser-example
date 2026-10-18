@@ -63,4 +63,25 @@ void main() {
     expect(name, 'mage-tower');
     expect(offset, 24);
   });
+
+  test('testWhenNamingTheVillageSpritesThenFollowsTheAtlasFrameNamesAndFrontOffsets', () {
+    // given
+    const ids = [BlueprintId.camp, BlueprintId.storehouse, BlueprintId.quarry, BlueprintId.workshop];
+
+    // when
+    final names = ids.map(SpriteNames.building).toList();
+    final offsets = ids.map(RenderConstants.buildingFrontOffset).toList();
+
+    // then
+    expect(names, ['camp', 'storehouse', 'quarry', 'workshop']);
+    expect(offsets, [12, 24, 16, 24]);
+    expect(
+      (SpriteNames.sapling, SpriteNames.rock, SpriteNames.item(ToolKind.pickaxe)),
+      (
+        'sapling',
+        'rock-large',
+        'pickaxe-pickup',
+      ),
+    );
+  });
 }

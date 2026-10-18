@@ -51,4 +51,19 @@ void main() {
     expect(building.opacity, closeTo(1, 0.01));
     expect(building.scale.y, closeTo(1, 1e-6));
   });
+
+  testWithFlameGame('testWhenTheBuildingIsBornFinishedLikeTheCampThenItIsOpaqueWithoutABounce', (game) async {
+    // given
+    final camp = BuildingComponent(assets: LpcAssetsMock.create(), building: ForestDataMock.camp);
+
+    // when
+    await game.ensureAdd(camp);
+    game.update(0.1);
+
+    // then
+    expect(camp.isComplete, isTrue);
+    expect(camp.opacity, 1);
+    expect(camp.scale.y, 1);
+    expect(camp.position, Vector2(200, 202));
+  });
 }

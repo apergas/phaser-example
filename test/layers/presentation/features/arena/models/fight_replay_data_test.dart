@@ -44,17 +44,6 @@ void main() {
     expect(ended.healthOf(FightSide.enemy, 0), 0);
   });
 
-  test('testWhenSkippedThenItIsTheSameAsAdvancingToTheEnd', () {
-    // given
-    final replay = FightReplayDataMock.victoryOverBanditStart();
-
-    // when
-    final skipped = replay.skipped();
-
-    // then
-    expect(skipped, replay.advanced(replay.durationMs));
-  });
-
   test('testWhenASecondWindIsReplayedThenTheHealthBeforeItIsTheLastBlowTaken', () {
     // given
     final replay = FightReplayDataMock.allActionsStart();

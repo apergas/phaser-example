@@ -1,4 +1,5 @@
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/construction_rejection.dart';
 import 'package:farming/core/config/constants/enum/decoration_kind.dart';
 import 'package:farming/core/config/constants/enum/forest/facing.dart';
 import 'package:farming/core/config/constants/enum/gear_id.dart';
@@ -10,6 +11,8 @@ import 'package:farming/layers/domain/entities/decoration/decoration_entity.dart
 import 'package:farming/layers/domain/entities/game/world_snapshot_entity.dart';
 import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/entities/item/ground_item_entity.dart';
+import 'package:farming/layers/domain/entities/tree/stump_entity.dart';
+import 'package:farming/layers/domain/entities/rock/rock_entity.dart';
 import 'package:farming/layers/domain/entities/tree/tree_entity.dart';
 import 'package:farming/layers/domain/rules/blueprints.dart';
 import 'package:farming/layers/presentation/features/forest/bloc/forest_bloc.dart';
@@ -63,6 +66,50 @@ abstract final class ForestDataMock {
     hitsDone: 4,
   );
 
+  static const StumpEntity stump = StumpEntity(
+    id: 'tree-1',
+    kind: TreeKind.oak,
+    position: PositionEntity(x: 100, y: 120),
+  );
+
+  static const StumpEntity sapling = StumpEntity(
+    id: 'tree-1',
+    kind: TreeKind.oak,
+    position: PositionEntity(x: 100, y: 120),
+    elapsedMs: 60000,
+  );
+
+  static final RockEntity rock = RockEntity(
+    id: 'rock-1',
+    position: const PositionEntity(x: 300, y: 250),
+    radius: 22,
+    stoneYield: 8,
+    hitsToBreak: 8,
+  );
+
+  static final BuildingEntity camp = BuildingEntity(
+    id: 'camp',
+    blueprint: Blueprints.camp,
+    position: const PositionEntity(x: 200, y: 190),
+    hitsDone: 1,
+  );
+
+  static WorldSnapshotEntity _snapshot({
+    List<TreeEntity>? trees,
+    List<StumpEntity> stumps = const [],
+    List<RockEntity> rocks = const [],
+    List<BuildingEntity> buildings = const [],
+  }) => WorldSnapshotEntity(
+    width: 400,
+    height: 300,
+    trees: trees ?? [tree, frontTree],
+    items: [axe],
+    decorations: [grass],
+    buildings: buildings,
+    stumps: stumps,
+    rocks: rocks,
+  );
+
   static final WorldSnapshotEntity world = WorldSnapshotEntity(
     width: 400,
     height: 300,
@@ -70,6 +117,8 @@ abstract final class ForestDataMock {
     items: [axe],
     decorations: [grass],
     buildings: const [],
+    stumps: const [],
+    rocks: const [],
   );
 
   static final WorldSnapshotEntity worldWithoutFirstTree = WorldSnapshotEntity(
@@ -79,6 +128,8 @@ abstract final class ForestDataMock {
     items: [axe],
     decorations: [grass],
     buildings: const [],
+    stumps: [stump],
+    rocks: const [],
   );
 
   static final WorldSnapshotEntity worldWithoutAxe = WorldSnapshotEntity(
@@ -88,6 +139,8 @@ abstract final class ForestDataMock {
     items: const [],
     decorations: [grass],
     buildings: const [],
+    stumps: const [],
+    rocks: const [],
   );
 
   static final WorldSnapshotEntity worldWithHouse = WorldSnapshotEntity(
@@ -97,6 +150,8 @@ abstract final class ForestDataMock {
     items: [axe],
     decorations: [grass],
     buildings: [house],
+    stumps: const [],
+    rocks: const [],
   );
 
   static final WorldSnapshotEntity worldWithHalfBuiltHouse = WorldSnapshotEntity(
@@ -106,6 +161,8 @@ abstract final class ForestDataMock {
     items: [axe],
     decorations: [grass],
     buildings: [halfBuiltHouse],
+    stumps: const [],
+    rocks: const [],
   );
 
   static final PlayerRenderData player = PlayerRenderData(
@@ -117,19 +174,19 @@ abstract final class ForestDataMock {
   static final PlacementData validPlacement = PlacementData(
     blueprint: BlueprintId.house,
     position: const PositionEntity(x: 300, y: 200),
-    isValid: true,
+    invalidReason: null,
   );
 
   static final PlacementData invalidPlacement = PlacementData(
     blueprint: BlueprintId.house,
     position: const PositionEntity(x: 100, y: 100),
-    isValid: false,
+    invalidReason: ConstructionRejection.blocked,
   );
 
   static final PlacementData forgePlacement = PlacementData(
     blueprint: BlueprintId.forge,
     position: const PositionEntity(x: 300, y: 200),
-    isValid: true,
+    invalidReason: null,
   );
 
   static final ForestData initial = ForestData(world: world, player: player);
@@ -143,7 +200,7 @@ abstract final class ForestDataMock {
   static final ForestData treeFelled = ForestData(
     world: worldWithoutFirstTree,
     player: player,
-    effects: const [TreeFelledEffect(treeId: 'tree-1', fromX: 90)],
+    effects: const [TreeFelledEffect(treeId: 'tree-1', fromX: 90, wood: 5)],
   );
 
   static final ForestData axePickedUp = ForestData(
@@ -180,5 +237,49 @@ abstract final class ForestDataMock {
     world: world,
     player: player,
     effects: const [SkillLearnedEffect(skill: SkillId.doubleStrike)],
+  );
+
+  static final ForestData withStump = ForestData(
+    world: _snapshot(trees: [frontTree], stumps: [stump]),
+    player: player,
+  );
+
+  static final ForestData stumpSprouted = ForestData(
+    world: _snapshot(trees: [frontTree], stumps: [sapling]),
+    player: player,
+    effects: const [TreeSproutedEffect(stumpId: 'tree-1')],
+  );
+
+  static final ForestData stumpGone = ForestData(
+    world: _snapshot(trees: [frontTree]),
+    player: player,
+  );
+
+  static final ForestData treeRegrown = ForestData(
+    world: _snapshot(trees: [frontTree, tree]),
+    player: player,
+    effects: const [TreeRegrownEffect(treeId: 'tree-1')],
+  );
+
+  static final ForestData withRock = ForestData(
+    world: _snapshot(rocks: [rock]),
+    player: player,
+  );
+
+  static final ForestData rockBroken = ForestData(
+    world: _snapshot(),
+    player: player,
+    effects: const [RockBrokenEffect(rockId: 'rock-1', stone: 8)],
+  );
+
+  static final ForestData rockHit = ForestData(
+    world: _snapshot(rocks: [rock]),
+    player: player,
+    effects: const [RockHitEffect(rockId: 'rock-1', fromX: 270)],
+  );
+
+  static final ForestData loadedWithCamp = ForestData(
+    world: _snapshot(buildings: [camp]),
+    player: player,
   );
 }

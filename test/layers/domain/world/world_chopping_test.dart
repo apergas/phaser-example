@@ -4,11 +4,15 @@ import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
 import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/entities/player/activity_entity.dart';
+import 'package:farming/layers/domain/rules/blueprints.dart';
 import 'package:farming/layers/domain/rules/rules.dart';
+import 'package:farming/layers/domain/world/world.dart';
 import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/tree/tree_entity_mock.dart';
+import '../../../mocks/domain/entities/building/building_entity_mock.dart';
+import '../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
 import '../../../mocks/domain/entities/player/activity_entity_mock.dart';
 import '../../../mocks/domain/entities/player/intent_entity_mock.dart';
@@ -71,7 +75,7 @@ void main() {
     world.advanceFor(1500);
 
     // when
-    final events = world.advanceFor(Rules.chopIntervalMs * Rules.hitsToFellTree + 100);
+    final events = world.advanceFor(Rules.chopIntervalMs * TreeEntityMock.mock.hitsToFell + 100);
 
     // then
     expect(events.whereType<TreeHitEventEntity>().length, 5);
@@ -98,7 +102,7 @@ void main() {
     // given
     final world = WorldMock.withAxeAndTree();
     world.orderChop('tree-1');
-    world.advanceFor(1500 + Rules.chopIntervalMs * Rules.hitsToFellTree + 100);
+    world.advanceFor(1500 + Rules.chopIntervalMs * TreeEntityMock.mock.hitsToFell + 100);
 
     // when
     world.movePlayerTo(const PositionEntity(x: 300, y: 100));
@@ -106,5 +110,72 @@ void main() {
 
     // then
     expect(world.player.position, const PositionEntity(x: 300, y: 100));
+  });
+
+  List<TreeHitEventEntity> chopToTheEnd(World world) {
+    world.orderChop('tree-1');
+    return world.advanceFor(15000, stepMs: 50).whereType<TreeHitEventEntity>().toList();
+  }
+
+  test('testWhenTheAxeIsAtLevelOneThenAPineTakesThreeHitsAndAnOakSeven', () {
+    // given
+    final pine = WorldMock.restored(player: PlayerEntityMock.withAxe, trees: [TreeEntityMock.pineOfThree]);
+    final oak = WorldMock.restored(player: PlayerEntityMock.withAxe, trees: [TreeEntityMock.oakOfEight]);
+
+    // when
+    final pineHits = chopToTheEnd(pine);
+    final oakHits = chopToTheEnd(oak);
+
+    // then
+    expect(pineHits.map((hit) => hit.hitsRemaining), [2, 1, 0]);
+    expect(oakHits.map((hit) => hit.hitsRemaining), [6, 5, 4, 3, 2, 1, 0]);
+  });
+
+  test('testWhenTheAxeIsUpgradedThenAPineTakesTwoHitsAndAnOakFive', () {
+    // given
+    final pine = WorldMock.restored(player: PlayerEntityMock.withIronAxe, trees: [TreeEntityMock.pineOfThree]);
+    final oak = WorldMock.restored(player: PlayerEntityMock.withIronAxe, trees: [TreeEntityMock.oakOfEight]);
+
+    // when
+    final pineHits = chopToTheEnd(pine);
+    final oakHits = chopToTheEnd(oak);
+
+    // then
+    expect(pineHits.map((hit) => hit.hitsRemaining), [1, 0]);
+    expect(oakHits.map((hit) => hit.hitsRemaining), [4, 3, 2, 1, 0]);
+    expect([...pine.trees, ...oak.trees], isEmpty);
+  });
+
+  test('testWhenAHalfChoppedTreeIsHitWithTheUpgradedAxeThenItFallsOnTheNextHit', () {
+    // given
+    final world = WorldMock.restored(player: PlayerEntityMock.withIronAxe, trees: [TreeEntityMock.withThreeHitsTaken]);
+
+    // when
+    final hits = chopToTheEnd(world);
+
+    // then
+    expect(hits.map((hit) => hit.hitsRemaining), [0]);
+    expect(world.trees, isEmpty);
+  });
+
+  test('testWhenTheAxeIsUpgradedOrAQuarryIsNearThenTheHitsStillComeEverySevenHundredFiftyMilliseconds', () {
+    // given
+    final world = WorldMock.restored(
+      player: PlayerEntityMock.withIronAxe,
+      trees: [TreeEntityMock.oakOfEight],
+      buildings: [BuildingEntityMock.completed(Blueprints.quarry, position: const PositionEntity(x: 200, y: 200))],
+    );
+    world.orderChop('tree-1');
+
+    // when
+    final times = <double>[];
+    var clock = 0.0;
+    while (clock < 10000) {
+      clock += 25;
+      if (world.advance(25).any((event) => event is TreeHitEventEntity)) times.add(clock);
+    }
+
+    // then
+    expect({for (var i = 1; i < times.length; i++) times[i] - times[i - 1]}, {750.0});
   });
 }

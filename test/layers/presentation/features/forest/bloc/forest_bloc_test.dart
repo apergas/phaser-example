@@ -16,15 +16,16 @@ import 'package:farming/layers/presentation/features/forest/models/player_pose.d
 
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
+import '../../../../../mocks/domain/entities/tree/tree_entity_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_bloc_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_scenario_mock.dart';
 import '../../../../../mocks/presentation/features/forest/build_item_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/carry_item_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/hud_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_effect_mock.dart';
 import '../../../../../mocks/presentation/features/forest/placement_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/player_pose_mock.dart';
 import '../../../../../mocks/presentation/features/forest/quest_item_data_mock.dart';
-import '../../../../../mocks/presentation/features/forest/resource_item_data_mock.dart';
-import '../../../../../mocks/presentation/features/forest/tool_item_data_mock.dart';
 
 void main() {
   late MockNavigationService navigationService;
@@ -54,10 +55,10 @@ void main() {
       // then
       final hud = bloc.state.data.hud!;
       expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessageWelcome));
-      expect(hud.questBadge, '0/11');
-      expect(hud.quests[0], QuestItemDataMock.pickUpAxeCurrent);
-      expect(hud.quests[1], QuestItemDataMock.gatherWoodPending);
-      expect(hud.quests[3], QuestItemDataMock.buildForgeCurrent);
+      expect(hud.questBadge, '0/19');
+      expect(hud.quests, QuestItemDataMock.atTheStart);
+      expect(hud.tools, HudDataMock.tools());
+      expect(hud.stock, HudDataMock.stockWith(wood: 0));
     },
   );
 
@@ -102,25 +103,25 @@ void main() {
   );
 
   blocTest<ForestBloc, ForestState>(
-    'testWhenPickingUpTheAxeThenPlaysEffectAnnouncesAndHoldsIt',
+    'testWhenPickingUpThePickaxeThenPlaysEffectAnnouncesAndHoldsIt',
     build: () {
       // given
-      return ForestBlocMock.make(ForestScenarioMock.axeNextToPlayer(), navigationService: navigationService);
+      return ForestBlocMock.make(ForestScenarioMock.pickaxeNextToPlayer(), navigationService: navigationService);
     },
     act: (bloc) {
       // when
       effects = ForestBlocMock.collectEffects(bloc);
       bloc
         ..add(const ForestStarted())
-        ..add(const ForestMapClicked(position: ForestScenarioMock.axeSpot));
+        ..add(const ForestMapClicked(position: ForestScenarioMock.pickaxeSpot));
       ForestBlocMock.tickFor(bloc, 300);
     },
     wait: Duration.zero,
     verify: (bloc) {
       // then
-      expect(effects, contains(ForestEffectMock.axePickedUp));
-      expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessagePickedUpAxe));
-      expect(bloc.state.data.hud!.tools, [ToolItemDataMock.axe(isOwned: true)]);
+      expect(effects, contains(ForestEffectMock.pickaxePickedUp));
+      expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessagePickedUpPickaxe));
+      expect(bloc.state.data.hud!.tools, HudDataMock.tools(isPickaxeOwned: true));
       expect(bloc.state.data.player!.pose, PlayerPoseMock.idle);
     },
   );
@@ -145,7 +146,7 @@ void main() {
         await ForestBlocMock.processEvents();
         facing = bloc.state.data.player!.facing;
         pose = bloc.state.data.player!.pose;
-        ForestBlocMock.tickFor(bloc, Rules.chopIntervalMs * Rules.hitsToFellTree);
+        ForestBlocMock.tickFor(bloc, Rules.chopIntervalMs * TreeEntityMock.mock.hitsToFell);
       },
       wait: Duration.zero,
       verify: (bloc) {
@@ -155,11 +156,12 @@ void main() {
         expect((pose as WorkPose).tool, WorkTool.axe);
         expect(effects.whereType<TreeHitEffect>().length, 5);
         expect(effects, contains(ForestEffectMock.treeFelled));
-        expect(bloc.state.data.hud!.resources, [
-          ResourceItemDataMock.wood(6),
-          ResourceItemDataMock.gold(0),
-          ResourceItemDataMock.mana(0),
-        ]);
+        expect(bloc.state.data.hud!.carry, CarryItemDataMock.of(6));
+        expect(bloc.state.data.hud!.stock, HudDataMock.stockWith(wood: 0));
+        expect(
+          ForestBlocMock.shownMessages(navigationService),
+          contains(Internationalize.forestMessageWoodGained(wood: 6)),
+        );
       },
     );
   });
@@ -180,12 +182,8 @@ void main() {
     wait: Duration.zero,
     verify: (bloc) {
       // then
-      expect(bloc.state.data.hud!.buildItems, [
-        BuildItemDataMock.makeUnaffordable(missingWood: 5),
-        BuildItemDataMock.workshopUnaffordable(BlueprintId.forge, missingWood: 15),
-        BuildItemDataMock.workshopUnaffordable(BlueprintId.armory, missingWood: 15),
-        BuildItemDataMock.mageTowerUnaffordable(missingWood: 20),
-      ]);
+      expect(bloc.state.data.hud!.buildItems, BuildItemDataMock.everyBuildableWithStock(wood: 10));
+      expect(bloc.state.data.hud!.buildItems.first, BuildItemDataMock.makeUnaffordable(missingWood: 5));
       expect(bloc.state.data.placement, isNull);
       expect(
         ForestBlocMock.shownMessages(navigationService),
@@ -263,11 +261,11 @@ void main() {
   });
 
   blocTest<ForestBloc, ForestState>(
-    'testWhenPickingUpTheAxeOnATouchScreenThenTellsToTapATree',
+    'testWhenPickingUpThePickaxeOnATouchScreenThenTellsToTapARock',
     build: () {
       // given
       return ForestBlocMock.make(
-        ForestScenarioMock.axeNextToPlayer(),
+        ForestScenarioMock.pickaxeNextToPlayer(),
         navigationService: navigationService,
         isTouchInput: true,
       );
@@ -276,15 +274,15 @@ void main() {
       // when
       bloc
         ..add(const ForestStarted())
-        ..add(const ForestMapClicked(position: ForestScenarioMock.axeSpot));
+        ..add(const ForestMapClicked(position: ForestScenarioMock.pickaxeSpot));
       ForestBlocMock.tickFor(bloc, 300);
     },
     wait: Duration.zero,
     verify: (bloc) {
       // then
       final messages = ForestBlocMock.shownMessages(navigationService);
-      expect(messages, contains(Internationalize.forestMessagePickedUpAxeTouch));
-      expect(messages, isNot(contains(Internationalize.forestMessagePickedUpAxe)));
+      expect(messages, contains(Internationalize.forestMessagePickedUpPickaxeTouch));
+      expect(messages, isNot(contains(Internationalize.forestMessagePickedUpPickaxe)));
     },
   );
 
@@ -347,14 +345,17 @@ void main() {
     );
   });
 
-  group('testWhenTheLastQuestIsCompletedThenShowsTheFinalMessage', () {
+  group('testWhenTheEleventhVillageQuestIsCompletedThenShowsTheLineMessage', () {
     late String badgeBefore;
 
     blocTest<ForestBloc, ForestState>(
-      'testWhenTheLastQuestIsCompletedThenShowsTheFinalMessage',
+      'testWhenTheEleventhVillageQuestIsCompletedThenShowsTheLineMessage',
       build: () {
         // given
-        return ForestBlocMock.make(ForestScenarioMock.axeAndFifteenWood(), navigationService: navigationService);
+        return ForestBlocMock.make(
+          ForestScenarioMock.oneHouseShortOfTheVillage(),
+          navigationService: navigationService,
+        );
       },
       act: (bloc) async {
         // when
@@ -366,15 +367,16 @@ void main() {
         badgeBefore = bloc.state.data.hud!.questBadge;
         bloc
           ..add(const ForestBuildRequested(blueprint: BlueprintId.house))
-          ..add(const ForestMapClicked(position: ForestScenarioMock.houseSiteEast));
+          ..add(const ForestMapClicked(position: ForestScenarioMock.secondHouseSite));
         ForestBlocMock.tickFor(bloc, 6000 + Rules.hammerIntervalMs * 8);
       },
       wait: Duration.zero,
       verify: (bloc) {
         // then
-        expect(badgeBefore, '2/11');
-        expect(effects, contains(ForestEffectMock.buildingCompleted));
-        expect(bloc.state.data.hud!.questBadge, '3/11');
+        expect(badgeBefore, '10/19');
+        expect(effects, contains(ForestEffectMock.secondHouseCompleted));
+        expect(bloc.state.data.hud!.questBadge, '11/19');
+        expect(bloc.state.data.hud!.quests, QuestItemDataMock.withTheVillageDone);
         expect(
           ForestBlocMock.shownMessages(navigationService).last,
           Internationalize.forestMessageQuestLineCompleted(line: QuestLine.village),
@@ -410,7 +412,7 @@ void main() {
     'testWhenEachEventEmitsThenOnlyCarriesItsOwnEffects',
     build: () {
       // given
-      return ForestBlocMock.make(ForestScenarioMock.axeNextToPlayer(), navigationService: navigationService);
+      return ForestBlocMock.make(ForestScenarioMock.pickaxeOnThePlayer(), navigationService: navigationService);
     },
     act: (bloc) {
       // when
@@ -423,7 +425,7 @@ void main() {
     expect: () => [
       isA<ForestInProgress>(),
       isA<ForestSuccess>(),
-      isA<ForestSuccess>().having((state) => state.data.effects, 'effects', [ForestEffectMock.axePickedUp]),
+      isA<ForestSuccess>().having((state) => state.data.effects, 'effects', [ForestEffectMock.pickaxePickedUp]),
       isA<ForestSuccess>().having((state) => state.data.effects, 'effects', isEmpty),
     ],
   );

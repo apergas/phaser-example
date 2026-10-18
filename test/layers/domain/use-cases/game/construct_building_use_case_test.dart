@@ -19,7 +19,7 @@ void main() {
 
   test('testWhenConstructingWithoutEnoughResourcesThenConstructionIsRejected', () {
     // given
-    when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.tenWood()));
+    when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.tenWoodInStock()));
 
     // when
     final result = sut(blueprint: BlueprintId.house, x: 400, y: 400);

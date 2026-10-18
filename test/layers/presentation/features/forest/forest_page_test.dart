@@ -13,6 +13,7 @@ import 'package:farming/core/config/di/di_environment.dart';
 import 'package:farming/core/config/di/locator.dart';
 import 'package:farming/core/services/navigation/source/navigation_service.dart';
 import 'package:farming/layers/domain/repositories/level/level_repository.dart';
+import 'package:farming/layers/domain/repositories/save/game_save_repository.dart';
 import 'package:farming/layers/presentation/features/forest/bloc/forest_bloc.dart';
 import 'package:farming/layers/presentation/features/forest/forest_page.dart';
 import 'package:farming/layers/presentation/features/forest/game/atlas/lpc_assets_loader.dart';
@@ -22,6 +23,7 @@ import 'package:farming/layers/presentation/features/forest/widgets/hud_overlay.
 import 'package:farming/layers/presentation/features/forest/widgets/placement_bar.dart';
 import 'package:farming/layers/presentation/features/forest/widgets/skill_tile.dart';
 
+import '../../../../helpers/in_memory_preferences.dart';
 import '../../../../helpers/pump_until.dart';
 import '../../../../helpers/spanish_translations.dart';
 import '../../../../mocks/core/error-handling/app_exception_mock.dart';
@@ -43,6 +45,7 @@ void main() {
 
   setUp(() async {
     rootBundle.clear();
+    useInMemoryPreferences();
     await configureDependencies(environment: DiEnvironment.dev);
     levelRepository = MockLevelRepository();
     navigationService = MockNavigationService();
@@ -296,5 +299,50 @@ void main() {
     expect(pausedAfterFrames, isTrue);
     expect(ticksWhilePaused, isFalse);
     expect(game.paused, isFalse);
+  });
+
+  for (final lifecycle in const [AppLifecycleState.hidden, AppLifecycleState.paused]) {
+    testWidgets('testWhenTheAppGoesToTheBackgroundThenTheGameIsSaved ${lifecycle.name}', (tester) async {
+      // given
+      await pumpGame(tester);
+      final saves = locator.get<GameSaveRepository>();
+      final before = saves.load();
+
+      const goingAway = [AppLifecycleState.inactive, AppLifecycleState.hidden, AppLifecycleState.paused];
+      final path = goingAway.sublist(0, goingAway.indexOf(lifecycle) + 1);
+
+      // when
+      for (final state in path) {
+        tester.binding.handleAppLifecycleStateChanged(state);
+      }
+      await tester.pump();
+
+      // then
+      expect(before, isNull);
+      expect(saves.load(), isNotNull);
+      for (final state in [...path.reversed.skip(1), AppLifecycleState.resumed]) {
+        tester.binding.handleAppLifecycleStateChanged(state);
+      }
+    });
+  }
+
+  testWidgets('testWhenANewGameStartsThenANewForestGameIsBuilt', (tester) async {
+    // given
+    final bloc = await pumpGame(tester);
+    final first = tester.widget<GameWidget<ForestGame>>(find.byType(GameWidget<ForestGame>)).game!;
+
+    // when
+    bloc.add(const ForestNewGameRequested());
+    await pumpUntil(
+      tester,
+      () =>
+          find.byType(GameWidget<ForestGame>).evaluate().isNotEmpty &&
+          !identical(tester.widget<GameWidget<ForestGame>>(find.byType(GameWidget<ForestGame>)).game, first),
+    );
+
+    // then
+    final second = tester.widget<GameWidget<ForestGame>>(find.byType(GameWidget<ForestGame>)).game!;
+    expect(second, isNot(same(first)));
+    expect(bloc.state, isA<ForestSuccess>());
   });
 }

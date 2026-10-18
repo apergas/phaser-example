@@ -25,7 +25,7 @@ void main() {
 
     // when
     final skills = ids.map(Skills.byId).toList();
-    final prices = Skills.all.map((skill) => (skill.cost[Resource.gold], skill.cost[Resource.mana])).toList();
+    final prices = Skills.all.map((skill) => (skill.costOf(1)[Resource.gold], skill.costOf(1)[Resource.mana])).toList();
 
     // then
     expect(skills, [SkillEntityMock.doubleStrike, SkillEntityMock.dodge, SkillEntityMock.secondWind]);
@@ -41,5 +41,26 @@ void main() {
 
     // then
     expect(building, expected);
+  });
+  test('testWhenAskingForEachLevelThenEverySkillHasThreeLevelsWithTheirPrices', () {
+    // given
+    const skills = Skills.all;
+
+    // when
+    final prices = [
+      for (final skill in skills)
+        [
+          for (var level = 1; level <= skill.maxLevel; level++)
+            (skill.costOf(level)[Resource.gold], skill.costOf(level)[Resource.mana]),
+        ],
+    ];
+
+    // then
+    expect(skills.map((skill) => skill.maxLevel), [3, 3, 3]);
+    expect(prices, [
+      [(60, 20), (90, 30), (135, 45)],
+      [(90, 30), (135, 45), (205, 70)],
+      [(130, 45), (195, 70), (295, 100)],
+    ]);
   });
 }

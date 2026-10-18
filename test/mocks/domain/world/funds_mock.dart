@@ -28,4 +28,24 @@ abstract final class FundsMock {
   static const Map<Resource, int> banditTrioReward = {Resource.gold: 75, Resource.mana: 20};
 
   static const Map<Resource, int> banditTrioRepeatReward = {Resource.gold: 25, Resource.mana: 6};
+
+  static const Map<Resource, int> barbarianChiefReward = {Resource.gold: 150, Resource.mana: 50};
+
+  static const Map<Resource, int> barbarianChiefRepeatReward = {Resource.gold: 50, Resource.mana: 16};
+
+  static const Map<Resource, int> thirtyGold = {Resource.gold: 30};
+
+  static const Map<Resource, int> tenGoldAndZeroMana = {Resource.gold: 10, Resource.mana: 0};
+
+  static const Map<Resource, int> sixManaBeforeTwentyFiveGold = {Resource.mana: 6, Resource.gold: 25};
+
+  static const Map<Resource, int> doubleStrikeLevelTwoPrice = {Resource.gold: 90, Resource.mana: 30};
+
+  static const Map<Resource, int> doubleStrikeLevelThreePrice = {Resource.gold: 135, Resource.mana: 45};
+
+  static const Map<Resource, int> seventeenWood = {Resource.wood: 17};
+
+  static const Map<Resource, int> fifteenWood = {Resource.wood: 15};
+
+  static const Map<Resource, int> quarryPrice = {Resource.wood: 25};
 }

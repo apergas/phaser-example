@@ -11,12 +11,24 @@ void main() {
     // when
     final sameSkill = skill == skill.copyWith();
     final otherId = skill == skill.copyWith(id: SkillId.dodge);
-    final otherCost = skill == skill.copyWith(cost: SkillEntityMock.dodge.cost);
+    final otherCost = skill == skill.copyWith(costs: SkillEntityMock.dodge.costs);
 
     // then
     expect(sameSkill, isTrue);
     expect(skill.hashCode, skill.copyWith().hashCode);
     expect(otherId, isFalse);
     expect(otherCost, isFalse);
+  });
+  test('testWhenAskingForTheCostOfALevelThenItIsThatEntryAndTheMaxLevelIsTheNumberOfEntries', () {
+    // given
+    const skill = SkillEntityMock.doubleStrike;
+
+    // when
+    final costs = [skill.costOf(1), skill.costOf(2), skill.costOf(3)];
+
+    // then
+    expect(costs, skill.costs);
+    expect(skill.maxLevel, 3);
+    expect(SkillEntityMock.singleLevelDoubleStrike.maxLevel, 1);
   });
 }

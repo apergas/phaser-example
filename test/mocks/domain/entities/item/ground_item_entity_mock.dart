@@ -8,4 +8,10 @@ abstract final class GroundItemEntityMock {
     kind: ToolKind.axe,
     position: PositionEntity(x: 150, y: 100),
   );
+
+  static const GroundItemEntity pickaxe = GroundItemEntity(
+    id: 'pickaxe',
+    kind: ToolKind.pickaxe,
+    position: PositionEntity(x: 1012, y: 812),
+  );
 }

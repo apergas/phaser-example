@@ -70,4 +70,17 @@ void main() {
     expect(PlayerFrames.animationKey(walking), 'walkAxe-right');
     expect(PlayerFrames.sheet(PlayerPoseMock.idleWithoutAxe), PlayerSheet.idle);
   });
+
+  test('testWhenMiningThenThePickaxeUsesTheHammerSheetAndSequence', () {
+    // given
+    const progress = [0.0, 0.3, 0.99, 1.0];
+
+    // when
+    final pickaxe = progress.map((value) => PlayerFrames.workColumn(WorkTool.pickaxe, value)).toList();
+    final sheet = PlayerFrames.sheet(PlayerPoseMock.mining);
+
+    // then
+    expect(pickaxe, [0, 5, 1, 1]);
+    expect(sheet, PlayerSheet.hammer);
+  });
 }

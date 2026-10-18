@@ -60,4 +60,15 @@ void main() {
     // then
     expect(exists, isTrue);
   });
+
+  test('testWhenResolvingTheWorkshopAndSaveIconsThenTheSvgFilesExist', () {
+    // given
+    const paths = [CustomIcons.workshop, CustomIcons.save];
+
+    // when
+    final exists = paths.map((path) => File(path).existsSync()).toList();
+
+    // then
+    expect(exists, [true, true]);
+  });
 }

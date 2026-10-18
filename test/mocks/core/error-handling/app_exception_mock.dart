@@ -6,4 +6,6 @@ abstract final class AppExceptionMock {
   static const UnknownTreeKindException unknownTreeKind = UnknownTreeKindException(data: 'tree-3: "palm"');
 
   static const NoGameInProgressException noGameInProgress = NoGameInProgressException();
+
+  static const InvalidSaveException invalidSave = InvalidSaveException(data: 'unknown version 9');
 }

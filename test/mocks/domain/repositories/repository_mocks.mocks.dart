@@ -8,6 +8,8 @@ import 'package:farming/layers/domain/entities/game/game_session_entity.dart'
     as _i3;
 import 'package:farming/layers/domain/repositories/level/level_repository.dart'
     as _i4;
+import 'package:farming/layers/domain/repositories/save/game_save_repository.dart'
+    as _i6;
 import 'package:farming/layers/domain/repositories/session/game_session_repository.dart'
     as _i5;
 import 'package:farming/layers/domain/world/world.dart' as _i2;
@@ -76,6 +78,28 @@ class MockGameSessionRepository extends _i1.Mock
   @override
   void save(_i3.GameSessionEntity? session) => super.noSuchMethod(
     Invocation.method(#save, [session]),
+    returnValueForMissingStub: null,
+  );
+}
+
+/// A class which mocks [GameSaveRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGameSaveRepository extends _i1.Mock
+    implements _i6.GameSaveRepository {
+  MockGameSaveRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  void save(_i3.GameSessionEntity? session) => super.noSuchMethod(
+    Invocation.method(#save, [session]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void clear() => super.noSuchMethod(
+    Invocation.method(#clear, []),
     returnValueForMissingStub: null,
   );
 }

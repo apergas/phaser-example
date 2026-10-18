@@ -16,10 +16,12 @@ import 'package:farming/layers/presentation/features/arena/game/atlas/arena_asse
 import 'package:farming/layers/presentation/features/arena/widgets/level_list.dart';
 import 'package:farming/layers/presentation/features/arena/widgets/result_panel.dart';
 
+import '../../../../helpers/in_memory_preferences.dart';
 import '../../../../helpers/pump_until.dart';
 import '../../../../helpers/spanish_translations.dart';
 import '../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
+import '../../../../mocks/domain/world/funds_mock.dart';
 import '../../../../mocks/presentation/features/arena/arena_level_item_data_mock.dart';
 import '../../../../mocks/presentation/features/forest/forest_scenario_mock.dart';
 import '../../../../mocks/presentation/features/forest/game/asset_bundle_fake.dart';
@@ -34,6 +36,7 @@ void main() {
 
   setUp(() async {
     rootBundle.clear();
+    useInMemoryPreferences();
     await configureDependencies(environment: DiEnvironment.dev);
     levelRepository = MockLevelRepository();
     navigationService = MockNavigationService();
@@ -68,22 +71,6 @@ void main() {
     expect(find.bySemanticsLabel(Internationalize.arenaAccessibilityStage), findsOneWidget);
   });
 
-  testWidgets('testWhenAFightIsSkippedThenTheVictoryAndTheGoldAreShown', (tester) async {
-    // given
-    await pumpArena(tester);
-    await tester.tap(find.text(Internationalize.arenaFight));
-    await pumpUntil(tester, () => find.text(Internationalize.arenaSkip).evaluate().isNotEmpty);
-
-    // when
-    await tester.tap(find.text(Internationalize.arenaSkip));
-    await pumpUntil(tester, () => find.byType(ResultPanel).evaluate().isNotEmpty);
-
-    // then
-    expect(find.text(Internationalize.arenaVictory), findsOneWidget);
-    expect(find.text(Internationalize.arenaReward(amount: 10)), findsOneWidget);
-    expect(find.text(Internationalize.arenaCleared), findsOneWidget);
-  });
-
   testWidgets('testWhenTheReplayRunsThenTheGameTicksItToTheEnd', (tester) async {
     // given
     await pumpArena(tester);
@@ -96,6 +83,8 @@ void main() {
 
     // then
     expect(find.text(Internationalize.arenaVictory), findsOneWidget);
+    expect(find.text(Internationalize.arenaReward(amounts: FundsMock.tenGold)), findsOneWidget);
+    expect(find.text(Internationalize.arenaCleared), findsOneWidget);
     expect(find.text(Internationalize.arenaFight), findsOneWidget);
   });
 

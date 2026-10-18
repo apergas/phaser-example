@@ -5,6 +5,7 @@ import 'package:farming/layers/presentation/features/arena/widgets/result_panel.
 
 import '../../../../../helpers/hud_test_app.dart';
 import '../../../../../helpers/spanish_translations.dart';
+import '../../../../../mocks/domain/world/funds_mock.dart';
 import '../../../../../mocks/presentation/features/arena/arena_result_data_mock.dart';
 
 void main() {
@@ -23,7 +24,7 @@ void main() {
 
     // then
     expect(find.text(Internationalize.arenaVictory), findsOneWidget);
-    expect(find.text(Internationalize.arenaReward(amount: 10)), findsOneWidget);
+    expect(find.text(Internationalize.arenaReward(amounts: FundsMock.tenGold)), findsOneWidget);
     expect(find.text(Internationalize.arenaRetry), findsNothing);
   });
 

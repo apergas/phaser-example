@@ -1,11 +1,13 @@
 # T1 · Tests — ficha
 
-> **Plan detallado: pendiente.** Al empezar, `boost:writing-plans` sobre esta ficha. Commits `[PROJECT-T1]: …`.
+> **Plan detallado: abajo** (*Plan de implementación*). Commits `[PROJECT-T1]: …`.
 
 | | |
 |---|---|
 | **Rama** | `feature/PROJECT-T1-tests`, desde `develop` con todo lo anterior unido |
 | **Depende de** | Todo lo demás: C9–C12, los arreglos y mejoras, F1, F3–F8 y F2. Va **la última**. |
+
+> **Hecho (2026-10-18):** el periodo sin tests ha terminado. Las fases vuelven a escribir sus tests (TDD) y a pasar la batería completa (`flutter test` y Chrome) antes de cerrarse. Final de T1: 1206 tests en la VM, 260 en Chrome.
 
 ## Objetivo
 
@@ -94,3 +96,184 @@ Desde el 2026-10-17 (a mitad de C9, tras TC9.3) el desarrollo sigue **sin tests*
   - dominio: `World.restore` (todo el estado y la numeración de ids), `QuestLog(completed:)` / `completed`, `Upgrades.maxLevel`, `save_game_use_case_test.dart`, `new_game_use_case_test.dart`, `start_game_use_case_test.dart` (guardado primero), `MockGameSaveRepository`;
   - datos: ida y vuelta `GameSessionEntity` → `SaveDBO` → JSON → `GameSessionEntity` con un mundo que tenga de todo; cada `Save*MapperDBO` y cada validación (versión, JSON roto, enums, negativos, carga, tiers, niveles de habilidad, `hitsTaken`, `hitsDone`, recorte de `toolLevels`, sin ceros); cada DBO (`fromJson(toJson())`, `==`); el datasource con `SharedPreferences.setMockInitialValues`; `GameSaveRepositoryImpl` (`load` → `null` y registra, `save` / `clear` lanzan); `GameSessionRepositoryImpl`;
   - presentación: `forest_bloc_test.dart` (guarda tras los eventos importantes, a los 10 000 ms, con `ForestPaused`, tras compras con éxito y al volver de la arena; *Guardar* avisa o enseña el pop-up; *Nueva partida* `InProgress` → `Success` con el nivel), `game_panel_test.dart`, `hud_overlay_test.dart` (sexto botón *Partida*, `buttonsBelowWidth` 1820, `narrowWidth` 1100), `forest_page_test.dart` (ciclo de vida, juego nuevo), `forest_scene_component_test.dart` (sin decoración bajo edificios cargados), `custom_icons_test.dart` (`save`), `internationalize_test.dart` (`forest.hud.game`, `forest.game`, `error.invalidSave*`).
+
+---
+
+# T1 · Tests — plan de implementación
+
+> **Para agentes:** `boost:executing-plans` (tarea a tarea, un commit por tarea). Los pasos usan casillas (`- [ ]`).
+
+**Objetivo:** la batería entera en verde y sin avisos, con los tests que pide cada *Para T1* de C9–C13, F1–F8, F2 y *Empezar con el hacha*.
+
+**Arquitectura:** primero que todo compile (mocks centralizados, firmas nuevas, `.mocks.dart` regenerados); después cada área en orden de dependencia (dominio → datos → casos de uso → presentación → Flame → textos/iconos/atlas → Chrome). Cada test se ajusta al comportamiento ACTUAL de `lib/`, y las cifras de los *Para T1* son la especificación: si el código no las da, se investiga (iOS en `/Users/axelperezgaspar/farming-ios`, solo lectura) y se anota en *Discrepancias* antes de tocar nada.
+
+**Stack:** `flutter_test`, `mockito` (`@GenerateMocks`), `bloc_test`, `flame_test` (`testWithFlameGame`), `shared_preferences` (`setMockInitialValues`).
+
+## Restricciones globales
+
+- Nombres `testWhen<Acción>Then<Resultado>`; `// given`, `// when`, `// then`; `test/` refleja `lib/`.
+- Datos de prueba como `static` en `test/mocks/**/<nombre>_mock.dart`; nunca entidades, modelos de vista, efectos, poses, excepciones ni DBO en línea (solo `PositionEntity(x:, y:)` como argumento o valor esperado).
+- Textos de la app desde `Internationalize`; solo `internationalize_test.dart` escribe las cadenas en español. Etiquetas arbitrarias en `test/mocks/presentation/widgets/widget_text_mock.dart`.
+- Tests de widget y página: `loadSpanishTranslations` y `pumpUntil`; las páginas, `rootBundle.clear()` en `setUp`; las medidas del HUD, `loadRobotoFont`.
+- `*.mocks.dart` y `di.config.dart` solo con `dart run build_runner build --delete-conflicting-outputs`; nunca a mano ni con `dart format`. El resto, `dart format --line-length 120`.
+- `lib/` no se toca salvo fallo real, en su propio commit `[PROJECT-T1]: Fix <fallo>`.
+- Commits `[PROJECT-T1]: <inglés imperativo>`, sin atribución de IA.
+
+## Tareas
+
+| Tarea | Qué | Depende de |
+|---|---|---|
+| TT1.1 | Compilación: mocks, firmas, `.mocks.dart`, `architecture_test` | — |
+| TT1.2 | Combate y equilibrado (C11, C12) | TT1.1 |
+| TT1.3 | Héroe, habilidades y arena en el dominio (C9, C11, C12) | TT1.1 |
+| TT1.4 | Árboles, tocones, estadísticas y misiones (F1, F3, F4, hacha) | TT1.1 |
+| TT1.5 | Piedra, almacén, cantera y taller en el dominio (F5–F8) | TT1.4 |
+| TT1.6 | Datos del nivel y goldens (F1, F5, F6) | TT1.1 |
+| TT1.7 | Guardado (F2): dominio, casos de uso y datos | TT1.5, TT1.6 |
+| TT1.8 | Casos de uso del bosque y flujos | TT1.5 |
+| TT1.9 | Arena en la presentación (C9–C13) | TT1.3 |
+| TT1.10 | `ForestBloc` (F1–F8, F2, C12, hacha) | TT1.8 |
+| TT1.11 | Widgets del HUD y umbrales | TT1.10 |
+| TT1.12 | Componentes Flame del bosque | TT1.1 |
+| TT1.13 | Textos, iconos, atlas y DI | TT1.1 |
+| TT1.14 | Páginas, contenedor y Chrome | todas |
+
+### TT1.1: que la batería compile ✅
+
+**Archivos:** los 51 de `flutter analyze` (mocks en `test/mocks/**`, tests que construyen `ForestBloc`, `HudData`, `PlacementData`, `WorldSnapshotEntity`, `SkillEntity`, `HeroEntity`…), `test/architecture_test.dart`; borrar `test/layers/data/datasources/session/local/game_session_local_datasource_impl_test.dart`.
+
+- [x] `FundsMock` (C9): `barbarianChiefReward` (50 oro + 16 maná), `barbarianChiefRepeatReward`, `thirtyGold`, `tenGoldAndZeroMana`, `sixManaBeforeTwentyFiveGold`; `ArenaResultDataMock` y `ArenaLevelItemDataMock` con `amounts:`; renombrar a `championWithTheChiefReward` / `victoryWithTheChiefRepeatReward`.
+- [x] C10: `ArenaDataMock` con `.advanced(durationMs)`; quitar `ArenaReplaySkipped`, `onSkip` y `arenaSkip` de los tests.
+- [x] C11: `ArenaEffectMock` con `side: FightSide.hero, index: 0` y una variante de enemigo.
+- [x] C12: `skillLevels:` en `HeroEntityMock`, `BalanceScenarioMock`, `hero_entity_test`, `combat_test`, `balance_test`; `SkillEntity(costs:)`; `SkillOptionEntity(level:)` sin `known`; `LearnSkillResult` sin `alreadyKnown`; `forestSkillDescription(id:, level:)`; `SkillItemData(level:)`.
+- [x] C13: `heroWith(weapon, armor)`; `armor: GearId.workClothes` en los mocks del héroe de `FighterRenderDataMock`.
+- [x] Hacha: sin `QuestId.pickUpAxe` en los mocks.
+- [x] F1: `TreeEntityMock.mock.hitsToFell` por `Rules.hitsToFellTree`; `TreeFelledEffect(wood:)`.
+- [x] F3/F5: `WorldSnapshotEntity(stumps:, rocks:)`; `LevelMapperDBO(rockMapperDBO:, buildingMapperDBO:)`.
+- [x] F6: `HudData(stock:, carry:)`, `ResourceBar(stock:, carry:)`, `ForestBloc(depositUseCase:, getStockUseCase:)`.
+- [x] F7: `PlacementData(invalidReason:)`, `PlacementBar(reason:)`, `CanPlaceBuildingUseCase` → `ConstructionRejection?`.
+- [x] F8/F2: `ForestBloc(getUpgradeOptionsUseCase:, buyUpgradeUseCase:, saveGameUseCase:, newGameUseCase:)`, `HudData(upgradeItems:)`, `HudOverlay(onUpgradeSelected:, onSaveRequested:, onNewGameRequested:)`, `StartGameUseCase(saveRepository:)`, `GameSessionRepositoryImpl()`, `MockGameSaveRepository`.
+- [x] `architecture_test.dart`: `regrowth.dart`, `stats_recording.dart`, `mining.dart`, `depositing.dart` en `_worldInternals`.
+- [x] `dart run build_runner build --delete-conflicting-outputs`; `flutter analyze` → "No issues found!"; commit.
+
+### TT1.2: combate y equilibrado ✅
+
+**Archivos:** `test/layers/domain/combat/combat_test.dart`, `balance_test.dart`, `test/mocks/domain/game/balance_scenario_mock.dart`, `test/mocks/domain/entities/combat/arena_level_entity_mock.dart`.
+
+- [x] Los goldens anteriores pasan con `skillLevels` en nivel 1 y los niveles de mock sin probabilidad.
+- [x] C11 (héroe esperado de `BalanceScenarioMock`, niveles reales): *Tres bandidos* s0 turno 11 héroe → enemigo 1 `dodge`, 0, vida 26, 27 turnos, victoria; *Bárbaro* s25 turno 7 enemigo 0 → héroe `doubleStrike` 5, vida 32, 18 turnos, victoria; *Manada* s1 turno 4 enemigo 2 `doubleStrike` 4, vida 41, 22 turnos, victoria; *Dos bárbaros* s8 turno 18 enemigo 1 `doubleStrike` 6, vida 5, 23 turnos, derrota `almostThere`; *Jefe* s1 turno 4 enemigo 2 `doubleStrike` 1, vida 63, turno 24 enemigo 0 `secondWind` vida 44, 31 turnos, derrota `needDefense`. Con `enemySkillChance: 0`, el registro de antes. El jefe cura una sola vez. `adviceFor` sin los `dodge` del héroe.
+- [x] C12: *Bárbaro* s0 solo *Golpe doble* turno 5 daño 6/7/8, vida 34/33/32, 17/15/15 turnos; *Manada* s0 solo *Esquiva* 3/5/5 esquivas (nivel 1 y 2 derrota `almostThere` en 23 y 24 turnos, primera en el turno 6 contra el enemigo 1; nivel 3 victoria en 25, primera en el turno 1, enemigo 0, vida 55); *Jefe* s0 héroe (3, 3) solo *Segundo aliento* turno 16 de 21 a 51/59/66, nivel 1 derrota `almostThere` en 46, 2 y 3 victoria en 49.
+- [x] `balance_test`: `_spentOn` suma `costOf` de cada nivel; ≥ 60 % con semillas 0–999 (89,0/86,6, 73,0/75,1, 78,0/71,9, 79,0/74,0, 64,0/60,8 % en 6–10); con las habilidades en nivel 3 ≤ 95 % (0–99 y 0–999) y un paso por detrás < 50 %.
+- [x] `flutter test test/layers/domain/combat`; commit.
+
+### TT1.3: héroe, habilidades y arena en el dominio ✅
+
+**Archivos:** `hero_entity_test`, `hero_rules_test`, `skills_test`, `skill_entity_test`, `skill_option_entity_test`, `arena_levels_test`, `arena_level_entity_test`, nuevo `test/layers/domain/world/extensions/enemy_kind_rules_test.dart`, `learn_skill_use_case_test`, `get_skill_options_use_case_test`, `start_fight_use_case_test`, `arena_flow_test`, `skill_flow_test`, `world_funds_test`.
+
+- [x] `hero_rules_test`: `levelOf`, `skills`, `withSkill` (asserts 0 y 4), `power` 99 / 178 / 118 / 211 y jefe 133 / 155 / 178.
+- [x] `skills_test`: `maxLevel` 3, costes por nivel, `costOf(1)` = coste de antes; `skill_option_entity_test`: `nextLevel` / `nextCost`, `canLearn`, `assert`.
+- [x] `learn_skill_use_case_test`: `ok` (nivel 1), `upgraded` (90 / 30 y 135 / 45 del *Golpe doble*), `maxed` sin cobrar, `notEnoughResources`, sin torre `missingBuilding` aunque esté al máximo, al máximo `maxed` sin recursos; `get_skill_options_use_case_test`: `level`, `maxed`, `missing`.
+- [x] `arena_levels_test`: `enemySkillChance` 0 en 1–5, 0,015 / 0,02 / 0,025 / 0,03 / 0,035 en 6–10; `arena_level_entity_test`; `enemy_kind_rules_test`.
+- [x] `world_funds_test` contra `world.stock`; resultados de `start_fight_use_case_test` y `arena_flow_test` con los niveles reales.
+- [x] `flutter test test/layers/domain`; commit.
+
+### TT1.4: árboles, tocones, estadísticas y misiones ✅
+
+**Archivos:** `tree_stats_entity_test`, `rules_test`, `stump_entity_test`, `stump_rules_test`, `world_regrowth_test`, `stats_entity_test`, `stats_rules_test`, `stats_recording_test`, `building_rules_test`, `quests_test`, `quest_log_test`, `world_chopping_test`, `game_flow_test`, mocks `StumpEntityMock`, `StatsEntityMock`.
+
+- [x] F1: `Rules.treeKindStats`, `TreeStatsEntity`.
+- [x] F3: `isSapling` en 60 000, `grown` hasta 180 000; `tree-37` talado en 5500 brota en 65 500 y vuelve en 185 500 (ticks de 50 ms); `elapsedMs` 0 en el tick de la tala; jugador a < 20 espera, a 22 no; casa a < 52 borra el tocón; los tocones no bloquean; el árbol vuelve el último.
+- [x] F4: estadísticas en el mismo tick; `completeCount`.
+- [x] Misiones (hacha, F4, F8): 19 misiones, aldea 11, las nuevas en su orden y fuera de orden, `gatherFortyWood` y `gatherTwentyStone` pegajosas, `gatherWood` / `gatherFortyWood` miden el almacén.
+- [x] `flutter test test/layers/domain`; commit.
+
+### TT1.5: piedra, almacén, cantera y taller en el dominio ✅
+
+**Archivos:** `rock_entity_test`, `rock_rules_test`, `world_mining_test`, `resource_rules_test`, `inventory_rules_test`, `inventory_entity_test`, `world_deposit_test`, `construction_test` / `world_construction_test`, `blueprints_test`, `blueprint_entity_test`, `placement_rule_rules_test`, `placement_rule_entity_test`, `upgrades_test`, `upgrade_entity_test`, `upgrade_option_entity_test`, `world_woodcutting_test`; mocks `RockEntityMock`, `InventoryEntityMock`, `BuildingEntityMock`, `UpgradeEntityMock`.
+
+- [x] F5: `unknownRock` antes que `noPickaxe`, un golpe cada 750 ms, `RockBroken(stone: 8)` en el octavo, la roca deja de ser obstáculo, volver a tocarla reinicia; tocón a 33 de una roca no rebrota, a 35 sí; costes con 10 de piedra.
+- [x] F6: carga (`load`, `freeLoad`, `isLoadFull`, `cargo`, `adding`, `unloading`), capacidad 10, lo que no cabe se pierde, `carryFull`, `orderDeposit` (`unknownBuilding` / `notADropOff` / `emptyLoad` / `ok`), 400 ms, campamento y almacén, oro y maná fuera; `Construction` paga del almacén; blueprints (almacén segundo, campamento último).
+- [x] F7: regla a 61, 62, 119,9 y 120; orden de rechazos; cantera tercera con 25 de madera; solo piedra; 525 ms a < 160.
+- [x] F8: `toolLevel`, `withToolLevel`, `hitsNeeded` 1→1 … 9→6; pino 3 → 2, roble 7 → 5, roca 8 → 5; taller cuarto (20 madera, 10 piedra); `Upgrades.maxLevel` 2.
+- [x] `flutter test test/layers/domain`; commit.
+
+### TT1.6: datos del nivel y goldens ✅
+
+**Archivos:** `level_local_datasource_impl_test`, `tree_mapper_dbo_test`, `rock_mapper_dbo_test`, `building_mapper_dbo_test`, `level_mapper_dbo_test`, `level_repository_impl_test`, `test/core/utils`, `di_test` (madera 411), mocks de DBO.
+
+- [x] 70 árboles, madera por tipo (411 en el mundo); 12 rocas (`rock-1` (303.66, 1110.24), `rock-2` (1333.10, 464.67), `rock-3` (385.68, 823.07)); 93 decoraciones sin los ids 6, 12, 17, 30, 34, 37, 40, 42, 49, 68, 78, 81, 85 y 105; `items` = el pico en (1012, 812); campamento en (700, 592); invariantes.
+- [x] Mappers: sin id, sin posición, blueprint desconocido → `InvalidLevelException`, terminado; `==` de `LevelDBO`.
+- [x] VM y `flutter test --platform chrome test/core/utils test/layers/data test/core/config/di/di_test.dart`; commit.
+
+### TT1.7: guardado (F2) ✅
+
+**Archivos:** `world_restore_test`, `quest_log_test`, `save_game_use_case_test`, `new_game_use_case_test`, `start_game_use_case_test`, `test/layers/data/datasources/save/**`, `test/layers/data/repositories/save/**`, `game_session_repository_impl_test`; mocks `SaveDBOMock`, `GameSessionEntityMock`, `SaveJsonMock`.
+
+- [x] `World.restore` (todo el estado y la numeración de ids); `QuestLog(completed:)`.
+- [x] Ida y vuelta entidad → DBO → JSON → entidad; cada `Save*MapperDBO` y cada validación; cada DBO (`fromJson(toJson())`, `==`); datasource; `GameSaveRepositoryImpl` (`load` → `null` y registra; `save` / `clear` lanzan); `GameSessionRepositoryImpl`.
+- [x] `flutter test test/layers`; commit.
+
+### TT1.8: casos de uso del bosque y flujos ✅
+
+**Archivos:** `mine_rock_use_case_test`, `deposit_use_case_test`, `get_stock_use_case_test`, `can_place_building_use_case_test`, `get_build_options_use_case_test`, `buy_upgrade_use_case_test`, `get_upgrade_options_use_case_test`, `get_world_snapshot_use_case_test`, `buy_gear_use_case_test`, flujos; `ForestScenarioMock`, `GameScenarioMock`.
+
+- [x] `buy_upgrade`: `alreadyOwned` → `noWorkshop` → `notEnoughResources` sin cobrar → `ok` del almacén.
+- [x] Opciones: sin el campamento; almacén, cantera, taller; lo que falta contra el almacén.
+- [x] Los escenarios ponen los recursos en el almacén.
+- [x] `flutter test test/layers/domain`; commit.
+
+### TT1.9: arena en la presentación ✅
+
+**Archivos:** `arena_bloc_test`, `fight_replay_data_test`, `fight_button_test`, `arena_hud_test`, `result_panel_test`, `arena_sprite_names_test`, `arena_frames_test`, `fighter_render_data_test`, `arena_scene_component_test`, mocks de la arena.
+
+- [x] C10: la repetición con `ArenaReplayTicked` hasta el final emite todos los efectos, `FightEndedEffect` y `ChampionEffect`; sin botón durante la repetición.
+- [x] C11: `SkillUsedEffect` de enemigo con bando e índice; el nombre flota sobre el enemigo.
+- [x] C13: 16 juegos con 17 frames, nombres distintos, `hero-steel-sword-plate`, `hero-leather`; `armorTier: 2` → `GearId.chainMail`, enemigos `null`; `heroInPlateIdle` → `hero-steel-sword-plate-idle-0`.
+- [x] `flutter test test/layers/presentation/features/arena`; commit.
+
+### TT1.10: `ForestBloc` ✅
+
+**Archivos:** `forest_bloc_test`, `forest_bloc_skill_test`, `forest_bloc_mock`, mocks de `HudData`, `QuestItemData`, `ForestEffect`.
+
+- [x] Hacha: bienvenida nueva. F1: "+N". F3: `TreeSproutedEffect` / `TreeRegrownEffect` sin aviso. F4: insignia, recorte por línea, aviso de línea completa. F5: avisos de pico y piedra, `RockHit` / `RockBroken`, pose `pickaxe`, edificio → roca → árbol. F6: carga llena, entregar, "Guardado en el almacén: …". F7: `invalidReason`. F8: `UpgradeResult`, `upgradeItems`, "Hacha de hierro", `x/19`. C12: "Has mejorado", `maxed`. F2: autoguardado (eventos, 10 000 ms, `ForestPaused`, compras, arena), *Guardar*, *Nueva partida*.
+- [x] `flutter test test/layers/presentation/features/forest/bloc`; commit.
+
+### TT1.11: widgets del HUD y umbrales ✅
+
+**Archivos:** `hud_overlay_test`, `resource_bar_test`, `placement_bar_test`, `placement_data_test`, `quest_row_test`, `skill_tile_test`, `hero_panel_test`, `upgrade_menu_test`, `upgrade_option_tile_test`, `game_panel_test`.
+
+- [x] `buttonsBelowWidth` 1820 (1819 / 1820) y `narrowWidth` 1100 con `loadRobotoFont`; seis botones; *Taller* y *Partida*.
+- [x] Carga en color de aviso; rótulo "Almacén"; barra con motivo y misma altura; fila plegada; Nv 2/3 y *Aprender* / *Mejorar* / *Máximo*.
+- [x] `flutter test test/layers/presentation/features/forest/widgets`; commit.
+
+### TT1.12: componentes Flame del bosque ✅
+
+**Archivos:** `growth_motion_test`, `stump_component_test`, `rock_component_test`, `rock_motion_test`, `particle_bursts_test`, `player_frames_test`, `building_component_test`, `floating_text_component_test`, `forest_scene_component_test`, `forest_world_test`, `LpcAssetsMock`.
+
+- [x] Crecimiento 0,35 → 1 en 600 ms; tocón 50 × 41, brote 18 × 30; roca 61 × 45 y 350 ms; `stoneChips` 8; campamento terminado sin barra; reconciliación de tocones, brotes y rocas; `rockAt`; "+N"; sin decoración bajo edificios cargados.
+- [x] `flutter test test/layers/presentation/features/forest/game`; commit.
+
+### TT1.13: textos, iconos, atlas y DI ✅
+
+**Archivos:** `internationalize_test`, `custom_icons_test`, `lpc_atlas_test`, `di_test`.
+
+- [x] Todas las claves nuevas de C9–F2 y sin `arena.skip`, `skillAlreadyKnown`, `pickUpAxe`; iconos `workshop`, `save`; frames `sapling`, `camp`, `storehouse`, `quarry`, `workshop`; DI con `await locator.init`, `SharedPreferences.setMockInitialValues` y `GameSessionRepository` *singleton*.
+- [x] `flutter test test/core`; commit.
+
+### TT1.14: páginas, contenedor y Chrome ✅
+
+**Archivos:** `forest_page_test`, `arena_page_test`, `container_app_test`.
+
+- [x] Ciclo de vida (`ForestPaused` con `hidden` / `paused`), `ForestGame` nuevo tras *Nueva partida*.
+- [x] `build_runner` + `git diff --exit-code`, `flutter analyze`, `flutter test`, Chrome; commit.
+
+## Discrepancias
+
+Ninguna cifra de los *Para T1* contradice al código: goldens de combate (C11, C12), tablas de equilibrado, poderes, rebrote de `tree-37` (5500 / 65 500 / 185 500), rocas, 93 decoraciones, 411 de madera, umbrales del HUD (1820 / 1100) y número de misiones (19, aldea 11) salen exactos. Notas:
+
+- El golden de `tree-37` exige ir antes a donde estaba el hacha (856, 608), como el programa de iOS; con el hacha en la mano el jugador sale de (800, 600) (`LevelScenarioMock.oldAxeSpot`).
+- `HeroEntityMock.champion` pasa de 12 a 13 peleas: con las habilidades de los enemigos (C11) la semilla 12 pierde contra el jefe.
+- `SaveScenarioMock` usa árboles de mock con cifras que no son las de `Rules`; el guardado los reconstruye con `Rules.treeKindStats`, así que la ida y vuelta exacta usa `SaveRoundTripMock`.
+- `game_save_repository_impl_test.dart` va con `@TestOn('vm')`: lee `es.json` con `dart:io` y no hay goldens en él.
+- Se añade `shared_preferences_platform_interface` a `dev_dependencies` para `InMemorySharedPreferencesAsync` (`test/helpers/in_memory_preferences.dart`).
+- Sin fallos en `lib/`.

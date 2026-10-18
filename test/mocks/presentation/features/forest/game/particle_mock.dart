@@ -4,6 +4,7 @@ import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 
 abstract final class ParticleMock {
   static const PositionEntity trunkBase = PositionEntity(x: 100, y: 120);
+  static const PositionEntity stoneChipOrigin = PositionEntity(x: 100, y: 106);
   static const PositionEntity chipOrigin = PositionEntity(x: 100, y: 110);
   static const PositionEntity dustOrigin = PositionEntity(x: 200, y: 200);
   static const PositionEntity buildingFront = PositionEntity(x: 200, y: 204);

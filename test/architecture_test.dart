@@ -45,6 +45,10 @@ const List<String> _worldInternals = [
   'lib/layers/domain/world/woodcutting.dart',
   'lib/layers/domain/world/construction.dart',
   'lib/layers/domain/world/pick_up_items.dart',
+  'lib/layers/domain/world/regrowth.dart',
+  'lib/layers/domain/world/stats_recording.dart',
+  'lib/layers/domain/world/mining.dart',
+  'lib/layers/domain/world/depositing.dart',
 ];
 
 const List<String> _coreForbidden = ['lib/layers/'];

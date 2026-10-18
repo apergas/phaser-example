@@ -4,6 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:farming/core/config/constants/enum/arena/fighter_pose.dart';
 import 'package:farming/core/config/constants/enum/arena/power_tone.dart';
 import 'package:farming/core/config/constants/enum/arena_level_id.dart';
+import 'package:farming/core/config/constants/enum/fight_side.dart';
 import 'package:farming/core/config/constants/enum/gear_id.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/layers/domain/rules/arena_levels.dart';
@@ -11,6 +12,7 @@ import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 import 'package:farming/layers/domain/world/world.dart';
 import 'package:farming/layers/presentation/features/arena/bloc/arena_bloc.dart';
 import 'package:farming/layers/presentation/features/arena/models/arena_effect.dart';
+import 'package:farming/layers/presentation/features/arena/models/fighter_render_data.dart';
 
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/core/error-handling/app_exception_mock.dart';
@@ -27,6 +29,7 @@ void main() {
   late MockNavigationService navigationService;
   late World world;
   late List<ArenaEffect> effects;
+  late List<FighterRenderData> previewFighters;
 
   setUpAll(loadSpanishTranslations);
 
@@ -321,29 +324,6 @@ void main() {
   );
 
   blocTest<ArenaBloc, ArenaState>(
-    'testWhenTheReplayIsSkippedThenOnlyTheEndIsPlayedAndTheResultIsShown',
-    build: () {
-      // given
-      return ArenaBlocMock.make(world, navigationService: navigationService);
-    },
-    act: (bloc) {
-      // when
-      effects = ArenaBlocMock.collectEffects(bloc);
-      bloc
-        ..add(const ArenaStarted())
-        ..add(const ArenaFightRequested())
-        ..add(const ArenaReplaySkipped());
-    },
-    wait: Duration.zero,
-    verify: (bloc) {
-      // then
-      expect(effects, [ArenaEffectMock.won]);
-      expect(bloc.state.data.replay!.isFinished, isTrue);
-      expect(bloc.state.data.result, ArenaResultDataMock.victoryTenGold);
-    },
-  );
-
-  blocTest<ArenaBloc, ArenaState>(
     'testWhenTheChiefFallsForTheFirstTimeThenTheHeroIsCrownedChampion',
     build: () {
       // given
@@ -356,14 +336,16 @@ void main() {
       bloc
         ..add(const ArenaStarted())
         ..add(const ArenaLevelSelected(levelId: ArenaLevelId.barbarianChief))
-        ..add(const ArenaFightRequested())
-        ..add(const ArenaReplaySkipped());
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickToTheEnd(bloc);
     },
     wait: Duration.zero,
     verify: (bloc) {
       // then
-      expect(effects, [ArenaEffectMock.won, ArenaEffectMock.champion]);
-      expect(bloc.state.data.result, ArenaResultDataMock.championHundredFiftyGold);
+      expect(effects.sublist(effects.length - 2), [ArenaEffectMock.won, ArenaEffectMock.champion]);
+      expect(effects.whereType<FightEndedEffect>(), [ArenaEffectMock.won]);
+      expect(effects.whereType<HitEffect>(), hasLength(greaterThan(10)));
+      expect(bloc.state.data.result, ArenaResultDataMock.championWithTheChiefReward);
     },
   );
 
@@ -380,14 +362,15 @@ void main() {
       bloc
         ..add(const ArenaStarted())
         ..add(const ArenaLevelSelected(levelId: ArenaLevelId.barbarianChief))
-        ..add(const ArenaFightRequested())
-        ..add(const ArenaReplaySkipped());
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickToTheEnd(bloc);
     },
     wait: Duration.zero,
     verify: (bloc) {
       // then
-      expect(effects, [ArenaEffectMock.won]);
-      expect(bloc.state.data.result, ArenaResultDataMock.victoryFiftyGold);
+      expect(effects.last, ArenaEffectMock.won);
+      expect(effects.whereType<ChampionEffect>(), isEmpty);
+      expect(bloc.state.data.result, ArenaResultDataMock.victoryWithTheChiefRepeatReward);
     },
   );
 
@@ -428,14 +411,14 @@ void main() {
       bloc
         ..add(const ArenaStarted())
         ..add(const ArenaLevelSelected(levelId: ArenaLevelId.banditVeteran))
-        ..add(const ArenaFightRequested())
-        ..add(const ArenaReplaySkipped());
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickToTheEnd(bloc);
     },
     wait: Duration.zero,
     verify: (bloc) {
       // then
       expect(world.funds.amount(Resource.gold), 0);
-      expect(effects, [ArenaEffectMock.lost]);
+      expect(effects.last, ArenaEffectMock.lost);
       expect(bloc.state.data.result, ArenaResultDataMock.defeatNeedAttack);
       expect(bloc.state.data.fighters.first.pose, FighterPose.down);
     },
@@ -454,8 +437,9 @@ void main() {
         ..add(const ArenaStarted())
         ..add(const ArenaLevelSelected(levelId: ArenaLevelId.banditVeteran))
         ..add(const ArenaFightRequested())
-        ..add(const ArenaReplaySkipped())
         ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickToTheEnd(bloc);
+      bloc.add(const ArenaFightRequested());
     },
     wait: Duration.zero,
     verify: (bloc) {
@@ -512,6 +496,90 @@ void main() {
         ArenaEffectMock.doubleStrikeUsed,
       ]);
       expect(effects.whereType<SkillUsedEffect>(), [ArenaEffectMock.doubleStrikeUsed]);
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
+    'testWhenAnEnemyStrikesTwiceThenTheSkillNameIsPlayedOnThatEnemy',
+    build: () {
+      // given
+      world = WorldMock.withHero(HeroEntityMock.barbarianChallenger);
+      return ArenaBlocMock.make(world, navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      effects = ArenaBlocMock.collectEffects(bloc);
+      bloc
+        ..add(const ArenaStarted())
+        ..add(const ArenaLevelSelected(levelId: ArenaLevelId.barbarian))
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickToTheEnd(bloc);
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      final enemySkills = effects.whereType<SkillUsedEffect>().where((effect) => effect.side == FightSide.enemy);
+      expect(enemySkills, [ArenaEffectMock.banditDoubleStrikeUsed]);
+      expect(effects.last, ArenaEffectMock.won);
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
+    'testWhenTheChiefGetsASecondWindThenItsSkillIsPlayedOnTheChiefAndTheGuardsStrikeOnTheirOwnIndex',
+    build: () {
+      // given
+      world = WorldMock.withHero(HeroEntityMock.expectedChiefChallenger);
+      return ArenaBlocMock.make(world, navigationService: navigationService);
+    },
+    act: (bloc) {
+      // when
+      effects = ArenaBlocMock.collectEffects(bloc);
+      bloc
+        ..add(const ArenaStarted())
+        ..add(const ArenaLevelSelected(levelId: ArenaLevelId.barbarianChief))
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickToTheEnd(bloc);
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      final enemySkills = effects.whereType<SkillUsedEffect>().where((effect) => effect.side == FightSide.enemy);
+      expect(
+        enemySkills,
+        containsAllInOrder([ArenaEffectMock.enemyDoubleStrikeUsed, ArenaEffectMock.chiefSecondWindUsed]),
+      );
+      expect(effects.last, ArenaEffectMock.lost);
+    },
+  );
+
+  blocTest<ArenaBloc, ArenaState>(
+    'testWhenTheHeroWearsChainMailThenItWearsItInThePreviewAndTheReplayAndTheEnemiesWearNothing',
+    build: () {
+      // given
+      world = WorldMock.withHero(HeroEntityMock.inChainMail);
+      return ArenaBlocMock.make(world, navigationService: navigationService);
+    },
+    act: (bloc) async {
+      // when
+      bloc.add(const ArenaStarted());
+      await Future<void>.delayed(Duration.zero);
+      previewFighters = bloc.state.data.fighters;
+      bloc.add(const ArenaFightRequested());
+      ArenaBlocMock.tickFor(bloc, 1000);
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      final replayFighters = bloc.state.data.fighters;
+      expect(previewFighters.first, FighterRenderDataMock.heroInChainMailIdle);
+      expect(replayFighters.first.armor, GearId.chainMail);
+      expect(
+        [
+          ...previewFighters,
+          ...replayFighters,
+        ].skip(1).where((fighter) => fighter.side == FightSide.enemy).map((fighter) => fighter.armor).toSet(),
+        {null},
+      );
     },
   );
 
@@ -573,8 +641,8 @@ void main() {
       // when
       bloc
         ..add(const ArenaStarted())
-        ..add(const ArenaFightRequested())
-        ..add(const ArenaReplaySkipped());
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickToTheEnd(bloc);
     },
     wait: Duration.zero,
     verify: (bloc) {

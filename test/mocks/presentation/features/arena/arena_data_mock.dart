@@ -26,6 +26,10 @@ abstract final class ArenaDataMock {
 
   static ArenaData get banditHitForNothing => replaying.copyWith(effects: const [ArenaEffectMock.banditHitForNothing]);
 
+  static ArenaData get banditStruckTwice => replaying.copyWith(
+    effects: const [ArenaEffectMock.heroHitForTwo, ArenaEffectMock.banditDoubleStrikeUsed],
+  );
+
   static ArenaData get heroDodged => replaying.copyWith(effects: const [ArenaEffectMock.heroDodged]);
 
   static ArenaData get heroGotASecondWind => replaying.copyWith(
@@ -35,7 +39,7 @@ abstract final class ArenaDataMock {
   static ArenaData get crowned => replaying.copyWith(effects: const [ArenaEffectMock.won, ArenaEffectMock.champion]);
 
   static ArenaData get won => preview.copyWith(
-    replay: () => FightReplayDataMock.victoryOverBanditStart().skipped(),
+    replay: () => FightReplayDataMock.victoryOverBanditEnd(),
     fighters: const [FighterRenderDataMock.heroAfterBeatingTheRookie, FighterRenderDataMock.rookieBanditDown],
     result: () => ArenaResultDataMock.victoryTenGold,
     effects: const [ArenaEffectMock.won],

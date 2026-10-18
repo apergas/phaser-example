@@ -5,5 +5,10 @@ import '../../../domain/entities/combat/fight_log_entity_mock.dart';
 abstract final class FightReplayDataMock {
   static FightReplayData victoryOverBanditStart() => FightReplayData.start(FightLogEntityMock.victoryOverBandit());
 
+  static FightReplayData victoryOverBanditEnd() {
+    final start = victoryOverBanditStart();
+    return start.advanced(start.durationMs);
+  }
+
   static FightReplayData allActionsStart() => FightReplayData.start(FightLogEntityMock.allActions());
 }

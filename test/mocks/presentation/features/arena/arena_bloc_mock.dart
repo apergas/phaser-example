@@ -42,6 +42,10 @@ abstract final class ArenaBlocMock {
     }
   }
 
+  static const double longestFightMs = 60000;
+
+  static void tickToTheEnd(ArenaBloc bloc) => tickFor(bloc, longestFightMs);
+
   static List<ArenaEffect> collectEffects(ArenaBloc bloc) {
     final effects = <ArenaEffect>[];
     bloc.stream.listen((state) => effects.addAll(state.data.effects));

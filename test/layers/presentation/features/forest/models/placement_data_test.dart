@@ -3,14 +3,41 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../../../../mocks/presentation/features/forest/placement_data_mock.dart';
 
 void main() {
-  test('testWhenCopyingWithANewPositionThenKeepsTheRest', () {
+  test('testWhenThereIsNoInvalidReasonThenThePlacementIsValid', () {
     // given
-    final placement = PlacementDataMock.mock;
+    const placement = PlacementDataMock.mock;
 
     // when
-    final moved = placement.copyWith(position: PlacementDataMock.movedPosition);
+    final isValid = placement.isValid;
 
     // then
-    expect(moved, PlacementDataMock.moved);
+    expect(isValid, isTrue);
+  });
+
+  test('testWhenThereIsAnInvalidReasonThenThePlacementIsNotValid', () {
+    // given
+    const placements = [PlacementDataMock.blockedNextToFarTree, PlacementDataMock.quarryFarFromRocks];
+
+    // when
+    final valid = placements.where((placement) => placement.isValid);
+
+    // then
+    expect(valid, isEmpty);
+  });
+
+  test('testWhenComparingPlacementsThenBlueprintPositionAndReasonAllCount', () {
+    // given
+    const placement = PlacementDataMock.mock;
+
+    // when
+    final same = placement == PlacementDataMock.mock;
+    final otherPosition = placement == PlacementDataMock.moved;
+    final otherReason = placement == PlacementDataMock.quarryFarFromRocks;
+
+    // then
+    expect(same, isTrue);
+    expect(placement.hashCode, PlacementDataMock.mock.hashCode);
+    expect(otherPosition, isFalse);
+    expect(otherReason, isFalse);
   });
 }

@@ -34,7 +34,7 @@ void main() {
   test('testWhenAToolOwnershipChangesThenTheHudsAreNotEqual', () {
     // given
     final first = HudDataMock.mock;
-    final second = HudDataMock.withAxeOwned;
+    final second = HudDataMock.withPickaxeOwned;
 
     // when
     final isEqual = first == second;

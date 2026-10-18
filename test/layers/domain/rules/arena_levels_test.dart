@@ -54,6 +54,20 @@ void main() {
     expect(mana, [0, 0, 0, 0, 0, 20, 25, 30, 35, 50]);
   });
 
+  test('testWhenListingLevelsThenOnlyTheSecondHalfHasEnemySkillsAndTheChanceGrows', () {
+    // given
+    final levels = ArenaLevels.all;
+
+    // when
+    final chances = levels.map((level) => level.enemySkillChance).toList();
+
+    // then
+    expect(chances, [0, 0, 0, 0, 0, 0.015, 0.02, 0.025, 0.03, 0.035]);
+    for (var index = 6; index < chances.length; index++) {
+      expect(chances[index], greaterThan(chances[index - 1]));
+    }
+  });
+
   test('testWhenListingLevelsThenTheRookieBanditOpensTheArena', () {
     // given
     final levels = ArenaLevels.all;

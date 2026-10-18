@@ -7,6 +7,7 @@ import '../rules/rules.dart';
 import 'extensions/building_rules.dart';
 import 'extensions/inventory_rules.dart';
 import 'extensions/player_rules.dart';
+import 'extensions/stock_rules.dart';
 import 'work.dart';
 import 'world_state.dart';
 

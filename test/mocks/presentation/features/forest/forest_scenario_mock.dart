@@ -1,3 +1,4 @@
+import 'package:farming/layers/domain/entities/stock/stock_entity.dart';
 import 'package:farming/core/assets/i18n/internationalize.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/core/config/constants/enum/tool_kind.dart';
@@ -97,7 +98,7 @@ abstract final class ForestScenarioMock {
       ),
     ],
     stats: tenVillageQuestStats,
-    stock: const InventoryEntity(resources: {Resource.wood: 55, Resource.stone: 20}),
+    stock: const StockEntity(resources: {Resource.wood: 55, Resource.stone: 20}),
     idCounters: const {'building': 3},
   );
 
@@ -135,7 +136,7 @@ abstract final class ForestScenarioMock {
     buildings: [
       BuildingEntityMock.completed(Blueprints.house, id: 'building-1', position: const PositionEntity(x: 600, y: 600)),
     ],
-    stock: const InventoryEntity(resources: {Resource.wood: 15}),
+    stock: const StockEntity(resources: {Resource.wood: 15}),
   );
 
   static World ironAxeWithoutWorkshop() => WorldMock.make(player: PlayerEntityMock.withIronAxe);

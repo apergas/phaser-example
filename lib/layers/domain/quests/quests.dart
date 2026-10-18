@@ -11,6 +11,7 @@ import '../world/extensions/building_rules.dart';
 import '../world/extensions/hero_rules.dart';
 import '../world/extensions/inventory_rules.dart';
 import '../world/extensions/stats_rules.dart';
+import '../world/extensions/stock_rules.dart';
 import '../world/world.dart';
 import 'quest.dart';
 

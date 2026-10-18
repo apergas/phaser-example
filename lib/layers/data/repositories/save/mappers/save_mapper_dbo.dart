@@ -10,9 +10,9 @@ import 'save_building_mapper_dbo.dart';
 import 'save_decoration_mapper_dbo.dart';
 import 'save_ground_item_mapper_dbo.dart';
 import 'save_hero_mapper_dbo.dart';
-import 'save_inventory_mapper_dbo.dart';
 import 'save_player_mapper_dbo.dart';
 import 'save_rock_mapper_dbo.dart';
+import 'save_stock_mapper_dbo.dart';
 import 'save_stats_mapper_dbo.dart';
 import 'save_stump_mapper_dbo.dart';
 import 'save_tree_mapper_dbo.dart';
@@ -25,7 +25,7 @@ class SaveMapperDBO {
   final SaveGroundItemMapperDBO _groundItemMapperDBO;
   final SaveDecorationMapperDBO _decorationMapperDBO;
   final SaveBuildingMapperDBO _buildingMapperDBO;
-  final SaveInventoryMapperDBO _inventoryMapperDBO;
+  final SaveStockMapperDBO _stockMapperDBO;
   final SavePlayerMapperDBO _playerMapperDBO;
   final SaveHeroMapperDBO _heroMapperDBO;
   final SaveStatsMapperDBO _statsMapperDBO;
@@ -37,7 +37,7 @@ class SaveMapperDBO {
     required this._groundItemMapperDBO,
     required this._decorationMapperDBO,
     required this._buildingMapperDBO,
-    required this._inventoryMapperDBO,
+    required this._stockMapperDBO,
     required this._playerMapperDBO,
     required this._heroMapperDBO,
     required this._statsMapperDBO,
@@ -53,7 +53,7 @@ class SaveMapperDBO {
       player: _playerMapperDBO.toDBO(world.player),
       hero: _heroMapperDBO.toDBO(world.hero),
       stats: _statsMapperDBO.toDBO(world.stats),
-      stock: _inventoryMapperDBO.toDBO(world.stock),
+      stock: _stockMapperDBO.toDBO(world.stock),
       trees: world.trees.map(_treeMapperDBO.toDBO).toList(),
       stumps: world.stumps.map(_stumpMapperDBO.toDBO).toList(),
       rocks: world.rocks.map(_rockMapperDBO.toDBO).toList(),
@@ -85,7 +85,7 @@ class SaveMapperDBO {
         buildings: (dbo.buildings ?? const []).map(_buildingMapperDBO.toEntity).toList(),
         hero: _heroMapperDBO.toEntity(dbo.hero),
         stats: _statsMapperDBO.toEntity(dbo.stats),
-        stock: _inventoryMapperDBO.toEntity(dbo.stock, owner: 'stock'),
+        stock: _stockMapperDBO.toEntity(dbo.stock),
         idCounters: _idCounters(dbo.idCounters ?? const {}),
       ),
       quests: QuestLog(

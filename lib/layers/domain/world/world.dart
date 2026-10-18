@@ -16,16 +16,16 @@ import '../entities/hero/hero_entity.dart';
 import '../entities/item/ground_item_entity.dart';
 import '../entities/player/activity_entity.dart';
 import '../entities/player/intent_entity.dart';
-import '../entities/player/inventory_entity.dart';
 import '../entities/player/player_entity.dart';
 import '../entities/rock/rock_entity.dart';
+import '../entities/stock/stock_entity.dart';
 import '../entities/tree/stump_entity.dart';
 import '../entities/tree/tree_entity.dart';
 import 'construction.dart';
 import 'depositing.dart';
 import 'mining.dart';
-import 'extensions/inventory_rules.dart';
 import 'extensions/player_rules.dart';
+import 'extensions/stock_rules.dart';
 import 'navigation.dart';
 import 'pick_up_items.dart';
 import 'regrowth.dart';
@@ -71,7 +71,7 @@ class World {
     required List<BuildingEntity> buildings,
     required HeroEntity hero,
     required StatsEntity stats,
-    required InventoryEntity stock,
+    required StockEntity stock,
     required Map<String, int> idCounters,
   }) : this._(
          WorldState(
@@ -116,7 +116,7 @@ class World {
 
   StatsEntity get stats => _state.stats;
 
-  InventoryEntity get stock => _state.stock;
+  StockEntity get stock => _state.stock;
 
   Map<String, int> get idCounters => _state.idCounters;
 
@@ -175,7 +175,7 @@ class World {
   ConstructionRejection? placementRejection(BlueprintEntity blueprint, PositionEntity position) =>
       Construction.rejection(_state, blueprint, position);
 
-  InventoryEntity get funds => _state.stock;
+  StockEntity get funds => _state.stock;
 
   void earn(Map<Resource, int> reward) {
     _state.stock = _state.stock.adding(reward);

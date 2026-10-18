@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:farming/layers/domain/world/extensions/stock_rules.dart';
 import 'package:farming/core/config/constants/enum/construction_rejection.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/core/config/constants/enum/resume_construction_result.dart';

@@ -18,24 +18,24 @@ void main() {
 
   test('testWhenMappingInventoriesToDboThenResourcesAndToolsKeepTheirNames', () {
     // given
-    final inventories = [SaveScenarioMock.player.inventory, SaveScenarioMock.stock];
+    final inventory = SaveScenarioMock.player.inventory;
 
     // when
-    final dbos = inventories.map(sut.toDBO).toList();
+    final dbo = sut.toDBO(inventory);
 
     // then
-    expect(dbos, [SaveInventoryDBOMock.player, SaveInventoryDBOMock.stock]);
+    expect(dbo, SaveInventoryDBOMock.player);
   });
 
   test('testWhenMappingDbosToInventoriesThenEveryResourceToolAndLevelComesBack', () {
     // given
-    const dbos = [SaveInventoryDBOMock.player, SaveInventoryDBOMock.stock];
+    const dbo = SaveInventoryDBOMock.player;
 
     // when
-    final inventories = [for (final dbo in dbos) sut.toEntity(dbo, owner: 'player')];
+    final inventory = sut.toEntity(dbo, owner: 'player');
 
     // then
-    expect(inventories, [SaveScenarioMock.player.inventory, SaveScenarioMock.stock]);
+    expect(inventory, SaveScenarioMock.player.inventory);
   });
 
   test('testWhenThereIsNoDboThenTheInventoryIsEmpty', () {

@@ -10,6 +10,7 @@ import 'package:farming/layers/domain/quests/quests.dart';
 import 'package:farming/layers/domain/rules/blueprints.dart';
 import 'package:farming/layers/domain/world/world.dart';
 
+import '../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 import '../../../mocks/domain/entities/building/building_entity_mock.dart';
 import '../../../mocks/domain/entities/game/stats_entity_mock.dart';
 import '../../../mocks/domain/entities/hero/hero_entity_mock.dart';
@@ -101,7 +102,7 @@ void main() {
 
   test('testWhenTheWoodAndStoneAreStoredThenTheGatheringQuestsCountThem', () {
     // given
-    final world = WorldMock.restored(stock: InventoryEntityMock.make(wood: 42, stone: 21));
+    final world = WorldMock.restored(stock: StockEntityMock.make(wood: 42, stone: 21));
 
     // when
     final measures = [

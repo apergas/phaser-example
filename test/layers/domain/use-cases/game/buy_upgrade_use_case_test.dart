@@ -7,9 +7,9 @@ import 'package:farming/layers/domain/use-cases/game/buy_upgrade_use_case.dart';
 import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 import 'package:farming/layers/domain/world/world.dart';
 
+import '../../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
-import '../../../../mocks/domain/entities/player/inventory_entity_mock.dart';
 import '../../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../../mocks/domain/game/upgrade_scenario_mock.dart';
 import '../../../../mocks/domain/world/world_mock.dart';
@@ -66,7 +66,7 @@ void main() {
 
     // then
     expect(result, UpgradeResult.notEnoughResources);
-    expect(world.stock, InventoryEntityMock.make(wood: 15, stone: 10));
+    expect(world.stock, StockEntityMock.make(wood: 15, stone: 10));
     expect(world.player.inventory.toolLevel(ToolKind.axe), 1);
   });
 
@@ -99,7 +99,7 @@ void main() {
     // then
     expect(result, UpgradeResult.ok);
     expect(world.player.inventory.toolLevel(ToolKind.axe), 2);
-    expect(world.stock, InventoryEntityMock.mock);
+    expect(world.stock, StockEntityMock.mock);
     expect(world.player.inventory.load, 10);
   });
 

@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:farming/layers/domain/world/extensions/stock_rules.dart';
 import 'package:farming/core/config/constants/enum/learn_skill_result.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/core/config/constants/enum/skill_id.dart';
 import 'package:farming/layers/domain/use-cases/hero/learn_skill_use_case.dart';
 import 'package:farming/layers/domain/world/extensions/hero_rules.dart';
-import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 import 'package:farming/layers/domain/world/world.dart';
 
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';

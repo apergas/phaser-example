@@ -70,6 +70,7 @@ import '../../../../domain/use-cases/hero/get_skill_options_use_case.dart';
 import '../../../../domain/use-cases/hero/learn_skill_use_case.dart';
 import '../../../../domain/world/extensions/hero_rules.dart';
 import '../../../../domain/world/extensions/inventory_rules.dart';
+import '../../../../domain/world/extensions/stock_rules.dart';
 import '../../arena/arena_page.dart';
 import '../models/build_item_data.dart';
 import '../models/carry_item_data.dart';

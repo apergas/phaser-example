@@ -67,6 +67,8 @@ import 'package:farming/layers/data/repositories/save/mappers/save_rock_mapper_d
     as _i143;
 import 'package:farming/layers/data/repositories/save/mappers/save_stats_mapper_dbo.dart'
     as _i24;
+import 'package:farming/layers/data/repositories/save/mappers/save_stock_mapper_dbo.dart'
+    as _i583;
 import 'package:farming/layers/data/repositories/save/mappers/save_stump_mapper_dbo.dart'
     as _i396;
 import 'package:farming/layers/data/repositories/save/mappers/save_tree_mapper_dbo.dart'
@@ -156,6 +158,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i829.SavePositionMapperDBO(),
     );
     gh.factory<_i24.SaveStatsMapperDBO>(() => _i24.SaveStatsMapperDBO());
+    gh.factory<_i583.SaveStockMapperDBO>(() => _i583.SaveStockMapperDBO());
     await gh.singletonAsync<_i460.SharedPreferencesWithCache>(
       () => storageModule.preferences,
       preResolve: true,
@@ -333,13 +336,6 @@ extension GetItInjectableX on _i174.GetIt {
         inventoryMapperDBO: gh<_i911.SaveInventoryMapperDBO>(),
       ),
     );
-    gh.factory<_i1036.LevelRepository>(
-      () => _i571.LevelRepositoryImpl(
-        localDatasource: gh<_i1028.LevelLocalDatasource>(),
-        levelMapperDBO: gh<_i459.LevelMapperDBO>(),
-        appExceptionHandler: gh<_i284.AppExceptionHandler>(),
-      ),
-    );
     gh.factory<_i440.SaveMapperDBO>(
       () => _i440.SaveMapperDBO(
         treeMapperDBO: gh<_i18.SaveTreeMapperDBO>(),
@@ -348,10 +344,17 @@ extension GetItInjectableX on _i174.GetIt {
         groundItemMapperDBO: gh<_i840.SaveGroundItemMapperDBO>(),
         decorationMapperDBO: gh<_i105.SaveDecorationMapperDBO>(),
         buildingMapperDBO: gh<_i2.SaveBuildingMapperDBO>(),
-        inventoryMapperDBO: gh<_i911.SaveInventoryMapperDBO>(),
+        stockMapperDBO: gh<_i583.SaveStockMapperDBO>(),
         playerMapperDBO: gh<_i589.SavePlayerMapperDBO>(),
         heroMapperDBO: gh<_i815.SaveHeroMapperDBO>(),
         statsMapperDBO: gh<_i24.SaveStatsMapperDBO>(),
+      ),
+    );
+    gh.factory<_i1036.LevelRepository>(
+      () => _i571.LevelRepositoryImpl(
+        localDatasource: gh<_i1028.LevelLocalDatasource>(),
+        levelMapperDBO: gh<_i459.LevelMapperDBO>(),
+        appExceptionHandler: gh<_i284.AppExceptionHandler>(),
       ),
     );
     gh.factory<_i997.GameSaveRepository>(

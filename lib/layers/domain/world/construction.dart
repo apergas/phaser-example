@@ -8,10 +8,10 @@ import '../entities/geometry/position_entity.dart';
 import '../entities/player/intent_entity.dart';
 import '../rules/rules.dart';
 import 'extensions/building_rules.dart';
-import 'extensions/inventory_rules.dart';
 import 'extensions/obstacle_rules.dart';
 import 'extensions/placement_rule_rules.dart';
 import 'extensions/position_geometry.dart';
+import 'extensions/stock_rules.dart';
 import 'work.dart';
 import 'world_state.dart';
 

@@ -1,3 +1,4 @@
+import 'package:farming/layers/domain/entities/stock/stock_entity.dart';
 import 'package:farming/core/config/constants/enum/arena_level_id.dart';
 import 'package:farming/core/config/constants/enum/quest_id.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
@@ -48,7 +49,7 @@ abstract final class SaveScenarioMock {
     treesRegrown: 1,
   );
 
-  static const InventoryEntity stock = InventoryEntity(
+  static const StockEntity stock = StockEntity(
     resources: {Resource.wood: 30, Resource.gold: 45, Resource.mana: 12, Resource.stone: 9},
   );
 

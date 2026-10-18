@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:farming/layers/domain/world/extensions/stock_rules.dart';
 import 'package:farming/core/config/constants/enum/chop_result.dart';
 import 'package:farming/core/config/constants/enum/deposit_result.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
@@ -11,6 +12,7 @@ import 'package:farming/layers/domain/entities/player/player_entity.dart';
 import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 import 'package:farming/layers/domain/world/world.dart';
 
+import '../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 import '../../../mocks/domain/entities/building/building_entity_mock.dart';
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/player/activity_entity_mock.dart';
@@ -116,7 +118,7 @@ void main() {
     expect(before, isEmpty);
     expect(after, [GameEventEntityMock.depositedMixedLoadAtTheCamp]);
     expect(world.player.inventory, InventoryEntityMock.mixedLoadUnloaded);
-    expect(world.stock, InventoryEntityMock.make(wood: 6, stone: 3));
+    expect(world.stock, StockEntityMock.make(wood: 6, stone: 3));
     expect(world.player.activity, ActivityEntityMock.idle);
   });
 
@@ -142,7 +144,7 @@ void main() {
 
     // then
     expect(events.whereType<DepositedEventEntity>(), [GameEventEntityMock.depositedStoneAtTheQuarry]);
-    expect(world.stock, InventoryEntityMock.make(stone: 3));
+    expect(world.stock, StockEntityMock.make(stone: 3));
     expect(world.player.inventory.cargo, {Resource.wood: 6});
   });
 

@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../entities/game/build_option_entity.dart';
 import '../../repositories/session/game_session_repository.dart';
 import '../../rules/blueprints.dart';
-import '../../world/extensions/inventory_rules.dart';
+import '../../world/extensions/stock_rules.dart';
 
 @Injectable()
 final class GetBuildOptionsUseCase {

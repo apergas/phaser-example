@@ -176,6 +176,6 @@ void main() {
     }
 
     // then
-    expect([for (var i = 1; i < times.length; i++) times[i] - times[i - 1]].toSet(), {750.0});
+    expect({for (var i = 1; i < times.length; i++) times[i] - times[i - 1]}, {750.0});
   });
 }

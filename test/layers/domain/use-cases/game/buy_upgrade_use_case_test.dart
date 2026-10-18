@@ -9,7 +9,6 @@ import 'package:farming/layers/domain/world/world.dart';
 
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
-import '../../../../mocks/domain/entities/building/building_entity_mock.dart';
 import '../../../../mocks/domain/entities/player/inventory_entity_mock.dart';
 import '../../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../../mocks/domain/game/upgrade_scenario_mock.dart';

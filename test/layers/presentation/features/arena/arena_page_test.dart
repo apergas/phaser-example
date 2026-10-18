@@ -1,7 +1,4 @@
 import 'package:flame/game.dart';
-
-import '../../../../helpers/in_memory_preferences.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,6 +16,7 @@ import 'package:farming/layers/presentation/features/arena/game/atlas/arena_asse
 import 'package:farming/layers/presentation/features/arena/widgets/level_list.dart';
 import 'package:farming/layers/presentation/features/arena/widgets/result_panel.dart';
 
+import '../../../../helpers/in_memory_preferences.dart';
 import '../../../../helpers/pump_until.dart';
 import '../../../../helpers/spanish_translations.dart';
 import '../../../../mocks/core/services/navigation_service_mocks.mocks.dart';

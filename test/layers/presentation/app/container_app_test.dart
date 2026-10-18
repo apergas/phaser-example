@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import '../../../helpers/in_memory_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +10,7 @@ import 'package:farming/layers/domain/repositories/level/level_repository.dart';
 import 'package:farming/layers/presentation/app/container_app.dart';
 import 'package:farming/layers/presentation/features/forest/forest_page.dart';
 
+import '../../../helpers/in_memory_preferences.dart';
 import '../../../helpers/pump_until.dart';
 import '../../../mocks/domain/repositories/repository_mocks.mocks.dart';
 import '../../../mocks/presentation/features/forest/forest_scenario_mock.dart';

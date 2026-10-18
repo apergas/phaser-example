@@ -22,7 +22,7 @@ abstract final class GameEventEntityMock {
     blueprint: BlueprintId.house,
   );
 
-  static const QuestCompletedEventEntity pickUpAxeCompleted = QuestCompletedEventEntity(questId: QuestId.pickUpAxe);
+  static const QuestCompletedEventEntity gatherWoodCompleted = QuestCompletedEventEntity(questId: QuestId.gatherWood);
 
   static const QuestCompletedEventEntity buildHouseCompleted = QuestCompletedEventEntity(questId: QuestId.buildHouse);
 
@@ -33,7 +33,7 @@ abstract final class GameEventEntityMock {
     treeFelled,
     buildingHammered,
     buildingCompleted,
-    pickUpAxeCompleted,
+    gatherWoodCompleted,
   ];
 
   static List<GameEventEntity> makeAll() {
@@ -46,7 +46,7 @@ abstract final class GameEventEntityMock {
       TreeFelledEventEntity(treeId: treeId, wood: 6),
       BuildingHammeredEventEntity(buildingId: buildingId, progress: 0.125),
       BuildingCompletedEventEntity(buildingId: buildingId, blueprint: BlueprintId.house),
-      QuestCompletedEventEntity(questId: QuestId.pickUpAxe),
+      QuestCompletedEventEntity(questId: QuestId.gatherWood),
     ];
   }
 

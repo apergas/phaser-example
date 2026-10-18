@@ -18,7 +18,12 @@ void main() {
       const level = ArenaLevelEntityMock.banditRookie;
 
       // when
-      final log = Combat.resolve(level: level, heroStats: CombatStatsEntityMock.heroBase, skills: const {}, seed: 0);
+      final log = Combat.resolve(
+        level: level,
+        heroStats: CombatStatsEntityMock.heroBase,
+        skillLevels: const {},
+        seed: 0,
+      );
 
       // then
       expect(log, FightLogEntityMock.victoryOverBanditBeforeReward());
@@ -29,7 +34,12 @@ void main() {
       const level = ArenaLevelEntityMock.duel;
 
       // when
-      final log = Combat.resolve(level: level, heroStats: CombatStatsEntityMock.heroBase, skills: const {}, seed: 0);
+      final log = Combat.resolve(
+        level: level,
+        heroStats: CombatStatsEntityMock.heroBase,
+        skillLevels: const {},
+        seed: 0,
+      );
 
       // then
       final heroDamage = log.turns.where((turn) => turn.actor == FightSide.hero).map((turn) => turn.damage).toSet();
@@ -46,13 +56,13 @@ void main() {
       final first = Combat.resolve(
         level: level,
         heroStats: CombatStatsEntityMock.heroWithShortSwordAndLeather,
-        skills: const {SkillId.doubleStrike, SkillId.dodge},
+        skillLevels: const {SkillId.doubleStrike: 1, SkillId.dodge: 1},
         seed: 7,
       );
       final second = Combat.resolve(
         level: level,
         heroStats: CombatStatsEntityMock.heroWithShortSwordAndLeather,
-        skills: const {SkillId.doubleStrike, SkillId.dodge},
+        skillLevels: const {SkillId.doubleStrike: 1, SkillId.dodge: 1},
         seed: 7,
       );
 
@@ -65,7 +75,12 @@ void main() {
       const level = ArenaLevelEntityMock.banditRookie;
 
       // when
-      final log = Combat.resolve(level: level, heroStats: CombatStatsEntityMock.heroBase, skills: const {}, seed: 1);
+      final log = Combat.resolve(
+        level: level,
+        heroStats: CombatStatsEntityMock.heroBase,
+        skillLevels: const {},
+        seed: 1,
+      );
 
       // then
       expect(log, isNot(FightLogEntityMock.victoryOverBanditBeforeReward()));
@@ -77,7 +92,12 @@ void main() {
       const level = ArenaLevelEntityMock.barbarianChief;
 
       // when
-      final log = Combat.resolve(level: level, heroStats: CombatStatsEntityMock.heroBase, skills: const {}, seed: 0);
+      final log = Combat.resolve(
+        level: level,
+        heroStats: CombatStatsEntityMock.heroBase,
+        skillLevels: const {},
+        seed: 0,
+      );
 
       // then
       expect((log.outcome, log.rounds, log.turns.length), (FightOutcome.defeat, 2, 6));
@@ -91,7 +111,12 @@ void main() {
       const level = ArenaLevelEntityMock.duel;
 
       // when
-      final log = Combat.resolve(level: level, heroStats: CombatStatsEntityMock.heroBase, skills: const {}, seed: 0);
+      final log = Combat.resolve(
+        level: level,
+        heroStats: CombatStatsEntityMock.heroBase,
+        skillLevels: const {},
+        seed: 0,
+      );
 
       // then
       expect(log, FightLogEntityMock.almostBeatDuelist());
@@ -105,7 +130,7 @@ void main() {
       final log = Combat.resolve(
         level: level,
         heroStats: CombatStatsEntityMock.heroFullyGeared,
-        skills: const {},
+        skillLevels: const {},
         seed: 0,
       );
 
@@ -121,7 +146,7 @@ void main() {
       final log = Combat.resolve(
         level: level,
         heroStats: CombatStatsEntityMock.heroBase,
-        skills: const {SkillId.doubleStrike},
+        skillLevels: const {SkillId.doubleStrike: 1},
         seed: 0,
       );
 
@@ -149,7 +174,7 @@ void main() {
       final log = Combat.resolve(
         level: level,
         heroStats: CombatStatsEntityMock.heroWithShortSwordAndLeather,
-        skills: const {SkillId.doubleStrike},
+        skillLevels: const {SkillId.doubleStrike: 1},
         seed: 0,
       );
 
@@ -179,7 +204,7 @@ void main() {
       final log = Combat.resolve(
         level: level,
         heroStats: CombatStatsEntityMock.heroFullyGeared,
-        skills: const {SkillId.dodge},
+        skillLevels: const {SkillId.dodge: 1},
         seed: 0,
       );
 
@@ -204,7 +229,7 @@ void main() {
       final log = Combat.resolve(
         level: level,
         heroStats: CombatStatsEntityMock.heroBase,
-        skills: const {SkillId.secondWind},
+        skillLevels: const {SkillId.secondWind: 1},
         seed: 0,
       );
 
@@ -233,7 +258,7 @@ void main() {
       final log = Combat.resolve(
         level: level,
         heroStats: CombatStatsEntityMock.heroFullyGeared,
-        skills: const {},
+        skillLevels: const {},
         seed: 0,
       );
 
@@ -252,7 +277,7 @@ void main() {
       final log = Combat.resolve(
         level: level,
         heroStats: CombatStatsEntityMock.heroWithShortSwordAndLeather,
-        skills: const {},
+        skillLevels: const {},
         seed: 0,
       );
 
@@ -272,7 +297,7 @@ void main() {
       final log = Combat.resolve(
         level: level,
         heroStats: CombatStatsEntityMock.heroWithShortSwordAndLeather,
-        skills: const {},
+        skillLevels: const {},
         seed: 0,
       );
 

@@ -71,7 +71,7 @@ void main() {
     world.advanceFor(1500);
 
     // when
-    final events = world.advanceFor(Rules.chopIntervalMs * Rules.hitsToFellTree + 100);
+    final events = world.advanceFor(Rules.chopIntervalMs * TreeEntityMock.mock.hitsToFell + 100);
 
     // then
     expect(events.whereType<TreeHitEventEntity>().length, 5);
@@ -98,7 +98,7 @@ void main() {
     // given
     final world = WorldMock.withAxeAndTree();
     world.orderChop('tree-1');
-    world.advanceFor(1500 + Rules.chopIntervalMs * Rules.hitsToFellTree + 100);
+    world.advanceFor(1500 + Rules.chopIntervalMs * TreeEntityMock.mock.hitsToFell + 100);
 
     // when
     world.movePlayerTo(const PositionEntity(x: 300, y: 100));

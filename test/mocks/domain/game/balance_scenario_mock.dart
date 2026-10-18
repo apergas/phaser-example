@@ -20,17 +20,21 @@ abstract final class BalanceScenarioMock {
     ArenaLevelId.wolfPair: HeroEntity(weaponTier: 1, armorTier: 1),
     ArenaLevelId.bear: HeroEntity(weaponTier: 2, armorTier: 1),
     ArenaLevelId.banditTrio: HeroEntity(weaponTier: 2, armorTier: 2),
-    ArenaLevelId.barbarian: HeroEntity(weaponTier: 2, armorTier: 2, skills: {SkillId.doubleStrike}),
-    ArenaLevelId.wolfPack: HeroEntity(weaponTier: 2, armorTier: 2, skills: {SkillId.doubleStrike, SkillId.dodge}),
+    ArenaLevelId.barbarian: HeroEntity(weaponTier: 2, armorTier: 2, skillLevels: {SkillId.doubleStrike: 1}),
+    ArenaLevelId.wolfPack: HeroEntity(
+      weaponTier: 2,
+      armorTier: 2,
+      skillLevels: {SkillId.doubleStrike: 1, SkillId.dodge: 1},
+    ),
     ArenaLevelId.barbarianPair: HeroEntity(
       weaponTier: 3,
       armorTier: 2,
-      skills: {SkillId.doubleStrike, SkillId.dodge},
+      skillLevels: {SkillId.doubleStrike: 1, SkillId.dodge: 1},
     ),
     ArenaLevelId.barbarianChief: HeroEntity(
       weaponTier: 3,
       armorTier: 3,
-      skills: {SkillId.doubleStrike, SkillId.dodge},
+      skillLevels: {SkillId.doubleStrike: 1, SkillId.dodge: 1},
     ),
   };
 }

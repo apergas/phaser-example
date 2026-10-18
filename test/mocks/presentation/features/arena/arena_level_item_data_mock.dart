@@ -5,6 +5,8 @@ import 'package:farming/core/config/constants/enum/arena_level_id.dart';
 import 'package:farming/core/config/constants/enum/enemy_kind.dart';
 import 'package:farming/layers/presentation/features/arena/models/arena_level_item_data.dart';
 
+import '../../../domain/world/funds_mock.dart';
+
 abstract final class ArenaLevelItemDataMock {
   static ArenaLevelItemData get rookieOpen => ArenaLevelItemData(
     id: ArenaLevelId.banditRookie,
@@ -12,7 +14,7 @@ abstract final class ArenaLevelItemDataMock {
     enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.bandit),
     powerText: Internationalize.arenaPower(power: 19),
     tone: PowerTone.easy,
-    rewardText: Internationalize.arenaReward(amount: 10),
+    rewardText: Internationalize.arenaReward(amounts: FundsMock.tenGold),
     status: ArenaLevelItemStatus.open,
   );
 
@@ -22,7 +24,7 @@ abstract final class ArenaLevelItemDataMock {
     enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.bandit),
     powerText: Internationalize.arenaPower(power: 19),
     tone: PowerTone.easy,
-    rewardText: Internationalize.arenaReward(amount: 3),
+    rewardText: Internationalize.arenaReward(amounts: FundsMock.threeGold),
     status: ArenaLevelItemStatus.cleared,
   );
 
@@ -32,7 +34,7 @@ abstract final class ArenaLevelItemDataMock {
     enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.banditVeteran),
     powerText: Internationalize.arenaPower(power: 41),
     tone: PowerTone.hard,
-    rewardText: Internationalize.arenaReward(amount: 30),
+    rewardText: Internationalize.arenaReward(amounts: FundsMock.thirtyGold),
     status: ArenaLevelItemStatus.locked,
   );
 
@@ -42,7 +44,7 @@ abstract final class ArenaLevelItemDataMock {
     enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.banditVeteran),
     powerText: Internationalize.arenaPower(power: 41),
     tone: PowerTone.hard,
-    rewardText: Internationalize.arenaReward(amount: 30),
+    rewardText: Internationalize.arenaReward(amounts: FundsMock.thirtyGold),
     status: ArenaLevelItemStatus.open,
   );
 
@@ -52,7 +54,7 @@ abstract final class ArenaLevelItemDataMock {
     enemiesText: Internationalize.arenaEnemyCount(count: 3, name: Internationalize.arenaEnemy(kind: EnemyKind.bandit)),
     powerText: Internationalize.arenaPower(power: 123),
     tone: PowerTone.hard,
-    rewardText: Internationalize.arenaReward(amount: 75),
+    rewardText: Internationalize.arenaReward(amounts: FundsMock.banditTrioReward),
     status: ArenaLevelItemStatus.locked,
   );
 
@@ -62,7 +64,7 @@ abstract final class ArenaLevelItemDataMock {
     enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.wolf),
     powerText: Internationalize.arenaPower(power: 29),
     tone: PowerTone.easy,
-    rewardText: Internationalize.arenaReward(amount: 20),
+    rewardText: Internationalize.arenaReward(amounts: FundsMock.twentyGold),
     status: ArenaLevelItemStatus.locked,
   );
 
@@ -72,7 +74,7 @@ abstract final class ArenaLevelItemDataMock {
     enemiesText: Internationalize.arenaEnemy(kind: EnemyKind.wolf),
     powerText: Internationalize.arenaPower(power: 29),
     tone: PowerTone.easy,
-    rewardText: Internationalize.arenaReward(amount: 20),
+    rewardText: Internationalize.arenaReward(amounts: FundsMock.twentyGold),
     status: ArenaLevelItemStatus.open,
   );
 
@@ -85,7 +87,7 @@ abstract final class ArenaLevelItemDataMock {
     ].join(', '),
     powerText: Internationalize.arenaPower(power: 210),
     tone: PowerTone.hard,
-    rewardText: Internationalize.arenaReward(amount: 150),
+    rewardText: Internationalize.arenaReward(amounts: FundsMock.barbarianChiefReward),
     status: ArenaLevelItemStatus.locked,
   );
 }

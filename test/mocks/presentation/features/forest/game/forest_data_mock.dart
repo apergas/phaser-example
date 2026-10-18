@@ -1,4 +1,5 @@
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/construction_rejection.dart';
 import 'package:farming/core/config/constants/enum/decoration_kind.dart';
 import 'package:farming/core/config/constants/enum/forest/facing.dart';
 import 'package:farming/core/config/constants/enum/gear_id.dart';
@@ -70,6 +71,8 @@ abstract final class ForestDataMock {
     items: [axe],
     decorations: [grass],
     buildings: const [],
+    stumps: const [],
+    rocks: const [],
   );
 
   static final WorldSnapshotEntity worldWithoutFirstTree = WorldSnapshotEntity(
@@ -79,6 +82,8 @@ abstract final class ForestDataMock {
     items: [axe],
     decorations: [grass],
     buildings: const [],
+    stumps: const [],
+    rocks: const [],
   );
 
   static final WorldSnapshotEntity worldWithoutAxe = WorldSnapshotEntity(
@@ -88,6 +93,8 @@ abstract final class ForestDataMock {
     items: const [],
     decorations: [grass],
     buildings: const [],
+    stumps: const [],
+    rocks: const [],
   );
 
   static final WorldSnapshotEntity worldWithHouse = WorldSnapshotEntity(
@@ -97,6 +104,8 @@ abstract final class ForestDataMock {
     items: [axe],
     decorations: [grass],
     buildings: [house],
+    stumps: const [],
+    rocks: const [],
   );
 
   static final WorldSnapshotEntity worldWithHalfBuiltHouse = WorldSnapshotEntity(
@@ -106,6 +115,8 @@ abstract final class ForestDataMock {
     items: [axe],
     decorations: [grass],
     buildings: [halfBuiltHouse],
+    stumps: const [],
+    rocks: const [],
   );
 
   static final PlayerRenderData player = PlayerRenderData(
@@ -117,19 +128,19 @@ abstract final class ForestDataMock {
   static final PlacementData validPlacement = PlacementData(
     blueprint: BlueprintId.house,
     position: const PositionEntity(x: 300, y: 200),
-    isValid: true,
+    invalidReason: null,
   );
 
   static final PlacementData invalidPlacement = PlacementData(
     blueprint: BlueprintId.house,
     position: const PositionEntity(x: 100, y: 100),
-    isValid: false,
+    invalidReason: ConstructionRejection.blocked,
   );
 
   static final PlacementData forgePlacement = PlacementData(
     blueprint: BlueprintId.forge,
     position: const PositionEntity(x: 300, y: 200),
-    isValid: true,
+    invalidReason: null,
   );
 
   static final ForestData initial = ForestData(world: world, player: player);
@@ -143,7 +154,7 @@ abstract final class ForestDataMock {
   static final ForestData treeFelled = ForestData(
     world: worldWithoutFirstTree,
     player: player,
-    effects: const [TreeFelledEffect(treeId: 'tree-1', fromX: 90)],
+    effects: const [TreeFelledEffect(treeId: 'tree-1', fromX: 90, wood: 5)],
   );
 
   static final ForestData axePickedUp = ForestData(

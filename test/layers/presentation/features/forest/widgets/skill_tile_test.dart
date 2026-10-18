@@ -57,9 +57,71 @@ void main() {
     expect(find.text(item.reasonText!), findsOneWidget);
   });
 
-  testWidgets('testWhenTheSkillIsKnownThenSaysSoInsteadOfALearnButton', (tester) async {
+  testWidgets('testWhenTheSkillIsNotLearnedThenThereIsNoLevelAndTheButtonSaysLearn', (tester) async {
     // given
-    final item = SkillItemDataMock.doubleStrikeKnown;
+    final item = SkillItemDataMock.doubleStrikeAvailable;
+
+    // when
+    await tester.pumpHud(
+      Center(
+        child: SizedBox(width: 340, child: SkillTile(item: item)),
+      ),
+    );
+
+    // then
+    expect(find.text(Internationalize.forestHeroLearn), findsOneWidget);
+    expect(find.text(Internationalize.forestHeroSkillLevel(level: 1, max: 3)), findsNothing);
+    expect(find.text(Internationalize.forestHeroSkillMax), findsNothing);
+  });
+
+  testWidgets('testWhenTheSkillIsAtLevelOneThenItShowsItsLevelTheNextOneAndUpgrade', (tester) async {
+    // given
+    var upgrades = 0;
+    final item = SkillItemDataMock.doubleStrikeAtLevelOneUpgradable;
+    await tester.pumpHud(
+      Center(
+        child: SizedBox(
+          width: 340,
+          child: SkillTile(item: item, onLearn: () => upgrades++),
+        ),
+      ),
+    );
+
+    // when
+    await tester.tap(find.byKey(SkillTile.learnKey(SkillId.doubleStrike)));
+
+    // then
+    expect(upgrades, 1);
+    expect(find.text(Internationalize.forestHeroSkillLevel(level: 1, max: 3)), findsOneWidget);
+    expect(find.text(item.nextText!), findsOneWidget);
+    expect(find.text(Internationalize.forestHeroUpgrade), findsOneWidget);
+  });
+
+  testWidgets('testWhenTheUpgradeIsUnaffordableThenUpgradeIsDisabledWithTheSameKey', (tester) async {
+    // given
+    final item = SkillItemDataMock.doubleStrikeAtLevelTwo;
+
+    // when
+    await tester.pumpHud(
+      Center(
+        child: SizedBox(
+          width: 340,
+          child: SkillTile(item: item, onLearn: () {}),
+        ),
+      ),
+    );
+
+    // then
+    final button = tester.widget<HudButton>(find.byKey(SkillTile.learnKey(SkillId.doubleStrike)));
+    expect((button.label, button.onPressed), (Internationalize.forestHeroUpgrade, isNull));
+    expect(find.text(Internationalize.forestHeroSkillLevel(level: 2, max: 3)), findsOneWidget);
+    expect(find.text(item.nextText!), findsOneWidget);
+    expect(find.text(item.reasonText!), findsOneWidget);
+  });
+
+  testWidgets('testWhenTheSkillIsAtTheMaxLevelThenSaysMaxInsteadOfAButton', (tester) async {
+    // given
+    final item = SkillItemDataMock.doubleStrikeMaxed;
 
     // when
     await tester.pumpHud(
@@ -70,6 +132,8 @@ void main() {
 
     // then
     expect(find.byType(HudButton), findsNothing);
-    expect(find.text(Internationalize.forestHeroKnown), findsOneWidget);
+    expect(find.text(Internationalize.forestHeroSkillMax), findsOneWidget);
+    expect(find.text(Internationalize.forestHeroSkillLevel(level: 3, max: 3)), findsOneWidget);
+    expect(item.nextText, isNull);
   });
 }

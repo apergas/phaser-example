@@ -27,7 +27,7 @@ void main() {
     final events = sut(deltaMs: 200);
 
     // then
-    expect(events, contains(GameEventEntityMock.pickUpAxeCompleted));
+    expect(events, contains(GameEventEntityMock.gatherWoodCompleted));
     expect(session.quests.status(session.world)[1], QuestProgressEntityMock.gatherWoodCurrent);
   });
 

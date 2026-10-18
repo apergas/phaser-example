@@ -12,6 +12,8 @@ abstract final class WorldStateMock {
       trees: [TreeEntityMock.mock],
       items: [],
       decorations: [],
+      rocks: [],
+      buildings: [],
     );
   }
 }

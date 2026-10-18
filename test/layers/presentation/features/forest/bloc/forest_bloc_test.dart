@@ -16,14 +16,16 @@ import 'package:farming/layers/presentation/features/forest/models/player_pose.d
 
 import '../../../../../helpers/spanish_translations.dart';
 import '../../../../../mocks/core/services/navigation_service_mocks.mocks.dart';
+import '../../../../../mocks/domain/entities/tree/tree_entity_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_bloc_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_scenario_mock.dart';
 import '../../../../../mocks/presentation/features/forest/build_item_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/carry_item_data_mock.dart';
+import '../../../../../mocks/presentation/features/forest/hud_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_effect_mock.dart';
 import '../../../../../mocks/presentation/features/forest/placement_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/player_pose_mock.dart';
 import '../../../../../mocks/presentation/features/forest/quest_item_data_mock.dart';
-import '../../../../../mocks/presentation/features/forest/resource_item_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/tool_item_data_mock.dart';
 
 void main() {
@@ -55,7 +57,7 @@ void main() {
       final hud = bloc.state.data.hud!;
       expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessageWelcome));
       expect(hud.questBadge, '0/11');
-      expect(hud.quests[0], QuestItemDataMock.pickUpAxeCurrent);
+      expect(hud.quests[0], QuestItemDataMock.gatherWoodCurrent);
       expect(hud.quests[1], QuestItemDataMock.gatherWoodPending);
       expect(hud.quests[3], QuestItemDataMock.buildForgeCurrent);
     },
@@ -145,7 +147,7 @@ void main() {
         await ForestBlocMock.processEvents();
         facing = bloc.state.data.player!.facing;
         pose = bloc.state.data.player!.pose;
-        ForestBlocMock.tickFor(bloc, Rules.chopIntervalMs * Rules.hitsToFellTree);
+        ForestBlocMock.tickFor(bloc, Rules.chopIntervalMs * TreeEntityMock.mock.hitsToFell);
       },
       wait: Duration.zero,
       verify: (bloc) {
@@ -155,11 +157,8 @@ void main() {
         expect((pose as WorkPose).tool, WorkTool.axe);
         expect(effects.whereType<TreeHitEffect>().length, 5);
         expect(effects, contains(ForestEffectMock.treeFelled));
-        expect(bloc.state.data.hud!.resources, [
-          ResourceItemDataMock.wood(6),
-          ResourceItemDataMock.gold(0),
-          ResourceItemDataMock.mana(0),
-        ]);
+        expect(bloc.state.data.hud!.carry, CarryItemDataMock.of(6));
+        expect(bloc.state.data.hud!.stock, HudDataMock.stockWith(wood: 0));
       },
     );
   });

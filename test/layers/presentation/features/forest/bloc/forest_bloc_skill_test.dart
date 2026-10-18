@@ -127,11 +127,14 @@ void main() {
   );
 
   blocTest<ForestBloc, ForestState>(
-    'testWhenLearningAKnownSkillThenSaysItIsAlreadyKnown',
+    'testWhenTheSkillIsAtTheMaxLevelThenSaysItCannotGoHigher',
     build: () {
       // given
       return ForestBlocMock.make(
-        SkillScenarioMock.withTower(funds: FundsMock.doubleStrikePrice, hero: HeroEntityMock.withDoubleStrike),
+        SkillScenarioMock.withTower(
+          funds: FundsMock.doubleStrikeLevelThreePrice,
+          hero: HeroEntityMock.withDoubleStrikeAtLevelThree,
+        ),
         navigationService: navigationService,
       );
     },
@@ -146,7 +149,7 @@ void main() {
       // then
       expect(
         ForestBlocMock.shownMessages(navigationService),
-        contains(Internationalize.forestMessageSkillAlreadyKnown),
+        contains(Internationalize.forestMessageSkillMaxLevel),
       );
     },
   );

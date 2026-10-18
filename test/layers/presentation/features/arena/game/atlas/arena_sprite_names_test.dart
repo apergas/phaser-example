@@ -32,7 +32,54 @@ void main() {
     // then
     expect(names, ['hero', 'hero-short-sword', 'hero-iron-sword', 'hero-steel-sword']);
     expect(ArenaSpriteNames.fighter(null), 'hero');
+    expect(ArenaSpriteNames.heroWith(null, null), 'hero');
     expect(ArenaSpriteNames.walk('hero', 3), 'hero-walk-3');
+  });
+
+  test('testWhenTheHeroWearsArmorThenItsArtFollowsTheWeaponAndTheArmor', () {
+    // given
+    const weapon = GearId.steelSword;
+
+    // when
+    final plate = ArenaSpriteNames.heroWith(weapon, GearId.plateArmor);
+    final leather = ArenaSpriteNames.heroWith(null, GearId.leatherArmor);
+    final workClothes = ArenaSpriteNames.heroWith(weapon, GearId.workClothes);
+    final noArmor = ArenaSpriteNames.heroWith(weapon, null);
+
+    // then
+    expect((plate, leather), ('hero-steel-sword-plate', 'hero-leather'));
+    expect((workClothes, noArmor), ('hero-steel-sword', 'hero-steel-sword'));
+    expect(ArenaSpriteNames.fighter(null, weapon: weapon, armor: GearId.chainMail), 'hero-steel-sword-chain-mail');
+  });
+
+  test('testWhenReadingTheArenaAtlasThenEveryWeaponAndArmorSetHasItsSeventeenFramesAndItsOwnName', () {
+    // given
+    final json = jsonDecode(File('lib/core/assets/images/lpc/arena.json').readAsStringSync()) as Map<String, dynamic>;
+    final frames = (json['frames'] as Map<String, dynamic>).keys.toSet();
+    const weapons = [GearId.woodcutterAxe, GearId.shortSword, GearId.ironSword, GearId.steelSword];
+    const armors = [GearId.workClothes, GearId.leatherArmor, GearId.chainMail, GearId.plateArmor];
+
+    // when
+    final sets = [
+      for (final weapon in weapons)
+        for (final armor in armors) ArenaSpriteNames.heroWith(weapon, armor),
+    ];
+    final framesBySet = {
+      for (final set in sets)
+        set: [
+          for (var column = 0; column < RenderConstants.idleColumns; column++) ArenaSpriteNames.idle(set, column),
+          for (var column = 0; column < RenderConstants.walkColumns; column++) ArenaSpriteNames.walk(set, column),
+          for (var column = 0; column < RenderConstants.workColumns; column++) ArenaSpriteNames.slash(set, column),
+        ],
+    };
+
+    // then
+    expect(sets.toSet(), hasLength(16));
+    for (final MapEntry(key: set, value: wanted) in framesBySet.entries) {
+      expect(wanted, hasLength(17), reason: set);
+      expect(wanted.where((name) => !frames.contains(name)), isEmpty, reason: set);
+    }
+    expect(ArenaSpriteNames.heroWith(null, null), ArenaSpriteNames.heroWith(GearId.woodcutterAxe, GearId.workClothes));
   });
 
   test('testWhenReadingTheArenaAtlasThenEveryFrameTheSceneAsksForExists', () {
@@ -40,19 +87,11 @@ void main() {
     final json = jsonDecode(File('lib/core/assets/images/lpc/arena.json').readAsStringSync()) as Map<String, dynamic>;
     final frames = (json['frames'] as Map<String, dynamic>).keys.toSet();
     const kinds = <EnemyKind?>[null, ...EnemyKind.values];
-    const heroWeapons = [GearId.shortSword, GearId.ironSword, GearId.steelSword];
 
     // when
     final wanted = [
-      for (final weapon in heroWeapons) ...[
-        for (var column = 0; column < RenderConstants.idleColumns; column++)
-          ArenaSpriteNames.idle(ArenaSpriteNames.heroWith(weapon), column),
-        for (var column = 0; column < RenderConstants.workColumns; column++)
-          ArenaSpriteNames.slash(ArenaSpriteNames.heroWith(weapon), column),
-      ],
-      for (final weapon in <GearId?>[null, ...heroWeapons])
-        for (var column = 0; column < RenderConstants.walkColumns; column++)
-          ArenaSpriteNames.walk(ArenaSpriteNames.heroWith(weapon), column),
+      for (var column = 0; column < RenderConstants.walkColumns; column++)
+        ArenaSpriteNames.walk(ArenaSpriteNames.hero, column),
       for (final kind in EnemyKind.values.where((kind) => ArenaRenderConstants.leapSequence(kind) == null))
         for (var column = 0; column < RenderConstants.walkColumns; column++)
           ArenaSpriteNames.walk(ArenaSpriteNames.enemy(kind), column),

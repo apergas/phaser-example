@@ -25,7 +25,7 @@ void main() {
 
     // then
     expect(status.where((quest) => quest.line == QuestLine.village), const [
-      QuestProgressEntityMock.pickUpAxePending,
+      QuestProgressEntityMock.gatherWoodCurrent,
       QuestProgressEntityMock.gatherWoodPending,
       QuestProgressEntityMock.buildHousePending,
     ]);
@@ -58,7 +58,7 @@ void main() {
     final second = questLog.update(world);
 
     // then
-    expect(first, const [GameEventEntityMock.pickUpAxeCompleted]);
+    expect(first, const [GameEventEntityMock.gatherWoodCompleted]);
     expect(second, isEmpty);
   });
 

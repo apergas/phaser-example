@@ -5,16 +5,24 @@ import 'package:farming/layers/domain/entities/hero/skill_option_entity.dart';
 import 'package:farming/layers/domain/rules/skills.dart';
 
 abstract final class SkillOptionEntityMock {
-  static SkillOptionEntity known(SkillId id) =>
-      SkillOptionEntity(skill: Skills.byId(id), state: SkillOptionState.known);
-
-  static SkillOptionEntity make(SkillId id, SkillOptionState state, {Map<Resource, int>? missing}) {
+  static SkillOptionEntity maxed(SkillId id) {
     final skill = Skills.byId(id);
-    return SkillOptionEntity(skill: skill, state: state, missing: missing ?? skill.cost);
+    return SkillOptionEntity(skill: skill, level: skill.maxLevel, state: SkillOptionState.maxed);
+  }
+
+  static SkillOptionEntity make(SkillId id, SkillOptionState state, {int level = 0, Map<Resource, int>? missing}) {
+    final skill = Skills.byId(id);
+    return SkillOptionEntity(skill: skill, level: level, state: state, missing: missing ?? skill.costOf(level + 1));
   }
 
   static SkillOptionEntity get doubleStrikeAvailable =>
       make(SkillId.doubleStrike, SkillOptionState.available, missing: {});
+
+  static SkillOptionEntity get doubleStrikeAtLevelOneAvailable =>
+      make(SkillId.doubleStrike, SkillOptionState.available, level: 1, missing: {});
+
+  static SkillOptionEntity get doubleStrikeAtLevelTwoAvailable =>
+      make(SkillId.doubleStrike, SkillOptionState.available, level: 2, missing: {});
 
   static SkillOptionEntity get doubleStrikeTenGoldShort =>
       make(SkillId.doubleStrike, SkillOptionState.unaffordable, missing: {Resource.gold: 10});
@@ -35,8 +43,14 @@ abstract final class SkillOptionEntityMock {
   ];
 
   static List<SkillOptionEntity> get afterLearningDoubleStrike => [
-    known(SkillId.doubleStrike),
+    make(SkillId.doubleStrike, SkillOptionState.unaffordable, level: 1),
     make(SkillId.dodge, SkillOptionState.unaffordable),
     make(SkillId.secondWind, SkillOptionState.unaffordable),
+  ];
+
+  static List<SkillOptionEntity> get everySkillMaxed => [
+    maxed(SkillId.doubleStrike),
+    maxed(SkillId.dodge),
+    maxed(SkillId.secondWind),
   ];
 }

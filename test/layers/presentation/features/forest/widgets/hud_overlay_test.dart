@@ -6,6 +6,7 @@ import 'package:farming/core/config/constants/enum/forest/hero_panel_section.dar
 import 'package:farming/core/config/constants/enum/gear_id.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/core/config/constants/enum/skill_id.dart';
+import 'package:farming/core/config/constants/enum/upgrade_id.dart';
 import 'package:farming/layers/presentation/features/forest/models/hud_data.dart';
 import 'package:farming/layers/presentation/features/forest/widgets/build_menu.dart';
 import 'package:farming/layers/presentation/features/forest/widgets/build_option_tile.dart';
@@ -35,6 +36,9 @@ void main() {
     List<GearId>? gears,
     VoidCallback? onArenaPressed,
     List<SkillId>? skills,
+    List<UpgradeId>? upgrades,
+    VoidCallback? onSaveRequested,
+    VoidCallback? onNewGameRequested,
   }) async {
     final selected = <BlueprintId>[];
     await tester.pumpHud(
@@ -44,6 +48,9 @@ void main() {
         onGearSelected: (gears ?? []).add,
         onArenaPressed: onArenaPressed ?? () {},
         onSkillSelected: (skills ?? []).add,
+        onUpgradeSelected: (upgrades ?? []).add,
+        onSaveRequested: onSaveRequested ?? () {},
+        onNewGameRequested: onNewGameRequested ?? () {},
       ),
     );
     return selected;

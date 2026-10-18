@@ -14,6 +14,7 @@ import 'package:farming/core/config/constants/enum/skill_id.dart';
 import 'package:farming/core/config/constants/enum/tool_kind.dart';
 
 import '../../../helpers/spanish_translations.dart';
+import '../../../mocks/domain/world/funds_mock.dart';
 
 void main() {
   setUpAll(loadSpanishTranslations);
@@ -237,14 +238,23 @@ void main() {
     // given
     // when
     final names = SkillId.values.map((id) => Internationalize.forestSkillName(id: id)).toList();
-    final descriptions = SkillId.values.map((id) => Internationalize.forestSkillDescription(id: id)).toList();
+    final descriptions = [
+      for (final id in SkillId.values)
+        for (var level = 1; level <= 3; level++) Internationalize.forestSkillDescription(id: id, level: level),
+    ];
 
     // then
     expect(names, ['Golpe doble', 'Segundo aliento', 'Esquiva']);
     expect(descriptions, [
       'Cada tercer ataque golpea dos veces.',
+      'Cada tercer ataque golpea dos veces y el segundo golpe hace un 15 % más de daño.',
+      'Cada tercer ataque golpea dos veces y el segundo golpe hace un 30 % más de daño.',
       'Una vez por pelea, por debajo del 30 % de vida recupera el 40 %.',
+      'Una vez por pelea, por debajo del 30 % de vida recupera el 50 %.',
+      'Una vez por pelea, por debajo del 30 % de vida recupera el 60 %.',
       'Un 20 % de posibilidades de esquivar cada golpe.',
+      'Un 25 % de posibilidades de esquivar cada golpe.',
+      'Un 30 % de posibilidades de esquivar cada golpe.',
     ]);
   });
 
@@ -252,10 +262,17 @@ void main() {
     // given
     final texts = [
       Internationalize.forestHeroLearn,
-      Internationalize.forestHeroKnown,
+      Internationalize.forestHeroUpgrade,
+      Internationalize.forestHeroSkillMax,
+      Internationalize.forestHeroSkillLevel(level: 2, max: 3),
+      Internationalize.forestHeroSkillNext(
+        level: 3,
+        effect: Internationalize.forestSkillDescription(id: SkillId.dodge, level: 3),
+      ),
       Internationalize.forestHeroNeedsBuilding(name: Internationalize.forestBlueprint(id: BlueprintId.mageTower)),
       Internationalize.forestMessageSkillLearned(name: Internationalize.forestSkillName(id: SkillId.doubleStrike)),
-      Internationalize.forestMessageSkillAlreadyKnown,
+      Internationalize.forestMessageSkillUpgraded(name: Internationalize.forestSkillName(id: SkillId.dodge), level: 2),
+      Internationalize.forestMessageSkillMaxLevel,
     ];
 
     // when
@@ -265,19 +282,23 @@ void main() {
     expect(untranslated, isEmpty);
     expect(texts, [
       'Aprender',
-      'Aprendida',
+      'Mejorar',
+      'Máximo',
+      'Nv 2/3',
+      'Nv 3: Un 30 % de posibilidades de esquivar cada golpe.',
       'Construye la Torre de magia',
       'Has aprendido: Golpe doble',
-      'Ya conoces esa habilidad.',
+      'Has mejorado: Esquiva (Nv 2)',
+      'Esa habilidad ya está al nivel máximo.',
     ]);
   });
 
   test('testWhenFormattingArenaNumbersThenUsesTheSpanishTexts', () {
     // given
-    const amount = 10;
+    const amounts = FundsMock.tenGold;
 
     // when
-    final reward = Internationalize.arenaReward(amount: amount);
+    final reward = Internationalize.arenaReward(amounts: amounts);
     final power = Internationalize.arenaPower(power: 19);
     final heroPower = Internationalize.arenaHeroPower(power: 31);
     final damage = Internationalize.arenaDamage(amount: 4);
@@ -291,6 +312,21 @@ void main() {
     expect(damage, '−4');
     expect(heal, '+12');
     expect(group, '3 × Bandido');
+  });
+
+  test('testWhenFormattingAnArenaRewardThenListsEveryPositiveAmountInResourceOrder', () {
+    // given
+    const goldAndMana = FundsMock.banditTrioReward;
+
+    // when
+    final both = Internationalize.arenaReward(amounts: goldAndMana);
+    final withoutZeros = Internationalize.arenaReward(amounts: FundsMock.tenGoldAndZeroMana);
+    final reordered = Internationalize.arenaReward(amounts: FundsMock.sixManaBeforeTwentyFiveGold);
+
+    // then
+    expect(both, '+75 de oro, 20 de maná');
+    expect(withoutZeros, '+10 de oro');
+    expect(reordered, '+25 de oro, 6 de maná');
   });
 
   test('testWhenNamingArenaLevelsEnemiesAndAdviceThenUsesTheSpanishTexts', () {

@@ -13,6 +13,7 @@ abstract final class FighterRenderDataMock {
     maxHealth: 30,
     pose: FighterPose.idle,
     weapon: GearId.woodcutterAxe,
+    armor: GearId.workClothes,
   );
 
   static const FighterRenderData heroWithSteelSwordIdle = FighterRenderData(
@@ -23,6 +24,29 @@ abstract final class FighterRenderDataMock {
     maxHealth: 30,
     pose: FighterPose.idle,
     weapon: GearId.steelSword,
+    armor: GearId.workClothes,
+  );
+
+  static const FighterRenderData heroInPlateIdle = FighterRenderData(
+    side: FightSide.hero,
+    index: 0,
+    enemyKind: null,
+    health: 30,
+    maxHealth: 30,
+    pose: FighterPose.idle,
+    weapon: GearId.steelSword,
+    armor: GearId.plateArmor,
+  );
+
+  static const FighterRenderData heroInChainMailIdle = FighterRenderData(
+    side: FightSide.hero,
+    index: 0,
+    enemyKind: null,
+    health: 30,
+    maxHealth: 30,
+    pose: FighterPose.idle,
+    weapon: GearId.woodcutterAxe,
+    armor: GearId.chainMail,
   );
 
   static const FighterRenderData rookieBanditIdle = FighterRenderData(
@@ -92,6 +116,7 @@ abstract final class FighterRenderDataMock {
     maxHealth: 30,
     pose: FighterPose.idle,
     weapon: GearId.woodcutterAxe,
+    armor: GearId.workClothes,
   );
 
   static FighterRenderData heroSwinging(double swingProgress) => FighterRenderData(
@@ -103,6 +128,7 @@ abstract final class FighterRenderDataMock {
     pose: FighterPose.attack,
     swingProgress: swingProgress,
     weapon: GearId.woodcutterAxe,
+    armor: GearId.workClothes,
   );
 
   static const FighterRenderData chiefIdle = FighterRenderData(

@@ -7,29 +7,29 @@ import 'package:farming/layers/presentation/features/forest/models/quest_item_da
 abstract final class QuestItemDataMock {
   static QuestItemData get done => QuestItemData(
     line: QuestLine.village,
-    title: Internationalize.forestQuestTitle(id: QuestId.pickUpAxe),
+    title: Internationalize.forestQuestTitle(id: QuestId.gatherWood),
     progressText: Internationalize.forestQuestDone,
     status: QuestItemStatus.done,
   );
 
   static QuestItemData get current => QuestItemData(
     line: QuestLine.village,
-    title: Internationalize.forestQuestTitle(id: QuestId.gatherWood),
-    progressText: '6/15',
+    title: Internationalize.forestQuestTitle(id: QuestId.buildHouse),
+    progressText: '',
     status: QuestItemStatus.current,
   );
 
   static QuestItemData get pending => QuestItemData(
     line: QuestLine.village,
-    title: Internationalize.forestQuestTitle(id: QuestId.buildHouse),
+    title: Internationalize.forestQuestTitle(id: QuestId.fellTenTrees),
     progressText: '',
     status: QuestItemStatus.pending,
   );
 
-  static QuestItemData get pickUpAxeCurrent => QuestItemData(
+  static QuestItemData get gatherWoodCurrent => QuestItemData(
     line: QuestLine.village,
-    title: Internationalize.forestQuestTitle(id: QuestId.pickUpAxe),
-    progressText: '',
+    title: Internationalize.forestQuestTitle(id: QuestId.gatherWood),
+    progressText: '0/15',
     status: QuestItemStatus.current,
   );
 

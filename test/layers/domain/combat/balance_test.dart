@@ -16,7 +16,7 @@ import '../../../mocks/domain/game/balance_scenario_mock.dart';
 double _winRate(ArenaLevelEntity level, HeroEntity hero) {
   var wins = 0;
   for (var seed = 0; seed < BalanceScenarioMock.seeds; seed++) {
-    final log = Combat.resolve(level: level, heroStats: hero.stats, skills: hero.skills, seed: seed);
+    final log = Combat.resolve(level: level, heroStats: hero.stats, skillLevels: hero.skillLevels, seed: seed);
     if (log.isVictory) wins++;
   }
   return wins / BalanceScenarioMock.seeds;
@@ -34,7 +34,9 @@ int _spentOn(HeroEntity hero, Resource resource) {
     }
   }
   for (final skill in hero.skills) {
-    total += _amount(Skills.byId(skill).cost, resource);
+    for (var level = 1; level <= hero.levelOf(skill); level++) {
+      total += _amount(Skills.byId(skill).costOf(level), resource);
+    }
   }
   if (hero.skills.isNotEmpty) total += _amount(Blueprints.of(Skills.building).cost, resource);
   return total;
@@ -126,7 +128,7 @@ void main() {
 
     // when
     final earned = levels.fold(0, (total, level) => total + _amount(level.reward, Resource.mana));
-    final cost = skills.fold(0, (total, skill) => total + _amount(skill.cost, Resource.mana));
+    final cost = skills.fold(0, (total, skill) => total + _amount(skill.costOf(1), Resource.mana));
 
     // then
     expect((earned, cost), (160, 95));

@@ -80,7 +80,7 @@ void main() {
     expect(options.first, SkillOptionEntityMock.doubleStrikeTwentyManaShort);
   });
 
-  test('testWhenTheHeroKnowsASkillThenItIsListedAsKnownWithNothingMissing', () {
+  test('testWhenTheHeroKnowsASkillThenItIsListedWithItsLevelAndWhatTheNextLevelMisses', () {
     // given
     playing(SkillScenarioMock.withTower(hero: HeroEntityMock.withDoubleStrike));
 
@@ -89,5 +89,15 @@ void main() {
 
     // then
     expect(options, SkillOptionEntityMock.afterLearningDoubleStrike);
+  });
+  test('testWhenTheHeroHasEverySkillAtTheMaxLevelThenEveryOptionIsMaxedWithNothingMissing', () {
+    // given
+    playing(SkillScenarioMock.withTower(hero: HeroEntityMock.championWithMaxedSkills));
+
+    // when
+    final options = sut();
+
+    // then
+    expect(options, SkillOptionEntityMock.everySkillMaxed);
   });
 }

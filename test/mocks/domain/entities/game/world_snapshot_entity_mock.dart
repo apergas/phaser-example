@@ -12,6 +12,8 @@ abstract final class WorldSnapshotEntityMock {
     items: [GroundItemEntityMock.mock],
     decorations: [],
     buildings: [BuildingEntityMock.mock],
+    stumps: [],
+    rocks: [],
   );
 
   static const WorldSnapshotEntity withoutTrees = WorldSnapshotEntity(
@@ -21,6 +23,8 @@ abstract final class WorldSnapshotEntityMock {
     items: [GroundItemEntityMock.mock],
     decorations: [],
     buildings: [BuildingEntityMock.mock],
+    stumps: [],
+    rocks: [],
   );
 
   static WorldSnapshotEntity make() {
@@ -31,6 +35,8 @@ abstract final class WorldSnapshotEntityMock {
       items: [GroundItemEntityMock.mock],
       decorations: [],
       buildings: [BuildingEntityMock.mock],
+      stumps: [],
+      rocks: [],
     );
   }
 }

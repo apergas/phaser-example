@@ -13,7 +13,7 @@ void main() {
 
     // then
     expect(tiers, (0, 0, 0));
-    expect(hero.skills, isEmpty);
+    expect(hero.skillLevels, isEmpty);
     expect(hero.clearedLevels, isEmpty);
   });
 
@@ -22,7 +22,7 @@ void main() {
     const hero = HeroEntityMock.withTwoSkills;
 
     // when
-    final copy = hero.copyWith(weaponTier: 3, armorTier: 3, skills: {...hero.skills, SkillId.secondWind});
+    final copy = hero.copyWith(weaponTier: 3, armorTier: 3, skillLevels: {...hero.skillLevels, SkillId.secondWind: 1});
 
     // then
     expect(copy, HeroEntityMock.fullyGeared);

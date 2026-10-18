@@ -321,29 +321,6 @@ void main() {
   );
 
   blocTest<ArenaBloc, ArenaState>(
-    'testWhenTheReplayIsSkippedThenOnlyTheEndIsPlayedAndTheResultIsShown',
-    build: () {
-      // given
-      return ArenaBlocMock.make(world, navigationService: navigationService);
-    },
-    act: (bloc) {
-      // when
-      effects = ArenaBlocMock.collectEffects(bloc);
-      bloc
-        ..add(const ArenaStarted())
-        ..add(const ArenaFightRequested())
-        ..add(const ArenaReplaySkipped());
-    },
-    wait: Duration.zero,
-    verify: (bloc) {
-      // then
-      expect(effects, [ArenaEffectMock.won]);
-      expect(bloc.state.data.replay!.isFinished, isTrue);
-      expect(bloc.state.data.result, ArenaResultDataMock.victoryTenGold);
-    },
-  );
-
-  blocTest<ArenaBloc, ArenaState>(
     'testWhenTheChiefFallsForTheFirstTimeThenTheHeroIsCrownedChampion',
     build: () {
       // given
@@ -356,14 +333,16 @@ void main() {
       bloc
         ..add(const ArenaStarted())
         ..add(const ArenaLevelSelected(levelId: ArenaLevelId.barbarianChief))
-        ..add(const ArenaFightRequested())
-        ..add(const ArenaReplaySkipped());
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickToTheEnd(bloc);
     },
     wait: Duration.zero,
     verify: (bloc) {
       // then
-      expect(effects, [ArenaEffectMock.won, ArenaEffectMock.champion]);
-      expect(bloc.state.data.result, ArenaResultDataMock.championHundredFiftyGold);
+      expect(effects.sublist(effects.length - 2), [ArenaEffectMock.won, ArenaEffectMock.champion]);
+      expect(effects.whereType<FightEndedEffect>(), [ArenaEffectMock.won]);
+      expect(effects.whereType<HitEffect>(), hasLength(greaterThan(10)));
+      expect(bloc.state.data.result, ArenaResultDataMock.championWithTheChiefReward);
     },
   );
 
@@ -380,14 +359,15 @@ void main() {
       bloc
         ..add(const ArenaStarted())
         ..add(const ArenaLevelSelected(levelId: ArenaLevelId.barbarianChief))
-        ..add(const ArenaFightRequested())
-        ..add(const ArenaReplaySkipped());
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickToTheEnd(bloc);
     },
     wait: Duration.zero,
     verify: (bloc) {
       // then
-      expect(effects, [ArenaEffectMock.won]);
-      expect(bloc.state.data.result, ArenaResultDataMock.victoryFiftyGold);
+      expect(effects.last, ArenaEffectMock.won);
+      expect(effects.whereType<ChampionEffect>(), isEmpty);
+      expect(bloc.state.data.result, ArenaResultDataMock.victoryWithTheChiefRepeatReward);
     },
   );
 
@@ -428,14 +408,14 @@ void main() {
       bloc
         ..add(const ArenaStarted())
         ..add(const ArenaLevelSelected(levelId: ArenaLevelId.banditVeteran))
-        ..add(const ArenaFightRequested())
-        ..add(const ArenaReplaySkipped());
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickToTheEnd(bloc);
     },
     wait: Duration.zero,
     verify: (bloc) {
       // then
       expect(world.funds.amount(Resource.gold), 0);
-      expect(effects, [ArenaEffectMock.lost]);
+      expect(effects.last, ArenaEffectMock.lost);
       expect(bloc.state.data.result, ArenaResultDataMock.defeatNeedAttack);
       expect(bloc.state.data.fighters.first.pose, FighterPose.down);
     },
@@ -454,8 +434,9 @@ void main() {
         ..add(const ArenaStarted())
         ..add(const ArenaLevelSelected(levelId: ArenaLevelId.banditVeteran))
         ..add(const ArenaFightRequested())
-        ..add(const ArenaReplaySkipped())
         ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickToTheEnd(bloc);
+      bloc.add(const ArenaFightRequested());
     },
     wait: Duration.zero,
     verify: (bloc) {
@@ -573,8 +554,8 @@ void main() {
       // when
       bloc
         ..add(const ArenaStarted())
-        ..add(const ArenaFightRequested())
-        ..add(const ArenaReplaySkipped());
+        ..add(const ArenaFightRequested());
+      ArenaBlocMock.tickToTheEnd(bloc);
     },
     wait: Duration.zero,
     verify: (bloc) {

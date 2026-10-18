@@ -12,15 +12,6 @@ abstract final class QuestProgressEntityMock {
     isCurrent: true,
   );
 
-  static const QuestProgressEntity pickUpAxePending = QuestProgressEntity(
-    line: QuestLine.village,
-    id: QuestId.pickUpAxe,
-    progress: 0,
-    target: 1,
-    isCompleted: false,
-    isCurrent: true,
-  );
-
   static const QuestProgressEntity gatherWoodPending = QuestProgressEntity(
     line: QuestLine.village,
     id: QuestId.gatherWood,

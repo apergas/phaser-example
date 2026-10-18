@@ -16,6 +16,7 @@ import 'package:farming/layers/domain/use-cases/game/move_player_use_case.dart';
 import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../../mocks/domain/game/game_scenario_mock.dart';
+import '../../../../mocks/domain/entities/tree/tree_entity_mock.dart';
 import '../../../../mocks/domain/entities/game/game_session_entity_mock.dart';
 import '../../../../mocks/domain/repositories/repository_mocks.mocks.dart';
 import '../../../../mocks/domain/entities/game/game_event_entity_mock.dart';
@@ -52,7 +53,7 @@ void main() {
   test('testWhenPlayingTheWholeLoopThenHouseIsBuiltAndQuestsAreCompleted', () {
     // given
     when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.wholeLoop()));
-    const chopTime = 2000 + Rules.chopIntervalMs * Rules.hitsToFellTree;
+    final chopTime = 2000 + Rules.chopIntervalMs * TreeEntityMock.mock.hitsToFell;
     const axeSpot = GameScenarioMock.wholeLoopAxeSpot;
     const site = GameScenarioMock.houseSite;
 

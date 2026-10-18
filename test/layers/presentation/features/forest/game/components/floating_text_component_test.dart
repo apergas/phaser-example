@@ -25,7 +25,8 @@ void main() {
     expect(floating.text, Internationalize.arenaDamage(amount: 8));
     expect(floating.position, Vector2(100, 100));
     expect(floating.anchor, Anchor.bottomCenter);
-    expect(floating.priority, RenderDepth.overlay);
+    expect(floating.priority, RenderDepth.floatingText);
+    expect(floating.priority, greaterThan(RenderDepth.overlay));
     expect(floating.alpha, 1);
   });
 

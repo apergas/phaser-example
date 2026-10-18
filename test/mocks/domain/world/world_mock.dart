@@ -1,5 +1,10 @@
 import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/domain/entities/building/building_entity.dart';
 import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
+import 'package:farming/layers/domain/entities/game/stats_entity.dart';
+import 'package:farming/layers/domain/entities/player/inventory_entity.dart';
+import 'package:farming/layers/domain/entities/rock/rock_entity.dart';
+import 'package:farming/layers/domain/entities/tree/stump_entity.dart';
 import 'package:farming/layers/domain/entities/hero/hero_entity.dart';
 import 'package:farming/layers/domain/entities/item/ground_item_entity.dart';
 import 'package:farming/layers/domain/entities/player/player_entity.dart';
@@ -15,12 +20,52 @@ abstract final class WorldMock {
     PlayerEntity player = PlayerEntityMock.mock,
     List<TreeEntity> trees = const [],
     List<GroundItemEntity> items = const [],
+    List<RockEntity> rocks = const [],
+    List<BuildingEntity> buildings = const [],
     HeroEntity hero = HeroEntityMock.mock,
   }) {
-    return World(width: 1000, height: 1000, player: player, trees: trees, items: items, hero: hero);
+    return World(
+      width: 1000,
+      height: 1000,
+      player: player,
+      trees: trees,
+      items: items,
+      rocks: rocks,
+      buildings: buildings,
+      hero: hero,
+    );
   }
 
   static World withHero(HeroEntity hero) => make(hero: hero);
+
+  static World restored({
+    PlayerEntity player = PlayerEntityMock.mock,
+    List<TreeEntity> trees = const [],
+    List<StumpEntity> stumps = const [],
+    List<RockEntity> rocks = const [],
+    List<GroundItemEntity> items = const [],
+    List<BuildingEntity> buildings = const [],
+    HeroEntity hero = HeroEntityMock.mock,
+    StatsEntity stats = const StatsEntity(),
+    InventoryEntity stock = const InventoryEntity(),
+    Map<String, int> idCounters = const {},
+  }) {
+    return World.restore(
+      width: 1000,
+      height: 1000,
+      player: player,
+      trees: trees,
+      stumps: stumps,
+      rocks: rocks,
+      items: items,
+      decorations: const [],
+      buildings: buildings,
+      hero: hero,
+      stats: stats,
+      stock: stock,
+      idCounters: idCounters,
+    );
+  }
 
   static World withStock(Map<Resource, int> stock, {PlayerEntity player = PlayerEntityMock.mock}) =>
       make(player: player)..earn(stock);
@@ -51,12 +96,12 @@ abstract final class WorldMock {
 }
 
 extension WorldAdvanceFor on World {
-  List<GameEventEntity> advanceFor(double totalMs) {
+  List<GameEventEntity> advanceFor(double totalMs, {double stepMs = 16}) {
     final events = <GameEventEntity>[];
     var elapsed = 0.0;
     while (elapsed < totalMs) {
-      events.addAll(advance(16));
-      elapsed += 16;
+      events.addAll(advance(stepMs));
+      elapsed += stepMs;
     }
     return events;
   }

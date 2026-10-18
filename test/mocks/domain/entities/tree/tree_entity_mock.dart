@@ -67,4 +67,13 @@ abstract final class TreeEntityMock {
       hitsToFell: hitsToFell,
     );
   }
+
+  static const TreeEntity regrownPine = TreeEntity(
+    id: 'tree-1',
+    kind: TreeKind.pine,
+    position: PositionEntity(x: 200, y: 100),
+    trunkRadius: 12,
+    woodYield: 4,
+    hitsToFell: 3,
+  );
 }

@@ -25,6 +25,21 @@ abstract final class InventoryEntityMock {
 
   static const Map<Resource, int> fifteenWood = {Resource.wood: 15};
 
-  static InventoryEntity make({int wood = 0, Set<ToolKind> tools = const {}}) =>
-      InventoryEntity(resources: {if (wood > 0) Resource.wood: wood}, tools: tools);
+  static InventoryEntity make({
+    int wood = 0,
+    int stone = 0,
+    int gold = 0,
+    int mana = 0,
+    Set<ToolKind> tools = const {},
+    Map<ToolKind, int> toolLevels = const {},
+  }) => InventoryEntity(
+    resources: {
+      if (wood > 0) Resource.wood: wood,
+      if (stone > 0) Resource.stone: stone,
+      if (gold > 0) Resource.gold: gold,
+      if (mana > 0) Resource.mana: mana,
+    },
+    tools: tools,
+    toolLevels: toolLevels,
+  );
 }

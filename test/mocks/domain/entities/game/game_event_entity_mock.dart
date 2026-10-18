@@ -3,6 +3,8 @@ import 'package:farming/core/config/constants/enum/quest_id.dart';
 import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
 
+import '../tree/tree_entity_mock.dart';
+
 abstract final class GameEventEntityMock {
   static const ItemPickedUpEventEntity itemPickedUp = ItemPickedUpEventEntity(itemId: 'axe-1', kind: ToolKind.axe);
 
@@ -24,7 +26,19 @@ abstract final class GameEventEntityMock {
 
   static const QuestCompletedEventEntity gatherWoodCompleted = QuestCompletedEventEntity(questId: QuestId.gatherWood);
 
+  static const QuestCompletedEventEntity fellTenTreesCompleted = QuestCompletedEventEntity(
+    questId: QuestId.fellTenTrees,
+  );
+
+  static const QuestCompletedEventEntity fellAnOakCompleted = QuestCompletedEventEntity(questId: QuestId.fellAnOak);
+
   static const QuestCompletedEventEntity buildHouseCompleted = QuestCompletedEventEntity(questId: QuestId.buildHouse);
+
+  static const TreeSproutedEventEntity stumpSprouted = TreeSproutedEventEntity(stumpId: 'tree-1');
+
+  static const TreeSproutedEventEntity otherStumpSprouted = TreeSproutedEventEntity(stumpId: 'tree-2');
+
+  static const TreeRegrownEventEntity pineRegrown = TreeRegrownEventEntity(tree: TreeEntityMock.regrownPine);
 
   static const List<GameEventEntity> all = [
     itemPickedUp,

@@ -1,5 +1,6 @@
 import 'package:farming/core/config/constants/enum/gear_id.dart';
 import 'package:farming/core/config/constants/enum/skill_id.dart';
+import 'package:farming/core/config/constants/enum/upgrade_id.dart';
 import 'package:farming/layers/presentation/features/forest/models/forest_effect.dart';
 
 abstract final class ForestEffectMock {
@@ -28,4 +29,14 @@ abstract final class ForestEffectMock {
   static const SkillLearnedEffect doubleStrikeLearnedCopy = SkillLearnedEffect(skill: SkillId.doubleStrike);
 
   static const SkillLearnedEffect dodgeLearned = SkillLearnedEffect(skill: SkillId.dodge);
+
+  static const TreeSproutedEffect stumpSprouted = TreeSproutedEffect(stumpId: 'tree-1');
+
+  static const TreeRegrownEffect treeRegrown = TreeRegrownEffect(treeId: 'tree-1');
+
+  static const RockBrokenEffect rockBroken = RockBrokenEffect(rockId: 'rock-1', stone: 8);
+
+  static const RockHitEffect rockHitFromTheStart = RockHitEffect(rockId: 'rock-1', fromX: 268);
+
+  static const UpgradePurchasedEffect ironAxePurchased = UpgradePurchasedEffect(upgrade: UpgradeId.ironAxe);
 }

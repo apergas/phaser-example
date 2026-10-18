@@ -26,7 +26,6 @@ import '../../../../../mocks/presentation/features/forest/forest_effect_mock.dar
 import '../../../../../mocks/presentation/features/forest/placement_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/player_pose_mock.dart';
 import '../../../../../mocks/presentation/features/forest/quest_item_data_mock.dart';
-import '../../../../../mocks/presentation/features/forest/tool_item_data_mock.dart';
 
 void main() {
   late MockNavigationService navigationService;

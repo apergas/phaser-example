@@ -18,6 +18,8 @@ abstract final class UpgradeScenarioMock {
 
   static const Map<Resource, int> ironPickaxePrice = {Resource.wood: 10, Resource.stone: 20};
 
+  static const Map<Resource, int> axeAndAlmostThePickaxe = {Resource.wood: 15, Resource.stone: 15};
+
   static const Map<Resource, int> fiveStoneShortOfTheIronAxe = {Resource.wood: 15, Resource.stone: 10};
 
   static const PlayerEntity carryingTheIronAxePrice = PlayerEntity(

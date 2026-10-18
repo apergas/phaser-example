@@ -5,6 +5,8 @@ import 'package:farming/core/config/constants/enum/quest_line.dart';
 import 'package:farming/layers/presentation/features/forest/models/quest_item_data.dart';
 
 abstract final class QuestItemDataMock {
+  static const QuestId seeATreeRegrowId = QuestId.seeATreeRegrow;
+
   static QuestItemData get done => QuestItemData(
     line: QuestLine.village,
     title: Internationalize.forestQuestTitle(id: QuestId.gatherWood),

@@ -1,6 +1,9 @@
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
+import 'package:farming/layers/domain/entities/building/blueprint_entity.dart';
 import 'package:farming/layers/domain/entities/game/build_option_entity.dart';
+
+import '../building/blueprint_entity_mock.dart';
 
 abstract final class BuildOptionEntityMock {
   static const BuildOptionEntity mock = BuildOptionEntity(
@@ -18,15 +21,26 @@ abstract final class BuildOptionEntityMock {
   static BuildOptionEntity make({Map<Resource, int> missing = const {}}) =>
       BuildOptionEntity(blueprint: BlueprintId.house, cost: const {Resource.wood: 15}, missing: missing);
 
-  static BuildOptionEntity workshop(BlueprintId id, {required int missingWood}) => BuildOptionEntity(
-    blueprint: id,
-    cost: const {Resource.wood: 25},
-    missing: {Resource.wood: missingWood},
-  );
+  static const List<BlueprintEntity> buildable = [
+    BlueprintEntityMock.mock,
+    BlueprintEntityMock.storehouse,
+    BlueprintEntityMock.quarry,
+    BlueprintEntityMock.workshop,
+    BlueprintEntityMock.forge,
+    BlueprintEntityMock.armory,
+    BlueprintEntityMock.mageTower,
+  ];
 
-  static BuildOptionEntity mageTower({required int missingWood}) => BuildOptionEntity(
-    blueprint: BlueprintId.mageTower,
-    cost: const {Resource.wood: 30, Resource.gold: 40},
-    missing: {Resource.wood: missingWood, Resource.gold: 40},
-  );
+  static List<BuildOptionEntity> everyBuildableWithStock({int wood = 0}) => [
+    for (final blueprint in buildable)
+      BuildOptionEntity(
+        blueprint: blueprint.id,
+        cost: blueprint.cost,
+        missing: {
+          for (final MapEntry(key: resource, value: quantity) in blueprint.cost.entries)
+            if (quantity > (resource == Resource.wood ? wood : 0))
+              resource: quantity - (resource == Resource.wood ? wood : 0),
+        },
+      ),
+  ];
 }

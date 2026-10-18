@@ -7,13 +7,13 @@ import 'package:farming/layers/domain/world/world.dart';
 
 import '../entities/item/ground_item_entity_mock.dart';
 import '../entities/player/player_entity_mock.dart';
+import '../entities/rock/rock_entity_mock.dart';
 import '../entities/tree/tree_entity_mock.dart';
 import '../world/world_mock.dart';
 
 import '../entities/building/building_entity_mock.dart';
 
 abstract final class GameScenarioMock {
-  static const PositionEntity axeSpot = PositionEntity(x: 110, y: 100);
   static const PositionEntity wholeLoopAxeSpot = PositionEntity(x: 125, y: 100);
   static const PositionEntity houseSite = PositionEntity(x: 400, y: 400);
   static const PositionEntity wholeLoopCampSite = PositionEntity(x: 300, y: 250);
@@ -36,9 +36,6 @@ abstract final class GameScenarioMock {
     ],
   );
 
-  static World axeNextToPlayer() =>
-      WorldMock.make(items: [GroundItemEntityMock.mock.copyWith(position: const PositionEntity(x: 110, y: 100))]);
-
   static World axeInHandNextToTree() => WorldMock.make(
     player: PlayerEntityMock.mock.copyWith(inventory: const InventoryEntity(tools: {ToolKind.axe})),
     trees: [TreeEntityMock.mock.copyWith(position: const PositionEntity(x: 120, y: 100))],
@@ -47,6 +44,10 @@ abstract final class GameScenarioMock {
   static World tenWood() => WorldMock.make(
     player: PlayerEntityMock.mock.copyWith(inventory: const InventoryEntity(resources: {Resource.wood: 10})),
   );
+
+  static World tenWoodInStock() => WorldMock.withStock(const {Resource.wood: 10});
+
+  static World besideARock() => WorldMock.make(rocks: [RockEntityMock.intact]);
 
   static World treeOnBuildingSite() =>
       WorldMock.make(trees: [TreeEntityMock.mock.copyWith(position: const PositionEntity(x: 400, y: 400))]);

@@ -77,7 +77,7 @@ void main() {
     expect(logger.errors, hasLength(1));
     expect(
       logger.errors.single.message,
-      contains(Internationalize.errorInvalidSaveMessage(reason: 'unknown version 3')),
+      contains(Internationalize.errorInvalidSaveMessage(reason: 'unknown version 4')),
     );
     expect(logger.errors.single.header, 'GameSaveRepository');
     expect(logger.errors.single.stackTrace, isNotNull);
@@ -122,7 +122,7 @@ void main() {
 
     // then
     expect(localDatasource.saved, hasLength(1));
-    expect(localDatasource.saved.single.version, 2);
+    expect(localDatasource.saved.single.version, 3);
     expect(localDatasource.saved.single.completedQuests, ['gatherWood', 'buildHouse', 'buildForge']);
     expect(sut.load(), isNotNull);
     expect(logger.errors, isEmpty);
@@ -228,6 +228,19 @@ void main() {
       expect(loaded!.world.stock, SaveScenarioMock.stockWithTheVersionOneLoad);
       expect(loaded.world.buildings, SaveScenarioMock.everything().buildings);
       expect(loaded.quests.completed, SaveScenarioMock.completedQuests);
+      expect(logger.errors, isEmpty);
+    });
+
+    test('testWhenAVersionTwoGameIsStoredThenItLoadsWithoutTheCampNorGroundItemsAndWithThePickaxe', () async {
+      // given
+      await preferences.setString(key, SaveJsonMock.versionTwoWithAPickaxeOnTheGround);
+
+      // when
+      final loaded = sut.load();
+
+      // then
+      expect(loaded!.world.buildings, SaveScenarioMock.everything().buildings);
+      expect(loaded.world.player.inventory, SaveScenarioMock.player.inventory);
       expect(logger.errors, isEmpty);
     });
 

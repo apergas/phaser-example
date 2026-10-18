@@ -138,7 +138,7 @@ void main() {
     final text = dbo.toString();
 
     // then
-    expect(text, startsWith('SaveDBO(version: 2, width: ${1600.0}, height: ${1200.0}'));
+    expect(text, startsWith('SaveDBO(version: 3, width: ${1600.0}, height: ${1200.0}'));
     expect(text, contains('idCounters: {building: 3}'));
   });
 }

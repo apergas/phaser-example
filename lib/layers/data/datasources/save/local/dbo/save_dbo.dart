@@ -12,7 +12,7 @@ import 'save_stump_dbo.dart';
 import 'save_tree_dbo.dart';
 
 class SaveDBO {
-  static const int currentVersion = 2;
+  static const int currentVersion = 3;
 
   final int? version;
   final double? width;

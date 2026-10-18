@@ -22,7 +22,14 @@ abstract final class SaveDBOMock {
     SaveBuildingDBOMock.finishedHouse,
     SaveBuildingDBOMock.forgeSite,
   ];
+  static const List<SaveBuildingDBO> _versionTwoBuildings = [
+    SaveBuildingDBOMock.camp,
+    SaveBuildingDBOMock.house,
+    SaveBuildingDBOMock.finishedHouse,
+    SaveBuildingDBOMock.forgeSite,
+  ];
   static const List<SaveBuildingDBO> _versionOneBuildings = [
+    SaveBuildingDBOMock.camp,
     SaveBuildingDBOMock.house,
     SaveBuildingDBOMock.finishedHouse,
     SaveBuildingDBOMock.storehouse,
@@ -61,7 +68,15 @@ abstract final class SaveDBOMock {
 
   static final SaveDBO everything = _build();
   static final SaveDBO sameAsEverything = _build();
-  static final SaveDBO otherVersion = _build(version: 3);
+  static final SaveDBO otherVersion = _build(version: 4);
+  static final SaveDBO versionTwo = _build(
+    version: 2,
+    player: SavePlayerDBOMock.withoutPickaxe,
+    buildings: _versionTwoBuildings,
+  );
+  static final SaveDBO versionTwoWithThePickaxe = _build(version: 2, buildings: _versionTwoBuildings);
+  static final SaveDBO versionTwoWithoutInventory = _build(version: 2, player: SavePlayerDBOMock.withoutInventory);
+  static final SaveDBO versionTwoWithoutInventoryMigrated = _build(player: SavePlayerDBOMock.withOnlyThePickaxe);
   static final SaveDBO versionOne = _build(
     version: 1,
     player: SavePlayerDBOMock.versionOne,

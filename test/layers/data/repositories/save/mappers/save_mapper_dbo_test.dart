@@ -143,7 +143,7 @@ void main() {
     final attempts = [for (final dbo in dbos) () => sut.toEntity(dbo)];
 
     // then
-    expect(attempts[0], throwsInvalidSave('unknown version 3'));
+    expect(attempts[0], throwsInvalidSave('unknown version 4'));
     expect(attempts[1], throwsInvalidSave('unknown version null'));
   });
 

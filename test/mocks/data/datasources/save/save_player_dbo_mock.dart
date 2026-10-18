@@ -14,6 +14,16 @@ abstract final class SavePlayerDBOMock {
     y: 380,
     inventory: SaveInventoryDBOMock.versionOneWithNegativeCarry,
   );
+  static const SavePlayerDBO withoutPickaxe = SavePlayerDBO(
+    x: 420,
+    y: 380,
+    inventory: SaveInventoryDBOMock.withoutPickaxe,
+  );
+  static const SavePlayerDBO withOnlyThePickaxe = SavePlayerDBO(
+    x: 420,
+    y: 380,
+    inventory: SaveInventoryDBOMock.onlyThePickaxe,
+  );
   static const SavePlayerDBO withoutInventory = SavePlayerDBO(x: 420, y: 380);
   static const SavePlayerDBO withoutX = SavePlayerDBO(y: 380);
   static const SavePlayerDBO withoutY = SavePlayerDBO(x: 420);

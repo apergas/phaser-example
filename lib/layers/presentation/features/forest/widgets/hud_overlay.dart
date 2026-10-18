@@ -18,8 +18,8 @@ import 'resource_bar.dart';
 import 'upgrade_menu.dart';
 
 class HudOverlay extends StatefulWidget {
-  static const double narrowWidth = 1100;
-  static const double buttonsBelowWidth = 1820;
+  static const double narrowWidth = 850;
+  static const double buttonsBelowWidth = 1570;
   static const double _margin = 12;
 
   final HudData hud;

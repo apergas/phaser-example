@@ -72,7 +72,7 @@ abstract final class HudDataMock {
   static HudData get withEveryResourceAndTool => HudData(
     stock: [for (final resource in Resource.values) ResourceItemDataMock.of(resource, 9999)],
     tools: [for (final tool in ToolKind.values) ToolItemDataMock.of(tool, isOwned: true)],
-    questBadge: '19/19',
+    questBadge: '18/18',
     quests: QuestItemDataMock.all,
     buildItems: BuildItemDataMock.everyBlueprintUnaffordable,
     upgradeItems: UpgradeItemDataMock.fiveStoneShortOfTheAxe,

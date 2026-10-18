@@ -6,7 +6,7 @@
 |---|---|
 | **Rama** | `feature/PROJECT-X-auto-stock`, desde `develop` |
 | **Estado** | Ficha |
-| **Cuándo** | Después de T1: con T1 cerrada vuelven los tests, así que esta mejora escribe y arregla los suyos |
+| **Cuándo** | T1 ya está en `develop` (#84): esta mejora escribe y arregla sus tests con TDD |
 
 **Qué se quiere** (pedido por el usuario el 2026-10-18): quitar la mecánica de llevar lo recogido al almacén. Al talar un árbol o romper una roca, la madera o la piedra se suman directamente al almacén de la aldea.
 
@@ -21,7 +21,7 @@
 - **Inventario:** `InventoryEntity.resources` deja de usarse; se quita y el inventario guarda solo `tools` y `toolLevels`. `GetPlayerStatusUseCase` deja de dar la carga.
 - **Almacén (`BlueprintId.storehouse`):** sin entrega ya no sirve para nada. Se quita del catálogo y del enum, con su frame del atlas, su icono SVG, sus textos y su `buildingFrontOffset` (decidido con el usuario el 2026-10-18).
 - **Cantera (`BlueprintId.quarry`):** se quita del todo, como el almacén (decidido con el usuario el 2026-10-18): catálogo, enum, frame del atlas (`build_assets.py` y `forest.json`, y `CREDITS.md` si deja de usarse algo), icono SVG, textos, `buildingFrontOffset` y `SpriteNames`. Con ella se van la aceleración de la minería (`Rules.quarryMineIntervalMs`, `quarryBoostRange`, `BuildingRules.boostsMining`; `Mining` vuelve a un ritmo fijo de `Rules.mineIntervalMs`) y la regla de colocación junto a una roca (`Rules.quarryRockRange`, `NearRockPlacementRuleEntity`, `PlacementRuleRules`, `ConstructionRejection.needsNearbyRock` y su texto). Si `PlacementRuleEntity` se queda solo con `AnywherePlacementRuleEntity`, se quita la jerarquía entera y `BlueprintEntity.placementRule`.
-- **Picar piedra:** una roca pasa de 8 a 7 golpes (`Rules.rockHitsToBreak` 7). Con el pico de hierro bajan a ⌈7 × 60 %⌉ = 5, igual que ahora; el intervalo entre golpes sigue en 750 ms salvo que el usuario diga otra cosa.
+- **Picar piedra:** una roca pasa de 8 a 7 golpes (`Rules.rockHitsToBreak` 7). Con el pico de hierro bajan a ⌈7 × 60 %⌉ = 5, igual que ahora; cada golpe tarda lo mismo que un hachazo (decidido con el usuario el 2026-10-18): `Rules.mineIntervalMs` se quita y `Mining` usa `Rules.chopIntervalMs` (750 ms), así que si cambia el ritmo de la tala cambia también el de la minería.
 - **Campamento:** se queda como edificio inicial del mapa, ya sin función de entrega.
 - **Misiones:** "Lleva 15 de madera al almacén" pasa a "Reúne 15 de madera"; las de 40 de madera y 20 de piedra se quedan, porque ya leen el almacén. *Construye una cantera* (`QuestId.buildQuarry`) sale de `Quests.all` y del enum: el capítulo 2 queda en reunir piedra, taller y hacha de hierro, y la línea de la aldea pasa de 11 a 10 misiones (19 → 18 en total).
 - **HUD:** `ResourceBar` se estrecha, así que hay que volver a medir `HudOverlay.buttonsBelowWidth` y `narrowWidth` con Roboto. La etiqueta "Almacén" del principio de la barra se queda.

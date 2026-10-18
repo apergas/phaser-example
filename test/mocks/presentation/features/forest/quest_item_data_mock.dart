@@ -16,14 +16,14 @@ abstract final class QuestItemDataMock {
 
   static QuestItemData get current => QuestItemData(
     line: QuestLine.village,
-    title: Internationalize.forestQuestTitle(id: QuestId.buildHouse),
-    progressText: '',
+    title: Internationalize.forestQuestTitle(id: QuestId.fellTenTrees),
+    progressText: '6/10',
     status: QuestItemStatus.current,
   );
 
   static QuestItemData get pending => QuestItemData(
     line: QuestLine.village,
-    title: Internationalize.forestQuestTitle(id: QuestId.fellTenTrees),
+    title: Internationalize.forestQuestTitle(id: QuestId.fellAnOak),
     progressText: '',
     status: QuestItemStatus.pending,
   );
@@ -52,6 +52,8 @@ abstract final class QuestItemDataMock {
   static List<QuestItemData> get withBothLines => [done, current, pending, buildForgeCurrent];
 
   static List<QuestItemData> get all => [done, current, pending];
+
+  static QuestItemData get foldedThree => folded(3);
 
   static QuestItemData pendingOf(QuestId id, {QuestLine line = QuestLine.village, String progressText = ''}) =>
       QuestItemData(

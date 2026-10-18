@@ -10,6 +10,7 @@ import 'package:farming/core/config/constants/enum/upgrade_id.dart';
 import 'package:farming/layers/presentation/features/forest/models/hud_data.dart';
 import 'package:farming/layers/presentation/features/forest/widgets/build_menu.dart';
 import 'package:farming/layers/presentation/features/forest/widgets/build_option_tile.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/game_panel.dart';
 import 'package:farming/layers/presentation/features/forest/widgets/gear_option_tile.dart';
 import 'package:farming/layers/presentation/features/forest/widgets/hero_panel.dart';
 import 'package:farming/layers/presentation/features/forest/widgets/hud_button.dart';
@@ -18,6 +19,8 @@ import 'package:farming/layers/presentation/features/forest/widgets/quest_panel.
 import 'package:farming/layers/presentation/features/forest/widgets/quest_row.dart';
 import 'package:farming/layers/presentation/features/forest/widgets/resource_bar.dart';
 import 'package:farming/layers/presentation/features/forest/widgets/skill_tile.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/upgrade_menu.dart';
+import 'package:farming/layers/presentation/features/forest/widgets/upgrade_option_tile.dart';
 
 import '../../../../../helpers/hud_test_app.dart';
 import '../../../../../helpers/roboto_font.dart';
@@ -158,9 +161,9 @@ void main() {
     expect(find.byType(BuildMenu), findsNothing);
   });
 
-  testWidgets('testWhenTheScreenIsNarrowThenResourceLabelsAreHidden', (tester) async {
+  testWidgets('testWhenTheScreenIsJustBelowTheNarrowWidthThenResourceLabelsAreHidden', (tester) async {
     // given
-    tester.view.physicalSize = const Size(400, 800);
+    tester.view.physicalSize = const Size(HudOverlay.narrowWidth - 1, 720);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
 
@@ -169,12 +172,29 @@ void main() {
 
     // then
     expect(find.text(Internationalize.forestResource(resource: Resource.wood)), findsNothing);
-    expect(find.text('0'), findsOneWidget);
+    expect(find.text(Internationalize.forestStock), findsNothing);
+    expect(find.text('0'), findsNWidgets(4));
   });
 
-  testWidgets('testWhenTheScreenIsVeryNarrowThenTheOpenMenuStaysInsideIt', (tester) async {
+  testWidgets('testWhenTheScreenIsAtTheNarrowWidthThenTheLabelledBarFitsWithEveryAmountAtFourDigits', (tester) async {
     // given
-    tester.view.physicalSize = const Size(260, 800);
+    tester.view.physicalSize = const Size(HudOverlay.narrowWidth, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // when
+    await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+
+    // then
+    expect(tester.takeException(), isNull);
+    expect(find.text(Internationalize.forestStock), findsOneWidget);
+    expect(find.text(Internationalize.forestResource(resource: Resource.wood)), findsOneWidget);
+    expect(tester.getRect(find.byType(ResourceBar)).right, lessThanOrEqualTo(HudOverlay.narrowWidth - 12));
+  });
+
+  testWidgets('testWhenTheScreenIsALowLandscapePhoneThenTheOpenMenuStaysInsideIt', (tester) async {
+    // given
+    tester.view.physicalSize = const Size(640, 360);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     await pumpOverlay(tester, HudDataMock.gathering);
@@ -184,8 +204,138 @@ void main() {
     await tester.pump();
 
     // then
-    expect(tester.getTopRight(find.byType(BuildMenu)).dx, lessThanOrEqualTo(260));
+    expect(tester.takeException(), isNull);
+    expect(tester.getTopRight(find.byType(BuildMenu)).dx, lessThanOrEqualTo(640));
     expect(tester.getTopLeft(find.byType(BuildMenu)).dx, greaterThanOrEqualTo(0));
+  });
+
+  testWidgets('testWhenTheWorkshopIsTappedThenItsMenuOpensAndBuyingReportsTheUpgradeWithoutClosingIt', (tester) async {
+    // given
+    final upgrades = <UpgradeId>[];
+    await pumpOverlay(tester, HudDataMock.withUpgradeReady, upgrades: upgrades);
+
+    // when
+    await tester.tap(find.text(Internationalize.forestWorkshop));
+    await tester.pump();
+    await tester.tap(find.byKey(UpgradeOptionTile.buyKey(UpgradeId.ironAxe)));
+    await tester.pump();
+
+    // then
+    expect(upgrades, [UpgradeId.ironAxe]);
+    expect(find.byType(UpgradeMenu), findsOneWidget);
+  });
+
+  testWidgets('testWhenTheWorkshopIsTappedTwiceThenItsMenuCloses', (tester) async {
+    // given
+    await pumpOverlay(tester, HudDataMock.withUpgradeReady);
+    await tester.tap(find.text(Internationalize.forestWorkshop));
+    await tester.pump();
+
+    // when
+    await tester.tap(find.text(Internationalize.forestWorkshop));
+    await tester.pump();
+
+    // then
+    expect(find.byType(UpgradeMenu), findsNothing);
+  });
+
+  testWidgets('testWhenArenaIsTappedWhileTheWorkshopIsOpenThenTheWorkshopCloses', (tester) async {
+    // given
+    await pumpOverlay(tester, HudDataMock.withUpgradeReady);
+    await tester.tap(find.text(Internationalize.forestWorkshop));
+    await tester.pump();
+
+    // when
+    await tester.tap(find.text(Internationalize.forestArena));
+    await tester.pump();
+
+    // then
+    expect(find.byType(UpgradeMenu), findsNothing);
+  });
+
+  testWidgets('testWhenTheGameButtonIsTappedThenThePanelOpensAndTappingAgainClosesIt', (tester) async {
+    // given
+    await pumpOverlay(tester, HudDataMock.gathering);
+
+    // when
+    await tester.tap(find.text(Internationalize.forestGame));
+    await tester.pump();
+    final opened = find.byType(GamePanel).evaluate().length;
+    await tester.tap(find.text(Internationalize.forestGame).first);
+    await tester.pump();
+
+    // then
+    expect(opened, 1);
+    expect(find.byType(GamePanel), findsNothing);
+  });
+
+  testWidgets('testWhenSaveIsTappedThenTheSaveIsRequestedAndThePanelCloses', (tester) async {
+    // given
+    var saves = 0;
+    await pumpOverlay(tester, HudDataMock.gathering, onSaveRequested: () => saves++);
+    await tester.tap(find.text(Internationalize.forestGame));
+    await tester.pump();
+
+    // when
+    await tester.tap(find.byKey(GamePanel.saveKey));
+    await tester.pump();
+
+    // then
+    expect(saves, 1);
+    expect(find.byType(GamePanel), findsNothing);
+  });
+
+  testWidgets('testWhenANewGameIsConfirmedThenItIsRequestedAndThePanelCloses', (tester) async {
+    // given
+    var newGames = 0;
+    await pumpOverlay(tester, HudDataMock.gathering, onNewGameRequested: () => newGames++);
+    await tester.tap(find.text(Internationalize.forestGame));
+    await tester.pump();
+    await tester.tap(find.byKey(GamePanel.newGameKey));
+    await tester.pump();
+
+    // when
+    await tester.tap(find.byKey(GamePanel.confirmKey));
+    await tester.pump();
+
+    // then
+    expect(newGames, 1);
+    expect(find.byType(GamePanel), findsNothing);
+  });
+
+  testWidgets('testWhenArenaIsTappedWhileTheGamePanelIsOpenThenThePanelCloses', (tester) async {
+    // given
+    await pumpOverlay(tester, HudDataMock.gathering);
+    await tester.tap(find.text(Internationalize.forestGame));
+    await tester.pump();
+
+    // when
+    await tester.tap(find.text(Internationalize.forestArena));
+    await tester.pump();
+
+    // then
+    expect(find.byType(GamePanel), findsNothing);
+  });
+
+  testWidgets('testWhenRenderedThenTheSixButtonsComeInOrder', (tester) async {
+    // given
+    tester.view.physicalSize = const Size(HudOverlay.buttonsBelowWidth, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // when
+    await pumpOverlay(tester, HudDataMock.gathering);
+
+    // then
+    final labels = tester.widgetList<HudButton>(find.byType(HudButton)).map((button) => button.label).toList();
+    expect(labels, [
+      Internationalize.forestQuests,
+      Internationalize.forestBuild,
+      Internationalize.forestWorkshop,
+      Internationalize.forestHero,
+      Internationalize.forestArena,
+      Internationalize.forestGame,
+    ]);
   });
 
   testWidgets('testWhenHeroIsTappedThenTheHeroPanelOpensAndBuyingReportsThePiece', (tester) async {
@@ -269,7 +419,7 @@ void main() {
     expect(find.byType(HeroPanel), findsNothing);
   });
 
-  testWidgets('testWhenTheScreenIsALandscapePhoneThenTheFourButtonsGoUnderTheResourceBar', (tester) async {
+  testWidgets('testWhenTheScreenIsALandscapePhoneThenTheSixButtonsGoUnderTheResourceBar', (tester) async {
     // given
     tester.view.physicalSize = const Size(640, 360);
     tester.view.devicePixelRatio = 1;
@@ -281,7 +431,7 @@ void main() {
     // then
     final buttons = find.byType(HudButton);
     final resourceBar = tester.getRect(find.byType(ResourceBar));
-    expect(buttons, findsNWidgets(4));
+    expect(buttons, findsNWidgets(6));
     expect(tester.takeException(), isNull);
     for (final button in tester.widgetList<HudButton>(buttons)) {
       final rect = tester.getRect(find.byWidget(button));
@@ -295,9 +445,9 @@ void main() {
     expect(firstButton.left, resourceBar.left);
   });
 
-  testWidgets('testWhenTheScreenIsWideThenTheFourButtonsStayOnTheResourceBarLine', (tester) async {
+  testWidgets('testWhenTheScreenIsWideThenTheSixButtonsStayOnTheResourceBarLine', (tester) async {
     // given
-    tester.view.physicalSize = const Size(1280, 720);
+    tester.view.physicalSize = const Size(1920, 1080);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
 
@@ -307,13 +457,13 @@ void main() {
     // then
     final buttons = find.byType(HudButton);
     final resourceBar = tester.getRect(find.byType(ResourceBar));
-    expect(buttons, findsNWidgets(4));
+    expect(buttons, findsNWidgets(6));
     expect(tester.takeException(), isNull);
     for (final button in tester.widgetList<HudButton>(buttons)) {
       final rect = tester.getRect(find.byWidget(button));
       expect(rect.overlaps(resourceBar), isFalse);
       expect(rect.top, lessThan(resourceBar.bottom));
-      expect(rect.right, lessThanOrEqualTo(1280));
+      expect(rect.right, lessThanOrEqualTo(1920));
     }
   });
 

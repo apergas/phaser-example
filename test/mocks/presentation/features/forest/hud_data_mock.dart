@@ -11,6 +11,7 @@ import 'hero_panel_data_mock.dart';
 import 'quest_item_data_mock.dart';
 import 'resource_item_data_mock.dart';
 import 'tool_item_data_mock.dart';
+import 'upgrade_item_data_mock.dart';
 
 abstract final class HudDataMock {
   static HudData get mock => _make(wood: 0);
@@ -22,6 +23,18 @@ abstract final class HudDataMock {
   static HudData get withPickaxeOwned => _make(wood: 0, isPickaxeOwned: true);
 
   static HudData get withHeroReadyToBuy => _make(wood: 0, hero: HeroPanelDataMock.readyToBuySword);
+
+  static HudData get withUpgradeReady => HudData(
+    stock: stockWith(wood: 15),
+    carry: CarryItemDataMock.empty,
+    tools: tools(),
+    questBadge: '0/3',
+    quests: [QuestItemDataMock.gatherWoodCurrent],
+    buildItems: [BuildItemDataMock.affordable],
+    upgradeItems: UpgradeItemDataMock.axeAffordable,
+    isBuildLocked: false,
+    hero: HeroPanelDataMock.newHero,
+  );
 
   static HudData get withSkillReadyToLearn => _make(wood: 0, hero: HeroPanelDataMock.readyToLearnDoubleStrike);
 
@@ -68,7 +81,7 @@ abstract final class HudDataMock {
     questBadge: '19/19',
     quests: QuestItemDataMock.all,
     buildItems: BuildItemDataMock.everyBlueprintUnaffordable,
-    upgradeItems: const [],
+    upgradeItems: UpgradeItemDataMock.fiveStoneShortOfTheAxe,
     isBuildLocked: false,
     hero: HeroPanelDataMock.readyToBuySword,
   );

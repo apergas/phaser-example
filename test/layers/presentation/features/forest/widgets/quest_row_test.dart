@@ -44,7 +44,7 @@ void main() {
     final decoration = rowDecorationOf(tester);
     expect(decoration.color, CustomColors.hudAccentSoft);
     expect((decoration.border! as Border).top.color, CustomColors.hudAccent);
-    expect(find.text('6/15'), findsOneWidget);
+    expect(find.text('6/10'), findsOneWidget);
   });
 
   testWidgets('testWhenQuestIsPendingThenTitleIsMutedAndRowIsNotHighlighted', (tester) async {
@@ -71,5 +71,22 @@ void main() {
     // then
     final style = tester.widget<Text>(find.text(QuestItemDataMock.current.progressText)).style!;
     expect(style.fontFeatures, contains(const FontFeature.tabularFigures()));
+  });
+
+  testWidgets('testWhenTheRowIsFoldedThenTheCheckIsFilledAndTheTitleIsMutedWithoutStrikeThrough', (tester) async {
+    // given
+    final row = QuestRow(quest: QuestItemDataMock.foldedThree);
+
+    // when
+    await tester.pumpHud(Center(child: SizedBox(width: 320, child: row)));
+
+    // then
+    final style = titleStyleOf(tester, Internationalize.forestQuestsDone(count: 3));
+    expect(style.color, CustomColors.hudMuted);
+    expect(style.decoration, isNot(TextDecoration.lineThrough));
+    final check = tester.widget<Container>(find.byKey(QuestRow.checkKey));
+    expect(((check.decoration as BoxDecoration).border! as Border).top.color, CustomColors.questDone);
+    expect(find.descendant(of: find.byKey(QuestRow.checkKey), matching: find.byType(ColoredBox)), findsOneWidget);
+    expect(rowDecorationOf(tester).color, isNull);
   });
 }

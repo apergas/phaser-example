@@ -113,7 +113,8 @@ void main() {
 
     // then
     final button = tester.widget<HudButton>(find.byKey(SkillTile.learnKey(SkillId.doubleStrike)));
-    expect((button.label, button.onPressed), (Internationalize.forestHeroUpgrade, isNull));
+    expect(button.label, Internationalize.forestHeroUpgrade);
+    expect(button.onPressed, isNull);
     expect(find.text(Internationalize.forestHeroSkillLevel(level: 2, max: 3)), findsOneWidget);
     expect(find.text(item.nextText!), findsOneWidget);
     expect(find.text(item.reasonText!), findsOneWidget);

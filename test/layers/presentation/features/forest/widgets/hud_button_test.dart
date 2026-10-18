@@ -81,4 +81,56 @@ void main() {
     expect(icon, findsOneWidget);
     expect(tester.getCenter(icon).dx, lessThan(tester.getCenter(find.text(Internationalize.forestHero)).dx));
   });
+
+  testWidgets('testWhenCompactThenOnlyTheIconAndTheBadgeAreDrawnAndTheLabelIsATooltip', (tester) async {
+    // given
+    final button = HudButton(
+      label: Internationalize.forestQuests,
+      icon: CustomIcons.quests,
+      badge: WidgetTextMock.badge,
+      isCompact: true,
+      onPressed: () {},
+    );
+
+    // when
+    await tester.pumpHud(Center(child: button));
+
+    // then
+    expect(find.text(Internationalize.forestQuests), findsNothing);
+    expect(find.byType(SvgPicture), findsOneWidget);
+    expect(find.text(WidgetTextMock.badge), findsOneWidget);
+    expect(find.byTooltip(Internationalize.forestQuests), findsOneWidget);
+  });
+
+  testWidgets('testWhenCompactAndTappedThenOnPressedIsCalled', (tester) async {
+    // given
+    var taps = 0;
+    await tester.pumpHud(
+      Center(
+        child: HudButton(
+          label: Internationalize.forestBuild,
+          icon: CustomIcons.build,
+          isCompact: true,
+          onPressed: () => taps++,
+        ),
+      ),
+    );
+
+    // when
+    await tester.tap(find.byTooltip(Internationalize.forestBuild));
+
+    // then
+    expect(taps, 1);
+  });
+
+  testWidgets('testWhenNotCompactThenThereIsNoTooltip', (tester) async {
+    // given
+    final button = HudButton(label: Internationalize.forestBuild, icon: CustomIcons.build, onPressed: () {});
+
+    // when
+    await tester.pumpHud(Center(child: button));
+
+    // then
+    expect(find.byType(Tooltip), findsNothing);
+  });
 }

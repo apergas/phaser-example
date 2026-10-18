@@ -11,3 +11,4 @@ Fallos y mejoras vistos jugando que no son de ninguna fase de las hojas de ruta.
 | [start-with-axe.md](start-with-axe.md) | Empezar con el hacha en la mano, sin la misión de recogerla |
 | [T1-tests.md](T1-tests.md) | Fase final de tests (commits `[PROJECT-T1]`) |
 | [auto-stock.md](auto-stock.md) | La madera y la piedra van directas al almacén, sin carga ni entrega |
+| [compact-hud-buttons.md](compact-hud-buttons.md) | Botones del HUD solo con icono en el móvil |

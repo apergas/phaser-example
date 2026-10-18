@@ -44,6 +44,11 @@ void main() {
     VoidCallback? onNewGameRequested,
   }) async {
     final selected = <BlueprintId>[];
+    if (tester.view.physicalSize == const Size(2400, 1800)) {
+      tester.view.physicalSize = const Size(1000, 720);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+    }
     await tester.pumpHud(
       HudOverlay(
         hud: hud,
@@ -57,6 +62,10 @@ void main() {
       ),
     );
     return selected;
+  }
+
+  Finder buttonLabelled(String label) {
+    return find.byWidgetPredicate((widget) => widget is HudButton && widget.label == label);
   }
 
   HudButton buildButton(WidgetTester tester) {
@@ -200,7 +209,7 @@ void main() {
     await pumpOverlay(tester, HudDataMock.gathering);
 
     // when
-    await tester.tap(find.text(Internationalize.forestBuild));
+    await tester.tap(find.byTooltip(Internationalize.forestBuild));
     await tester.pump();
 
     // then
@@ -441,7 +450,7 @@ void main() {
       expect(rect.right, lessThanOrEqualTo(640));
       expect(rect.bottom, lessThanOrEqualTo(360));
     }
-    final firstButton = tester.getRect(find.widgetWithText(HudButton, Internationalize.forestQuests));
+    final firstButton = tester.getRect(buttonLabelled(Internationalize.forestQuests));
     expect(firstButton.left, resourceBar.left);
   });
 
@@ -475,12 +484,12 @@ void main() {
     await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
 
     // when
-    await tester.tap(find.text(Internationalize.forestHero));
+    await tester.tap(find.byTooltip(Internationalize.forestHero));
     await tester.pump();
 
     // then
     final panel = tester.getRect(find.byType(HeroPanel));
-    final heroButton = tester.getRect(find.widgetWithText(HudButton, Internationalize.forestHero));
+    final heroButton = tester.getRect(buttonLabelled(Internationalize.forestHero));
     expect(tester.takeException(), isNull);
     expect(panel.top, greaterThanOrEqualTo(heroButton.bottom));
     expect(panel.left, tester.getRect(find.byType(ResourceBar)).left);
@@ -557,7 +566,7 @@ void main() {
       await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
 
       // when
-      await tester.tap(find.text(Internationalize.forestBuild));
+      await tester.tap(find.byTooltip(Internationalize.forestBuild));
       await tester.pump();
 
       // then
@@ -567,7 +576,7 @@ void main() {
       expect(find.descendant(of: find.byType(BuildMenu), matching: find.byType(Scrollable)), findsOneWidget);
       expect(
         menu.top,
-        greaterThanOrEqualTo(tester.getRect(find.widgetWithText(HudButton, Internationalize.forestBuild)).bottom),
+        greaterThanOrEqualTo(tester.getRect(buttonLabelled(Internationalize.forestBuild)).bottom),
       );
       expect(menu.left, greaterThanOrEqualTo(0));
       expect(menu.right, lessThanOrEqualTo(size.width));
@@ -584,7 +593,7 @@ void main() {
       await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
 
       // when
-      await tester.tap(find.text(Internationalize.forestQuests));
+      await tester.tap(find.byTooltip(Internationalize.forestQuests));
       await tester.pump();
 
       // then
@@ -596,11 +605,82 @@ void main() {
       );
       expect(
         panel.top,
-        greaterThanOrEqualTo(tester.getRect(find.widgetWithText(HudButton, Internationalize.forestQuests)).bottom),
+        greaterThanOrEqualTo(tester.getRect(buttonLabelled(Internationalize.forestQuests)).bottom),
       );
       expect(panel.left, greaterThanOrEqualTo(0));
       expect(panel.right, lessThanOrEqualTo(size.width));
       expect(panel.bottom, lessThanOrEqualTo(size.height));
     });
   }
+
+  Finder buttonRow() {
+    return find.ancestor(of: buttonLabelled(Internationalize.forestQuests), matching: find.byType(Row)).first;
+  }
+
+  testWidgets('testWhenTheLabelledButtonsAreMeasuredThenTheCompactBreakpointLeavesRoomForThem', (tester) async {
+    // given
+    const margin = 12.0;
+    const slack = 24.0;
+    tester.view.physicalSize = const Size(1920, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // when
+    await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+
+    // then
+    final buttons = tester.getSize(buttonRow()).width;
+    expect(2 * margin + buttons + slack, lessThanOrEqualTo(HudOverlay.compactButtonsWidth));
+    expect(2 * margin + buttons + slack, greaterThan(HudOverlay.compactButtonsWidth - 10));
+  });
+
+  testWidgets('testWhenTheScreenIsJustBelowTheCompactBreakpointThenTheButtonsShowOnlyTheirIcons', (tester) async {
+    // given
+    tester.view.physicalSize = const Size(HudOverlay.compactButtonsWidth - 1, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // when
+    await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+
+    // then
+    final buttons = tester.widgetList<HudButton>(find.byType(HudButton));
+    expect(buttons.every((button) => button.isCompact), isTrue);
+    expect(find.text(Internationalize.forestQuests), findsNothing);
+    expect(find.byTooltip(Internationalize.forestQuests), findsOneWidget);
+    expect(find.byTooltip(Internationalize.forestGame), findsOneWidget);
+  });
+
+  testWidgets('testWhenTheScreenIsAtTheCompactBreakpointThenTheButtonsShowTheirLabels', (tester) async {
+    // given
+    tester.view.physicalSize = const Size(HudOverlay.compactButtonsWidth, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // when
+    await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+
+    // then
+    final buttons = tester.widgetList<HudButton>(find.byType(HudButton));
+    expect(buttons.every((button) => !button.isCompact), isTrue);
+    expect(find.text(Internationalize.forestQuests), findsOneWidget);
+    expect(find.byType(Tooltip), findsNothing);
+  });
+
+  testWidgets('testWhenTheScreenIsALandscapePhoneThenTheCompactButtonsFitWithoutBeingScaled', (tester) async {
+    // given
+    tester.view.physicalSize = const Size(640, 360);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // when
+    await pumpOverlay(tester, HudDataMock.withEveryResourceAndTool);
+
+    // then
+    expect(tester.getSize(buttonRow()).width, lessThanOrEqualTo(640 - 24));
+    for (final button in tester.widgetList<HudButton>(find.byType(HudButton))) {
+      final finder = find.byWidget(button);
+      expect(tester.getRect(finder).height, tester.getSize(finder).height);
+    }
+  });
 }

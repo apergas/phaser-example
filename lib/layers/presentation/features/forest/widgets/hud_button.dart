@@ -11,13 +11,34 @@ class HudButton extends StatelessWidget {
   final String? badge;
   final VoidCallback? onPressed;
   final bool isActive;
+  final bool isCompact;
 
-  const HudButton({super.key, required this.label, this.icon, this.badge, this.onPressed, this.isActive = false});
+  const HudButton({
+    super.key,
+    required this.label,
+    this.icon,
+    this.badge,
+    this.onPressed,
+    this.isActive = false,
+    this.isCompact = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final badgeText = badge;
     final iconPath = icon;
+    final content = Padding(
+      padding: EdgeInsets.symmetric(horizontal: isCompact ? 10 : 18, vertical: 10),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          if (iconPath != null) SvgPicture.asset(iconPath, width: 18, height: 18, excludeFromSemantics: true),
+          if (!isCompact) Text(label, style: CustomTextStyles.system15w600.copyWith(color: CustomColors.hudText)),
+          if (badgeText != null) _badge(text: badgeText),
+        ],
+      ),
+    );
     return Opacity(
       opacity: onPressed == null ? 0.5 : 1,
       child: HudPanel(
@@ -28,18 +49,7 @@ class HudButton extends StatelessWidget {
             onTap: onPressed,
             borderRadius: BorderRadius.circular(6),
             hoverColor: CustomColors.hudAccentSoft,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 8,
-                children: [
-                  if (iconPath != null) SvgPicture.asset(iconPath, width: 18, height: 18, excludeFromSemantics: true),
-                  Text(label, style: CustomTextStyles.system15w600.copyWith(color: CustomColors.hudText)),
-                  if (badgeText != null) _badge(text: badgeText),
-                ],
-              ),
-            ),
+            child: isCompact ? Tooltip(message: label, child: content) : content,
           ),
         ),
       ),

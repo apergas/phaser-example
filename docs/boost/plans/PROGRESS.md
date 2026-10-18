@@ -54,6 +54,7 @@
 | [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | ✅ | `develop` (#71) |
 | [T1 Tests](2026-10-17-extras/T1-tests.md) | ✅ | `develop` (1206 tests, 260 en Chrome) |
 | [Recursos directos al almacén, sin carga, almacén ni cantera](2026-10-17-extras/auto-stock.md) | ✅ | `develop` (1179 tests, 276 en Chrome) |
+| [Botones del HUD en el móvil](2026-10-17-extras/compact-hud-buttons.md) | ✅ | `develop` |
 
 ## Siguiente paso
 
@@ -64,3 +65,4 @@
 | ✅ | Prueba manual del bloque de la aldea en Chrome (tala, carga y entrega en el campamento, autoguardado al recargar, *Partida* ▸ *Guardar* / *Nueva partida*) y arranque en Android 16; iOS sin probar | — |
 | ✅ | T1 Tests | `feature/PROJECT-T1-tests` → `develop` |
 | ✅ | Recursos directos al almacén | `feature/PROJECT-X-auto-stock` → `develop` |
+| ✅ | Botones del HUD en el móvil | `feature/PROJECT-X-compact-hud-buttons` → `develop` |

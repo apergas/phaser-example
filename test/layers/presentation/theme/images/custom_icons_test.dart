@@ -71,4 +71,15 @@ void main() {
     // then
     expect(exists, [true, true]);
   });
+
+  test('testWhenResolvingTheQuestsAndBuildIconsThenTheSvgFilesExist', () {
+    // given
+    const paths = [CustomIcons.quests, CustomIcons.build];
+
+    // when
+    final exists = paths.map((path) => File(path).existsSync()).toList();
+
+    // then
+    expect(exists, [true, true]);
+  });
 }

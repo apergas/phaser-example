@@ -105,6 +105,8 @@ C1 ─▶ C2 ─▶ C4 ─▶ C6                      C3 ─▶ C5 ──┬─�
 
 ### 3.0 Rama de integración de la arena (decidido el 2026-10-07)
 
+> **Desde el 2026-10-18 ya no hay ramas de integración:** a petición del usuario, toda fase o mejora sale de `develop` y vuelve a `develop`. `feature/PROJECT-X-arena` ya está unida y borrada; esta sección queda como historia.
+
 La arena no entra en `develop` fase a fase. Se acumula en una rama de integración, **`feature/PROJECT-X-arena`**, que se fusiona en `develop` **una sola vez**, cuando el modo esté completo. Así `develop`, `main` y la web publicada nunca tienen la arena a medias.
 
 - **Ramas de fase:** cada fase (por ejemplo `feature/PROJECT-C6-barbarians`; commits y PR `[PROJECT-C6]: …`, ver *Git* en el README de la aldea) sale de `feature/PROJECT-X-arena` (ya con las anteriores fusionadas) y su PR va hacia esa rama, no hacia `develop`.

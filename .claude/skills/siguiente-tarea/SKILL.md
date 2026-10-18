@@ -49,11 +49,8 @@ Confirma la elección con el usuario antes de asignarla.
 ```bash
 gh issue edit <n> --repo apergas/phaser-example --add-assignee @me
 gh issue comment <n> --repo apergas/phaser-example --body "En curso: rama feature/PROJECT-<fase>-<tarea>"
-# Aldea (fases F*): sale de la rama de integración de la aldea
-git switch feature/PROJECT-X-town && git pull && git switch -c feature/PROJECT-<fase>-<tarea>   # p. ej. feature/PROJECT-F1-domain
-# Arena (fases C*): sale de la rama de integración de la arena
-# git switch feature/PROJECT-X-arena && git pull && git switch -c feature/PROJECT-<fase>-<tarea>   # p. ej. feature/PROJECT-C6-barbarians
-# La alineación con iOS (`X-ios-alignment.md`, commits `[PROJECT-X]`) sale de `feature/PROJECT-X-arena` como las fases C.
+# Toda fase o mejora sale de develop (sin ramas de integración desde el 2026-10-18)
+git switch develop && git pull && git switch -c feature/PROJECT-<fase>-<tarea>   # p. ej. feature/PROJECT-F9-food; mejoras: feature/PROJECT-X-<descripcion>
 flutter pub get
 ```
 

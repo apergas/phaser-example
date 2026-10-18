@@ -136,6 +136,8 @@ F1 ─▶ F3 ─▶ F4 ─▶ F5 ──────┐                F2 ─▶ 
 
 ### 3.0 Rama de integración de la aldea (decidido el 2026-10-07)
 
+> **Desde el 2026-10-18 ya no hay ramas de integración:** a petición del usuario, toda fase o mejora sale de `develop` y vuelve a `develop`. `feature/PROJECT-X-town` ya está unida y borrada; esta sección queda como historia.
+
 Las fases de la aldea no van directamente a `develop`. Se acumulan en **`feature/PROJECT-X-town`**, que pasa a `develop` **por bloques jugables**:
 
 | Bloque | Fases | Qué se puede jugar al pasar a `develop` |

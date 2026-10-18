@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
 import 'package:farming/core/config/constants/enum/decoration_kind.dart';
-import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/core/config/constants/enum/tree_kind.dart';
 import 'package:farming/layers/presentation/features/forest/game/atlas/lpc_atlas.dart';
 import 'package:farming/layers/presentation/features/forest/game/atlas/sprite_names.dart';
@@ -49,7 +48,6 @@ void main() {
       SpriteNames.stump,
       SpriteNames.sapling,
       SpriteNames.rock,
-      for (final kind in ToolKind.values) SpriteNames.item(kind),
       for (final kind in TreeKind.values) SpriteNames.tree(kind),
       for (final kind in DecorationKind.values) SpriteNames.decoration(kind),
     ];

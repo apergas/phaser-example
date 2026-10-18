@@ -4,13 +4,11 @@ import 'package:farming/core/config/constants/enum/decoration_kind.dart';
 import 'package:farming/core/config/constants/enum/forest/facing.dart';
 import 'package:farming/core/config/constants/enum/gear_id.dart';
 import 'package:farming/core/config/constants/enum/skill_id.dart';
-import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/core/config/constants/enum/tree_kind.dart';
 import 'package:farming/layers/domain/entities/building/building_entity.dart';
 import 'package:farming/layers/domain/entities/decoration/decoration_entity.dart';
 import 'package:farming/layers/domain/entities/game/world_snapshot_entity.dart';
 import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
-import 'package:farming/layers/domain/entities/item/ground_item_entity.dart';
 import 'package:farming/layers/domain/entities/tree/stump_entity.dart';
 import 'package:farming/layers/domain/entities/rock/rock_entity.dart';
 import 'package:farming/layers/domain/entities/tree/tree_entity.dart';
@@ -38,12 +36,6 @@ abstract final class ForestDataMock {
     trunkRadius: 12,
     woodYield: 6,
     hitsToFell: 5,
-  );
-
-  static final GroundItemEntity axe = GroundItemEntity(
-    id: 'axe',
-    kind: ToolKind.axe,
-    position: const PositionEntity(x: 60, y: 60),
   );
 
   static final DecorationEntity grass = DecorationEntity(
@@ -103,7 +95,6 @@ abstract final class ForestDataMock {
     width: 400,
     height: 300,
     trees: trees ?? [tree, frontTree],
-    items: [axe],
     decorations: [grass],
     buildings: buildings,
     stumps: stumps,
@@ -114,7 +105,6 @@ abstract final class ForestDataMock {
     width: 400,
     height: 300,
     trees: [tree, frontTree],
-    items: [axe],
     decorations: [grass],
     buildings: const [],
     stumps: const [],
@@ -125,21 +115,9 @@ abstract final class ForestDataMock {
     width: 400,
     height: 300,
     trees: [frontTree],
-    items: [axe],
     decorations: [grass],
     buildings: const [],
     stumps: [stump],
-    rocks: const [],
-  );
-
-  static final WorldSnapshotEntity worldWithoutAxe = WorldSnapshotEntity(
-    width: 400,
-    height: 300,
-    trees: [tree, frontTree],
-    items: const [],
-    decorations: [grass],
-    buildings: const [],
-    stumps: const [],
     rocks: const [],
   );
 
@@ -147,7 +125,6 @@ abstract final class ForestDataMock {
     width: 400,
     height: 300,
     trees: [tree, frontTree],
-    items: [axe],
     decorations: [grass],
     buildings: [house],
     stumps: const [],
@@ -158,7 +135,6 @@ abstract final class ForestDataMock {
     width: 400,
     height: 300,
     trees: [tree, frontTree],
-    items: [axe],
     decorations: [grass],
     buildings: [halfBuiltHouse],
     stumps: const [],
@@ -202,14 +178,6 @@ abstract final class ForestDataMock {
     player: player,
     effects: const [TreeFelledEffect(treeId: 'tree-1', fromX: 90, wood: 5)],
   );
-
-  static final ForestData axePickedUp = ForestData(
-    world: worldWithoutAxe,
-    player: player,
-    effects: const [ItemPickedUpEffect(itemId: 'axe')],
-  );
-
-  static final ForestData axeGone = ForestData(world: worldWithoutAxe, player: player);
 
   static final ForestData housePlaced = ForestData(
     world: worldWithHouse,

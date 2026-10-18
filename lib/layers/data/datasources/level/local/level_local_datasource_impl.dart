@@ -5,7 +5,6 @@ import 'package:injectable/injectable.dart';
 import '../../../../../core/utils/seeded_random.dart';
 import '../source/level_local_datasource.dart';
 import 'dbo/decoration_dbo.dart';
-import 'dbo/item_dbo.dart';
 import 'dbo/level_dbo.dart';
 import 'dbo/point_dbo.dart';
 import 'dbo/rock_dbo.dart';
@@ -43,7 +42,7 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
   static const int _rockCount = 12;
   static const double _minRockSpacing = 200;
   static const double _rockTreeClearance = 60;
-  static const double _rockItemClearance = 80;
+  static const double _rockFreeSpotClearance = 80;
   static const double _rockDecorationClearance = 48;
   static const int _decorationSeed = 1337;
   static const int _decorationAttempts = 107;
@@ -67,7 +66,7 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
   static const double _spawnX = _width / 2;
   static const double _spawnY = _height / 2;
   static const PointDBO _playerStart = PointDBO(x: _spawnX, y: _spawnY);
-  static const ItemDBO _pickaxe = ItemDBO(id: 'pickaxe', kind: 'pickaxe', x: _spawnX + 212, y: _spawnY + 212);
+  static const PointDBO _rockFreeSpot = PointDBO(x: _spawnX + 212, y: _spawnY + 212);
 
   const LevelLocalDatasourceImpl();
 
@@ -80,7 +79,6 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
       height: _height,
       playerStart: _playerStart,
       trees: trees,
-      items: const [_pickaxe],
       decorations: _scatterDecorations(trees).where((decoration) => _isClear(decoration, rocks)).toList(),
       rocks: rocks,
     );
@@ -117,11 +115,11 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
       final x = _borderMargin + random.next() * (_width - _borderMargin * 2);
       final y = _borderMargin + random.next() * (_height - _borderMargin * 2);
       final clearOfSpawn = _distance(x, y, _spawnX, _spawnY) >= _spawnClearance;
-      final clearOfPickaxe = _distance(x, y, _pickaxe.x!, _pickaxe.y!) >= _rockItemClearance;
+      final clearOfFreeSpot = _distance(x, y, _rockFreeSpot.x!, _rockFreeSpot.y!) >= _rockFreeSpotClearance;
       final clearOfTrees =
           !_isUnderTree(x, y, trees) && trees.every((tree) => _distance(x, y, tree.x!, tree.y!) >= _rockTreeClearance);
       final apart = rocks.every((rock) => _distance(x, y, rock.x!, rock.y!) >= _minRockSpacing);
-      if (clearOfSpawn && clearOfPickaxe && clearOfTrees && apart) {
+      if (clearOfSpawn && clearOfFreeSpot && clearOfTrees && apart) {
         rocks.add(RockDBO(id: 'rock-${rocks.length + 1}', x: x, y: y));
       }
     }
@@ -131,9 +129,7 @@ class LevelLocalDatasourceImpl implements LevelLocalDatasource {
   bool _isClear(DecorationDBO decoration, List<RockDBO> rocks) {
     final x = decoration.x!;
     final y = decoration.y!;
-    final onRock = rocks.any((rock) => _distance(x, y, rock.x!, rock.y!) < _rockDecorationClearance);
-    final onPickaxe = _distance(x, y, _pickaxe.x!, _pickaxe.y!) < _decorationSpacing;
-    return !onRock && !onPickaxe;
+    return !rocks.any((rock) => _distance(x, y, rock.x!, rock.y!) < _rockDecorationClearance);
   }
 
   bool _isUnderTree(double x, double y, List<TreeDBO> trees) => trees.any(

@@ -3,7 +3,6 @@ import 'package:collection/collection.dart';
 import 'save_building_dbo.dart';
 import 'save_decoration_dbo.dart';
 import 'save_hero_dbo.dart';
-import 'save_item_dbo.dart';
 import 'save_json.dart';
 import 'save_player_dbo.dart';
 import 'save_rock_dbo.dart';
@@ -25,7 +24,6 @@ class SaveDBO {
   final List<SaveTreeDBO>? trees;
   final List<SaveStumpDBO>? stumps;
   final List<SaveRockDBO>? rocks;
-  final List<SaveItemDBO>? items;
   final List<SaveDecorationDBO>? decorations;
   final List<SaveBuildingDBO>? buildings;
   final Map<String, int>? idCounters;
@@ -42,7 +40,6 @@ class SaveDBO {
     this.trees,
     this.stumps,
     this.rocks,
-    this.items,
     this.decorations,
     this.buildings,
     this.idCounters,
@@ -65,7 +62,6 @@ class SaveDBO {
       trees: readObjectList(json['trees'], SaveTreeDBO.fromJson),
       stumps: readObjectList(json['stumps'], SaveStumpDBO.fromJson),
       rocks: readObjectList(json['rocks'], SaveRockDBO.fromJson),
-      items: readObjectList(json['items'], SaveItemDBO.fromJson),
       decorations: readObjectList(json['decorations'], SaveDecorationDBO.fromJson),
       buildings: readObjectList(json['buildings'], SaveBuildingDBO.fromJson),
       idCounters: readIntMap(json['idCounters']),
@@ -84,7 +80,6 @@ class SaveDBO {
     'trees': trees?.map((tree) => tree.toJson()).toList(),
     'stumps': stumps?.map((stump) => stump.toJson()).toList(),
     'rocks': rocks?.map((rock) => rock.toJson()).toList(),
-    'items': items?.map((item) => item.toJson()).toList(),
     'decorations': decorations?.map((decoration) => decoration.toJson()).toList(),
     'buildings': buildings?.map((building) => building.toJson()).toList(),
     'idCounters': idCounters,
@@ -104,7 +99,6 @@ class SaveDBO {
       const ListEquality<SaveTreeDBO>().equals(other.trees, trees) &&
       const ListEquality<SaveStumpDBO>().equals(other.stumps, stumps) &&
       const ListEquality<SaveRockDBO>().equals(other.rocks, rocks) &&
-      const ListEquality<SaveItemDBO>().equals(other.items, items) &&
       const ListEquality<SaveDecorationDBO>().equals(other.decorations, decorations) &&
       const ListEquality<SaveBuildingDBO>().equals(other.buildings, buildings) &&
       const MapEquality<String, int>().equals(other.idCounters, idCounters) &&
@@ -122,7 +116,6 @@ class SaveDBO {
     const ListEquality<SaveTreeDBO>().hash(trees),
     const ListEquality<SaveStumpDBO>().hash(stumps),
     const ListEquality<SaveRockDBO>().hash(rocks),
-    const ListEquality<SaveItemDBO>().hash(items),
     const ListEquality<SaveDecorationDBO>().hash(decorations),
     const ListEquality<SaveBuildingDBO>().hash(buildings),
     const MapEquality<String, int>().hash(idCounters),
@@ -132,6 +125,6 @@ class SaveDBO {
   @override
   String toString() =>
       'SaveDBO(version: $version, width: $width, height: $height, player: $player, hero: $hero, stats: $stats, '
-      'stock: $stock, trees: $trees, stumps: $stumps, rocks: $rocks, items: $items, decorations: $decorations, '
+      'stock: $stock, trees: $trees, stumps: $stumps, rocks: $rocks, decorations: $decorations, '
       'buildings: $buildings, idCounters: $idCounters, completedQuests: $completedQuests)';
 }

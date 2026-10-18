@@ -6,7 +6,6 @@ import 'package:farming/layers/domain/entities/game/stats_entity.dart';
 import 'package:farming/layers/domain/entities/rock/rock_entity.dart';
 import 'package:farming/layers/domain/entities/tree/stump_entity.dart';
 import 'package:farming/layers/domain/entities/hero/hero_entity.dart';
-import 'package:farming/layers/domain/entities/item/ground_item_entity.dart';
 import 'package:farming/layers/domain/entities/player/player_entity.dart';
 import 'package:farming/layers/domain/entities/tree/tree_entity.dart';
 import 'package:farming/layers/domain/world/world.dart';
@@ -20,7 +19,6 @@ abstract final class WorldMock {
   static World make({
     PlayerEntity player = PlayerEntityMock.mock,
     List<TreeEntity> trees = const [],
-    List<GroundItemEntity> items = const [],
     List<RockEntity> rocks = const [],
     List<BuildingEntity> buildings = const [],
     HeroEntity hero = HeroEntityMock.mock,
@@ -30,7 +28,6 @@ abstract final class WorldMock {
       height: 1000,
       player: player,
       trees: trees,
-      items: items,
       rocks: rocks,
       buildings: buildings,
       hero: hero,
@@ -44,7 +41,6 @@ abstract final class WorldMock {
     List<TreeEntity> trees = const [],
     List<StumpEntity> stumps = const [],
     List<RockEntity> rocks = const [],
-    List<GroundItemEntity> items = const [],
     List<BuildingEntity> buildings = const [],
     HeroEntity hero = HeroEntityMock.mock,
     StatsEntity stats = const StatsEntity(),
@@ -58,7 +54,6 @@ abstract final class WorldMock {
       trees: trees,
       stumps: stumps,
       rocks: rocks,
-      items: items,
       decorations: const [],
       buildings: buildings,
       hero: hero,

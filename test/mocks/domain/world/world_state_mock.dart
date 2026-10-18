@@ -11,7 +11,6 @@ abstract final class WorldStateMock {
       height: height,
       player: PlayerEntityMock.mock,
       trees: [TreeEntityMock.mock],
-      items: [],
       decorations: [],
       rocks: rocks,
       buildings: [],

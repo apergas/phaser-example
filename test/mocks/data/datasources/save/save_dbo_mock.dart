@@ -7,7 +7,6 @@ import 'package:farming/layers/data/datasources/save/local/dbo/save_tree_dbo.dar
 import 'save_building_dbo_mock.dart';
 import 'save_decoration_dbo_mock.dart';
 import 'save_hero_dbo_mock.dart';
-import 'save_item_dbo_mock.dart';
 import 'save_player_dbo_mock.dart';
 import 'save_rock_dbo_mock.dart';
 import 'save_stats_dbo_mock.dart';
@@ -53,7 +52,6 @@ abstract final class SaveDBOMock {
       trees: trees,
       stumps: const [SaveStumpDBOMock.elsewhereAlmostSapling, SaveStumpDBOMock.otherSapling],
       rocks: const [SaveRockDBOMock.onceHit],
-      items: const [SaveItemDBOMock.axe],
       decorations: const [SaveDecorationDBOMock.rock],
       buildings: buildings,
       idCounters: idCounters,

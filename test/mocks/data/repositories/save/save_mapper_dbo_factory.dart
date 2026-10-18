@@ -1,6 +1,5 @@
 import 'package:farming/layers/data/repositories/save/mappers/save_building_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_decoration_mapper_dbo.dart';
-import 'package:farming/layers/data/repositories/save/mappers/save_ground_item_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_hero_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_inventory_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_mapper_dbo.dart';
@@ -20,7 +19,6 @@ SaveMapperDBO makeSaveMapperDBO() {
     treeMapperDBO: SaveTreeMapperDBO(positionMapperDBO: positionMapperDBO),
     stumpMapperDBO: SaveStumpMapperDBO(positionMapperDBO: positionMapperDBO),
     rockMapperDBO: SaveRockMapperDBO(positionMapperDBO: positionMapperDBO),
-    groundItemMapperDBO: SaveGroundItemMapperDBO(positionMapperDBO: positionMapperDBO),
     decorationMapperDBO: SaveDecorationMapperDBO(positionMapperDBO: positionMapperDBO),
     buildingMapperDBO: SaveBuildingMapperDBO(positionMapperDBO: positionMapperDBO),
     stockMapperDBO: SaveStockMapperDBO(),

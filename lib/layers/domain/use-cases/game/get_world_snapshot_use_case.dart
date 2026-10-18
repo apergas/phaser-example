@@ -15,7 +15,6 @@ final class GetWorldSnapshotUseCase {
       width: world.width,
       height: world.height,
       trees: world.trees,
-      items: world.items,
       decorations: world.decorations,
       buildings: world.buildings,
       stumps: world.stumps,

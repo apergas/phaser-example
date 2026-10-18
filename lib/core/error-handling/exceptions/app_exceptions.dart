@@ -45,16 +45,6 @@ final class UnknownDecorationKindException extends AppException<String> {
   const UnknownDecorationKindException({required String super.data});
 }
 
-final class UnknownItemKindException extends AppException<String> {
-  @override
-  String get title => Internationalize.errorUnknownItemKindTitle;
-
-  @override
-  String get message => Internationalize.errorUnknownItemKindMessage(detail: data!);
-
-  const UnknownItemKindException({required String super.data});
-}
-
 final class NoGameInProgressException extends AppException<Object?> {
   @override
   String get title => Internationalize.errorNoGameInProgressTitle;

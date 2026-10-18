@@ -1,6 +1,5 @@
 import '../../../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../../../../core/config/constants/enum/decoration_kind.dart';
-import '../../../../../../core/config/constants/enum/tool_kind.dart';
 import '../../../../../../core/config/constants/enum/tree_kind.dart';
 import '../../../../../../core/utils/kebab_case.dart';
 
@@ -19,10 +18,5 @@ abstract final class SpriteNames {
     BlueprintId.armory => 'armory',
     BlueprintId.mageTower => 'mage-tower',
     BlueprintId.workshop => 'workshop',
-  };
-
-  static String item(ToolKind kind) => switch (kind) {
-    ToolKind.axe => 'axe-pickup',
-    ToolKind.pickaxe => 'pickaxe-pickup',
   };
 }

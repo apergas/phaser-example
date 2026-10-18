@@ -13,7 +13,7 @@ abstract final class StatsRecording {
   static StatsEntity _recorded(GameEventEntity event, WorldState state) {
     final stats = state.stats;
     return switch (event) {
-      ItemPickedUpEventEntity() || PlayerBlockedEventEntity() || TreeHitEventEntity() => stats,
+      PlayerBlockedEventEntity() || TreeHitEventEntity() => stats,
       TreeFelledEventEntity(:final treeId) => stats.fellingTree(state.stumps[treeId]?.kind),
       BuildingHammeredEventEntity() => stats,
       BuildingCompletedEventEntity() => stats.completingBuilding(),

@@ -17,7 +17,6 @@ import 'package:farming/layers/domain/world/world.dart';
 
 import '../entities/building/building_entity_mock.dart';
 import '../entities/decoration/decoration_entity_mock.dart';
-import '../entities/item/ground_item_entity_mock.dart';
 import '../entities/rock/rock_entity_mock.dart';
 import '../entities/tree/stump_entity_mock.dart';
 import '../entities/tree/tree_entity_mock.dart';
@@ -70,7 +69,6 @@ abstract final class SaveScenarioMock {
       StumpEntityMock.sapling.copyWith(id: 'tree-9'),
     ],
     rocks: [RockEntityMock.onceHit],
-    items: [GroundItemEntityMock.mock],
     decorations: [DecorationEntityMock.mock],
     buildings: [
       BuildingEntityMock.finishedHouse,

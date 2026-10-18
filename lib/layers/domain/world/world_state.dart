@@ -7,7 +7,6 @@ import '../entities/game/stats_entity.dart';
 import '../entities/geometry/obstacle_entity.dart';
 import '../entities/geometry/position_entity.dart';
 import '../entities/hero/hero_entity.dart';
-import '../entities/item/ground_item_entity.dart';
 import '../entities/player/player_entity.dart';
 import '../entities/rock/rock_entity.dart';
 import '../entities/stock/stock_entity.dart';
@@ -22,7 +21,6 @@ class WorldState {
     required this.height,
     required this.player,
     required List<TreeEntity> trees,
-    required List<GroundItemEntity> items,
     required List<DecorationEntity> decorations,
     required List<RockEntity> rocks,
     required List<BuildingEntity> buildings,
@@ -33,7 +31,6 @@ class WorldState {
     Map<String, int> idCounters = const {},
   }) : assert(width > 0 && height > 0),
        trees = {for (final tree in trees) tree.id: tree},
-       items = {for (final item in items) item.id: item},
        rocks = {for (final rock in rocks) rock.id: rock},
        buildings = {for (final building in buildings) building.id: building},
        stumps = {for (final stump in stumps) stump.id: stump},
@@ -46,7 +43,6 @@ class WorldState {
   HeroEntity hero;
   final List<DecorationEntity> decorations;
   final Map<String, TreeEntity> trees;
-  final Map<String, GroundItemEntity> items;
   final Map<String, RockEntity> rocks;
   final Map<String, BuildingEntity> buildings;
   final Map<String, StumpEntity> stumps;

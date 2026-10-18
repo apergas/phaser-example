@@ -44,7 +44,6 @@ class SaveMigrationMapperDBO {
       trees: dbo.trees,
       stumps: dbo.stumps,
       rocks: dbo.rocks,
-      items: dbo.items,
       decorations: dbo.decorations,
       buildings: dbo.buildings?.where(_isKept).toList(),
       idCounters: dbo.idCounters,

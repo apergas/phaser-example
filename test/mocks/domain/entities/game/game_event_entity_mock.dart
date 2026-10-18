@@ -1,13 +1,10 @@
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
 import 'package:farming/core/config/constants/enum/quest_id.dart';
-import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
 
 import '../tree/tree_entity_mock.dart';
 
 abstract final class GameEventEntityMock {
-  static const ItemPickedUpEventEntity itemPickedUp = ItemPickedUpEventEntity(itemId: 'axe-1', kind: ToolKind.axe);
-
   static const PlayerBlockedEventEntity playerBlocked = PlayerBlockedEventEntity();
 
   static const TreeHitEventEntity treeHit = TreeHitEventEntity(treeId: 'tree-1', hitsRemaining: 4);
@@ -45,7 +42,6 @@ abstract final class GameEventEntityMock {
   static const RockBrokenEventEntity rockBroken = RockBrokenEventEntity(rockId: 'rock-1', stone: 8);
 
   static const List<GameEventEntity> all = [
-    itemPickedUp,
     playerBlocked,
     treeHit,
     treeFelled,
@@ -58,7 +54,6 @@ abstract final class GameEventEntityMock {
     final treeId = 'tree-1';
     final buildingId = 'building-1';
     return [
-      ItemPickedUpEventEntity(itemId: 'axe-1', kind: ToolKind.axe),
       PlayerBlockedEventEntity(),
       TreeHitEventEntity(treeId: treeId, hitsRemaining: 4),
       TreeFelledEventEntity(treeId: treeId, wood: 6),

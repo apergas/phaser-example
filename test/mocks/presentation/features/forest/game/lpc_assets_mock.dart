@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
 import 'package:farming/core/config/constants/enum/decoration_kind.dart';
-import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/core/config/constants/enum/tree_kind.dart';
 import 'package:farming/layers/presentation/features/forest/game/atlas/alpha_mask.dart';
 import 'package:farming/layers/presentation/features/forest/game/atlas/atlas_frame.dart';
@@ -18,7 +17,6 @@ abstract final class LpcAssetsMock {
     SpriteNames.stump,
     SpriteNames.sapling,
     SpriteNames.rock,
-    for (final kind in ToolKind.values) SpriteNames.item(kind),
     for (final kind in TreeKind.values) SpriteNames.tree(kind),
     for (final kind in DecorationKind.values) SpriteNames.decoration(kind),
   ];
@@ -36,7 +34,7 @@ abstract final class LpcAssetsMock {
             width: frameSize,
             height: frameSize,
             pivotX: 0.5,
-            pivotY: ToolKind.values.map(SpriteNames.item).contains(name) ? 0.5 : 1,
+            pivotY: 1,
           ),
       },
       forestMask: AlphaMask(width: frameSize, height: frameSize, rgba: _rightHalfOpaque()),

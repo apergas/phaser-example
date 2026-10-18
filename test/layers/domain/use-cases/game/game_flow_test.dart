@@ -55,12 +55,11 @@ void main() {
     // given
     when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.wholeLoop()));
     final chopTime = 2000 + Rules.chopIntervalMs * TreeEntityMock.mock.hitsToFell;
-    const axeSpot = GameScenarioMock.wholeLoopAxeSpot;
+    const spot = GameScenarioMock.wholeLoopSpot;
     const site = GameScenarioMock.houseSite;
 
     // when
-    final withoutAxe = chopTree(treeId: 'tree-1');
-    movePlayer(x: axeSpot.x, y: axeSpot.y);
+    movePlayer(x: spot.x, y: spot.y);
     advanceFor(500);
     final chopResults = ['tree-1', 'tree-2', 'tree-3'].map((treeId) {
       final result = chopTree(treeId: treeId);
@@ -72,7 +71,6 @@ void main() {
     final events = advanceFor(6000 + Rules.hammerIntervalMs * 8);
 
     // then
-    expect(withoutAxe, ChopResult.noAxe);
     expect(chopResults, List.filled(3, ChopResult.ok));
     expect(woodAfterChopping, 18);
     expect(construction, isA<ConstructionStartedEntity>());

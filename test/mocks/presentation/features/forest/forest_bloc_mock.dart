@@ -1,6 +1,13 @@
 import 'package:mockito/mockito.dart';
 import 'package:farming/layers/domain/entities/game/game_session_entity.dart';
 import 'package:farming/layers/domain/use-cases/game/advance_game_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/buy_upgrade_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/deposit_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/get_stock_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/get_upgrade_options_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/mine_rock_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/new_game_use_case.dart';
+import 'package:farming/layers/domain/use-cases/game/save_game_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/can_place_building_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/chop_tree_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/resume_construction_use_case.dart';
@@ -32,9 +39,12 @@ abstract final class ForestBlocMock {
     Exception? loadError,
     Set<int>? failingLoads,
     bool isTouchInput = false,
+    MockGameSaveRepository? saveRepository,
   }) {
     final levelRepository = MockLevelRepository();
     final sessionRepository = MockGameSessionRepository();
+    final saves = saveRepository ?? MockGameSaveRepository();
+    if (saveRepository == null) when(saves.load()).thenReturn(null);
     GameSessionEntity? session;
     var loads = 0;
     when(levelRepository.load()).thenAnswer((_) {
@@ -47,22 +57,37 @@ abstract final class ForestBlocMock {
     });
     when(sessionRepository.current()).thenAnswer((_) => session!);
     return ForestBloc(
-      startGameUseCase: StartGameUseCase(levelRepository: levelRepository, sessionRepository: sessionRepository),
+      startGameUseCase: StartGameUseCase(
+        levelRepository: levelRepository,
+        sessionRepository: sessionRepository,
+        saveRepository: saves,
+      ),
       movePlayerUseCase: MovePlayerUseCase(sessionRepository: sessionRepository),
       chopTreeUseCase: ChopTreeUseCase(sessionRepository: sessionRepository),
+      mineRockUseCase: MineRockUseCase(sessionRepository: sessionRepository),
       canPlaceBuildingUseCase: CanPlaceBuildingUseCase(sessionRepository: sessionRepository),
       constructBuildingUseCase: ConstructBuildingUseCase(sessionRepository: sessionRepository),
       resumeConstructionUseCase: ResumeConstructionUseCase(sessionRepository: sessionRepository),
+      depositUseCase: DepositUseCase(sessionRepository: sessionRepository),
       advanceGameUseCase: AdvanceGameUseCase(sessionRepository: sessionRepository),
       getPlayerStatusUseCase: GetPlayerStatusUseCase(sessionRepository: sessionRepository),
       getWorldSnapshotUseCase: GetWorldSnapshotUseCase(sessionRepository: sessionRepository),
       getBuildOptionsUseCase: GetBuildOptionsUseCase(sessionRepository: sessionRepository),
+      getStockUseCase: GetStockUseCase(sessionRepository: sessionRepository),
       getQuestsUseCase: GetQuestsUseCase(sessionRepository: sessionRepository),
       getHeroStatusUseCase: GetHeroStatusUseCase(sessionRepository: sessionRepository),
       getGearOptionsUseCase: GetGearOptionsUseCase(sessionRepository: sessionRepository),
       buyGearUseCase: BuyGearUseCase(sessionRepository: sessionRepository),
       getSkillOptionsUseCase: GetSkillOptionsUseCase(sessionRepository: sessionRepository),
       learnSkillUseCase: LearnSkillUseCase(sessionRepository: sessionRepository),
+      getUpgradeOptionsUseCase: GetUpgradeOptionsUseCase(sessionRepository: sessionRepository),
+      buyUpgradeUseCase: BuyUpgradeUseCase(sessionRepository: sessionRepository),
+      saveGameUseCase: SaveGameUseCase(sessionRepository: sessionRepository, saveRepository: saves),
+      newGameUseCase: NewGameUseCase(
+        levelRepository: levelRepository,
+        sessionRepository: sessionRepository,
+        saveRepository: saves,
+      ),
       navigationService: navigationService,
       isTouchInput: isTouchInput,
     );

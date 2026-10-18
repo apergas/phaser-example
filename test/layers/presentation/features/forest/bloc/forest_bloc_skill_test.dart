@@ -127,11 +127,14 @@ void main() {
   );
 
   blocTest<ForestBloc, ForestState>(
-    'testWhenLearningAKnownSkillThenSaysItIsAlreadyKnown',
+    'testWhenTheSkillIsAtTheMaxLevelThenSaysItCannotGoHigher',
     build: () {
       // given
       return ForestBlocMock.make(
-        SkillScenarioMock.withTower(funds: FundsMock.doubleStrikePrice, hero: HeroEntityMock.withDoubleStrike),
+        SkillScenarioMock.withTower(
+          funds: FundsMock.doubleStrikeLevelThreePrice,
+          hero: HeroEntityMock.withDoubleStrikeAtLevelThree,
+        ),
         navigationService: navigationService,
       );
     },
@@ -146,7 +149,7 @@ void main() {
       // then
       expect(
         ForestBlocMock.shownMessages(navigationService),
-        contains(Internationalize.forestMessageSkillAlreadyKnown),
+        contains(Internationalize.forestMessageSkillMaxLevel),
       );
     },
   );
@@ -175,6 +178,79 @@ void main() {
         ForestBlocMock.shownMessages(navigationService),
         contains(Internationalize.forestMessageNotEnoughResources),
       );
+    },
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenUpgradingAKnownSkillThenSaysTheNewLevelPlaysTheEffectAndShowsTheNextLevel',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        SkillScenarioMock.withTower(funds: FundsMock.doubleStrikeLevelTwoPrice, hero: HeroEntityMock.withDoubleStrike),
+        navigationService: navigationService,
+      );
+    },
+    act: (bloc) {
+      // when
+      effects = ForestBlocMock.collectEffects(bloc);
+      bloc
+        ..add(const ForestStarted())
+        ..add(const ForestSkillLearnRequested(skill: SkillId.doubleStrike));
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(
+        ForestBlocMock.shownMessages(navigationService),
+        contains(
+          Internationalize.forestMessageSkillUpgraded(
+            name: Internationalize.forestSkillName(id: SkillId.doubleStrike),
+            level: 2,
+          ),
+        ),
+      );
+      expect(effects, [ForestEffectMock.doubleStrikeLearned]);
+      expect(bloc.state.data.hud!.hero.skills.first, SkillItemDataMock.doubleStrikeAtLevelTwo);
+    },
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenTheSkillIsAtLevelOneAndTheNextLevelIsPaidForThenItCanBeUpgraded',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        SkillScenarioMock.withTower(funds: FundsMock.doubleStrikeLevelTwoPrice, hero: HeroEntityMock.withDoubleStrike),
+        navigationService: navigationService,
+      );
+    },
+    act: (bloc) {
+      // when
+      bloc.add(const ForestStarted());
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(bloc.state.data.hud!.hero.skills.first, SkillItemDataMock.doubleStrikeAtLevelOneUpgradable);
+    },
+  );
+
+  blocTest<ForestBloc, ForestState>(
+    'testWhenTheSkillIsAtTheMaxLevelThenItsItemSaysSoWithoutAButton',
+    build: () {
+      // given
+      return ForestBlocMock.make(
+        SkillScenarioMock.withTower(hero: HeroEntityMock.withDoubleStrikeAtLevelThree),
+        navigationService: navigationService,
+      );
+    },
+    act: (bloc) {
+      // when
+      bloc.add(const ForestStarted());
+    },
+    wait: Duration.zero,
+    verify: (bloc) {
+      // then
+      expect(bloc.state.data.hud!.hero.skills.first, SkillItemDataMock.doubleStrikeMaxed);
     },
   );
 }

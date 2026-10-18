@@ -27,7 +27,6 @@ void main() {
         result: result,
         onLevelSelected: (id) => calls.add(id.name),
         onFight: () => calls.add('fight'),
-        onSkip: () => calls.add('skip'),
         onBack: () => calls.add('back'),
       ),
     );
@@ -57,17 +56,28 @@ void main() {
     expect(find.byType(ResultPanel), findsOneWidget);
   });
 
-  testWidgets('testWhenReplayingThenTheResultIsHiddenAndTheLevelsIgnoreTaps', (tester) async {
+  testWidgets('testWhenReplayingThenTheResultAndTheFightButtonAreHiddenAndTheLevelsIgnoreTaps', (tester) async {
     // given
     final calls = await pumpHud(tester, isReplaying: true, result: ArenaResultDataMock.victoryTenGold);
 
     // when
-    await tester.tap(find.text(ArenaLevelItemDataMock.rookieOpen.name));
-    await tester.tap(find.text(Internationalize.arenaSkip));
+    await tester.tap(find.text(ArenaLevelItemDataMock.rookieOpen.name), warnIfMissed: false);
 
     // then
     expect(find.byType(ResultPanel), findsNothing);
-    expect(calls, ['skip']);
+    expect(find.text(Internationalize.arenaFight), findsNothing);
+    expect(calls, isEmpty);
+  });
+
+  testWidgets('testWhenTheReplayEndsThenTheFightButtonIsBack', (tester) async {
+    // given
+    await pumpHud(tester, isReplaying: true);
+
+    // when
+    await pumpHud(tester, isReplaying: false, result: ArenaResultDataMock.victoryTenGold);
+
+    // then
+    expect(find.text(Internationalize.arenaFight), findsOneWidget);
   });
 
   for (final size in const [Size(915, 412), Size(844, 390), Size(640, 360)]) {

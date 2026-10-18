@@ -32,6 +32,22 @@ void main() {
     }
   });
 
+  test('testWhenThePickaxeHitsARockThenEightStoneChipsFlyFromFourteenPixelsUp', () {
+    // given
+    final random = ParticleMock.chipsRandom;
+
+    // when
+    final chips = ParticleBursts.stoneChips(rockBase: ParticleMock.trunkBase, playerOnLeft: true, random: random);
+
+    // then
+    expect(chips, hasLength(8));
+    for (final chip in chips) {
+      expect(chip.kind, ParticleKind.stoneChip);
+      expect(chip.origin, ParticleMock.stoneChipOrigin);
+      expect(_angleDegrees(chip.velocityX, chip.velocityY), inInclusiveRange(200, 290));
+    }
+  });
+
   test('testWhenTheAxeHitsFromTheRightThenChipsFlyUpAndRight', () {
     // given
     final random = ParticleMock.chipsRandom;

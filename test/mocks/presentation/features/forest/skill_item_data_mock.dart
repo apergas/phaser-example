@@ -5,6 +5,8 @@ import 'package:farming/core/config/constants/enum/skill_id.dart';
 import 'package:farming/layers/presentation/features/forest/models/skill_item_data.dart';
 
 abstract final class SkillItemDataMock {
+  static const int maxLevel = 3;
+
   static SkillItemData needsTower(SkillId id) => _make(
     id,
     reasonText: Internationalize.forestHeroNeedsBuilding(
@@ -23,10 +25,28 @@ abstract final class SkillItemDataMock {
 
   static SkillItemData get doubleStrikeAvailable => _make(SkillId.doubleStrike, reasonText: null, canLearn: true);
 
-  static SkillItemData get doubleStrikeKnown => SkillItemData(
+  static SkillItemData get doubleStrikeAtLevelOne => learned(
+    SkillId.doubleStrike,
+    level: 1,
+    reasonText: Internationalize.forestMissing(amounts: _amounts(gold: 90, mana: 30)),
+    canLearn: false,
+  );
+
+  static SkillItemData get doubleStrikeAtLevelOneUpgradable =>
+      learned(SkillId.doubleStrike, level: 1, reasonText: null, canLearn: true);
+
+  static SkillItemData get doubleStrikeAtLevelTwo => learned(
+    SkillId.doubleStrike,
+    level: 2,
+    reasonText: Internationalize.forestMissing(amounts: _amounts(gold: 135, mana: 45)),
+    canLearn: false,
+  );
+
+  static SkillItemData get doubleStrikeMaxed => SkillItemData(
     id: SkillId.doubleStrike,
     name: Internationalize.forestSkillName(id: SkillId.doubleStrike),
-    description: Internationalize.forestSkillDescription(id: SkillId.doubleStrike),
+    description: Internationalize.forestSkillDescription(id: SkillId.doubleStrike, level: maxLevel),
+    levelText: Internationalize.forestHeroSkillLevel(level: maxLevel, max: maxLevel),
     isKnown: true,
     canLearn: false,
   );
@@ -44,25 +64,51 @@ abstract final class SkillItemDataMock {
   ];
 
   static List<SkillItemData> get afterLearningDoubleStrike => [
-    doubleStrikeKnown,
+    doubleStrikeAtLevelOne,
     unaffordable(SkillId.dodge, missingGold: 90, missingMana: 30),
     unaffordable(SkillId.secondWind, missingGold: 130, missingMana: 45),
   ];
 
+  static SkillItemData learned(SkillId id, {required int level, required String? reasonText, required bool canLearn}) {
+    final next = _price(id, level: level + 1);
+    return SkillItemData(
+      id: id,
+      name: Internationalize.forestSkillName(id: id),
+      description: Internationalize.forestSkillDescription(id: id, level: level),
+      levelText: Internationalize.forestHeroSkillLevel(level: level, max: maxLevel),
+      nextText: Internationalize.forestHeroSkillNext(
+        level: level + 1,
+        effect: Internationalize.forestSkillDescription(id: id, level: level + 1),
+      ),
+      costText: _amounts(gold: next.gold, mana: next.mana),
+      reasonText: reasonText,
+      buttonText: Internationalize.forestHeroUpgrade,
+      isKnown: true,
+      canLearn: canLearn,
+    );
+  }
+
   static SkillItemData _make(SkillId id, {required String? reasonText, required bool canLearn}) => SkillItemData(
     id: id,
     name: Internationalize.forestSkillName(id: id),
-    description: Internationalize.forestSkillDescription(id: id),
-    costText: _amounts(gold: _price(id).gold, mana: _price(id).mana),
+    description: Internationalize.forestSkillDescription(id: id, level: 1),
+    costText: _amounts(gold: _price(id, level: 1).gold, mana: _price(id, level: 1).mana),
     reasonText: reasonText,
+    buttonText: Internationalize.forestHeroLearn,
     isKnown: false,
     canLearn: canLearn,
   );
 
-  static ({int gold, int mana}) _price(SkillId id) => switch (id) {
-    SkillId.doubleStrike => (gold: 60, mana: 20),
-    SkillId.secondWind => (gold: 130, mana: 45),
-    SkillId.dodge => (gold: 90, mana: 30),
+  static ({int gold, int mana}) _price(SkillId id, {required int level}) => switch ((id, level)) {
+    (SkillId.doubleStrike, 1) => (gold: 60, mana: 20),
+    (SkillId.doubleStrike, 2) => (gold: 90, mana: 30),
+    (SkillId.doubleStrike, _) => (gold: 135, mana: 45),
+    (SkillId.dodge, 1) => (gold: 90, mana: 30),
+    (SkillId.dodge, 2) => (gold: 135, mana: 45),
+    (SkillId.dodge, _) => (gold: 205, mana: 70),
+    (SkillId.secondWind, 1) => (gold: 130, mana: 45),
+    (SkillId.secondWind, 2) => (gold: 195, mana: 70),
+    (SkillId.secondWind, _) => (gold: 295, mana: 100),
   };
 
   static String _amounts({required int gold, required int mana}) => [

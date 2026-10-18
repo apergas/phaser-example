@@ -21,11 +21,41 @@ abstract final class ArenaEffectMock {
 
   static const HealEffect heroHealedTwelve = HealEffect(side: FightSide.hero, index: 0, amount: 12);
 
-  static const SkillUsedEffect doubleStrikeUsed = SkillUsedEffect(skill: SkillId.doubleStrike);
+  static const SkillUsedEffect doubleStrikeUsed = SkillUsedEffect(
+    skill: SkillId.doubleStrike,
+    side: FightSide.hero,
+    index: 0,
+  );
 
-  static const SkillUsedEffect doubleStrikeUsedCopy = SkillUsedEffect(skill: SkillId.doubleStrike);
+  static const SkillUsedEffect doubleStrikeUsedCopy = SkillUsedEffect(
+    skill: SkillId.doubleStrike,
+    side: FightSide.hero,
+    index: 0,
+  );
 
-  static const SkillUsedEffect secondWindUsed = SkillUsedEffect(skill: SkillId.secondWind);
+  static const SkillUsedEffect secondWindUsed = SkillUsedEffect(
+    skill: SkillId.secondWind,
+    side: FightSide.hero,
+    index: 0,
+  );
+
+  static const SkillUsedEffect enemyDoubleStrikeUsed = SkillUsedEffect(
+    skill: SkillId.doubleStrike,
+    side: FightSide.enemy,
+    index: 2,
+  );
+
+  static const SkillUsedEffect banditDoubleStrikeUsed = SkillUsedEffect(
+    skill: SkillId.doubleStrike,
+    side: FightSide.enemy,
+    index: 0,
+  );
+
+  static const SkillUsedEffect chiefSecondWindUsed = SkillUsedEffect(
+    skill: SkillId.secondWind,
+    side: FightSide.enemy,
+    index: 0,
+  );
 
   static const FightEndedEffect won = FightEndedEffect(isVictory: true);
 

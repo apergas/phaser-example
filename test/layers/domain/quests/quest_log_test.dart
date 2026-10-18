@@ -1,18 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/core/config/constants/enum/quest_id.dart';
 import 'package:farming/core/config/constants/enum/quest_line.dart';
-import 'package:farming/core/config/constants/enum/resource.dart';
-import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/quests/quest_log.dart';
 import 'package:farming/layers/domain/rules/blueprints.dart';
-import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
-import 'package:farming/layers/domain/world/extensions/player_rules.dart';
 
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/game/quest_progress_entity_mock.dart';
+import '../../../mocks/domain/entities/game/stats_entity_mock.dart';
 import '../../../mocks/domain/entities/hero/hero_entity_mock.dart';
 import '../../../mocks/domain/entities/player/inventory_entity_mock.dart';
+import '../../../mocks/domain/world/funds_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
 
 void main() {
@@ -24,13 +22,16 @@ void main() {
     final status = QuestLog().status(world);
 
     // then
-    expect(status.where((quest) => quest.line == QuestLine.village), const [
-      QuestProgressEntityMock.pickUpAxePending,
-      QuestProgressEntityMock.gatherWoodPending,
+    final village = status.where((quest) => quest.line == QuestLine.village).toList();
+    expect(status, hasLength(19));
+    expect(village, hasLength(11));
+    expect(village.take(2), const [
+      QuestProgressEntityMock.gatherWoodCurrent,
       QuestProgressEntityMock.buildHousePending,
     ]);
     expect(status.where((quest) => quest.line == QuestLine.hero).first, QuestProgressEntityMock.buildForgeCurrent);
     expect(status.where((quest) => quest.isCurrent), hasLength(2));
+    expect(status.where((quest) => quest.isCompleted), isEmpty);
   });
 
   test('testWhenTheHeroHasBecomeChampionThenItsQuestsAreFulfilledAndTheArenaOneCountsLevels', () {
@@ -49,38 +50,51 @@ void main() {
 
   test('testWhenQuestIsFulfilledThenItIsReportedOnlyOnce', () {
     // given
-    final world = WorldMock.make();
+    final world = WorldMock.withStock(FundsMock.fifteenWood);
     final questLog = QuestLog();
-    world.updatePlayer((player) => player.withInventory(player.inventory.addTool(ToolKind.axe)));
 
     // when
     final first = questLog.update(world);
     final second = questLog.update(world);
 
     // then
-    expect(first, const [GameEventEntityMock.pickUpAxeCompleted]);
+    expect(first, const [GameEventEntityMock.gatherWoodCompleted]);
     expect(second, isEmpty);
   });
 
-  test('testWhenWoodIsSpentAfterCompletingThenWoodQuestStaysCompleted', () {
+  test('testWhenLaterVillageQuestsAreDoneFirstThenTheyCompleteOutOfOrderAndTheCurrentOneStays', () {
     // given
-    final world = WorldMock.make();
+    final world = WorldMock.restored(stats: StatsEntityMock.afterTenTrees);
     final questLog = QuestLog();
-    world.updatePlayer((player) => player.withInventory(player.inventory.add(Resource.wood, 16)));
-    questLog.update(world);
 
     // when
-    world.updatePlayer((player) => player.withInventory(player.inventory.spend(InventoryEntityMock.sixteenWood)!));
+    final completed = questLog.update(world).map((event) => event.questId);
+    final current = questLog.status(world).where((quest) => quest.isCurrent).map((quest) => quest.id);
 
     // then
-    final woodQuest = questLog.status(world).firstWhere((quest) => quest.id == QuestId.gatherWood);
-    expect(woodQuest, QuestProgressEntityMock.gatherWoodCompleted);
+    expect(completed, [QuestId.fellTenTrees, QuestId.fellAnOak]);
+    expect(current, [QuestId.gatherWood, QuestId.buildForge]);
+  });
+
+  test('testWhenWoodIsSpentAfterCompletingThenWoodQuestsStayCompleted', () {
+    // given
+    final world = WorldMock.withStock(InventoryEntityMock.make(wood: 40).resources);
+    final questLog = QuestLog();
+    final completed = questLog.update(world).map((event) => event.questId).toList();
+
+    // when
+    world.spend(InventoryEntityMock.make(wood: 40).resources);
+
+    // then
+    final status = questLog.status(world);
+    expect(completed, [QuestId.gatherWood, QuestId.gatherFortyWood]);
+    expect(status.firstWhere((quest) => quest.id == QuestId.gatherWood), QuestProgressEntityMock.gatherWoodCompleted);
+    expect(status.firstWhere((quest) => quest.id == QuestId.gatherFortyWood).isCompleted, isTrue);
   });
 
   test('testWhenProgressExceedsTargetThenItIsCapped', () {
     // given
-    final world = WorldMock.make();
-    world.updatePlayer((player) => player.withInventory(player.inventory.add(Resource.wood, 40)));
+    final world = WorldMock.withStock(InventoryEntityMock.make(wood: 40).resources);
 
     // when
     final woodQuest = QuestLog().status(world).firstWhere((quest) => quest.id == QuestId.gatherWood);
@@ -91,9 +105,8 @@ void main() {
 
   test('testWhenHouseIsOnlyPlacedThenBuildQuestIsNotCompleted', () {
     // given
-    final world = WorldMock.make();
+    final world = WorldMock.withStock(FundsMock.fifteenWood);
     final questLog = QuestLog();
-    world.updatePlayer((player) => player.withInventory(player.inventory.add(Resource.wood, 15)));
     questLog.update(world);
     world.orderConstruction(Blueprints.house, const PositionEntity(x: 300, y: 100));
 
@@ -105,5 +118,37 @@ void main() {
     // then
     expect(whilePlaced, isEmpty);
     expect(whenFinished, const [GameEventEntityMock.buildHouseCompleted]);
+  });
+
+  test('testWhenCreatedWithCompletedQuestsThenTheyStayCompletedAndAreNotAnnouncedAgain', () {
+    // given
+    final world = WorldMock.make();
+    final questLog = QuestLog(completed: {QuestId.gatherWood, QuestId.buildForge});
+
+    // when
+    final announced = questLog.update(world);
+    final status = questLog.status(world);
+
+    // then
+    expect(announced, isEmpty);
+    expect(questLog.completed, {QuestId.gatherWood, QuestId.buildForge});
+    expect(status.firstWhere((quest) => quest.id == QuestId.gatherWood), QuestProgressEntityMock.gatherWoodCompleted);
+    expect(status.where((quest) => quest.isCurrent).map((quest) => quest.id), [
+      QuestId.buildHouse,
+      QuestId.winFirstFight,
+    ]);
+  });
+
+  test('testWhenQuestsAreCompletedThenTheCompletedSetGrowsAndCannotBeChangedFromOutside', () {
+    // given
+    final questLog = QuestLog();
+    questLog.update(WorldMock.withStock(FundsMock.fifteenWood));
+
+    // when
+    final completed = questLog.completed;
+
+    // then
+    expect(completed, {QuestId.gatherWood});
+    expect(() => completed.add(QuestId.buildHouse), throwsUnsupportedError);
   });
 }

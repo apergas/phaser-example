@@ -37,6 +37,18 @@ void main() {
     expect(ArenaFrames.frameName(FighterRenderDataMock.chiefIdle, 0), 'barbarian-chief-idle-0');
   });
 
+  test('testWhenTheHeroWearsArmorThenItsFramesComeFromItsWeaponAndArmorSet', () {
+    // given
+    const hero = FighterRenderDataMock.heroInPlateIdle;
+
+    // when
+    final name = ArenaFrames.frameName(hero, 0);
+
+    // then
+    expect(name, 'hero-steel-sword-plate-idle-0');
+    expect(ArenaFrames.frameName(FighterRenderDataMock.heroWithSteelSwordIdle, 0), 'hero-steel-sword-idle-0');
+  });
+
   test('testWhenPlacingFightersThenTheHeroFacesTheEnemiesFromTheLeft', () {
     // given
     // when

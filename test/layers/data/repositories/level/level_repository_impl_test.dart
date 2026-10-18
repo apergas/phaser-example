@@ -6,10 +6,12 @@ import 'package:farming/core/error-handling/exceptions/app_exceptions.dart';
 import 'package:farming/core/error-handling/handlers/app_exception_handler.dart';
 import 'package:farming/layers/data/datasources/level/source/level_local_datasource.dart';
 import 'package:farming/layers/data/repositories/level/level_repository_impl.dart';
+import 'package:farming/layers/data/repositories/level/mappers/building_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/decoration_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/ground_item_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/level_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/position_mapper_dbo.dart';
+import 'package:farming/layers/data/repositories/level/mappers/rock_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/level/mappers/tree_mapper_dbo.dart';
 import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 
@@ -31,6 +33,8 @@ void main() {
         treeMapperDBO: TreeMapperDBO(),
         decorationMapperDBO: DecorationMapperDBO(),
         groundItemMapperDBO: GroundItemMapperDBO(),
+        rockMapperDBO: RockMapperDBO(),
+        buildingMapperDBO: BuildingMapperDBO(),
       ),
       appExceptionHandler: AppExceptionHandler(),
     );

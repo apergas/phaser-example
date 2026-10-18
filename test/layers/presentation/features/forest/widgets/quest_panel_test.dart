@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/core/assets/i18n/internationalize.dart';
-import 'package:farming/core/config/constants/enum/quest_id.dart';
 import 'package:farming/core/config/constants/enum/quest_line.dart';
 import 'package:farming/layers/presentation/features/forest/widgets/quest_panel.dart';
 import 'package:farming/layers/presentation/features/forest/widgets/quest_row.dart';
@@ -38,7 +37,7 @@ void main() {
     expect(find.byType(QuestRow), findsNWidgets(4));
     expect(
       tester.getTopLeft(find.text(Internationalize.forestQuestLine(line: QuestLine.hero))).dy,
-      greaterThan(tester.getTopLeft(find.text(Internationalize.forestQuestTitle(id: QuestId.buildHouse))).dy),
+      greaterThan(tester.getTopLeft(find.text(QuestItemDataMock.pending.title)).dy),
     );
   });
 }

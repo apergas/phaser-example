@@ -31,4 +31,5 @@ abstract final class TreeDBOMock {
   );
   static const firstGeneratedTrees = [firstGenerated, secondGenerated, thirdGenerated];
   static const withoutId = TreeDBO(kind: 'pine', x: 1, y: 2);
+  static const unknownKind = TreeDBO(id: 'tree-x', kind: 'palm', x: 0, y: 0);
 }

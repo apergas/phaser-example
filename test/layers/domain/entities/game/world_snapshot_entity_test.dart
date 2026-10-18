@@ -25,4 +25,16 @@ void main() {
     // then
     expect(isEqual, isFalse);
   });
+
+  test('testWhenAStumpOrARockDiffersThenSnapshotsAreNotEqual', () {
+    // given
+    const snapshot = WorldSnapshotEntityMock.mock;
+
+    // when
+    final others = [WorldSnapshotEntityMock.withAStump, WorldSnapshotEntityMock.withARock];
+
+    // then
+    expect(others.where((other) => other == snapshot), isEmpty);
+    expect(others.map((other) => other.hashCode).contains(snapshot.hashCode), isFalse);
+  });
 }

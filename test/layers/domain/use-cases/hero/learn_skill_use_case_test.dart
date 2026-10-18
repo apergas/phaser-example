@@ -52,21 +52,6 @@ void main() {
     expect(result, LearnSkillResult.missingBuilding);
   });
 
-  test('testWhenTheSkillIsAlreadyKnownThenNothingIsPaid', () {
-    // given
-    final world = playing(
-      SkillScenarioMock.withTower(funds: FundsMock.doubleStrikePrice, hero: HeroEntityMock.withDoubleStrike),
-    );
-
-    // when
-    final result = sut(id: SkillId.doubleStrike);
-
-    // then
-    expect(result, LearnSkillResult.alreadyKnown);
-    expect(world.hero, HeroEntityMock.withDoubleStrike);
-    expect(world.funds.amount(Resource.gold), 60);
-  });
-
   test('testWhenTheSkillIsTooExpensiveThenNothingIsPaidOrLearned', () {
     // given
     final world = playing(SkillScenarioMock.withTower(funds: FundsMock.tenGoldShortOfDoubleStrike));
@@ -94,21 +79,7 @@ void main() {
     expect(world.funds.amount(Resource.mana), 0);
   });
 
-  test('testWhenSeveralChecksFailThenTheyAreReportedInOrder', () {
-    // given
-    playing(SkillScenarioMock.withoutTower(hero: HeroEntityMock.withDoubleStrike));
-    final missingBuilding = sut(id: SkillId.doubleStrike);
-    playing(SkillScenarioMock.withTower(hero: HeroEntityMock.withDoubleStrike));
-
-    // when
-    final alreadyKnown = sut(id: SkillId.doubleStrike);
-
-    // then
-    expect(missingBuilding, LearnSkillResult.missingBuilding);
-    expect(alreadyKnown, LearnSkillResult.alreadyKnown);
-  });
-
-  test('testWhenEverythingIsInPlaceThenPaysLearnsTheSkillAndRaisesPower', () {
+  test('testWhenEverythingIsInPlaceThenPaysLearnsTheSkillAtLevelOneAndRaisesPower', () {
     // given
     final world = playing(SkillScenarioMock.withTower(funds: FundsMock.doubleStrikePrice));
     final powerBefore = world.hero.power;
@@ -122,5 +93,70 @@ void main() {
     expect((powerBefore, world.hero.power), (31, 34));
     expect(world.funds.amount(Resource.gold), 0);
     expect(world.funds.amount(Resource.mana), 0);
+  });
+
+  test('testWhenTheSkillIsAtLevelOneThenItIsUpgradedToLevelTwoForTheSecondPrice', () {
+    // given
+    final world = playing(
+      SkillScenarioMock.withTower(funds: FundsMock.doubleStrikeLevelTwoPrice, hero: HeroEntityMock.withDoubleStrike),
+    );
+
+    // when
+    final result = sut(id: SkillId.doubleStrike);
+
+    // then
+    expect(result, LearnSkillResult.upgraded);
+    expect(world.hero, HeroEntityMock.withDoubleStrikeAtLevelTwo);
+    expect((world.funds.amount(Resource.gold), world.funds.amount(Resource.mana)), (0, 0));
+  });
+
+  test('testWhenTheSkillIsAtLevelTwoThenItIsUpgradedToLevelThreeForTheThirdPrice', () {
+    // given
+    final world = playing(
+      SkillScenarioMock.withTower(
+        funds: FundsMock.doubleStrikeLevelThreePrice,
+        hero: HeroEntityMock.withDoubleStrikeAtLevelTwo,
+      ),
+    );
+
+    // when
+    final result = sut(id: SkillId.doubleStrike);
+
+    // then
+    expect(result, LearnSkillResult.upgraded);
+    expect(world.hero, HeroEntityMock.withDoubleStrikeAtLevelThree);
+    expect((world.funds.amount(Resource.gold), world.funds.amount(Resource.mana)), (0, 0));
+  });
+
+  test('testWhenTheSkillIsAtTheMaxLevelThenItIsMaxedAndNothingIsPaid', () {
+    // given
+    final world = playing(
+      SkillScenarioMock.withTower(
+        funds: FundsMock.doubleStrikeLevelThreePrice,
+        hero: HeroEntityMock.withDoubleStrikeAtLevelThree,
+      ),
+    );
+
+    // when
+    final result = sut(id: SkillId.doubleStrike);
+
+    // then
+    expect(result, LearnSkillResult.maxed);
+    expect(world.hero, HeroEntityMock.withDoubleStrikeAtLevelThree);
+    expect(world.funds.amount(Resource.gold), 135);
+  });
+
+  test('testWhenSeveralChecksFailThenTheTowerComesBeforeTheMaxLevelAndTheMaxLevelBeforeTheFunds', () {
+    // given
+    playing(SkillScenarioMock.withoutTower(hero: HeroEntityMock.withDoubleStrikeAtLevelThree));
+    final missingBuilding = sut(id: SkillId.doubleStrike);
+    playing(SkillScenarioMock.withTower(hero: HeroEntityMock.withDoubleStrikeAtLevelThree));
+
+    // when
+    final maxed = sut(id: SkillId.doubleStrike);
+
+    // then
+    expect(missingBuilding, LearnSkillResult.missingBuilding);
+    expect(maxed, LearnSkillResult.maxed);
   });
 }

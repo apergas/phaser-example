@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/core/assets/i18n/internationalize.dart';
 import 'package:farming/core/config/constants/enum/arena_level_id.dart';
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
+import 'package:farming/core/config/constants/enum/construction_rejection.dart';
 import 'package:farming/core/config/constants/enum/enemy_kind.dart';
 import 'package:farming/core/config/constants/enum/fight_advice.dart';
 import 'package:farming/core/config/constants/enum/forest/hero_panel_section.dart';
@@ -12,8 +13,10 @@ import 'package:farming/core/config/constants/enum/quest_line.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/core/config/constants/enum/skill_id.dart';
 import 'package:farming/core/config/constants/enum/tool_kind.dart';
+import 'package:farming/core/config/constants/enum/upgrade_id.dart';
 
 import '../../../helpers/spanish_translations.dart';
+import '../../../mocks/domain/world/funds_mock.dart';
 
 void main() {
   setUpAll(loadSpanishTranslations);
@@ -48,8 +51,7 @@ void main() {
     // then
     expect(name, 'Casa');
     expect(quests, [
-      'Recoge el hacha',
-      'Consigue al menos 15 de madera',
+      'Lleva 15 de madera al almacén',
       'Construye una casa',
       'Construye la Herrería',
       'Gana un nivel de la arena',
@@ -59,6 +61,15 @@ void main() {
       'Aprende una habilidad',
       'Gana la mitad de los niveles de la arena',
       'Gana al Jefe bárbaro',
+      'Tala 10 árboles',
+      'Tala un roble',
+      'Ten 40 de madera en el almacén',
+      'Ten 2 casas terminadas',
+      'Ve rebrotar un árbol',
+      'Ten 20 de piedra en el almacén',
+      'Construye una cantera',
+      'Construye el Taller',
+      'Compra el Hacha de hierro',
     ]);
     expect(QuestLine.values.map((line) => Internationalize.forestQuestLine(line: line)), ['Aldea', 'Héroe']);
   });
@@ -71,7 +82,7 @@ void main() {
     final placing = Internationalize.forestMessagePlacing(name: name);
     final placingTouch = Internationalize.forestMessagePlacingTouch(name: name);
     final completed = Internationalize.forestMessageBuildingCompleted(name: name);
-    final quest = Internationalize.forestMessageQuestCompleted(title: 'Recoge el hacha');
+    final quest = Internationalize.forestMessageQuestCompleted(title: 'Tala un roble');
 
     // then
     expect(placing, 'Elige dónde construir: Casa. Clic derecho o Esc para cancelar.');
@@ -80,7 +91,7 @@ void main() {
       'Elige dónde construir: Casa. Arrastra el dedo para moverlo y toca Construir aquí o Cancelar.',
     );
     expect(completed, 'Construcción terminada: Casa');
-    expect(quest, 'Misión completada: Recoge el hacha');
+    expect(quest, 'Misión completada: Tala un roble');
   });
 
   test('testWhenNamingEveryResourceAndToolThenNoneFallsBackToItsKey', () {
@@ -104,15 +115,18 @@ void main() {
       Internationalize.forestResource(resource: Resource.wood),
       Internationalize.forestResource(resource: Resource.gold),
       Internationalize.forestResource(resource: Resource.mana),
+      Internationalize.forestResource(resource: Resource.stone),
       Internationalize.forestTool(tool: ToolKind.axe),
+      Internationalize.forestTool(tool: ToolKind.pickaxe),
       Internationalize.forestBuild,
       Internationalize.forestQuests,
       Internationalize.forestQuestDone,
       Internationalize.forestMessageWelcome,
       Internationalize.forestMessageNeedAxe,
+      Internationalize.forestMessageNeedPickaxe,
       Internationalize.forestMessageBlockedPath,
-      Internationalize.forestMessagePickedUpAxe,
-      Internationalize.forestMessagePickedUpAxeTouch,
+      Internationalize.forestMessagePickedUpPickaxe,
+      Internationalize.forestMessagePickedUpPickaxeTouch,
       Internationalize.forestMessageBlockedSite,
       Internationalize.forestMessageNotEnoughResources,
       Internationalize.forestMessageBuildingStarted,
@@ -131,15 +145,18 @@ void main() {
       'Madera',
       'Oro',
       'Maná',
+      'Piedra',
       'Hacha',
+      'Pico',
       'Construir',
       'Misiones',
       'Hecha',
-      'Hay un hacha en el suelo, cerca de ti. Recógela pasando por encima.',
+      'Tala árboles para reunir madera y construir tu aldea.',
       'Necesitas un hacha para talar.',
+      'Necesitas un pico para picar.',
       'Hay algo en medio. Acércate por otro lado.',
-      '¡Hacha recogida! Haz clic en un árbol para talarlo.',
-      '¡Hacha recogida! Toca un árbol para talarlo.',
+      '¡Pico recogido! Haz clic en una roca para picarla.',
+      '¡Pico recogido! Toca una roca para picarla.',
       'Ahí no cabe. Busca un sitio despejado.',
       'No tienes recursos suficientes.',
       'Manos a la obra…',
@@ -159,7 +176,119 @@ void main() {
 
     // then
     expect(untranslated, isEmpty);
-    expect(names, ['Casa', 'Herrería', 'Armería', 'Torre de magia']);
+    expect(names, ['Casa', 'Herrería', 'Armería', 'Torre de magia', 'Campamento', 'Almacén', 'Cantera', 'Taller']);
+  });
+
+  test('testWhenFormattingTheVillageTextsThenUsesTheSpanishTexts', () {
+    // given
+    final amounts = Internationalize.forestAmount(resource: Resource.wood, amount: 10);
+
+    // when
+    final texts = [
+      Internationalize.forestAmount(resource: Resource.stone, amount: 3),
+      Internationalize.forestMessageStoneGained(amount: 8),
+      Internationalize.forestFloatingWoodGained(wood: 5),
+      Internationalize.forestFloatingStoneGained(amount: 8),
+      Internationalize.forestMessageCarryFull,
+      Internationalize.forestMessageDeposited(amounts: amounts),
+      Internationalize.forestMessageNothingToDeposit,
+      Internationalize.forestStock,
+      Internationalize.forestCarry(amount: 7, capacity: 10),
+      Internationalize.forestQuestsDone(count: 1),
+      Internationalize.forestQuestsDone(count: 3),
+    ];
+
+    // then
+    expect(texts, [
+      '3 de piedra',
+      '+8 de piedra',
+      '+5',
+      '+8',
+      'Llevas la carga llena. Déjala en el campamento o en un almacén.',
+      'Guardado en el almacén: 10 de madera',
+      'No llevas nada que guardar.',
+      'Almacén',
+      'Carga 7/10',
+      '1 hecha',
+      '3 hechas',
+    ]);
+  });
+
+  test('testWhenExplainingEveryPlacementRejectionThenUsesTheSpanishTexts', () {
+    // given
+    const rejections = ConstructionRejection.values;
+
+    // when
+    final texts = rejections.map((rejection) => Internationalize.forestPlacementRejection(rejection: rejection));
+
+    // then
+    expect(texts, [
+      'No tienes recursos suficientes.',
+      'Ahí no cabe. Busca un sitio despejado.',
+      'La cantera tiene que ir junto a una roca.',
+    ]);
+  });
+
+  test('testWhenNamingTheWorkshopAndItsUpgradesThenUsesTheSpanishTexts', () {
+    // given
+    const percent = 40;
+
+    // when
+    final texts = [
+      Internationalize.forestWorkshop,
+      Internationalize.forestUpgradeTitle,
+      for (final id in UpgradeId.values) Internationalize.forestUpgradeName(id: id),
+      for (final id in UpgradeId.values) Internationalize.forestUpgradeEffect(id: id, percent: percent),
+      Internationalize.forestUpgradeOwned,
+      Internationalize.forestUpgradeNeedsWorkshop,
+      Internationalize.forestMessageUpgradePurchased(name: Internationalize.forestUpgradeName(id: UpgradeId.ironAxe)),
+      Internationalize.forestMessageUpgradeOwned,
+    ];
+
+    // then
+    expect(texts, [
+      'Taller',
+      'Mejoras de herramientas',
+      'Hacha de hierro',
+      'Pico de hierro',
+      'Talas con un 40 % menos de golpes',
+      'Picas con un 40 % menos de golpes',
+      'Comprada',
+      'Construye el Taller',
+      'Has mejorado tu herramienta: Hacha de hierro',
+      'Ya tienes esa mejora.',
+    ]);
+  });
+
+  test('testWhenReadingTheGameTextsThenUsesTheSpanishTexts', () {
+    // given
+    const reason = 'versión 9';
+
+    // when
+    final texts = [
+      Internationalize.forestGame,
+      Internationalize.forestGameSave,
+      Internationalize.forestGameSaved,
+      Internationalize.forestGameNewGame,
+      Internationalize.forestGameNewGameConfirm,
+      Internationalize.forestGameConfirm,
+      Internationalize.forestGameCancel,
+      Internationalize.errorInvalidSaveTitle,
+      Internationalize.errorInvalidSaveMessage(reason: reason),
+    ];
+
+    // then
+    expect(texts, [
+      'Partida',
+      'Guardar',
+      'Partida guardada',
+      'Nueva partida',
+      'Se perderá la partida actual. ¿Empezar de nuevo?',
+      'Empezar',
+      'Cancelar',
+      'Partida guardada no válida',
+      'La partida guardada no es válida: versión 9',
+    ]);
   });
 
   test('testWhenNamingEveryGearPieceThenUsesTheSpanishNames', () {
@@ -237,14 +366,23 @@ void main() {
     // given
     // when
     final names = SkillId.values.map((id) => Internationalize.forestSkillName(id: id)).toList();
-    final descriptions = SkillId.values.map((id) => Internationalize.forestSkillDescription(id: id)).toList();
+    final descriptions = [
+      for (final id in SkillId.values)
+        for (var level = 1; level <= 3; level++) Internationalize.forestSkillDescription(id: id, level: level),
+    ];
 
     // then
     expect(names, ['Golpe doble', 'Segundo aliento', 'Esquiva']);
     expect(descriptions, [
       'Cada tercer ataque golpea dos veces.',
+      'Cada tercer ataque golpea dos veces y el segundo golpe hace un 15 % más de daño.',
+      'Cada tercer ataque golpea dos veces y el segundo golpe hace un 30 % más de daño.',
       'Una vez por pelea, por debajo del 30 % de vida recupera el 40 %.',
+      'Una vez por pelea, por debajo del 30 % de vida recupera el 50 %.',
+      'Una vez por pelea, por debajo del 30 % de vida recupera el 60 %.',
       'Un 20 % de posibilidades de esquivar cada golpe.',
+      'Un 25 % de posibilidades de esquivar cada golpe.',
+      'Un 30 % de posibilidades de esquivar cada golpe.',
     ]);
   });
 
@@ -252,10 +390,17 @@ void main() {
     // given
     final texts = [
       Internationalize.forestHeroLearn,
-      Internationalize.forestHeroKnown,
+      Internationalize.forestHeroUpgrade,
+      Internationalize.forestHeroSkillMax,
+      Internationalize.forestHeroSkillLevel(level: 2, max: 3),
+      Internationalize.forestHeroSkillNext(
+        level: 3,
+        effect: Internationalize.forestSkillDescription(id: SkillId.dodge, level: 3),
+      ),
       Internationalize.forestHeroNeedsBuilding(name: Internationalize.forestBlueprint(id: BlueprintId.mageTower)),
       Internationalize.forestMessageSkillLearned(name: Internationalize.forestSkillName(id: SkillId.doubleStrike)),
-      Internationalize.forestMessageSkillAlreadyKnown,
+      Internationalize.forestMessageSkillUpgraded(name: Internationalize.forestSkillName(id: SkillId.dodge), level: 2),
+      Internationalize.forestMessageSkillMaxLevel,
     ];
 
     // when
@@ -265,19 +410,23 @@ void main() {
     expect(untranslated, isEmpty);
     expect(texts, [
       'Aprender',
-      'Aprendida',
+      'Mejorar',
+      'Máximo',
+      'Nv 2/3',
+      'Nv 3: Un 30 % de posibilidades de esquivar cada golpe.',
       'Construye la Torre de magia',
       'Has aprendido: Golpe doble',
-      'Ya conoces esa habilidad.',
+      'Has mejorado: Esquiva (Nv 2)',
+      'Esa habilidad ya está al nivel máximo.',
     ]);
   });
 
   test('testWhenFormattingArenaNumbersThenUsesTheSpanishTexts', () {
     // given
-    const amount = 10;
+    const amounts = FundsMock.tenGold;
 
     // when
-    final reward = Internationalize.arenaReward(amount: amount);
+    final reward = Internationalize.arenaReward(amounts: amounts);
     final power = Internationalize.arenaPower(power: 19);
     final heroPower = Internationalize.arenaHeroPower(power: 31);
     final damage = Internationalize.arenaDamage(amount: 4);
@@ -291,6 +440,21 @@ void main() {
     expect(damage, '−4');
     expect(heal, '+12');
     expect(group, '3 × Bandido');
+  });
+
+  test('testWhenFormattingAnArenaRewardThenListsEveryPositiveAmountInResourceOrder', () {
+    // given
+    const goldAndMana = FundsMock.banditTrioReward;
+
+    // when
+    final both = Internationalize.arenaReward(amounts: goldAndMana);
+    final withoutZeros = Internationalize.arenaReward(amounts: FundsMock.tenGoldAndZeroMana);
+    final reordered = Internationalize.arenaReward(amounts: FundsMock.sixManaBeforeTwentyFiveGold);
+
+    // then
+    expect(both, '+75 de oro, 20 de maná');
+    expect(withoutZeros, '+10 de oro');
+    expect(reordered, '+25 de oro, 6 de maná');
   });
 
   test('testWhenNamingArenaLevelsEnemiesAndAdviceThenUsesTheSpanishTexts', () {

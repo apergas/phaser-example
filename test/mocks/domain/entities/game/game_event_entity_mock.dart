@@ -1,7 +1,10 @@
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
 import 'package:farming/core/config/constants/enum/quest_id.dart';
+import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
+
+import '../tree/tree_entity_mock.dart';
 
 abstract final class GameEventEntityMock {
   static const ItemPickedUpEventEntity itemPickedUp = ItemPickedUpEventEntity(itemId: 'axe-1', kind: ToolKind.axe);
@@ -22,9 +25,44 @@ abstract final class GameEventEntityMock {
     blueprint: BlueprintId.house,
   );
 
-  static const QuestCompletedEventEntity pickUpAxeCompleted = QuestCompletedEventEntity(questId: QuestId.pickUpAxe);
+  static const QuestCompletedEventEntity gatherWoodCompleted = QuestCompletedEventEntity(questId: QuestId.gatherWood);
+
+  static const QuestCompletedEventEntity fellTenTreesCompleted = QuestCompletedEventEntity(
+    questId: QuestId.fellTenTrees,
+  );
+
+  static const QuestCompletedEventEntity fellAnOakCompleted = QuestCompletedEventEntity(questId: QuestId.fellAnOak);
 
   static const QuestCompletedEventEntity buildHouseCompleted = QuestCompletedEventEntity(questId: QuestId.buildHouse);
+
+  static const TreeSproutedEventEntity stumpSprouted = TreeSproutedEventEntity(stumpId: 'tree-1');
+
+  static const TreeSproutedEventEntity otherStumpSprouted = TreeSproutedEventEntity(stumpId: 'tree-2');
+
+  static const TreeRegrownEventEntity pineRegrown = TreeRegrownEventEntity(tree: TreeEntityMock.regrownPine);
+
+  static const RockHitEventEntity rockHit = RockHitEventEntity(rockId: 'rock-1');
+
+  static const RockBrokenEventEntity rockBroken = RockBrokenEventEntity(rockId: 'rock-1', stone: 8);
+
+  static const RockBrokenEventEntity rockBrokenWithFourStone = RockBrokenEventEntity(rockId: 'rock-1', stone: 4);
+
+  static const TreeFelledEventEntity treeFelledWithOneWood = TreeFelledEventEntity(treeId: 'tree-1', wood: 1);
+
+  static const DepositedEventEntity depositedMixedLoadAtTheCamp = DepositedEventEntity(
+    buildingId: 'camp',
+    load: {Resource.wood: 6, Resource.stone: 3},
+  );
+
+  static const DepositedEventEntity depositedMixedLoadAtTheStorehouse = DepositedEventEntity(
+    buildingId: 'storehouse',
+    load: {Resource.wood: 6, Resource.stone: 3},
+  );
+
+  static const DepositedEventEntity depositedStoneAtTheQuarry = DepositedEventEntity(
+    buildingId: 'quarry',
+    load: {Resource.stone: 3},
+  );
 
   static const List<GameEventEntity> all = [
     itemPickedUp,
@@ -33,7 +71,7 @@ abstract final class GameEventEntityMock {
     treeFelled,
     buildingHammered,
     buildingCompleted,
-    pickUpAxeCompleted,
+    gatherWoodCompleted,
   ];
 
   static List<GameEventEntity> makeAll() {
@@ -46,7 +84,7 @@ abstract final class GameEventEntityMock {
       TreeFelledEventEntity(treeId: treeId, wood: 6),
       BuildingHammeredEventEntity(buildingId: buildingId, progress: 0.125),
       BuildingCompletedEventEntity(buildingId: buildingId, blueprint: BlueprintId.house),
-      QuestCompletedEventEntity(questId: QuestId.pickUpAxe),
+      QuestCompletedEventEntity(questId: QuestId.gatherWood),
     ];
   }
 

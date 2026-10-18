@@ -54,4 +54,13 @@ abstract final class FightLogEntityMock {
     outcome: FightOutcome.defeat,
     reward: const {},
   );
+
+  static FightLogEntity defeatByBruteThatDodges() => FightLogEntity(
+    levelId: ArenaLevelId.barbarian,
+    heroStats: CombatStatsEntityMock.heroFullyGeared,
+    enemies: const [EnemyEntityMock.brute],
+    turns: FightTurnEntityMock.defeatByBruteThatDodges(),
+    outcome: FightOutcome.defeat,
+    reward: const {},
+  );
 }

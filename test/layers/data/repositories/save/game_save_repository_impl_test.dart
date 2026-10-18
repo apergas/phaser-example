@@ -20,6 +20,7 @@ import '../../../../mocks/data/repositories/save/same_game_matcher.dart';
 import '../../../../mocks/data/repositories/save/save_error_mock.dart';
 import '../../../../mocks/data/repositories/save/save_mapper_dbo_factory.dart';
 import '../../../../mocks/data/repositories/save/save_round_trip_mock.dart';
+import '../../../../mocks/domain/game/save_scenario_mock.dart';
 
 void main() {
   late GameSaveLocalDatasourceFake localDatasource;
@@ -76,7 +77,7 @@ void main() {
     expect(logger.errors, hasLength(1));
     expect(
       logger.errors.single.message,
-      contains(Internationalize.errorInvalidSaveMessage(reason: 'unknown version 2')),
+      contains(Internationalize.errorInvalidSaveMessage(reason: 'unknown version 3')),
     );
     expect(logger.errors.single.header, 'GameSaveRepository');
     expect(logger.errors.single.stackTrace, isNotNull);
@@ -121,7 +122,7 @@ void main() {
 
     // then
     expect(localDatasource.saved, hasLength(1));
-    expect(localDatasource.saved.single.version, 1);
+    expect(localDatasource.saved.single.version, 2);
     expect(localDatasource.saved.single.completedQuests, ['gatherWood', 'buildHouse', 'buildForge']);
     expect(sut.load(), isNotNull);
     expect(logger.errors, isEmpty);
@@ -213,6 +214,20 @@ void main() {
 
       // then
       expectSameGame(loaded!, session);
+      expect(logger.errors, isEmpty);
+    });
+
+    test('testWhenAVersionOneGameIsStoredThenItLoadsMigrated', () async {
+      // given
+      await preferences.setString(key, SaveJsonMock.versionOne);
+
+      // when
+      final loaded = sut.load();
+
+      // then
+      expect(loaded!.world.stock, SaveScenarioMock.stockWithTheVersionOneLoad);
+      expect(loaded.world.buildings, SaveScenarioMock.everything().buildings);
+      expect(loaded.quests.completed, SaveScenarioMock.completedQuests);
       expect(logger.errors, isEmpty);
     });
 

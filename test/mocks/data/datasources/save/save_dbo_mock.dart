@@ -1,26 +1,43 @@
+import 'package:farming/layers/data/datasources/save/local/dbo/save_building_dbo.dart';
 import 'package:farming/layers/data/datasources/save/local/dbo/save_dbo.dart';
 import 'package:farming/layers/data/datasources/save/local/dbo/save_player_dbo.dart';
+import 'package:farming/layers/data/datasources/save/local/dbo/save_stock_dbo.dart';
 import 'package:farming/layers/data/datasources/save/local/dbo/save_tree_dbo.dart';
 
 import 'save_building_dbo_mock.dart';
 import 'save_decoration_dbo_mock.dart';
 import 'save_hero_dbo_mock.dart';
-import 'save_inventory_dbo_mock.dart';
 import 'save_item_dbo_mock.dart';
 import 'save_player_dbo_mock.dart';
 import 'save_rock_dbo_mock.dart';
 import 'save_stats_dbo_mock.dart';
+import 'save_stock_dbo_mock.dart';
 import 'save_stump_dbo_mock.dart';
 import 'save_tree_dbo_mock.dart';
 
 abstract final class SaveDBOMock {
   static const List<String> _quests = ['gatherWood', 'buildHouse', 'buildForge'];
+  static const List<String> _versionOneQuests = ['gatherWood', 'buildHouse', 'buildQuarry', 'buildForge'];
+  static const List<SaveBuildingDBO> _buildings = [
+    SaveBuildingDBOMock.camp,
+    SaveBuildingDBOMock.finishedHouse,
+    SaveBuildingDBOMock.forgeSite,
+  ];
+  static const List<SaveBuildingDBO> _versionOneBuildings = [
+    SaveBuildingDBOMock.camp,
+    SaveBuildingDBOMock.finishedHouse,
+    SaveBuildingDBOMock.storehouse,
+    SaveBuildingDBOMock.forgeSite,
+    SaveBuildingDBOMock.quarrySite,
+  ];
 
   static SaveDBO _build({
-    int? version = 1,
+    int? version = SaveDBO.currentVersion,
     double? width = 1600,
     double? height = 1200,
     SavePlayerDBO? player = SavePlayerDBOMock.mock,
+    SaveStockDBO? stock = SaveStockDBOMock.stock,
+    List<SaveBuildingDBO>? buildings = _buildings,
     List<SaveTreeDBO>? trees = const [SaveTreeDBOMock.withThreeHitsTaken, SaveTreeDBOMock.neighbour],
     Map<String, int>? idCounters = const {'building': 3},
     List<String>? completedQuests = _quests,
@@ -32,13 +49,13 @@ abstract final class SaveDBOMock {
       player: player,
       hero: SaveHeroDBOMock.mock,
       stats: SaveStatsDBOMock.mock,
-      stock: SaveInventoryDBOMock.stock,
+      stock: stock,
       trees: trees,
       stumps: const [SaveStumpDBOMock.elsewhereAlmostSapling, SaveStumpDBOMock.otherSapling],
       rocks: const [SaveRockDBOMock.onceHit],
       items: const [SaveItemDBOMock.axe],
       decorations: const [SaveDecorationDBOMock.rock],
-      buildings: const [SaveBuildingDBOMock.camp, SaveBuildingDBOMock.finishedHouse, SaveBuildingDBOMock.forgeSite],
+      buildings: buildings,
       idCounters: idCounters,
       completedQuests: completedQuests,
     );
@@ -46,7 +63,20 @@ abstract final class SaveDBOMock {
 
   static final SaveDBO everything = _build();
   static final SaveDBO sameAsEverything = _build();
-  static final SaveDBO otherVersion = _build(version: 2);
+  static final SaveDBO otherVersion = _build(version: 3);
+  static final SaveDBO versionOne = _build(
+    version: 1,
+    player: SavePlayerDBOMock.versionOne,
+    stock: SaveStockDBOMock.stock,
+    buildings: _versionOneBuildings,
+    completedQuests: _versionOneQuests,
+  );
+  static final SaveDBO versionOneMigrated = _build(stock: SaveStockDBOMock.withTheVersionOneLoad);
+  static final SaveDBO versionOneWithoutStock = _build(version: 1, player: SavePlayerDBOMock.versionOne, stock: null);
+  static final SaveDBO versionOneWithNegativeCarry = _build(
+    version: 1,
+    player: SavePlayerDBOMock.versionOneWithNegativeCarry,
+  );
   static final SaveDBO withoutVersion = _build(version: null);
   static final SaveDBO withoutWidth = _build(width: null);
   static final SaveDBO withZeroWidth = _build(width: 0);
@@ -60,7 +90,12 @@ abstract final class SaveDBOMock {
   static final SaveDBO withOtherQuests = _build(completedQuests: const ['gatherWood']);
   static final SaveDBO withUnknownQuest = _build(completedQuests: const ['saveTheWorld']);
   static final SaveDBO withNothingElse = _build(trees: null, idCounters: null, completedQuests: null);
-  static const SaveDBO onlyWorldSize = SaveDBO(version: 1, width: 400, height: 300, player: SavePlayerDBOMock.mock);
+  static const SaveDBO onlyWorldSize = SaveDBO(
+    version: SaveDBO.currentVersion,
+    width: 400,
+    height: 300,
+    player: SavePlayerDBOMock.mock,
+  );
   static const Map<String, dynamic> wrongTypes = {'version': '1'};
   static const Map<String, dynamic> wrongTreesType = {'trees': 'many'};
   static const Map<String, dynamic> wrongTreeItemType = {

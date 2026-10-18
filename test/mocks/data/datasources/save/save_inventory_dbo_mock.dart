@@ -5,15 +5,16 @@ abstract final class SaveInventoryDBOMock {
     tools: ['axe', 'pickaxe'],
     toolLevels: {'axe': 2},
   );
-  static const SaveInventoryDBO stock = SaveInventoryDBO(
-    resources: {'wood': 30, 'gold': 45, 'mana': 12, 'stone': 9},
-    tools: [],
-    toolLevels: {},
+  static const SaveInventoryDBO versionOnePlayer = SaveInventoryDBO(
+    resources: {'wood': 4, 'stone': 3},
+    tools: ['axe', 'pickaxe'],
+    toolLevels: {'axe': 2},
+  );
+  static const SaveInventoryDBO versionOneWithNegativeCarry = SaveInventoryDBO(
+    resources: {'wood': -1},
+    tools: ['axe'],
   );
   static const SaveInventoryDBO empty = SaveInventoryDBO();
-  static const SaveInventoryDBO withZeroResource = SaveInventoryDBO(resources: {'wood': 0, 'stone': 3});
-  static const SaveInventoryDBO withUnknownResource = SaveInventoryDBO(resources: {'diamond': 1});
-  static const SaveInventoryDBO withNegativeResource = SaveInventoryDBO(resources: {'wood': -1});
   static const SaveInventoryDBO withUnknownTool = SaveInventoryDBO(tools: ['hammer']);
   static const SaveInventoryDBO withUnknownToolLevel = SaveInventoryDBO(toolLevels: {'hammer': 2});
   static const SaveInventoryDBO withToolLevelZero = SaveInventoryDBO(toolLevels: {'axe': 0});

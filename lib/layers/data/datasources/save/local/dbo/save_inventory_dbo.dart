@@ -15,7 +15,11 @@ class SaveInventoryDBO {
     toolLevels: readIntMap(json['toolLevels']),
   );
 
-  Map<String, dynamic> toJson() => {'resources': resources, 'tools': tools, 'toolLevels': toolLevels};
+  Map<String, dynamic> toJson() => {
+    if (resources != null) 'resources': resources,
+    'tools': tools,
+    'toolLevels': toolLevels,
+  };
 
   @override
   bool operator ==(Object other) =>

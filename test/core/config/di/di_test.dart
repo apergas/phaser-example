@@ -14,6 +14,8 @@ import 'package:farming/layers/data/repositories/save/mappers/save_building_mapp
 import 'package:farming/layers/data/repositories/save/mappers/save_decoration_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_ground_item_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_hero_mapper_dbo.dart';
+import 'package:farming/layers/data/repositories/save/mappers/save_migration_mapper_dbo.dart';
+import 'package:farming/layers/data/repositories/save/mappers/save_stock_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_inventory_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_mapper_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_player_mapper_dbo.dart';
@@ -135,10 +137,12 @@ void main() {
       locator.isRegistered<SaveHeroMapperDBO>(),
       locator.isRegistered<SaveInventoryMapperDBO>(),
       locator.isRegistered<SaveMapperDBO>(),
+      locator.isRegistered<SaveMigrationMapperDBO>(),
       locator.isRegistered<SavePlayerMapperDBO>(),
       locator.isRegistered<SavePositionMapperDBO>(),
       locator.isRegistered<SaveRockMapperDBO>(),
       locator.isRegistered<SaveStatsMapperDBO>(),
+      locator.isRegistered<SaveStockMapperDBO>(),
       locator.isRegistered<SaveStumpMapperDBO>(),
       locator.isRegistered<SaveTreeMapperDBO>(),
       locator.isRegistered<LevelRepository>(),

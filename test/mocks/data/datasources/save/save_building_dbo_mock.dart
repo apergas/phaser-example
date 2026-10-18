@@ -31,6 +31,20 @@ abstract final class SaveBuildingDBOMock {
     y: 300,
     hitsDone: 4,
   );
+  static const SaveBuildingDBO storehouse = SaveBuildingDBO(
+    id: 'building-2',
+    blueprint: 'storehouse',
+    x: 750,
+    y: 300,
+    hitsDone: 8,
+  );
+  static const SaveBuildingDBO quarrySite = SaveBuildingDBO(
+    id: 'building-4',
+    blueprint: 'quarry',
+    x: 300,
+    y: 300,
+    hitsDone: 2,
+  );
   static const SaveBuildingDBO withTooManyHits = SaveBuildingDBO(
     id: 'building-1',
     blueprint: 'house',

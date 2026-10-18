@@ -143,8 +143,23 @@ void main() {
     final attempts = [for (final dbo in dbos) () => sut.toEntity(dbo)];
 
     // then
-    expect(attempts[0], throwsInvalidSave('unknown version 2'));
+    expect(attempts[0], throwsInvalidSave('unknown version 3'));
     expect(attempts[1], throwsInvalidSave('unknown version null'));
+  });
+
+  test('testWhenMappingAVersionOneSaveThenTheGameLoadsWithTheLoadInTheStockAndWithoutTheRemovedPieces', () {
+    // given
+    final dbo = SaveDBOMock.versionOne;
+
+    // when
+    final session = sut.toEntity(dbo);
+
+    // then
+    final expected = SaveScenarioMock.everything();
+    expect(session.world.stock, SaveScenarioMock.stockWithTheVersionOneLoad);
+    expect(session.world.player, expected.player);
+    expect(session.world.buildings, expected.buildings);
+    expect(session.quests.completed, SaveScenarioMock.completedQuests);
   });
 
   test('testWhenTheWorldWidthIsMissingOrNotPositiveThenItThrows', () {

@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:farming/layers/data/datasources/save/local/dbo/save_inventory_dbo.dart';
+import 'package:farming/layers/data/datasources/save/local/dbo/save_stock_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_stock_mapper_dbo.dart';
 
-import '../../../../../mocks/data/datasources/save/save_inventory_dbo_mock.dart';
+import '../../../../../mocks/data/datasources/save/save_stock_dbo_mock.dart';
 import '../../../../../mocks/data/repositories/save/invalid_save_matcher.dart';
 import '../../../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 import '../../../../../mocks/domain/game/save_scenario_mock.dart';
@@ -22,12 +22,12 @@ void main() {
     final dbo = sut.toDBO(stock);
 
     // then
-    expect(dbo, SaveInventoryDBOMock.stock);
+    expect(dbo, SaveStockDBOMock.stock);
   });
 
   test('testWhenMappingTheDboToTheStockThenEveryResourceComesBack', () {
     // given
-    const dbo = SaveInventoryDBOMock.stock;
+    const dbo = SaveStockDBOMock.stock;
 
     // when
     final stock = sut.toEntity(dbo);
@@ -38,7 +38,7 @@ void main() {
 
   test('testWhenThereIsNoDboThenTheStockIsEmpty', () {
     // given
-    const SaveInventoryDBO? dbo = null;
+    const SaveStockDBO? dbo = null;
 
     // when
     final stock = sut.toEntity(dbo);
@@ -49,7 +49,7 @@ void main() {
 
   test('testWhenTheDboHasNoFieldsThenTheStockIsEmpty', () {
     // given
-    const dbo = SaveInventoryDBOMock.empty;
+    const dbo = SaveStockDBOMock.empty;
 
     // when
     final stock = sut.toEntity(dbo);
@@ -60,7 +60,7 @@ void main() {
 
   test('testWhenAResourceIsZeroThenItDoesNotAppearInTheStock', () {
     // given
-    const dbo = SaveInventoryDBOMock.withZeroResource;
+    const dbo = SaveStockDBOMock.withZeroResource;
 
     // when
     final stock = sut.toEntity(dbo);
@@ -71,7 +71,7 @@ void main() {
 
   test('testWhenAResourceIsUnknownThenItThrows', () {
     // given
-    const dbo = SaveInventoryDBOMock.withUnknownResource;
+    const dbo = SaveStockDBOMock.withUnknownResource;
 
     // when
     void map() => sut.toEntity(dbo);
@@ -82,7 +82,7 @@ void main() {
 
   test('testWhenAnAmountIsNegativeThenItThrows', () {
     // given
-    const dbo = SaveInventoryDBOMock.withNegativeResource;
+    const dbo = SaveStockDBOMock.withNegativeResource;
 
     // when
     void map() => sut.toEntity(dbo);

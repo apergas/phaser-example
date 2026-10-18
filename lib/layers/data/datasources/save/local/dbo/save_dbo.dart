@@ -3,17 +3,17 @@ import 'package:collection/collection.dart';
 import 'save_building_dbo.dart';
 import 'save_decoration_dbo.dart';
 import 'save_hero_dbo.dart';
-import 'save_inventory_dbo.dart';
 import 'save_item_dbo.dart';
 import 'save_json.dart';
 import 'save_player_dbo.dart';
 import 'save_rock_dbo.dart';
 import 'save_stats_dbo.dart';
+import 'save_stock_dbo.dart';
 import 'save_stump_dbo.dart';
 import 'save_tree_dbo.dart';
 
 class SaveDBO {
-  static const int currentVersion = 1;
+  static const int currentVersion = 2;
 
   final int? version;
   final double? width;
@@ -21,7 +21,7 @@ class SaveDBO {
   final SavePlayerDBO? player;
   final SaveHeroDBO? hero;
   final SaveStatsDBO? stats;
-  final SaveInventoryDBO? stock;
+  final SaveStockDBO? stock;
   final List<SaveTreeDBO>? trees;
   final List<SaveStumpDBO>? stumps;
   final List<SaveRockDBO>? rocks;
@@ -61,7 +61,7 @@ class SaveDBO {
       player: player == null ? null : SavePlayerDBO.fromJson(player),
       hero: hero == null ? null : SaveHeroDBO.fromJson(hero),
       stats: stats == null ? null : SaveStatsDBO.fromJson(stats),
-      stock: stock == null ? null : SaveInventoryDBO.fromJson(stock),
+      stock: stock == null ? null : SaveStockDBO.fromJson(stock),
       trees: readObjectList(json['trees'], SaveTreeDBO.fromJson),
       stumps: readObjectList(json['stumps'], SaveStumpDBO.fromJson),
       rocks: readObjectList(json['rocks'], SaveRockDBO.fromJson),

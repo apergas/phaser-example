@@ -10,6 +10,7 @@ import 'save_building_mapper_dbo.dart';
 import 'save_decoration_mapper_dbo.dart';
 import 'save_ground_item_mapper_dbo.dart';
 import 'save_hero_mapper_dbo.dart';
+import 'save_migration_mapper_dbo.dart';
 import 'save_player_mapper_dbo.dart';
 import 'save_rock_mapper_dbo.dart';
 import 'save_stock_mapper_dbo.dart';
@@ -26,6 +27,7 @@ class SaveMapperDBO {
   final SaveDecorationMapperDBO _decorationMapperDBO;
   final SaveBuildingMapperDBO _buildingMapperDBO;
   final SaveStockMapperDBO _stockMapperDBO;
+  final SaveMigrationMapperDBO _migrationMapperDBO;
   final SavePlayerMapperDBO _playerMapperDBO;
   final SaveHeroMapperDBO _heroMapperDBO;
   final SaveStatsMapperDBO _statsMapperDBO;
@@ -38,6 +40,7 @@ class SaveMapperDBO {
     required this._decorationMapperDBO,
     required this._buildingMapperDBO,
     required this._stockMapperDBO,
+    required this._migrationMapperDBO,
     required this._playerMapperDBO,
     required this._heroMapperDBO,
     required this._statsMapperDBO,
@@ -68,10 +71,8 @@ class SaveMapperDBO {
     );
   }
 
-  GameSessionEntity toEntity(SaveDBO dbo) {
-    if (dbo.version != SaveDBO.currentVersion) {
-      throw InvalidSaveException(data: 'unknown version ${dbo.version}');
-    }
+  GameSessionEntity toEntity(SaveDBO saved) {
+    final dbo = _migrationMapperDBO.toCurrent(saved);
     return GameSessionEntity(
       world: World.restore(
         width: _size(dbo.width, 'width'),

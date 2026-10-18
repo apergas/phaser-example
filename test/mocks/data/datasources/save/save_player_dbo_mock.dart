@@ -4,6 +4,16 @@ import 'save_inventory_dbo_mock.dart';
 
 abstract final class SavePlayerDBOMock {
   static const SavePlayerDBO mock = SavePlayerDBO(x: 420, y: 380, inventory: SaveInventoryDBOMock.player);
+  static const SavePlayerDBO versionOne = SavePlayerDBO(
+    x: 420,
+    y: 380,
+    inventory: SaveInventoryDBOMock.versionOnePlayer,
+  );
+  static const SavePlayerDBO versionOneWithNegativeCarry = SavePlayerDBO(
+    x: 420,
+    y: 380,
+    inventory: SaveInventoryDBOMock.versionOneWithNegativeCarry,
+  );
   static const SavePlayerDBO withoutInventory = SavePlayerDBO(x: 420, y: 380);
   static const SavePlayerDBO withoutX = SavePlayerDBO(y: 380);
   static const SavePlayerDBO withoutY = SavePlayerDBO(x: 420);

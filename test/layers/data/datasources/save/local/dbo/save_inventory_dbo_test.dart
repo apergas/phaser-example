@@ -36,11 +36,10 @@ void main() {
     // given
     const dbo = SaveInventoryDBOMock.player;
     const others = [
-      SaveInventoryDBOMock.stock,
+      SaveInventoryDBOMock.versionOnePlayer,
       SaveInventoryDBOMock.empty,
       SaveInventoryDBOMock.withUnknownTool,
       SaveInventoryDBOMock.withToolLevelZero,
-      SaveInventoryDBOMock.withZeroResource,
     ];
 
     // when

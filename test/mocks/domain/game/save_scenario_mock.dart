@@ -52,6 +52,10 @@ abstract final class SaveScenarioMock {
     resources: {Resource.wood: 30, Resource.gold: 45, Resource.mana: 12, Resource.stone: 9},
   );
 
+  static const StockEntity stockWithTheVersionOneLoad = StockEntity(
+    resources: {Resource.wood: 34, Resource.gold: 45, Resource.mana: 12, Resource.stone: 12},
+  );
+
   static const Map<String, int> idCounters = {'building': 3};
 
   static const Set<QuestId> completedQuests = {QuestId.gatherWood, QuestId.buildHouse, QuestId.buildForge};

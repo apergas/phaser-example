@@ -1,3 +1,6 @@
+@TestOn('vm')
+library;
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/core/assets/i18n/internationalize.dart';
 import 'package:farming/core/error-handling/exceptions/app_exceptions.dart';

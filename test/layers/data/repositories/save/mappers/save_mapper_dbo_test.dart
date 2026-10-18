@@ -156,7 +156,7 @@ void main() {
 
     // then
     expect(attempts[0], throwsInvalidSave('world width null'));
-    expect(attempts[1], throwsInvalidSave('world width 0.0'));
+    expect(attempts[1], throwsInvalidSave('world width ${0.0}'));
   });
 
   test('testWhenTheWorldHeightIsMissingOrNotPositiveThenItThrows', () {
@@ -168,7 +168,7 @@ void main() {
 
     // then
     expect(attempts[0], throwsInvalidSave('world height null'));
-    expect(attempts[1], throwsInvalidSave('world height -5.0'));
+    expect(attempts[1], throwsInvalidSave('world height ${-5.0}'));
   });
 
   test('testWhenThePlayerIsMissingThenItThrows', () {

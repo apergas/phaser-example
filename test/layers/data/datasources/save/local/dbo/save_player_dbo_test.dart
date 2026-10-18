@@ -88,7 +88,7 @@ void main() {
 
     // then
     expect(text, startsWith('SavePlayerDBO('));
-    expect(text, contains('x: 420.0'));
+    expect(text, contains('x: ${420.0}'));
   });
 
   test('testWhenTheCoordinatesAreWholeNumbersThenTheyAreReadAsDoubles', () {

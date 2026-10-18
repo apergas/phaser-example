@@ -54,7 +54,7 @@ void main() {
     void map() => sut.toEntity(dbo);
 
     // then
-    expect(map, throwsInvalidSave('stump tree-1: elapsed -1.0 ms'));
+    expect(map, throwsInvalidSave('stump tree-1: elapsed ${-1.0} ms'));
   });
 
   test('testWhenTheStumpHasNoIdThenItThrows', () {

@@ -27,6 +27,28 @@ abstract final class FightTurnEntityMock {
         targetHealthAfter: heroHealthAfter,
       );
 
+  static FightTurnEntity enemyDodges({required int round, required int enemyHealthAfter}) => FightTurnEntity(
+    round: round,
+    actor: FightSide.hero,
+    actorIndex: 0,
+    target: FightSide.enemy,
+    targetIndex: 0,
+    action: FightAction.dodge,
+    damage: 0,
+    targetHealthAfter: enemyHealthAfter,
+  );
+
+  static List<FightTurnEntity> defeatByBruteThatDodges() => [
+    heroHits(round: 1, damage: 7, enemyHealthAfter: 48),
+    enemyHits(round: 1, damage: 22, heroHealthAfter: 53),
+    enemyDodges(round: 2, enemyHealthAfter: 48),
+    enemyHits(round: 2, damage: 24, heroHealthAfter: 29),
+    enemyDodges(round: 3, enemyHealthAfter: 48),
+    enemyHits(round: 3, damage: 23, heroHealthAfter: 6),
+    enemyDodges(round: 4, enemyHealthAfter: 48),
+    enemyHits(round: 4, damage: 6, heroHealthAfter: 0),
+  ];
+
   static List<FightTurnEntity> victoryOverBandit() => [
     heroHits(round: 1, damage: 3, enemyHealthAfter: 17),
     enemyHits(round: 1, damage: 1, heroHealthAfter: 29),

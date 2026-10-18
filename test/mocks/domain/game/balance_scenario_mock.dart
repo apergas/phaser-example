@@ -5,6 +5,10 @@ import 'package:farming/layers/domain/entities/hero/hero_entity.dart';
 abstract final class BalanceScenarioMock {
   static const int seeds = 100;
 
+  static const int manySeeds = 1000;
+
+  static const int maxedSkillLevel = 3;
+
   static const double minWinRate = 0.6;
 
   static const double maxWinRate = 0.95;

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:farming/core/config/constants/enum/arena_level_id.dart';
 import 'package:farming/core/config/constants/enum/gear_slot.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/layers/domain/combat/combat.dart';
@@ -13,14 +14,18 @@ import 'package:farming/layers/domain/world/extensions/hero_rules.dart';
 
 import '../../../mocks/domain/game/balance_scenario_mock.dart';
 
-double _winRate(ArenaLevelEntity level, HeroEntity hero) {
+double _winRate(ArenaLevelEntity level, HeroEntity hero, {int seeds = BalanceScenarioMock.seeds}) {
   var wins = 0;
-  for (var seed = 0; seed < BalanceScenarioMock.seeds; seed++) {
+  for (var seed = 0; seed < seeds; seed++) {
     final log = Combat.resolve(level: level, heroStats: hero.stats, skillLevels: hero.skillLevels, seed: seed);
     if (log.isVictory) wins++;
   }
-  return wins / BalanceScenarioMock.seeds;
+  return wins / seeds;
 }
+
+HeroEntity _maxed(HeroEntity hero) => hero.copyWith(
+  skillLevels: {for (final skill in hero.skills) skill: BalanceScenarioMock.maxedSkillLevel},
+);
 
 const _arenaResources = [Resource.gold, Resource.mana];
 
@@ -74,6 +79,69 @@ void main() {
         inInclusiveRange(BalanceScenarioMock.minWinRate, BalanceScenarioMock.maxWinRate),
         reason: '${id.name} with the expected hero',
       );
+    }
+  });
+
+  test('testWhenTheExpectedHeroFightsAThousandTimesThenEachLevelAfterTheFirstIsStillWonMostOfTheTime', () {
+    // given
+    final later = levels.skip(1);
+
+    // when
+    final rates = {
+      for (final level in later) level.id: _winRate(level, _expectedHero(level), seeds: BalanceScenarioMock.manySeeds),
+    };
+
+    // then
+    for (final MapEntry(key: id, value: rate) in rates.entries) {
+      expect(rate, greaterThanOrEqualTo(BalanceScenarioMock.minWinRate), reason: '${id.name} over 1000 seeds');
+    }
+    expect(
+      [
+        for (final id in [
+          ArenaLevelId.banditTrio,
+          ArenaLevelId.barbarian,
+          ArenaLevelId.wolfPack,
+          ArenaLevelId.barbarianPair,
+          ArenaLevelId.barbarianChief,
+        ])
+          rates[id],
+      ],
+      [0.866, 0.751, 0.719, 0.74, 0.608],
+    );
+  });
+
+  test('testWhenTheExpectedHeroHasItsSkillsAtTheMaxLevelThenNoLevelIsWonMoreThanTheCeiling', () {
+    // given
+    final withSkills = levels.where((level) => _expectedHero(level).skills.isNotEmpty);
+
+    // when
+    final rates = [
+      for (final level in withSkills)
+        for (final seeds in [BalanceScenarioMock.seeds, BalanceScenarioMock.manySeeds])
+          (level.id, seeds, _winRate(level, _maxed(_expectedHero(level)), seeds: seeds)),
+    ];
+
+    // then
+    expect(rates, isNotEmpty);
+    for (final (id, seeds, rate) in rates) {
+      expect(rate, lessThanOrEqualTo(BalanceScenarioMock.maxWinRate), reason: '${id.name} maxed over $seeds seeds');
+    }
+  });
+
+  test('testWhenTheHeroIsOneStepBehindWithItsSkillsAtTheMaxLevelThenEachLevelIsStillLostMostOfTheTime', () {
+    // given
+    final pairs = [
+      for (var index = 1; index < levels.length; index++)
+        if (_expectedHero(levels[index - 1]) != _expectedHero(levels[index]))
+          (levels[index], _maxed(_expectedHero(levels[index - 1]))),
+    ];
+
+    // when
+    final rates = {for (final (level, hero) in pairs) level.id: _winRate(level, hero)};
+
+    // then
+    for (final MapEntry(key: id, value: rate) in rates.entries) {
+      expect(rate, lessThan(BalanceScenarioMock.maxWinRateOneStepBehind), reason: '${id.name} one step behind, maxed');
     }
   });
 

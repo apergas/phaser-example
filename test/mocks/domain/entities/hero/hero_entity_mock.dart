@@ -115,4 +115,8 @@ abstract final class HeroEntityMock {
     armorTier: 3,
     skillLevels: {SkillId.doubleStrike: 3, SkillId.secondWind: 3, SkillId.dodge: 3},
   );
+
+  static const HeroEntity bronzeAndChain = HeroEntity(weaponTier: 2, armorTier: 2);
+
+  static const HeroEntity steelAndPlate = HeroEntity(weaponTier: 3, armorTier: 3);
 }

@@ -1,4 +1,7 @@
 import 'package:flame/game.dart';
+
+import '../../../../helpers/in_memory_preferences.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -35,6 +38,7 @@ void main() {
 
   setUp(() async {
     rootBundle.clear();
+    useInMemoryPreferences();
     await configureDependencies(environment: DiEnvironment.dev);
     levelRepository = MockLevelRepository();
     navigationService = MockNavigationService();

@@ -102,6 +102,27 @@ void main() {
     expect(texts.last.position.x, texts.first.position.x);
   });
 
+  testWithFlameGame('testWhenAnEnemyUsesASkillThenItsNameFloatsAboveThatEnemyAtTheHeroHeight', (game) async {
+    // given
+    final scene = await _mountedScene(game);
+    final enemy = scene.fighters['enemy-0']!;
+    final hero = scene.fighters['hero-0']!;
+
+    // when
+    scene.show(ArenaDataMock.banditStruckTwice);
+    await game.ready();
+
+    // then
+    final texts = scene.children.whereType<FloatingTextComponent>().toList();
+    expect(texts.map((text) => text.text), [
+      Internationalize.arenaDamage(amount: 2),
+      Internationalize.arenaSkillUsed(id: SkillId.doubleStrike),
+    ]);
+    expect(texts.last.position.x, enemy.position.x);
+    expect(texts.first.position.x, hero.position.x);
+    expect(texts.last.position.y, lessThan(texts.first.position.y));
+  });
+
   testWithFlameGame('testWhenTheFightEndsThenTheBarsJumpToTheFinalHealth', (game) async {
     // given
     final scene = await _mountedScene(game);

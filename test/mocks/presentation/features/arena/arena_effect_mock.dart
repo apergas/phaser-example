@@ -45,6 +45,12 @@ abstract final class ArenaEffectMock {
     index: 2,
   );
 
+  static const SkillUsedEffect banditDoubleStrikeUsed = SkillUsedEffect(
+    skill: SkillId.doubleStrike,
+    side: FightSide.enemy,
+    index: 0,
+  );
+
   static const SkillUsedEffect chiefSecondWindUsed = SkillUsedEffect(
     skill: SkillId.secondWind,
     side: FightSide.enemy,

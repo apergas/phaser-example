@@ -143,4 +143,22 @@ abstract final class HeroEntityMock {
     armorTier: 3,
     skillLevels: {SkillId.doubleStrike: 3, SkillId.secondWind: 3, SkillId.dodge: 3},
   );
+
+  static const HeroEntity barbarianChallenger = HeroEntity(
+    weaponTier: 2,
+    armorTier: 2,
+    skillLevels: {SkillId.doubleStrike: 1},
+    clearedLevels: {ArenaLevelId.banditTrio},
+    fightsFought: 25,
+  );
+
+  static const HeroEntity expectedChiefChallenger = HeroEntity(
+    weaponTier: 3,
+    armorTier: 3,
+    skillLevels: {SkillId.doubleStrike: 1, SkillId.dodge: 1},
+    clearedLevels: {ArenaLevelId.barbarianPair},
+    fightsFought: 1,
+  );
+
+  static const HeroEntity inChainMail = HeroEntity(armorTier: 2);
 }

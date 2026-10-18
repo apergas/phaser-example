@@ -38,12 +38,34 @@ abstract final class FighterRenderDataMock {
     armor: GearId.plateArmor,
   );
 
-  static const FighterRenderData heroInChainMailIdle = FighterRenderData(
+  static const FighterRenderData heroInPlateIdleCopy = FighterRenderData(
     side: FightSide.hero,
     index: 0,
     enemyKind: null,
     health: 30,
     maxHealth: 30,
+    pose: FighterPose.idle,
+    weapon: GearId.steelSword,
+    armor: GearId.plateArmor,
+  );
+
+  static const FighterRenderData heroIdleInLeather = FighterRenderData(
+    side: FightSide.hero,
+    index: 0,
+    enemyKind: null,
+    health: 30,
+    maxHealth: 30,
+    pose: FighterPose.idle,
+    weapon: GearId.woodcutterAxe,
+    armor: GearId.leatherArmor,
+  );
+
+  static const FighterRenderData heroInChainMailIdle = FighterRenderData(
+    side: FightSide.hero,
+    index: 0,
+    enemyKind: null,
+    health: 55,
+    maxHealth: 55,
     pose: FighterPose.idle,
     weapon: GearId.woodcutterAxe,
     armor: GearId.chainMail,

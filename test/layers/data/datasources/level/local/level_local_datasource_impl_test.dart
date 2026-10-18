@@ -4,11 +4,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/core/config/constants/enum/decoration_kind.dart';
 import 'package:farming/core/config/constants/enum/tree_kind.dart';
 import 'package:farming/core/utils/kebab_case.dart';
+import 'package:farming/layers/data/datasources/level/local/dbo/rock_dbo.dart';
 import 'package:farming/layers/data/datasources/level/local/dbo/tree_dbo.dart';
 import 'package:farming/layers/data/datasources/level/local/level_local_datasource_impl.dart';
 
+import '../../../../../mocks/data/datasources/level/building_dbo_mock.dart';
 import '../../../../../mocks/data/datasources/level/item_dbo_mock.dart';
 import '../../../../../mocks/data/datasources/level/point_dbo_mock.dart';
+import '../../../../../mocks/data/datasources/level/rock_dbo_mock.dart';
 import '../../../../../mocks/data/datasources/level/tree_dbo_mock.dart';
 
 void main() {
@@ -64,7 +67,96 @@ void main() {
       'dome': 2,
     });
     expect(trees.fold<int>(0, (sum, tree) => sum + (tree.wood ?? 0)), 388);
-    expect(level.items, [ItemDBOMock.axe]);
+    expect(level.items, [ItemDBOMock.pickaxe]);
+    expect(level.buildings, [BuildingDBOMock.camp]);
+  });
+
+  test('testWhenFetchingThenTwelveRocksMatchTheGoldenPositions', () {
+    // given
+    final level = sut.fetch();
+
+    // when
+    final rocks = level.rocks ?? const <RockDBO>[];
+
+    // then
+    expect(rocks, hasLength(12));
+    expect(rocks.take(3).toList(), RockDBOMock.firstGeneratedRocks);
+    expect(rocks.map((rock) => rock.id), [for (var index = 1; index <= 12; index++) 'rock-$index']);
+  });
+
+  test('testWhenFetchingThenRocksKeepClearOfTreesTheSpawnThePickaxeAndEachOther', () {
+    // given
+    final level = sut.fetch();
+    final trees = level.trees ?? const <TreeDBO>[];
+    final rocks = level.rocks ?? const <RockDBO>[];
+    double distance(double? x1, double? y1, double? x2, double? y2) =>
+        sqrt(pow((x1 ?? 0) - (x2 ?? 0), 2) + pow((y1 ?? 0) - (y2 ?? 0), 2));
+
+    // when
+    final closestTrunk = [
+      for (final rock in rocks)
+        for (final tree in trees) distance(rock.x, rock.y, tree.x, tree.y),
+    ].reduce(min);
+    final closestSpawn = rocks.map((rock) => distance(rock.x, rock.y, 800, 600)).reduce(min);
+    final closestPickaxe = rocks.map((rock) => distance(rock.x, rock.y, 1012, 812)).reduce(min);
+    final closestRock = [
+      for (final (index, rock) in rocks.indexed)
+        for (final other in rocks.skip(index + 1)) distance(rock.x, rock.y, other.x, other.y),
+    ].reduce(min);
+
+    // then
+    expect(closestTrunk, greaterThanOrEqualTo(60));
+    expect(closestSpawn, greaterThanOrEqualTo(200));
+    expect(closestPickaxe, greaterThanOrEqualTo(80));
+    expect(closestRock, greaterThanOrEqualTo(200));
+    for (final rock in rocks) {
+      final x = rock.x ?? 0;
+      final y = rock.y ?? 0;
+      final underTree = trees.any(
+        (tree) => (x - (tree.x ?? 0)).abs() < 64 && y > (tree.y ?? 0) - 170 && y < (tree.y ?? 0) + 20,
+      );
+      expect(underTree, isFalse, reason: rock.id);
+    }
+  });
+
+  test('testWhenFetchingThenNinetyThreeDecorationsKeepTheirIdsAndTheOnesOnRocksThePickaxeOrTheCampAreGone', () {
+    // given
+    final level = sut.fetch();
+    const removed = {6, 12, 17, 30, 34, 37, 40, 42, 49, 68, 78, 81, 85, 105};
+
+    // when
+    final ids = (level.decorations ?? const []).map((decoration) => decoration.id).toList();
+
+    // then
+    expect(ids, hasLength(93));
+    expect(ids, [
+      for (var index = 1; index <= 107; index++)
+        if (!removed.contains(index)) 'decoration-$index',
+    ]);
+  });
+
+  test('testWhenFetchingThenNoDecorationIsCloseToTheCampOrARock', () {
+    // given
+    final level = sut.fetch();
+    final rocks = level.rocks ?? const <RockDBO>[];
+
+    // when
+    final decorations = level.decorations ?? const [];
+
+    // then
+    for (final decoration in decorations) {
+      final x = decoration.x ?? 0;
+      final y = decoration.y ?? 0;
+      expect(sqrt(pow(x - 700, 2) + pow(y - 592, 2)), greaterThanOrEqualTo(64), reason: decoration.id);
+      expect(sqrt(pow(x - 1012, 2) + pow(y - 812, 2)), greaterThanOrEqualTo(32), reason: decoration.id);
+      for (final rock in rocks) {
+        expect(
+          sqrt(pow(x - (rock.x ?? 0), 2) + pow(y - (rock.y ?? 0), 2)),
+          greaterThanOrEqualTo(48),
+          reason: decoration.id,
+        );
+      }
+    }
   });
 
   test('testWhenFetchingThenTreesKeepClearOfTheSpawnPoint', () {
@@ -89,7 +181,7 @@ void main() {
     final decorations = level.decorations ?? const [];
 
     // then
-    expect(decorations.length, greaterThanOrEqualTo(40));
+    expect(decorations.length, 93);
     expect(decorations.map((decoration) => decoration.kind).toSet(), {'tall-grass', 'leaves', 'mushrooms', 'rock'});
     for (final decoration in decorations) {
       final x = decoration.x ?? 0;

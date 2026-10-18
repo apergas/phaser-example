@@ -4,6 +4,9 @@ import 'package:farming/layers/data/datasources/level/local/dbo/level_dbo.dart';
 import 'package:farming/layers/data/datasources/level/local/dbo/point_dbo.dart';
 import 'package:farming/layers/data/datasources/level/local/dbo/tree_dbo.dart';
 
+import 'building_dbo_mock.dart';
+import 'rock_dbo_mock.dart';
+
 abstract final class LevelDBOMock {
   static const PointDBO _playerStart = PointDBO(x: 200, y: 150);
   static const List<TreeDBO> _trees = [TreeDBO(id: 'tree-a', kind: 'oak', x: 50, y: 60, wood: 5)];
@@ -54,5 +57,48 @@ abstract final class LevelDBOMock {
     trees: _trees,
     items: _items,
     decorations: [DecorationDBO(id: 'decoration-x', kind: 'lava', x: 0, y: 0)],
+  );
+
+  static const LevelDBO mockWithRocksAndBuildings = LevelDBO(
+    width: 400,
+    height: 300,
+    playerStart: _playerStart,
+    trees: _trees,
+    items: _items,
+    decorations: _decorations,
+    rocks: [RockDBOMock.mock],
+    buildings: [BuildingDBOMock.storehouse],
+  );
+
+  static const LevelDBO mockWithOtherRocks = LevelDBO(
+    width: 400,
+    height: 300,
+    playerStart: _playerStart,
+    trees: _trees,
+    items: _items,
+    decorations: _decorations,
+    rocks: [RockDBOMock.withoutId],
+    buildings: [BuildingDBOMock.storehouse],
+  );
+
+  static const LevelDBO mockWithOtherBuildings = LevelDBO(
+    width: 400,
+    height: 300,
+    playerStart: _playerStart,
+    trees: _trees,
+    items: _items,
+    decorations: _decorations,
+    rocks: [RockDBOMock.mock],
+    buildings: [BuildingDBOMock.camp],
+  );
+
+  static const LevelDBO mockWithUnknownBlueprint = LevelDBO(
+    width: 400,
+    height: 300,
+    playerStart: _playerStart,
+    trees: _trees,
+    items: _items,
+    decorations: _decorations,
+    buildings: [BuildingDBOMock.unknownBlueprint],
   );
 }

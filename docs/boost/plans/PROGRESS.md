@@ -52,7 +52,7 @@
 |---|---|---|
 | [Rayas negras en el suelo de la arena](2026-10-17-extras/arena-ground-seams.md) | ✅ | `develop` (#61) |
 | [Empezar con el hacha en la mano](2026-10-17-extras/start-with-axe.md) | ✅ | `develop` (#71) |
-| [T1 Tests](2026-10-17-extras/T1-tests.md) | 📝 ficha | — (la última; desde TC9.4 no se escriben tests) |
+| [T1 Tests](2026-10-17-extras/T1-tests.md) | 🔨 en curso | `feature/PROJECT-T1-tests` |
 
 ## Siguiente paso
 

@@ -41,7 +41,7 @@ void main() {
 
     // then
     expect(events, containsAll([GameEventEntityMock.fellTenTreesCompleted, GameEventEntityMock.fellAnOakCompleted]));
-    expect(session.quests.status(world)[0], QuestProgressEntityMock.gatherWoodCurrent);
+    expect(session.quests.status(world)[0], QuestProgressEntityMock.gatherWoodAtSix);
   });
 
   test('testWhenNothingHappensThenReturnsNoEvents', () {

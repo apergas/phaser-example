@@ -67,8 +67,6 @@ class Internationalize {
   static String get forestGameConfirm => '$_forest.game.confirm'.tr();
   static String get forestGameCancel => '$_forest.game.cancel'.tr();
   static String get forestStock => '$_forest.hud.stock'.tr();
-  static String forestCarry({required int amount, required int capacity}) =>
-      '$_forest.hud.carry'.tr(namedArgs: {'amount': '$amount', 'capacity': '$capacity'});
   static String get forestQuestDone => '$_forest.hud.questDone'.tr();
   static String forestQuestsDone({required int count}) =>
       '$_forest.hud.questsDone'.plural(count, namedArgs: {'count': '$count'});
@@ -131,10 +129,6 @@ class Internationalize {
       '$_forest.message.woodGained'.tr(namedArgs: {'wood': '$wood'});
   static String forestMessageStoneGained({required int amount}) =>
       '$_forest.message.stoneGained'.tr(namedArgs: {'amount': '$amount'});
-  static String get forestMessageCarryFull => '$_forest.message.carryFull'.tr();
-  static String forestMessageDeposited({required String amounts}) =>
-      '$_forest.message.deposited'.tr(namedArgs: {'amounts': amounts});
-  static String get forestMessageNothingToDeposit => '$_forest.message.nothingToDeposit'.tr();
   static String forestMessagePlacing({required String name}) =>
       '$_forest.message.placing'.tr(namedArgs: {'name': name});
   static String forestMessagePlacingTouch({required String name}) =>

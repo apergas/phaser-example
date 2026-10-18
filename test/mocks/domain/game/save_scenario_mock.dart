@@ -28,7 +28,6 @@ abstract final class SaveScenarioMock {
     speed: 110,
     radius: 8,
     inventory: InventoryEntity(
-      resources: {Resource.wood: 4, Resource.stone: 3},
       tools: {ToolKind.axe, ToolKind.pickaxe},
       toolLevels: {ToolKind.axe: 2},
     ),

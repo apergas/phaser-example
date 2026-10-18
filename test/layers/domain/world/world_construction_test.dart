@@ -9,12 +9,10 @@ import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/entities/player/activity_entity.dart';
 import 'package:farming/layers/domain/rules/blueprints.dart';
 import 'package:farming/layers/domain/rules/rules.dart';
-import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../mocks/domain/entities/game/construction_result_entity_mock.dart';
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/player/intent_entity_mock.dart';
-import '../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../mocks/domain/entities/rock/rock_entity_mock.dart';
 import '../../../mocks/domain/entities/tree/tree_entity_mock.dart';
 import '../../../mocks/domain/world/funds_mock.dart';
@@ -172,28 +170,16 @@ void main() {
     expect(result, ConstructionResultEntityMock.notEnoughResources);
   });
 
-  test('testWhenConstructingThenItIsPaidFromTheStockAndTheCarriedWoodStays', () {
+  test('testWhenConstructingThenItIsPaidFromTheStock', () {
     // given
-    final world = WorldMock.withStock(FundsMock.seventeenWood, player: PlayerEntityMock.withSeventeenWood);
+    final world = WorldMock.withStock(FundsMock.seventeenWood);
 
     // when
     final result = world.orderConstruction(_house, const PositionEntity(x: 300, y: 100));
 
     // then
     expect(result, isA<ConstructionStartedEntity>());
-    expect((world.stock.amount(Resource.wood), world.player.inventory.amount(Resource.wood)), (2, 17));
-  });
-
-  test('testWhenTheWoodIsOnlyCarriedThenTheHouseCannotBePaid', () {
-    // given
-    final world = WorldMock.make(player: PlayerEntityMock.withSeventeenWood);
-
-    // when
-    final result = world.orderConstruction(_house, const PositionEntity(x: 300, y: 100));
-
-    // then
-    expect(result, ConstructionResultEntityMock.notEnoughResources);
-    expect(world.player.inventory.amount(Resource.wood), 17);
+    expect(world.stock.amount(Resource.wood), 2);
   });
 
   test('testWhenTryingToPlaceTheCampThenItIsBlocked', () {

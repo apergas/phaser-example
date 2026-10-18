@@ -5,11 +5,11 @@ import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/quests/quest_log.dart';
 import 'package:farming/layers/domain/rules/blueprints.dart';
 
+import '../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/game/quest_progress_entity_mock.dart';
 import '../../../mocks/domain/entities/game/stats_entity_mock.dart';
 import '../../../mocks/domain/entities/hero/hero_entity_mock.dart';
-import '../../../mocks/domain/entities/player/inventory_entity_mock.dart';
 import '../../../mocks/domain/world/funds_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
 
@@ -78,12 +78,12 @@ void main() {
 
   test('testWhenWoodIsSpentAfterCompletingThenWoodQuestsStayCompleted', () {
     // given
-    final world = WorldMock.withStock(InventoryEntityMock.make(wood: 40).resources);
+    final world = WorldMock.withStock(StockEntityMock.fortyWood);
     final questLog = QuestLog();
     final completed = questLog.update(world).map((event) => event.questId).toList();
 
     // when
-    world.spend(InventoryEntityMock.make(wood: 40).resources);
+    world.spend(StockEntityMock.fortyWood);
 
     // then
     final status = questLog.status(world);
@@ -94,7 +94,7 @@ void main() {
 
   test('testWhenProgressExceedsTargetThenItIsCapped', () {
     // given
-    final world = WorldMock.withStock(InventoryEntityMock.make(wood: 40).resources);
+    final world = WorldMock.withStock(StockEntityMock.fortyWood);
 
     // when
     final woodQuest = QuestLog().status(world).firstWhere((quest) => quest.id == QuestId.gatherWood);

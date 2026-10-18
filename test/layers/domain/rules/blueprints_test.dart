@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
-import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/layers/domain/rules/blueprints.dart';
 
 import '../../../mocks/domain/entities/building/blueprint_entity_mock.dart';
@@ -83,25 +82,5 @@ void main() {
 
     // then
     expect(notBuildable, [BlueprintId.camp]);
-  });
-
-  test('testWhenAskingWhatEachBlueprintAcceptsThenOnlyTheDropOffsTakeCargo', () {
-    // given
-    const blueprints = Blueprints.all;
-
-    // when
-    final accepts = {for (final blueprint in blueprints) blueprint.id: blueprint.accepts};
-
-    // then
-    expect(accepts, {
-      BlueprintId.house: <Resource>{},
-      BlueprintId.storehouse: {Resource.wood, Resource.stone},
-      BlueprintId.quarry: {Resource.stone},
-      BlueprintId.workshop: <Resource>{},
-      BlueprintId.forge: <Resource>{},
-      BlueprintId.armory: <Resource>{},
-      BlueprintId.mageTower: <Resource>{},
-      BlueprintId.camp: {Resource.wood, Resource.stone},
-    });
   });
 }

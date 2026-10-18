@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/layers/data/datasources/save/local/dbo/save_inventory_dbo.dart';
 import 'package:farming/layers/data/repositories/save/mappers/save_inventory_mapper_dbo.dart';
@@ -58,40 +57,6 @@ void main() {
 
     // then
     expect(inventory, InventoryEntityMock.mock);
-  });
-
-  test('testWhenAResourceIsZeroThenItDoesNotAppearInTheInventory', () {
-    // given
-    const dbo = SaveInventoryDBOMock.withZeroResource;
-
-    // when
-    final inventory = sut.toEntity(dbo, owner: 'stock');
-
-    // then
-    expect(inventory.resources, {Resource.stone: 3});
-    expect(inventory.resources.containsKey(Resource.wood), isFalse);
-  });
-
-  test('testWhenAResourceIsUnknownThenItThrowsNamingTheOwner', () {
-    // given
-    const dbo = SaveInventoryDBOMock.withUnknownResource;
-
-    // when
-    void map() => sut.toEntity(dbo, owner: 'stock');
-
-    // then
-    expect(map, throwsInvalidSave('stock: unknown resource "diamond"'));
-  });
-
-  test('testWhenAnAmountIsNegativeThenItThrows', () {
-    // given
-    const dbo = SaveInventoryDBOMock.withNegativeResource;
-
-    // when
-    void map() => sut.toEntity(dbo, owner: 'player');
-
-    // then
-    expect(map, throwsInvalidSave('player: -1 wood'));
   });
 
   test('testWhenAToolIsUnknownThenItThrows', () {

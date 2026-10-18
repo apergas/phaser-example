@@ -4,7 +4,7 @@ import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import '../../../../mocks/domain/entities/player/inventory_entity_mock.dart';
 
 void main() {
-  test('testWhenComparingInventoriesWithSameWoodAndToolsThenTheyAreEqual', () {
+  test('testWhenComparingInventoriesWithTheSameToolsThenTheyAreEqual', () {
     // given
     const inventory = InventoryEntityMock.withAxe;
 
@@ -16,28 +16,26 @@ void main() {
     expect(copy.hashCode, inventory.hashCode);
   });
 
-  test('testWhenWoodOrToolsDifferThenInventoriesAreNotEqual', () {
+  test('testWhenToolsDifferThenInventoriesAreNotEqual', () {
     // given
     const inventory = InventoryEntityMock.mock;
 
     // when
-    final otherWood = inventory == InventoryEntityMock.withWood;
     final otherTools = inventory == InventoryEntityMock.withAxe;
 
     // then
-    expect(otherWood, isFalse);
     expect(otherTools, isFalse);
   });
 
-  test('testWhenCopyingWithWoodThenToolsAreKept', () {
+  test('testWhenCopyingWithToolsThenTheToolLevelsAreKept', () {
     // given
-    const inventory = InventoryEntityMock.withAxe;
+    const inventory = InventoryEntityMock.withIronAxe;
 
     // when
-    final copy = inventory.copyWith(resources: InventoryEntityMock.withWood.resources);
+    final copy = inventory.copyWith(tools: InventoryEntityMock.withBothToolsAndIronAxe.tools);
 
     // then
-    expect(copy, InventoryEntityMock.make(wood: 6, tools: {ToolKind.axe}));
+    expect(copy, InventoryEntityMock.withBothToolsAndIronAxe);
   });
 
   test('testWhenToolLevelsDifferThenInventoriesAreNotEqual', () {

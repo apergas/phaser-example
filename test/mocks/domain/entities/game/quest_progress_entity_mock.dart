@@ -30,6 +30,15 @@ abstract final class QuestProgressEntityMock {
     isCurrent: true,
   );
 
+  static const QuestProgressEntity gatherWoodAtSix = QuestProgressEntity(
+    line: QuestLine.village,
+    id: QuestId.gatherWood,
+    progress: 6,
+    target: 15,
+    isCompleted: false,
+    isCurrent: true,
+  );
+
   static const QuestProgressEntity buildHousePending = QuestProgressEntity(
     line: QuestLine.village,
     id: QuestId.buildHouse,

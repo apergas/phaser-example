@@ -16,7 +16,6 @@ abstract final class BlueprintEntityMock {
     int hitsToBuild = 8,
     double footprintRadius = 40,
     bool isBuildable = true,
-    Set<Resource> accepts = const {},
     PlacementRuleEntity placementRule = const AnywherePlacementRuleEntity(),
   }) {
     return BlueprintEntity(
@@ -25,7 +24,6 @@ abstract final class BlueprintEntityMock {
       hitsToBuild: hitsToBuild,
       footprintRadius: footprintRadius,
       isBuildable: isBuildable,
-      accepts: accepts,
       placementRule: placementRule,
     );
   }
@@ -35,7 +33,6 @@ abstract final class BlueprintEntityMock {
     cost: {Resource.wood: 20},
     hitsToBuild: 8,
     footprintRadius: 40,
-    accepts: {Resource.wood, Resource.stone},
   );
 
   static const BlueprintEntity quarry = BlueprintEntity(
@@ -43,7 +40,6 @@ abstract final class BlueprintEntityMock {
     cost: {Resource.wood: 25},
     hitsToBuild: 8,
     footprintRadius: 40,
-    accepts: {Resource.stone},
     placementRule: NearRockPlacementRuleEntity(range: 120),
   );
 
@@ -81,6 +77,5 @@ abstract final class BlueprintEntityMock {
     hitsToBuild: 1,
     footprintRadius: 30,
     isBuildable: false,
-    accepts: {Resource.wood, Resource.stone},
   );
 }

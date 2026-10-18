@@ -1,6 +1,5 @@
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
 import 'package:farming/core/config/constants/enum/quest_id.dart';
-import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
 
@@ -44,25 +43,6 @@ abstract final class GameEventEntityMock {
   static const RockHitEventEntity rockHit = RockHitEventEntity(rockId: 'rock-1');
 
   static const RockBrokenEventEntity rockBroken = RockBrokenEventEntity(rockId: 'rock-1', stone: 8);
-
-  static const RockBrokenEventEntity rockBrokenWithFourStone = RockBrokenEventEntity(rockId: 'rock-1', stone: 4);
-
-  static const TreeFelledEventEntity treeFelledWithOneWood = TreeFelledEventEntity(treeId: 'tree-1', wood: 1);
-
-  static const DepositedEventEntity depositedMixedLoadAtTheCamp = DepositedEventEntity(
-    buildingId: 'camp',
-    load: {Resource.wood: 6, Resource.stone: 3},
-  );
-
-  static const DepositedEventEntity depositedMixedLoadAtTheStorehouse = DepositedEventEntity(
-    buildingId: 'storehouse',
-    load: {Resource.wood: 6, Resource.stone: 3},
-  );
-
-  static const DepositedEventEntity depositedStoneAtTheQuarry = DepositedEventEntity(
-    buildingId: 'quarry',
-    load: {Resource.stone: 3},
-  );
 
   static const List<GameEventEntity> all = [
     itemPickedUp,

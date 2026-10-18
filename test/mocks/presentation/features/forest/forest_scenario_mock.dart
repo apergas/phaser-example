@@ -1,5 +1,4 @@
 import 'package:farming/layers/domain/entities/stock/stock_entity.dart';
-import 'package:farming/core/assets/i18n/internationalize.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/core/config/constants/enum/tree_kind.dart';
@@ -35,20 +34,7 @@ abstract final class ForestScenarioMock {
   static const PositionEntity farFromTheRock = PositionEntity(x: 300, y: 450);
   static const String campId = 'camp';
 
-  static String get sevenWoodText => Internationalize.forestAmount(resource: Resource.wood, amount: 7);
-
   static const PlayerEntity withAxe = PlayerEntityMock.withAxe;
-
-  static const PlayerEntity withNineWood = PlayerEntityMock.withAxeAndNineWood;
-
-  static const PlayerEntity carryingSevenWood = PlayerEntity(
-    position: PositionEntity(x: 100, y: 100),
-    speed: 100,
-    radius: 8,
-    inventory: InventoryEntity(resources: {Resource.wood: 7}, tools: {ToolKind.axe}),
-  );
-
-  static const PlayerEntity carryingTenWood = PlayerEntityMock.withAxeAndFullLoad;
 
   static const StatsEntity tenVillageQuestStats = StatsEntity(
     treesFelled: 10,
@@ -112,23 +98,25 @@ abstract final class ForestScenarioMock {
     trees: [TreeEntityMock.farEast],
   );
 
-  static World fullLoadWithTreeAndRock() => WorldMock.make(
-    player: PlayerEntityMock.withPickaxeAndFullLoad,
-    trees: [TreeEntityMock.mock],
-    rocks: [RockEntityMock.intact.copyWith(position: const PositionEntity(x: 300, y: 300))],
-  );
+  static World atTheCamp() => WorldMock.make(player: withAxe, buildings: [BuildingEntityMock.camp]);
 
-  static World nineWoodAndAnOak() => WorldMock.make(player: withNineWood, trees: [TreeEntityMock.oakOfEight]);
-
-  static World carryingAtTheCamp({PlayerEntity player = carryingSevenWood}) =>
-      WorldMock.make(player: player, buildings: [BuildingEntityMock.camp]);
-
-  static World carryingAtTheCampAndARock() => WorldMock.make(
-    player: PlayerEntityMock.withPickaxe.copyWith(
-      inventory: const InventoryEntity(resources: {Resource.wood: 7}, tools: {ToolKind.axe, ToolKind.pickaxe}),
-    ),
+  static World campAndARock() => WorldMock.make(
+    player: PlayerEntityMock.withPickaxe,
     buildings: [BuildingEntityMock.camp.copyWith(position: const PositionEntity(x: 300, y: 300))],
     rocks: [RockEntityMock.intact],
+  );
+
+  static World houseSiteAndARock() => WorldMock.make(
+    player: PlayerEntityMock.withPickaxe,
+    buildings: [BuildingEntityMock.site(Blueprints.house, id: 'house', position: const PositionEntity(x: 300, y: 300))],
+    rocks: [RockEntityMock.intact],
+  );
+
+  static World nextToAFinishedHouse() => WorldMock.make(player: withAxe, buildings: [BuildingEntityMock.finishedHouse]);
+
+  static World nextToAHouseSite() => WorldMock.make(
+    player: withAxe,
+    buildings: [BuildingEntityMock.site(Blueprints.house, id: 'house', position: BuildingEntityMock.dropOffSite)],
   );
 
   static World fifteenWoodAndAHouse() => WorldMock.restored(
@@ -140,16 +128,6 @@ abstract final class ForestScenarioMock {
   );
 
   static World ironAxeWithoutWorkshop() => WorldMock.make(player: PlayerEntityMock.withIronAxe);
-
-  static World nothingToDepositAtTheCamp() => WorldMock.make(player: withAxe, buildings: [BuildingEntityMock.camp]);
-
-  static World carryingNextToAFinishedHouse() =>
-      WorldMock.make(player: carryingSevenWood, buildings: [BuildingEntityMock.finishedHouse]);
-
-  static World carryingNextToAHouseSite() => WorldMock.make(
-    player: carryingSevenWood,
-    buildings: [BuildingEntityMock.site(Blueprints.house, id: 'house', position: BuildingEntityMock.dropOffSite)],
-  );
 
   static World quarryPriceAndARock() =>
       WorldMock.make(player: withAxe, rocks: [RockEntityMock.intact])..earn(const {Resource.wood: 25});

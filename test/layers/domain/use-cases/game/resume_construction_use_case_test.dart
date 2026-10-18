@@ -23,7 +23,7 @@ void main() {
 
   test('testWhenResumingAnUnknownBuildingThenReturnsUnknownBuilding', () {
     // given
-    when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.tenWood()));
+    when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.tenWoodInStock()));
 
     // when
     final result = sut(buildingId: 'building-99');

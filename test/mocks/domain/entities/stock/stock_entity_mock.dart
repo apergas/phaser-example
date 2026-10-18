@@ -6,6 +6,10 @@ abstract final class StockEntityMock {
 
   static const StockEntity withWood = StockEntity(resources: {Resource.wood: 6});
 
+  static const StockEntity eightStone = StockEntity(resources: {Resource.stone: 8});
+
+  static const Map<Resource, int> fortyWood = {Resource.wood: 40};
+
   static const StockEntity withStone = StockEntity(resources: {Resource.stone: 3});
 
   static const StockEntity withEveryResource = StockEntity(
@@ -27,6 +31,8 @@ abstract final class StockEntityMock {
   static const Map<Resource, int> fourWood = {Resource.wood: 4};
 
   static const Map<Resource, int> fiveWood = {Resource.wood: 5};
+
+  static const Map<Resource, int> tenWood = {Resource.wood: 10};
 
   static const Map<Resource, int> fifteenWood = {Resource.wood: 15};
 

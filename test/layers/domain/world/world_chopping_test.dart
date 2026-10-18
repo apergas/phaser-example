@@ -1,19 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/core/config/constants/enum/chop_result.dart';
-import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
 import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/entities/player/activity_entity.dart';
 import 'package:farming/layers/domain/rules/blueprints.dart';
 import 'package:farming/layers/domain/rules/rules.dart';
 import 'package:farming/layers/domain/world/world.dart';
-import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/tree/tree_entity_mock.dart';
 import '../../../mocks/domain/entities/building/building_entity_mock.dart';
 import '../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
+import '../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 import '../../../mocks/domain/entities/player/activity_entity_mock.dart';
 import '../../../mocks/domain/entities/player/intent_entity_mock.dart';
 
@@ -68,7 +67,7 @@ void main() {
     expect(world.player.position.x, greaterThan(200));
   });
 
-  test('testWhenChoppingLongEnoughThenTreeFallsAndWoodIsAdded', () {
+  test('testWhenChoppingLongEnoughThenTheTreeFallsAndItsWoodGoesToTheStock', () {
     // given
     final world = WorldMock.withAxeAndTree();
     world.orderChop('tree-1');
@@ -80,9 +79,23 @@ void main() {
     // then
     expect(events.whereType<TreeHitEventEntity>().length, 5);
     expect(events, contains(GameEventEntityMock.treeFelled));
-    expect(world.player.inventory.amount(Resource.wood), 6);
+    expect(world.stock, StockEntityMock.withWood);
+    expect(world.player.inventory, PlayerEntityMock.withAxe.inventory);
     expect(world.trees, isEmpty);
     expect(world.player.activity, ActivityEntityMock.idle);
+  });
+
+  test('testWhenTheStockAlreadyHoldsALotThenTheWholeWoodOfTheTreeIsStored', () {
+    // given
+    final world = WorldMock.withAxeAndTree()..earn(StockEntityMock.fortyWood);
+    world.orderChop('tree-1');
+
+    // when
+    final events = world.advanceFor(1500 + Rules.chopIntervalMs * TreeEntityMock.mock.hitsToFell + 100);
+
+    // then
+    expect(events, contains(GameEventEntityMock.treeFelled));
+    expect(world.stock, StockEntityMock.make(wood: 46));
   });
 
   test('testWhenAnotherTreeStandsInTheWayThenReportsPlayerBlocked', () {

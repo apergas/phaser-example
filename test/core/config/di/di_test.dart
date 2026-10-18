@@ -32,7 +32,6 @@ import 'package:farming/layers/domain/use-cases/game/buy_upgrade_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/can_place_building_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/chop_tree_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/construct_building_use_case.dart';
-import 'package:farming/layers/domain/use-cases/game/deposit_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/get_build_options_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/get_player_status_use_case.dart';
 import 'package:farming/layers/domain/use-cases/game/get_quests_use_case.dart';
@@ -104,7 +103,6 @@ void main() {
       locator.isRegistered<CanPlaceBuildingUseCase>(),
       locator.isRegistered<ChopTreeUseCase>(),
       locator.isRegistered<ConstructBuildingUseCase>(),
-      locator.isRegistered<DepositUseCase>(),
       locator.isRegistered<GetBuildOptionsUseCase>(),
       locator.isRegistered<GetPlayerStatusUseCase>(),
       locator.isRegistered<GetQuestsUseCase>(),

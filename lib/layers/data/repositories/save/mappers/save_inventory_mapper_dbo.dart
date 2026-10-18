@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:injectable/injectable.dart';
 
-import '../../../../../core/config/constants/enum/resource.dart';
 import '../../../../../core/config/constants/enum/tool_kind.dart';
 import '../../../../../core/error-handling/exceptions/app_exceptions.dart';
 import '../../../../domain/entities/player/inventory_entity.dart';
@@ -14,9 +13,6 @@ import '../../../datasources/save/local/dbo/save_inventory_dbo.dart';
 class SaveInventoryMapperDBO {
   SaveInventoryDBO toDBO(InventoryEntity inventory) {
     return SaveInventoryDBO(
-      resources: {
-        for (final MapEntry(key: resource, value: amount) in inventory.resources.entries) resource.name: amount,
-      },
       tools: [for (final tool in inventory.tools) tool.name],
       toolLevels: {for (final MapEntry(key: tool, value: level) in inventory.toolLevels.entries) tool.name: level},
     );
@@ -25,12 +21,6 @@ class SaveInventoryMapperDBO {
   InventoryEntity toEntity(SaveInventoryDBO? dbo, {required String owner}) {
     if (dbo == null) return const InventoryEntity();
     var inventory = const InventoryEntity();
-    for (final MapEntry(key: name, value: amount) in (dbo.resources ?? const <String, int>{}).entries) {
-      final resource =
-          Resource.values.asNameMap()[name] ?? (throw InvalidSaveException(data: '$owner: unknown resource "$name"'));
-      if (amount < 0) throw InvalidSaveException(data: '$owner: $amount ${resource.name}');
-      inventory = inventory.add(resource, amount);
-    }
     for (final name in dbo.tools ?? const <String>[]) {
       inventory = inventory.addTool(_tool(name, owner: owner));
     }

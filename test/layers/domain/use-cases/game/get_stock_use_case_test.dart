@@ -23,11 +23,11 @@ void main() {
     return world;
   }
 
-  test('testWhenReadingTheStockThenItIsTheStoredResourcesAndNotTheCarriedOnes', () {
+  test('testWhenReadingTheStockThenItIsTheStoredResources', () {
     // given
     playing(
       WorldMock.restored(
-        player: PlayerEntityMock.carryingMixedLoad,
+        player: PlayerEntityMock.withPickaxe,
         stock: StockEntityMock.make(wood: 6, stone: 3),
       ),
     );
@@ -41,7 +41,7 @@ void main() {
 
   test('testWhenNothingWasStoredThenTheStockIsEmpty', () {
     // given
-    playing(WorldMock.restored(player: PlayerEntityMock.carryingMixedLoad));
+    playing(WorldMock.restored(player: PlayerEntityMock.withPickaxe));
 
     // when
     final stock = sut();

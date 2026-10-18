@@ -87,19 +87,6 @@ void main() {
     ]);
   });
 
-  test('testWhenTheWoodIsCarriedButNotStoredThenTheWoodQuestsDoNotCountIt', () {
-    // given
-    final world = WorldMock.restored(
-      player: PlayerEntityMock.mock.copyWith(inventory: InventoryEntityMock.make(wood: 10)),
-    );
-
-    // when
-    final measures = (progress(QuestId.gatherWood, world), progress(QuestId.gatherFortyWood, world));
-
-    // then
-    expect(measures, (0, 0));
-  });
-
   test('testWhenTheWoodAndStoneAreStoredThenTheGatheringQuestsCountThem', () {
     // given
     final world = WorldMock.restored(stock: StockEntityMock.make(wood: 42, stone: 21));

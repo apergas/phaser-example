@@ -70,27 +70,10 @@ void main() {
     expect(world.player.inventory.toolLevel(ToolKind.axe), 1);
   });
 
-  test('testWhenTheWoodAndStoneAreOnlyCarriedThenTheUpgradeCannotBePaid', () {
-    // given
-    final world = playing(
-      UpgradeScenarioMock.withWorkshop(player: UpgradeScenarioMock.carryingTheIronAxePrice),
-    );
-
-    // when
-    final result = sut(id: UpgradeId.ironAxe);
-
-    // then
-    expect(result, UpgradeResult.notEnoughResources);
-    expect(world.player.inventory.load, 10);
-  });
-
   test('testWhenEverythingIsInPlaceThenItIsPaidFromTheStockAndTheToolGoesUpALevel', () {
     // given
     final world = playing(
-      UpgradeScenarioMock.withWorkshop(
-        stock: UpgradeScenarioMock.ironAxePrice,
-        player: UpgradeScenarioMock.carryingTheIronAxePrice,
-      ),
+      UpgradeScenarioMock.withWorkshop(stock: UpgradeScenarioMock.ironAxePrice),
     );
 
     // when
@@ -100,7 +83,6 @@ void main() {
     expect(result, UpgradeResult.ok);
     expect(world.player.inventory.toolLevel(ToolKind.axe), 2);
     expect(world.stock, StockEntityMock.mock);
-    expect(world.player.inventory.load, 10);
   });
 
   test('testWhenThePickaxeIsNotOwnedThenItCanStillBeUpgraded', () {

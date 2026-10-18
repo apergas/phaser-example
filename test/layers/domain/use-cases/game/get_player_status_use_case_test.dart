@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
 import 'package:farming/core/config/constants/enum/player_activity.dart';
-import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/core/config/constants/enum/tool_kind.dart';
 import 'package:farming/core/error-handling/exceptions/app_exceptions.dart';
 import 'package:farming/layers/domain/rules/rules.dart';
@@ -55,7 +54,7 @@ void main() {
 
   test('testWhenPlayerIsIdleThenStatusReportsIdleWithoutTarget', () {
     // given
-    when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.tenWood()));
+    when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.tenWoodInStock()));
 
     // when
     final status = sut();
@@ -64,7 +63,6 @@ void main() {
     expect(status.activity, PlayerActivity.idle);
     expect(status.target, isNull);
     expect(status.swingProgress, 0);
-    expect(status.inventory.amount(Resource.wood), 10);
     expect(status.inventory.hasTool(ToolKind.axe), isFalse);
   });
 

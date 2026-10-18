@@ -6,7 +6,6 @@ import 'package:farming/layers/presentation/features/forest/models/resource_item
 import 'package:farming/layers/presentation/features/forest/models/tool_item_data.dart';
 
 import 'build_item_data_mock.dart';
-import 'carry_item_data_mock.dart';
 import 'hero_panel_data_mock.dart';
 import 'quest_item_data_mock.dart';
 import 'resource_item_data_mock.dart';
@@ -26,7 +25,6 @@ abstract final class HudDataMock {
 
   static HudData get withUpgradeReady => HudData(
     stock: stockWith(wood: 15),
-    carry: CarryItemDataMock.empty,
     tools: tools(),
     questBadge: '0/3',
     quests: [QuestItemDataMock.gatherWoodCurrent],
@@ -40,7 +38,6 @@ abstract final class HudDataMock {
 
   static HudData get start => HudData(
     stock: stockWith(wood: 0),
-    carry: CarryItemDataMock.empty,
     tools: tools(),
     questBadge: '0/3',
     quests: [QuestItemDataMock.current, QuestItemDataMock.pending],
@@ -52,7 +49,6 @@ abstract final class HudDataMock {
 
   static HudData get gathering => HudData(
     stock: stockWith(wood: 23),
-    carry: CarryItemDataMock.sevenOfTen,
     tools: tools(),
     questBadge: '1/3',
     quests: QuestItemDataMock.all,
@@ -64,7 +60,6 @@ abstract final class HudDataMock {
 
   static HudData get placing => HudData(
     stock: stockWith(wood: 23),
-    carry: CarryItemDataMock.sevenOfTen,
     tools: tools(),
     questBadge: '1/3',
     quests: QuestItemDataMock.all,
@@ -76,7 +71,6 @@ abstract final class HudDataMock {
 
   static HudData get withEveryResourceAndTool => HudData(
     stock: [for (final resource in Resource.values) ResourceItemDataMock.of(resource, 9999)],
-    carry: CarryItemDataMock.full,
     tools: [for (final tool in ToolKind.values) ToolItemDataMock.of(tool, isOwned: true)],
     questBadge: '19/19',
     quests: QuestItemDataMock.all,
@@ -86,8 +80,13 @@ abstract final class HudDataMock {
     hero: HeroPanelDataMock.readyToBuySword,
   );
 
-  static List<ResourceItemData> stockWith({int wood = 0}) => [
-    for (final resource in Resource.values) ResourceItemDataMock.of(resource, resource == Resource.wood ? wood : 0),
+  static List<ResourceItemData> stockWith({int wood = 0, int stone = 0}) => [
+    for (final resource in Resource.values)
+      ResourceItemDataMock.of(resource, switch (resource) {
+        Resource.wood => wood,
+        Resource.stone => stone,
+        Resource.gold || Resource.mana => 0,
+      }),
   ];
 
   static List<ToolItemData> tools({bool isPickaxeOwned = false}) => [
@@ -98,7 +97,6 @@ abstract final class HudDataMock {
   static HudData _make({required int wood, bool isPickaxeOwned = false, HeroPanelData? hero}) {
     return HudData(
       stock: stockWith(wood: wood),
-      carry: CarryItemDataMock.empty,
       tools: tools(isPickaxeOwned: isPickaxeOwned),
       questBadge: '0/3',
       quests: [QuestItemDataMock.gatherWoodCurrent],

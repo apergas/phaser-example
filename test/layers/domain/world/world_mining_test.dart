@@ -1,10 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/core/config/constants/enum/mine_result.dart';
-import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
 import 'package:farming/layers/domain/entities/player/activity_entity.dart';
 import 'package:farming/layers/domain/rules/blueprints.dart';
-import 'package:farming/layers/domain/world/extensions/inventory_rules.dart';
 import 'package:farming/layers/domain/world/world.dart';
 
 import '../../../mocks/domain/entities/building/building_entity_mock.dart';
@@ -14,6 +12,7 @@ import '../../../mocks/domain/entities/player/activity_entity_mock.dart';
 import '../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../mocks/domain/entities/rock/rock_entity_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
+import '../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 
 void main() {
   const tickMs = 50.0;
@@ -55,18 +54,6 @@ void main() {
     expect(world.player.position, PlayerEntityMock.withAxe.position);
   });
 
-  test('testWhenTheCarryIsFullThenCarryFullIsReported', () {
-    // given
-    final world = WorldMock.restored(player: PlayerEntityMock.withPickaxeAndFullLoad, rocks: [RockEntityMock.intact]);
-
-    // when
-    final result = world.orderMine('rock-1');
-
-    // then
-    expect(result, MineResult.carryFull);
-    expect(world.player.activity, ActivityEntityMock.idle);
-  });
-
   test('testWhenMiningThenTheRockIsHitEverySevenHundredFiftyMillisecondsAndBreaksOnTheEighth', () {
     // given
     final world = WorldMock.restored(player: PlayerEntityMock.withPickaxe, rocks: [RockEntityMock.intact]);
@@ -81,7 +68,7 @@ void main() {
     expect(gaps(times).toSet(), {750.0});
   });
 
-  test('testWhenTheEighthHitLandsThenTheRockBreaksIntoEightStoneThatIsCarried', () {
+  test('testWhenTheEighthHitLandsThenTheRockBreaksIntoEightStoneThatGoesToTheStock', () {
     // given
     final world = WorldMock.restored(player: PlayerEntityMock.withPickaxe, rocks: [RockEntityMock.intact]);
     world.orderMine('rock-1');
@@ -92,7 +79,8 @@ void main() {
     // then
     final rockEvents = events.where((event) => event is RockHitEventEntity || event is RockBrokenEventEntity).toList();
     expect(rockEvents.sublist(rockEvents.length - 2), [GameEventEntityMock.rockHit, GameEventEntityMock.rockBroken]);
-    expect(world.player.inventory.amount(Resource.stone), 8);
+    expect(world.stock, StockEntityMock.eightStone);
+    expect(world.player.inventory, PlayerEntityMock.withPickaxe.inventory);
     expect(world.rocks, isEmpty);
     expect(world.obstacles, isNot(contains(ObstacleEntityMock.rock)));
     expect(world.player.activity, ActivityEntityMock.idle);
@@ -109,17 +97,21 @@ void main() {
     expect(obstacles, [ObstacleEntityMock.rock]);
   });
 
-  test('testWhenTheRockBreaksWithLittleRoomLeftThenOnlyWhatFitsIsCarried', () {
+  test('testWhenTheStockAlreadyHoldsALotThenTheWholeStoneOfTheRockIsStored', () {
     // given
-    final world = WorldMock.restored(player: PlayerEntityMock.withPickaxeAndSixWood, rocks: [RockEntityMock.intact]);
+    final world = WorldMock.restored(
+      player: PlayerEntityMock.withPickaxe,
+      rocks: [RockEntityMock.intact],
+      stock: StockEntityMock.make(wood: 40),
+    );
     world.orderMine('rock-1');
 
     // when
     final events = world.advanceFor(12000, stepMs: tickMs);
 
     // then
-    expect(events, contains(GameEventEntityMock.rockBrokenWithFourStone));
-    expect(world.player.inventory.load, 10);
+    expect(events, contains(GameEventEntityMock.rockBroken));
+    expect(world.stock, StockEntityMock.make(wood: 40, stone: 8));
   });
 
   test('testWhenMiningTheSameRockAgainThenTheSwingStartsOver', () {
@@ -207,6 +199,6 @@ void main() {
     // then
     expect(times, hasLength(5));
     expect(gaps(times).toSet(), {750.0});
-    expect(world.player.inventory.amount(Resource.stone), 8);
+    expect(world.stock, StockEntityMock.eightStone);
   });
 }

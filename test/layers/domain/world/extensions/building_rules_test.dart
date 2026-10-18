@@ -83,24 +83,6 @@ void main() {
     );
   });
 
-  test('testWhenTheBuildingIsFinishedAndAcceptsSomethingThenItTakesDeposits', () {
-    // given
-    final buildings = [
-      BuildingEntityMock.completed(Blueprints.camp),
-      BuildingEntityMock.completed(Blueprints.storehouse),
-      BuildingEntityMock.completed(Blueprints.quarry),
-      BuildingEntityMock.site(Blueprints.storehouse),
-      BuildingEntityMock.completed(Blueprints.house),
-      BuildingEntityMock.completed(Blueprints.workshop),
-    ];
-
-    // when
-    final accepts = buildings.map((building) => building.acceptsDeposits).toList();
-
-    // then
-    expect(accepts, [true, true, true, false, false, false]);
-  });
-
   test('testWhenAFinishedQuarryIsCloserThanOneHundredSixtyThenItBoostsMining', () {
     // given
     const rock = PositionEntity(x: 600, y: 760);

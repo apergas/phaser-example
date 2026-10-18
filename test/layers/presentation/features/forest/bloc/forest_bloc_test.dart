@@ -20,7 +20,6 @@ import '../../../../../mocks/domain/entities/tree/tree_entity_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_bloc_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_scenario_mock.dart';
 import '../../../../../mocks/presentation/features/forest/build_item_data_mock.dart';
-import '../../../../../mocks/presentation/features/forest/carry_item_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/hud_data_mock.dart';
 import '../../../../../mocks/presentation/features/forest/forest_effect_mock.dart';
 import '../../../../../mocks/presentation/features/forest/placement_data_mock.dart';
@@ -156,8 +155,7 @@ void main() {
         expect((pose as WorkPose).tool, WorkTool.axe);
         expect(effects.whereType<TreeHitEffect>().length, 5);
         expect(effects, contains(ForestEffectMock.treeFelled));
-        expect(bloc.state.data.hud!.carry, CarryItemDataMock.of(6));
-        expect(bloc.state.data.hud!.stock, HudDataMock.stockWith(wood: 0));
+        expect(bloc.state.data.hud!.stock, HudDataMock.stockWith(wood: 6));
         expect(
           ForestBlocMock.shownMessages(navigationService),
           contains(Internationalize.forestMessageWoodGained(wood: 6)),

@@ -2,7 +2,6 @@ import 'package:farming/layers/data/datasources/save/local/dbo/save_inventory_db
 
 abstract final class SaveInventoryDBOMock {
   static const SaveInventoryDBO player = SaveInventoryDBO(
-    resources: {'wood': 4, 'stone': 3},
     tools: ['axe', 'pickaxe'],
     toolLevels: {'axe': 2},
   );
@@ -22,9 +21,6 @@ abstract final class SaveInventoryDBOMock {
     tools: ['axe', 'pickaxe'],
     toolLevels: {'axe': 7, 'pickaxe': 2},
   );
-  static const SaveInventoryDBO atCapacity = SaveInventoryDBO(resources: {'wood': 6, 'stone': 4});
-  static const SaveInventoryDBO overCapacity = SaveInventoryDBO(resources: {'wood': 6, 'stone': 5});
-  static const SaveInventoryDBO goldDoesNotCarry = SaveInventoryDBO(resources: {'wood': 10, 'gold': 500});
   static const Map<String, dynamic> wrongTypes = {
     'resources': {'wood': 'many'},
   };

@@ -63,7 +63,6 @@ class _HudOverlayState extends State<HudOverlay> {
     final width = MediaQuery.sizeOf(context).width;
     final resourceBar = ResourceBar(
       stock: widget.hud.stock,
-      carry: widget.hud.carry,
       tools: widget.hud.tools,
       showLabels: width >= HudOverlay.narrowWidth,
     );

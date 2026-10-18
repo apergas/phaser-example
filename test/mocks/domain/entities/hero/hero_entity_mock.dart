@@ -88,7 +88,7 @@ abstract final class HeroEntityMock {
     armorTier: 3,
     skillLevels: {SkillId.doubleStrike: 1, SkillId.secondWind: 1, SkillId.dodge: 1},
     clearedLevels: {ArenaLevelId.barbarianPair, ArenaLevelId.barbarianChief},
-    fightsFought: 12,
+    fightsFought: 13,
   );
 
   static const HeroEntity championWithEveryQuestDone = HeroEntity(
@@ -119,4 +119,28 @@ abstract final class HeroEntityMock {
   static const HeroEntity bronzeAndChain = HeroEntity(weaponTier: 2, armorTier: 2);
 
   static const HeroEntity steelAndPlate = HeroEntity(weaponTier: 3, armorTier: 3);
+
+  static const HeroEntity bronzeAndLeatherWithEverySkillAtLevelTwo = HeroEntity(
+    weaponTier: 2,
+    armorTier: 1,
+    skillLevels: {SkillId.doubleStrike: 2, SkillId.secondWind: 2, SkillId.dodge: 2},
+  );
+
+  static const HeroEntity steelAndPlateWithEverySkillAtLevelTwo = HeroEntity(
+    weaponTier: 3,
+    armorTier: 3,
+    skillLevels: {SkillId.doubleStrike: 2, SkillId.secondWind: 2, SkillId.dodge: 2},
+  );
+
+  static const HeroEntity bronzeAndLeatherWithEverySkillAtLevelThree = HeroEntity(
+    weaponTier: 2,
+    armorTier: 1,
+    skillLevels: {SkillId.doubleStrike: 3, SkillId.secondWind: 3, SkillId.dodge: 3},
+  );
+
+  static const HeroEntity steelAndPlateWithEverySkillAtLevelThree = HeroEntity(
+    weaponTier: 3,
+    armorTier: 3,
+    skillLevels: {SkillId.doubleStrike: 3, SkillId.secondWind: 3, SkillId.dodge: 3},
+  );
 }

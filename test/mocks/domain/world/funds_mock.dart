@@ -42,4 +42,8 @@ abstract final class FundsMock {
   static const Map<Resource, int> doubleStrikeLevelTwoPrice = {Resource.gold: 90, Resource.mana: 30};
 
   static const Map<Resource, int> doubleStrikeLevelThreePrice = {Resource.gold: 135, Resource.mana: 45};
+
+  static const Map<Resource, int> seventeenWood = {Resource.wood: 17};
+
+  static const Map<Resource, int> fifteenWood = {Resource.wood: 15};
 }

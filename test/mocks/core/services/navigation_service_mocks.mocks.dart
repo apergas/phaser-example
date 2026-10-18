@@ -7,12 +7,9 @@
 import 'dart:async' as _i4;
 import 'dart:ui' as _i5;
 
-import 'package:farming/core/services/navigation/source/navigation_service.dart'
-    as _i3;
-import 'package:farming/layers/presentation/widgets/custom-button/custom_button.dart'
-    as _i6;
-import 'package:farming/layers/presentation/widgets/custom-popup/custom_pop_up.dart'
-    as _i7;
+import 'package:farming/core/services/navigation/source/navigation_service.dart' as _i3;
+import 'package:farming/layers/presentation/widgets/custom-button/custom_button.dart' as _i6;
+import 'package:farming/layers/presentation/widgets/custom-popup/custom_pop_up.dart' as _i7;
 import 'package:flutter/material.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
 
@@ -32,17 +29,12 @@ import 'package:mockito/mockito.dart' as _i2;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeGlobalKey_0<T extends _i1.State<_i1.StatefulWidget>>
-    extends _i2.SmartFake
-    implements _i1.GlobalKey<T> {
-  _FakeGlobalKey_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeGlobalKey_0<T extends _i1.State<_i1.StatefulWidget>> extends _i2.SmartFake implements _i1.GlobalKey<T> {
+  _FakeGlobalKey_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeRouteObserver_1<R extends _i1.Route<dynamic>> extends _i2.SmartFake
-    implements _i1.RouteObserver<R> {
-  _FakeRouteObserver_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeRouteObserver_1<R extends _i1.Route<dynamic>> extends _i2.SmartFake implements _i1.RouteObserver<R> {
+  _FakeRouteObserver_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [NavigationService].
@@ -63,14 +55,13 @@ class MockNavigationService extends _i2.Mock implements _i3.NavigationService {
   ) as _i1.GlobalKey<_i1.NavigatorState>);
 
   @override
-  _i1.RouteObserver<_i1.ModalRoute<void>> get routeObserver =>
-      (super.noSuchMethod(
-        Invocation.getter(#routeObserver),
-        returnValue: _FakeRouteObserver_1<_i1.ModalRoute<void>>(
-          this,
-          Invocation.getter(#routeObserver),
-        ),
-      ) as _i1.RouteObserver<_i1.ModalRoute<void>>);
+  _i1.RouteObserver<_i1.ModalRoute<void>> get routeObserver => (super.noSuchMethod(
+    Invocation.getter(#routeObserver),
+    returnValue: _FakeRouteObserver_1<_i1.ModalRoute<void>>(
+      this,
+      Invocation.getter(#routeObserver),
+    ),
+  ) as _i1.RouteObserver<_i1.ModalRoute<void>>);
 
   @override
   _i4.Future<T?>? push<T extends Object?>(
@@ -127,9 +118,7 @@ class MockNavigationService extends _i2.Mock implements _i3.NavigationService {
   );
 
   @override
-  bool canPop() =>
-      (super.noSuchMethod(Invocation.method(#canPop, []), returnValue: false)
-          as bool);
+  bool canPop() => (super.noSuchMethod(Invocation.method(#canPop, []), returnValue: false) as bool);
 
   @override
   void showSheet(
@@ -146,15 +135,14 @@ class MockNavigationService extends _i2.Mock implements _i3.NavigationService {
   );
 
   @override
-  void showFullScreenSheet(_i1.Widget? sheet, {bool? isDismissible = true}) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #showFullScreenSheet,
-          [sheet],
-          {#isDismissible: isDismissible},
-        ),
-        returnValueForMissingStub: null,
-      );
+  void showFullScreenSheet(_i1.Widget? sheet, {bool? isDismissible = true}) => super.noSuchMethod(
+    Invocation.method(
+      #showFullScreenSheet,
+      [sheet],
+      {#isDismissible: isDismissible},
+    ),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void showErrorPopUp({
@@ -202,14 +190,13 @@ class MockNavigationService extends _i2.Mock implements _i3.NavigationService {
   ) as _i4.Future<void>);
 
   @override
-  void showSnackbar({required String? message, double? bottomMargin}) =>
-      super.noSuchMethod(
-        Invocation.method(#showSnackbar, [], {
-          #message: message,
-          #bottomMargin: bottomMargin,
-        }),
-        returnValueForMissingStub: null,
-      );
+  void showSnackbar({required String? message, double? bottomMargin}) => super.noSuchMethod(
+    Invocation.method(#showSnackbar, [], {
+      #message: message,
+      #bottomMargin: bottomMargin,
+    }),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void showLoader() => super.noSuchMethod(

@@ -1,3 +1,4 @@
+import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
 import 'package:farming/layers/domain/entities/hero/hero_entity.dart';
 import 'package:farming/layers/domain/entities/item/ground_item_entity.dart';
@@ -20,6 +21,9 @@ abstract final class WorldMock {
   }
 
   static World withHero(HeroEntity hero) => make(hero: hero);
+
+  static World withStock(Map<Resource, int> stock, {PlayerEntity player = PlayerEntityMock.mock}) =>
+      make(player: player)..earn(stock);
 
   static World small() {
     return World(width: 200, height: 100, player: PlayerEntityMock.centered, trees: const []);

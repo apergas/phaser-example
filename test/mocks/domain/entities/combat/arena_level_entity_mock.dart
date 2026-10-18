@@ -52,4 +52,11 @@ abstract final class ArenaLevelEntityMock {
     enemies: [EnemyEntityMock.bandit],
     reward: {Resource.wood: 2, Resource.gold: 10},
   );
+
+  static const ArenaLevelEntity banditTrioWithEnemySkills = ArenaLevelEntity(
+    id: ArenaLevelId.banditTrio,
+    enemies: [EnemyEntityMock.bandit, EnemyEntityMock.bandit, EnemyEntityMock.bandit],
+    reward: {Resource.gold: 40},
+    enemySkillChance: 0.02,
+  );
 }

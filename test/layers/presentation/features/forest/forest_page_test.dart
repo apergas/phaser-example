@@ -175,7 +175,7 @@ void main() {
     await pumpGame(tester);
 
     // when
-    await tester.tap(find.text(Internationalize.forestHero));
+    await tester.tap(find.byTooltip(Internationalize.forestHero));
     await tester.pump();
 
     // then
@@ -186,7 +186,7 @@ void main() {
   testWidgets('testWhenTheSkillsTabIsOpenedThenEachSkillAsksForTheMageTower', (tester) async {
     // given
     await pumpGame(tester);
-    await tester.tap(find.text(Internationalize.forestHero));
+    await tester.tap(find.byTooltip(Internationalize.forestHero));
     await tester.pump();
 
     // when

@@ -18,8 +18,9 @@ import 'resource_bar.dart';
 import 'upgrade_menu.dart';
 
 class HudOverlay extends StatefulWidget {
+  static const double compactButtonsWidth = 820;
   static const double narrowWidth = 850;
-  static const double buttonsBelowWidth = 1570;
+  static const double buttonsBelowWidth = 1620;
   static const double _margin = 12;
 
   final HudData hud;
@@ -67,6 +68,7 @@ class _HudOverlayState extends State<HudOverlay> {
       showLabels: width >= HudOverlay.narrowWidth,
     );
     final maxWidth = width - 2 * HudOverlay._margin;
+    final isCompact = width < HudOverlay.compactButtonsWidth;
     if (width < HudOverlay.buttonsBelowWidth) {
       return Stack(
         children: [
@@ -83,7 +85,7 @@ class _HudOverlayState extends State<HudOverlay> {
                 Flexible(
                   child: Align(
                     alignment: Alignment.topLeft,
-                    child: _actions(maxWidth: maxWidth, isHeightBounded: true, alignLeft: true),
+                    child: _actions(maxWidth: maxWidth, isCompact: isCompact, isHeightBounded: true, alignLeft: true),
                   ),
                 ),
               ],
@@ -98,13 +100,18 @@ class _HudOverlayState extends State<HudOverlay> {
         Positioned(
           top: HudOverlay._margin,
           right: HudOverlay._margin,
-          child: _actions(maxWidth: maxWidth),
+          child: _actions(maxWidth: maxWidth, isCompact: isCompact),
         ),
       ],
     );
   }
 
-  Widget _actions({required double maxWidth, bool isHeightBounded = false, bool alignLeft = false}) {
+  Widget _actions({
+    required double maxWidth,
+    required bool isCompact,
+    bool isHeightBounded = false,
+    bool alignLeft = false,
+  }) {
     final openMenu = _openMenu;
     final menu = openMenu == null ? null : _menu(menu: openMenu);
     return ConstrainedBox(
@@ -114,53 +121,65 @@ class _HudOverlayState extends State<HudOverlay> {
         crossAxisAlignment: alignLeft ? CrossAxisAlignment.start : CrossAxisAlignment.end,
         spacing: 8,
         children: [
-          _buttons(alignLeft: alignLeft),
+          _buttons(alignLeft: alignLeft, isCompact: isCompact),
           if (menu != null) isHeightBounded ? Flexible(child: menu) : menu,
         ],
       ),
     );
   }
 
-  Widget _buttons({required bool alignLeft}) {
+  Widget _buttons({required bool alignLeft, required bool isCompact}) {
     return FittedBox(
       fit: BoxFit.scaleDown,
       alignment: alignLeft ? Alignment.centerLeft : Alignment.centerRight,
-      child: _buttonRow(),
+      child: _buttonRow(isCompact: isCompact),
     );
   }
 
-  Widget _buttonRow() {
+  Widget _buttonRow({required bool isCompact}) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       spacing: 8,
       children: [
         HudButton(
           label: Internationalize.forestQuests,
+          icon: CustomIcons.quests,
           badge: widget.hud.questBadge,
+          isCompact: isCompact,
           isActive: _openMenu == HudMenu.quests,
           onPressed: () => _toggle(HudMenu.quests),
         ),
         HudButton(
           label: Internationalize.forestBuild,
+          icon: CustomIcons.build,
+          isCompact: isCompact,
           isActive: _openMenu == HudMenu.build,
           onPressed: widget.hud.isBuildLocked ? null : () => _toggle(HudMenu.build),
         ),
         HudButton(
           label: Internationalize.forestWorkshop,
           icon: CustomIcons.workshop,
+          isCompact: isCompact,
           isActive: _openMenu == HudMenu.upgrades,
           onPressed: () => _toggle(HudMenu.upgrades),
         ),
         HudButton(
           label: Internationalize.forestHero,
           icon: CustomIcons.hero,
+          isCompact: isCompact,
           isActive: _openMenu == HudMenu.hero,
           onPressed: () => _toggle(HudMenu.hero),
         ),
-        HudButton(label: Internationalize.forestArena, icon: CustomIcons.arena, onPressed: _onArenaPressed),
+        HudButton(
+          label: Internationalize.forestArena,
+          icon: CustomIcons.arena,
+          isCompact: isCompact,
+          onPressed: _onArenaPressed,
+        ),
         HudButton(
           label: Internationalize.forestGame,
           icon: CustomIcons.save,
+          isCompact: isCompact,
           isActive: _openMenu == HudMenu.game,
           onPressed: () => _toggle(HudMenu.game),
         ),

@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 
 import '../../../../core/config/constants/enum/blueprint_id.dart';
 import '../../../../core/config/constants/enum/resource.dart';
-import 'placement_rule_entity.dart';
 
 class BlueprintEntity {
   final BlueprintId id;
@@ -10,7 +9,6 @@ class BlueprintEntity {
   final int hitsToBuild;
   final double footprintRadius;
   final bool isBuildable;
-  final PlacementRuleEntity placementRule;
 
   const BlueprintEntity({
     required this.id,
@@ -18,7 +16,6 @@ class BlueprintEntity {
     required this.hitsToBuild,
     required this.footprintRadius,
     this.isBuildable = true,
-    this.placementRule = const AnywherePlacementRuleEntity(),
   });
 
   @override
@@ -28,8 +25,7 @@ class BlueprintEntity {
       const MapEquality<Resource, int>().equals(other.cost, cost) &&
       other.hitsToBuild == hitsToBuild &&
       other.footprintRadius == footprintRadius &&
-      other.isBuildable == isBuildable &&
-      other.placementRule == placementRule;
+      other.isBuildable == isBuildable;
 
   @override
   int get hashCode => Object.hash(
@@ -38,6 +34,5 @@ class BlueprintEntity {
     hitsToBuild,
     footprintRadius,
     isBuildable,
-    placementRule,
   );
 }

@@ -98,7 +98,7 @@ abstract final class QuestItemDataMock {
   ];
 
   static List<QuestItemData> get withTheVillageDone => [
-    folded(11),
+    folded(10),
     buildForgeCurrent,
     pendingOf(QuestId.winFirstFight, line: QuestLine.hero),
     pendingOf(QuestId.buyFirstWeapon, line: QuestLine.hero),

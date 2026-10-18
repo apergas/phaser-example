@@ -19,8 +19,6 @@ abstract final class SpriteNames {
     BlueprintId.armory => 'armory',
     BlueprintId.mageTower => 'mage-tower',
     BlueprintId.camp => 'camp',
-    BlueprintId.storehouse => 'storehouse',
-    BlueprintId.quarry => 'quarry',
     BlueprintId.workshop => 'workshop',
   };
 

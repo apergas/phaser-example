@@ -69,7 +69,7 @@ void main() {
     void map() => sut.toEntity(dbo);
 
     // then
-    expect(map, throwsInvalidSave('rock rock-1: 8 hits taken of 8'));
+    expect(map, throwsInvalidSave('rock rock-1: 7 hits taken of 7'));
   });
 
   test('testWhenTheHitsAreNegativeThenItThrows', () {
@@ -80,7 +80,7 @@ void main() {
     void map() => sut.toEntity(dbo);
 
     // then
-    expect(map, throwsInvalidSave('rock rock-1: -1 hits taken of 8'));
+    expect(map, throwsInvalidSave('rock rock-1: -1 hits taken of 7'));
   });
 
   test('testWhenTheRockHasNoIdThenItThrows', () {

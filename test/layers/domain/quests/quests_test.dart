@@ -30,7 +30,7 @@ void main() {
     ],
   );
 
-  test('testWhenListingTheQuestsThenThereAreNineteenElevenOfTheVillageBeforeEightOfTheHero', () {
+  test('testWhenListingTheQuestsThenThereAreEighteenTenOfTheVillageBeforeEightOfTheHero', () {
     // given
     final quests = Quests.all;
 
@@ -38,10 +38,10 @@ void main() {
     final lines = quests.map((quest) => quest.line).toList();
 
     // then
-    expect(quests, hasLength(19));
-    expect(lines.where((line) => line == QuestLine.village), hasLength(11));
-    expect(lines.indexOf(QuestLine.hero), 11);
-    expect(lines.skip(11).toSet(), {QuestLine.hero});
+    expect(quests, hasLength(18));
+    expect(lines.where((line) => line == QuestLine.village), hasLength(10));
+    expect(lines.indexOf(QuestLine.hero), 10);
+    expect(lines.skip(10).toSet(), {QuestLine.hero});
   });
 
   test('testWhenListingTheVillageQuestsThenTheyFollowTheChapterOrderWithTheirTargets', () {
@@ -61,7 +61,6 @@ void main() {
       (QuestId.buildTwoHouses, 2),
       (QuestId.seeATreeRegrow, 1),
       (QuestId.gatherTwentyStone, 20),
-      (QuestId.buildQuarry, 1),
       (QuestId.buildWorkshop, 1),
       (QuestId.upgradeAxe, 1),
     ]);
@@ -133,7 +132,7 @@ void main() {
   test('testWhenBuildingsAreFinishedThenTheBuildingQuestsCountThemAndSitesDoNot', () {
     // given
     final world = withBuildings(
-      [Blueprints.house, Blueprints.quarry, Blueprints.workshop, Blueprints.forge, Blueprints.armory],
+      [Blueprints.house, Blueprints.workshop, Blueprints.forge, Blueprints.armory],
       sites: [Blueprints.house, Blueprints.mageTower],
     );
 
@@ -142,7 +141,6 @@ void main() {
       for (final id in [
         QuestId.buildHouse,
         QuestId.buildTwoHouses,
-        QuestId.buildQuarry,
         QuestId.buildWorkshop,
         QuestId.buildForge,
         QuestId.buildArmory,
@@ -152,7 +150,7 @@ void main() {
     ];
 
     // then
-    expect(measures, [1, 1, 1, 1, 1, 1, 0]);
+    expect(measures, [1, 1, 1, 1, 1, 0]);
     expect(progress(QuestId.buildTwoHouses, withBuildings([Blueprints.house, Blueprints.house])), 2);
   });
 

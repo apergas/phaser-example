@@ -30,19 +30,6 @@ void main() {
     expect(onGrass, isNull);
   });
 
-  test('testWhenCheckingAQuarryThenItMustBeNearARock', () {
-    // given
-    when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.besideARock()));
-
-    // when
-    final far = sut(blueprint: BlueprintId.quarry, x: 300, y: 400);
-    final near = sut(blueprint: BlueprintId.quarry, x: 300, y: 200);
-
-    // then
-    expect(far, ConstructionRejection.needsNearbyRock);
-    expect(near, isNull);
-  });
-
   test('testWhenCheckingTheCampThenItCannotBePlaced', () {
     // given
     when(sessionRepository.current()).thenReturn(GameSessionEntityMock.playing(GameScenarioMock.besideARock()));

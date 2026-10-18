@@ -30,8 +30,6 @@ abstract final class ForestScenarioMock {
   static const PositionEntity houseSiteEast = PositionEntity(x: 300, y: 100);
   static const PositionEntity secondHouseSite = PositionEntity(x: 300, y: 300);
   static const PositionEntity rockSpot = PositionEntity(x: 300, y: 100);
-  static const PositionEntity nearTheRock = PositionEntity(x: 300, y: 200);
-  static const PositionEntity farFromTheRock = PositionEntity(x: 300, y: 450);
   static const String campId = 'camp';
 
   static const PlayerEntity withAxe = PlayerEntityMock.withAxe;
@@ -76,7 +74,6 @@ abstract final class ForestScenarioMock {
     ),
     buildings: [
       BuildingEntityMock.completed(Blueprints.house, id: 'building-1', position: const PositionEntity(x: 600, y: 600)),
-      BuildingEntityMock.completed(Blueprints.quarry, id: 'building-2', position: const PositionEntity(x: 800, y: 600)),
       BuildingEntityMock.completed(
         Blueprints.workshop,
         id: 'building-3',
@@ -129,8 +126,8 @@ abstract final class ForestScenarioMock {
 
   static World ironAxeWithoutWorkshop() => WorldMock.make(player: PlayerEntityMock.withIronAxe);
 
-  static World quarryPriceAndARock() =>
-      WorldMock.make(player: withAxe, rocks: [RockEntityMock.intact])..earn(const {Resource.wood: 25});
+  static World fifteenWoodAndARock() =>
+      WorldMock.make(player: withAxe, rocks: [RockEntityMock.intact])..earn(const {Resource.wood: 15});
 
   static World stumpAboutToSprout() => WorldMock.restored(player: withAxe, stumps: [StumpEntityMock.almostSapling]);
 

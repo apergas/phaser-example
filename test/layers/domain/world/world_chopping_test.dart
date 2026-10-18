@@ -3,13 +3,11 @@ import 'package:farming/core/config/constants/enum/chop_result.dart';
 import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
 import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/entities/player/activity_entity.dart';
-import 'package:farming/layers/domain/rules/blueprints.dart';
 import 'package:farming/layers/domain/rules/rules.dart';
 import 'package:farming/layers/domain/world/world.dart';
 
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/tree/tree_entity_mock.dart';
-import '../../../mocks/domain/entities/building/building_entity_mock.dart';
 import '../../../mocks/domain/entities/player/player_entity_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
 import '../../../mocks/domain/entities/stock/stock_entity_mock.dart';
@@ -171,12 +169,11 @@ void main() {
     expect(world.trees, isEmpty);
   });
 
-  test('testWhenTheAxeIsUpgradedOrAQuarryIsNearThenTheHitsStillComeEverySevenHundredFiftyMilliseconds', () {
+  test('testWhenTheAxeIsUpgradedThenTheHitsStillComeEverySevenHundredFiftyMilliseconds', () {
     // given
     final world = WorldMock.restored(
       player: PlayerEntityMock.withIronAxe,
       trees: [TreeEntityMock.oakOfEight],
-      buildings: [BuildingEntityMock.completed(Blueprints.quarry, position: const PositionEntity(x: 200, y: 200))],
     );
     world.orderChop('tree-1');
 

@@ -26,9 +26,9 @@ abstract final class PlacementDataMock {
     invalidReason: ConstructionRejection.blocked,
   );
 
-  static const PlacementData quarryFarFromRocks = PlacementData(
-    blueprint: BlueprintId.quarry,
+  static const PlacementData houseWithoutResources = PlacementData(
+    blueprint: BlueprintId.house,
     position: PositionEntity(x: 1, y: 2),
-    invalidReason: ConstructionRejection.needsNearbyRock,
+    invalidReason: ConstructionRejection.notEnoughResources,
   );
 }

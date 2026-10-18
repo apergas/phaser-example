@@ -28,8 +28,6 @@ void main() {
     // then
     expect(ids, [
       BlueprintId.house,
-      BlueprintId.storehouse,
-      BlueprintId.quarry,
       BlueprintId.workshop,
       BlueprintId.forge,
       BlueprintId.armory,

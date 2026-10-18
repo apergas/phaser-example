@@ -66,12 +66,6 @@ abstract final class Quests {
       measure: (world) => world.funds.amount(Resource.stone),
     ),
     _MeasuredQuest(
-      id: QuestId.buildQuarry,
-      line: QuestLine.village,
-      target: 1,
-      measure: (world) => _built(world, BlueprintId.quarry),
-    ),
-    _MeasuredQuest(
       id: QuestId.buildWorkshop,
       line: QuestLine.village,
       target: 1,

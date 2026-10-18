@@ -54,7 +54,7 @@ void main() {
       // then
       final hud = bloc.state.data.hud!;
       expect(ForestBlocMock.shownMessages(navigationService), contains(Internationalize.forestMessageWelcome));
-      expect(hud.questBadge, '0/19');
+      expect(hud.questBadge, '0/18');
       expect(hud.quests, QuestItemDataMock.atTheStart);
       expect(hud.tools, HudDataMock.tools());
       expect(hud.stock, HudDataMock.stockWith(wood: 0));
@@ -343,11 +343,11 @@ void main() {
     );
   });
 
-  group('testWhenTheEleventhVillageQuestIsCompletedThenShowsTheLineMessage', () {
+  group('testWhenTheTenthVillageQuestIsCompletedThenShowsTheLineMessage', () {
     late String badgeBefore;
 
     blocTest<ForestBloc, ForestState>(
-      'testWhenTheEleventhVillageQuestIsCompletedThenShowsTheLineMessage',
+      'testWhenTheTenthVillageQuestIsCompletedThenShowsTheLineMessage',
       build: () {
         // given
         return ForestBlocMock.make(
@@ -371,9 +371,9 @@ void main() {
       wait: Duration.zero,
       verify: (bloc) {
         // then
-        expect(badgeBefore, '10/19');
+        expect(badgeBefore, '9/18');
         expect(effects, contains(ForestEffectMock.secondHouseCompleted));
-        expect(bloc.state.data.hud!.questBadge, '11/19');
+        expect(bloc.state.data.hud!.questBadge, '10/18');
         expect(bloc.state.data.hud!.quests, QuestItemDataMock.withTheVillageDone);
         expect(
           ForestBlocMock.shownMessages(navigationService).last,

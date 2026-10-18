@@ -16,17 +16,15 @@ void main() {
     expect(blueprint, BlueprintEntityMock.mock);
   });
 
-  test('testWhenAskingForTheVillageBuildingsThenTheyHaveTheirCostsHitsAndWhatTheyAccept', () {
+  test('testWhenAskingForTheVillageBuildingsThenTheyHaveTheirCostsAndHits', () {
     // given
-    const ids = [BlueprintId.storehouse, BlueprintId.quarry, BlueprintId.workshop, BlueprintId.camp];
+    const ids = [BlueprintId.workshop, BlueprintId.camp];
 
     // when
     final blueprints = ids.map(Blueprints.of).toList();
 
     // then
     expect(blueprints, [
-      BlueprintEntityMock.storehouse,
-      BlueprintEntityMock.quarry,
       BlueprintEntityMock.workshop,
       BlueprintEntityMock.camp,
     ]);
@@ -55,22 +53,17 @@ void main() {
     expect(blueprint, BlueprintEntityMock.mageTower);
   });
 
-  test('testWhenListingBlueprintsThenTheStorehouseQuarryAndWorkshopComeSecondThirdFourthAndTheCampLast', () {
+  test('testWhenListingBlueprintsThenTheHouseAndTheWorkshopComeFirstAndTheCampLast', () {
     // given
     final ids = Blueprints.all.map((blueprint) => blueprint.id).toList();
 
     // when
-    final positions = (
-      ids.indexOf(BlueprintId.storehouse),
-      ids.indexOf(BlueprintId.quarry),
-      ids.indexOf(BlueprintId.workshop),
-      ids.last,
-    );
+    final positions = (ids.first, ids.indexOf(BlueprintId.workshop), ids.last);
 
     // then
     expect(ids.toSet(), BlueprintId.values.toSet());
     expect(ids, hasLength(BlueprintId.values.length));
-    expect(positions, (1, 2, 3, BlueprintId.camp));
+    expect(positions, (BlueprintId.house, 1, BlueprintId.camp));
   });
 
   test('testWhenAskingWhichBlueprintsCanBeBuiltThenOnlyTheCampCannot', () {

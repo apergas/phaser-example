@@ -34,4 +34,15 @@ void main() {
     expect(stats.values.map((stat) => stat.woodYield).reduce((a, b) => a > b ? a : b), 9);
     expect(stats.values.map((stat) => stat.hitsToFell).reduce((a, b) => a < b ? a : b), 3);
   });
+
+  test('testWhenReadingTheRockRulesThenARockTakesSevenHitsAndGivesEightStone', () {
+    // given
+    const rules = (Rules.rockHitsToBreak, Rules.rockStoneYield);
+
+    // when
+    final (hits, stone) = rules;
+
+    // then
+    expect((hits, stone), (7, 8));
+  });
 }

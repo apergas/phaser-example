@@ -16,7 +16,7 @@ void main() {
 
   test('testWhenThereIsAnInvalidReasonThenThePlacementIsNotValid', () {
     // given
-    const placements = [PlacementDataMock.blockedNextToFarTree, PlacementDataMock.quarryFarFromRocks];
+    const placements = [PlacementDataMock.blockedNextToFarTree, PlacementDataMock.houseWithoutResources];
 
     // when
     final valid = placements.where((placement) => placement.isValid);
@@ -32,7 +32,7 @@ void main() {
     // when
     final same = placement == PlacementDataMock.mock;
     final otherPosition = placement == PlacementDataMock.moved;
-    final otherReason = placement == PlacementDataMock.quarryFarFromRocks;
+    final otherReason = placement == PlacementDataMock.houseWithoutResources;
 
     // then
     expect(same, isTrue);

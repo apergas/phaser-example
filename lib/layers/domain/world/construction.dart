@@ -9,7 +9,6 @@ import '../entities/player/intent_entity.dart';
 import '../rules/rules.dart';
 import 'extensions/building_rules.dart';
 import 'extensions/obstacle_rules.dart';
-import 'extensions/placement_rule_rules.dart';
 import 'extensions/position_geometry.dart';
 import 'extensions/stock_rules.dart';
 import 'work.dart';
@@ -20,8 +19,6 @@ final class Construction implements Work<ConstructIntentEntity> {
 
   static ConstructionRejection? rejection(WorldState state, BlueprintEntity blueprint, PositionEntity position) {
     if (!blueprint.isBuildable) return ConstructionRejection.blocked;
-    final ruleRejection = blueprint.placementRule.rejection(state, position);
-    if (ruleRejection != null) return ruleRejection;
     final radius = blueprint.footprintRadius;
     final player = state.player;
     final overlapsPlayer = position.distanceTo(player.position) < radius + player.radius;

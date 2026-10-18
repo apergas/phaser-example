@@ -2,10 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/core/config/constants/enum/mine_result.dart';
 import 'package:farming/layers/domain/entities/game/game_event_entity.dart';
 import 'package:farming/layers/domain/entities/player/activity_entity.dart';
-import 'package:farming/layers/domain/rules/blueprints.dart';
+import 'package:farming/layers/domain/rules/rules.dart';
 import 'package:farming/layers/domain/world/world.dart';
 
-import '../../../mocks/domain/entities/building/building_entity_mock.dart';
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/geometry/obstacle_entity_mock.dart';
 import '../../../mocks/domain/entities/player/activity_entity_mock.dart';
@@ -54,7 +53,7 @@ void main() {
     expect(world.player.position, PlayerEntityMock.withAxe.position);
   });
 
-  test('testWhenMiningThenTheRockIsHitEverySevenHundredFiftyMillisecondsAndBreaksOnTheEighth', () {
+  test('testWhenMiningThenTheRockIsHitAtTheChoppingPaceAndBreaksOnTheSeventh', () {
     // given
     final world = WorldMock.restored(player: PlayerEntityMock.withPickaxe, rocks: [RockEntityMock.intact]);
 
@@ -64,11 +63,11 @@ void main() {
 
     // then
     expect(result, MineResult.ok);
-    expect(times, hasLength(8));
-    expect(gaps(times).toSet(), {750.0});
+    expect(times, hasLength(7));
+    expect(gaps(times).toSet(), {Rules.chopIntervalMs});
   });
 
-  test('testWhenTheEighthHitLandsThenTheRockBreaksIntoEightStoneThatGoesToTheStock', () {
+  test('testWhenTheSeventhHitLandsThenTheRockBreaksIntoEightStoneThatGoesToTheStock', () {
     // given
     final world = WorldMock.restored(player: PlayerEntityMock.withPickaxe, rocks: [RockEntityMock.intact]);
     world.orderMine('rock-1');
@@ -129,65 +128,6 @@ void main() {
     expect((world.player.activity as WorkingActivityEntity).elapsedMs, 0);
   });
 
-  test('testWhenAFinishedQuarryIsNearTheRockThenTheHitsComeEveryFiveHundredTwentyFiveMilliseconds', () {
-    // given
-    final world = WorldMock.restored(
-      player: PlayerEntityMock.withPickaxe,
-      rocks: [RockEntityMock.intact],
-      buildings: [BuildingEntityMock.completed(Blueprints.quarry, position: RockEntityMock.quarryNearTheRock)],
-    );
-    world.orderMine('rock-1');
-
-    // when
-    final times = hitTimes(world, untilMs: 8000);
-
-    // then
-    expect(gaps(times).toSet(), {525.0});
-  });
-
-  test('testWhenTheQuarryIsTooFarOrUnfinishedThenTheHitsStayAtSevenHundredFiftyMilliseconds', () {
-    // given
-    World withQuarry(bool complete, {required bool near}) => WorldMock.restored(
-      player: PlayerEntityMock.withPickaxe,
-      rocks: [RockEntityMock.intact],
-      buildings: [
-        complete
-            ? BuildingEntityMock.completed(
-                Blueprints.quarry,
-                position: near ? RockEntityMock.quarryNearTheRock : RockEntityMock.quarryAtTheBoostRange,
-              )
-            : BuildingEntityMock.site(Blueprints.quarry, position: RockEntityMock.quarryNearTheRock),
-      ],
-    );
-    final far = withQuarry(true, near: false)..orderMine('rock-1');
-    final site = withQuarry(false, near: true)..orderMine('rock-1');
-
-    // when
-    final farGaps = gaps(hitTimes(far)).toSet();
-    final siteGaps = gaps(hitTimes(site)).toSet();
-
-    // then
-    expect(farGaps, {750.0});
-    expect(siteGaps, {750.0});
-  });
-
-  test('testWhenAQuarryBoostsMiningThenTheWorkProgressUsesTheShorterInterval', () {
-    // given
-    final world = WorldMock.restored(
-      player: PlayerEntityMock.withPickaxe,
-      rocks: [RockEntityMock.intact],
-      buildings: [BuildingEntityMock.completed(Blueprints.quarry, position: RockEntityMock.quarryNearTheRock)],
-    );
-    world.orderMine('rock-1');
-    hitTimes(world, untilMs: 3000);
-
-    // when
-    final elapsed = (world.player.activity as WorkingActivityEntity).elapsedMs;
-
-    // then
-    expect(world.workProgress, closeTo(elapsed / 525, 1e-9));
-  });
-
   test('testWhenThePickaxeIsUpgradedThenTheRockBreaksOnTheFifthHit', () {
     // given
     final world = WorldMock.restored(player: PlayerEntityMock.withIronPickaxe, rocks: [RockEntityMock.intact]);
@@ -198,7 +138,7 @@ void main() {
 
     // then
     expect(times, hasLength(5));
-    expect(gaps(times).toSet(), {750.0});
+    expect(gaps(times).toSet(), {Rules.chopIntervalMs});
     expect(world.stock, StockEntityMock.eightStone);
   });
 }

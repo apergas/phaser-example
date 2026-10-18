@@ -59,8 +59,6 @@
       "armory": "Armería",
       "mageTower": "Torre de magia",
       "camp": "Campamento",
-      "storehouse": "Almacén",
-      "quarry": "Cantera",
       "workshop": "Taller"
     },
     "quest": {
@@ -80,7 +78,6 @@
       "buildTwoHouses": "Ten 2 casas terminadas",
       "seeATreeRegrow": "Ve rebrotar un árbol",
       "gatherTwentyStone": "Ten 20 de piedra en el almacén",
-      "buildQuarry": "Construye una cantera",
       "buildWorkshop": "Construye el Taller",
       "upgradeAxe": "Compra el Hacha de hierro"
     },
@@ -188,8 +185,7 @@
     },
     "placement": {
       "confirm": "Construir aquí",
-      "cancel": "Cancelar",
-      "needsRock": "La cantera tiene que ir junto a una roca."
+      "cancel": "Cancelar"
     },
     "accessibility": {
       "gameWorld": "Mundo de juego: bosque con árboles, el personaje y los edificios"

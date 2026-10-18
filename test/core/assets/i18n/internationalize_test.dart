@@ -67,7 +67,6 @@ void main() {
       'Ten 2 casas terminadas',
       'Ve rebrotar un árbol',
       'Ten 20 de piedra en el almacén',
-      'Construye una cantera',
       'Construye el Taller',
       'Compra el Hacha de hierro',
     ]);
@@ -176,7 +175,7 @@ void main() {
 
     // then
     expect(untranslated, isEmpty);
-    expect(names, ['Casa', 'Herrería', 'Armería', 'Torre de magia', 'Campamento', 'Almacén', 'Cantera', 'Taller']);
+    expect(names, ['Casa', 'Herrería', 'Armería', 'Torre de magia', 'Campamento', 'Taller']);
   });
 
   test('testWhenFormattingTheVillageTextsThenUsesTheSpanishTexts', () {
@@ -217,7 +216,6 @@ void main() {
     expect(texts, [
       'No tienes recursos suficientes.',
       'Ahí no cabe. Busca un sitio despejado.',
-      'La cantera tiene que ir junto a una roca.',
     ]);
   });
 

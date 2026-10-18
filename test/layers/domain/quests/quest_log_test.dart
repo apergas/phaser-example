@@ -23,8 +23,8 @@ void main() {
 
     // then
     final village = status.where((quest) => quest.line == QuestLine.village).toList();
-    expect(status, hasLength(19));
-    expect(village, hasLength(11));
+    expect(status, hasLength(18));
+    expect(village, hasLength(10));
     expect(village.take(2), const [
       QuestProgressEntityMock.gatherWoodCurrent,
       QuestProgressEntityMock.buildHousePending,

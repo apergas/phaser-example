@@ -110,7 +110,7 @@ void main() {
       verify: (bloc) {
         // then
         final hud = bloc.state.data.hud!;
-        expect(hud.questBadge, '2/19');
+        expect(hud.questBadge, '2/18');
         expect(hud.quests, QuestItemDataMock.afterTheFirstTwoVillageQuests);
       },
     );
@@ -137,7 +137,7 @@ void main() {
     late PlayerPose pose;
 
     blocTest<ForestBloc, ForestState>(
-      'testWhenMiningARockThenSwingsThePickaxeHitsAndBreaksItForEightStone',
+      'testWhenMiningARockThenSwingsThePickaxeHitsSevenTimesAndBreaksItForEightStone',
       build: () => make(ForestScenarioMock.pickaxeAndRock()),
       act: (bloc) async {
         // given
@@ -155,7 +155,7 @@ void main() {
       verify: (bloc) {
         // then
         expect((pose as WorkPose).tool, WorkTool.pickaxe);
-        expect(effects.whereType<RockHitEffect>(), hasLength(8));
+        expect(effects.whereType<RockHitEffect>(), hasLength(7));
         expect(effects.whereType<RockHitEffect>().first, ForestEffectMock.rockHitFromTheStart);
         expect(effects, contains(ForestEffectMock.rockBroken));
         expect(messages(), contains(Internationalize.forestMessageStoneGained(amount: 8)));
@@ -298,38 +298,38 @@ void main() {
     );
   });
 
-  group('quarry placement', () {
+  group('placement', () {
     late PlacementData? opened;
-    late PlacementData? far;
-    late PlacementData? near;
+    late PlacementData? onTheRock;
+    late PlacementData? free;
 
     blocTest<ForestBloc, ForestState>(
-      'testWhenPlacingTheQuarryThenTheReasonFollowsTheRockAndATapFarAwayWarnsAndKeepsPlacing',
-      build: () => make(ForestScenarioMock.quarryPriceAndARock()),
+      'testWhenPlacingAHouseThenTheReasonFollowsThePointerAndATapOnARockWarnsAndKeepsPlacing',
+      build: () => make(ForestScenarioMock.fifteenWoodAndARock()),
       act: (bloc) async {
         // when
         bloc
           ..add(const ForestStarted())
-          ..add(const ForestBuildRequested(blueprint: BlueprintId.quarry));
+          ..add(const ForestBuildRequested(blueprint: BlueprintId.house));
         await ForestBlocMock.processEvents();
         opened = bloc.state.data.placement;
-        bloc.add(const ForestPointerMoved(position: ForestScenarioMock.farFromTheRock));
+        bloc.add(const ForestPointerMoved(position: ForestScenarioMock.rockSpot));
         await ForestBlocMock.processEvents();
-        far = bloc.state.data.placement;
-        bloc.add(const ForestPointerMoved(position: ForestScenarioMock.nearTheRock));
+        onTheRock = bloc.state.data.placement;
+        bloc.add(const ForestPointerMoved(position: ForestScenarioMock.secondHouseSite));
         await ForestBlocMock.processEvents();
-        near = bloc.state.data.placement;
-        bloc.add(const ForestMapClicked(position: ForestScenarioMock.farFromTheRock));
+        free = bloc.state.data.placement;
+        bloc.add(const ForestMapClicked(position: ForestScenarioMock.rockSpot));
       },
       wait: Duration.zero,
       verify: (bloc) {
         // then
-        expect(opened!.invalidReason, ConstructionRejection.needsNearbyRock);
-        expect(far!.invalidReason, ConstructionRejection.needsNearbyRock);
-        expect(near!.invalidReason, isNull);
+        expect(opened!.invalidReason, ConstructionRejection.blocked);
+        expect(onTheRock!.invalidReason, ConstructionRejection.blocked);
+        expect(free!.invalidReason, isNull);
         expect(
           messages(),
-          contains(Internationalize.forestPlacementRejection(rejection: ConstructionRejection.needsNearbyRock)),
+          contains(Internationalize.forestPlacementRejection(rejection: ConstructionRejection.blocked)),
         );
         expect(bloc.state.data.placement, isNotNull);
         expect(world.buildings, isEmpty);

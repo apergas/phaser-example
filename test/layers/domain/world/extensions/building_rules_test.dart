@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:farming/core/config/constants/enum/blueprint_id.dart';
-import 'package:farming/layers/domain/entities/geometry/position_entity.dart';
 import 'package:farming/layers/domain/rules/blueprints.dart';
 import 'package:farming/layers/domain/world/extensions/building_rules.dart';
 
@@ -81,21 +80,5 @@ void main() {
       (houses, buildings.completeCount(BlueprintId.forge), buildings.completeCount(BlueprintId.armory)),
       (2, 1, 0),
     );
-  });
-
-  test('testWhenAFinishedQuarryIsCloserThanOneHundredSixtyThenItBoostsMining', () {
-    // given
-    const rock = PositionEntity(x: 600, y: 760);
-    final quarry = BuildingEntityMock.completed(Blueprints.quarry);
-
-    // when
-    final near = quarry.boostsMining(const PositionEntity(x: 600, y: 759.9));
-    final atTheEdge = quarry.boostsMining(rock);
-    final site = BuildingEntityMock.site(Blueprints.quarry).boostsMining(const PositionEntity(x: 600, y: 650));
-    final storehouse = BuildingEntityMock.completed(Blueprints.storehouse)
-        .boostsMining(const PositionEntity(x: 600, y: 650));
-
-    // then
-    expect((near, atTheEdge, site, storehouse), (true, false, false, false));
   });
 }

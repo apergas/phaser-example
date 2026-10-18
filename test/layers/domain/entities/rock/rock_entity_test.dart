@@ -13,7 +13,7 @@ void main() {
     final state = (rock.hitsRemaining, rock.isBroken);
 
     // then
-    expect(state, (8, false));
+    expect(state, (7, false));
   });
 
   test('testWhenTheRockTookEveryHitThenItIsBroken', () {
@@ -43,7 +43,7 @@ void main() {
     const rock = RockEntityMock.intact;
 
     // when
-    final copy = rock.copyWith(hitsTaken: 7);
+    final copy = rock.copyWith(hitsTaken: 6);
 
     // then
     expect(copy, RockEntityMock.almostBroken);

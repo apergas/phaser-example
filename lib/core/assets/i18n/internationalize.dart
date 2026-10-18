@@ -83,8 +83,6 @@ class Internationalize {
     BlueprintId.armory => '$_forest.blueprint.armory'.tr(),
     BlueprintId.mageTower => '$_forest.blueprint.mageTower'.tr(),
     BlueprintId.camp => '$_forest.blueprint.camp'.tr(),
-    BlueprintId.storehouse => '$_forest.blueprint.storehouse'.tr(),
-    BlueprintId.quarry => '$_forest.blueprint.quarry'.tr(),
     BlueprintId.workshop => '$_forest.blueprint.workshop'.tr(),
   };
   static String forestQuestTitle({required QuestId id}) => switch (id) {
@@ -104,7 +102,6 @@ class Internationalize {
     QuestId.buildTwoHouses => '$_forest.quest.buildTwoHouses'.tr(),
     QuestId.seeATreeRegrow => '$_forest.quest.seeATreeRegrow'.tr(),
     QuestId.gatherTwentyStone => '$_forest.quest.gatherTwentyStone'.tr(),
-    QuestId.buildQuarry => '$_forest.quest.buildQuarry'.tr(),
     QuestId.buildWorkshop => '$_forest.quest.buildWorkshop'.tr(),
     QuestId.upgradeAxe => '$_forest.quest.upgradeAxe'.tr(),
   };
@@ -142,7 +139,6 @@ class Internationalize {
   static String forestPlacementRejection({required ConstructionRejection rejection}) => switch (rejection) {
     ConstructionRejection.notEnoughResources => forestMessageNotEnoughResources,
     ConstructionRejection.blocked => forestMessageBlockedSite,
-    ConstructionRejection.needsNearbyRock => '$_forest.placement.needsRock'.tr(),
   };
   static String get forestAccessibilityGameWorld => '$_forest.accessibility.gameWorld'.tr();
   static String get forestRetry => '$_forest.retry'.tr();

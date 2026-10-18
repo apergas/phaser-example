@@ -13,7 +13,6 @@ import 'package:farming/layers/domain/rules/rules.dart';
 import '../../../mocks/domain/entities/game/construction_result_entity_mock.dart';
 import '../../../mocks/domain/entities/game/game_event_entity_mock.dart';
 import '../../../mocks/domain/entities/player/intent_entity_mock.dart';
-import '../../../mocks/domain/entities/rock/rock_entity_mock.dart';
 import '../../../mocks/domain/entities/tree/tree_entity_mock.dart';
 import '../../../mocks/domain/world/funds_mock.dart';
 import '../../../mocks/domain/world/world_mock.dart';
@@ -194,52 +193,5 @@ void main() {
     expect(rejection, ConstructionRejection.blocked);
     expect(result, ConstructionResultEntityMock.blocked);
     expect(world.buildings, isEmpty);
-  });
-
-  test('testWhenTheQuarryIsFarFromEveryRockThenItNeedsANearbyRockAndNothingIsPaid', () {
-    // given
-    final world = WorldMock.make(rocks: [RockEntityMock.intact])..earn(FundsMock.quarryPrice);
-
-    // when
-    final result = world.orderConstruction(Blueprints.quarry, const PositionEntity(x: 300, y: 400));
-
-    // then
-    expect(result, ConstructionResultEntityMock.needsNearbyRock);
-    expect(world.stock.amount(Resource.wood), 25);
-  });
-
-  test('testWhenTheQuarryIsFarAndTheStockIsEmptyThenTheStockIsReportedFirst', () {
-    // given
-    final world = WorldMock.make(rocks: [RockEntityMock.intact]);
-
-    // when
-    final result = world.orderConstruction(Blueprints.quarry, const PositionEntity(x: 300, y: 400));
-
-    // then
-    expect(result, ConstructionResultEntityMock.notEnoughResources);
-  });
-
-  test('testWhenTheQuarryOverlapsTheRockThenTheRulePassesButTheSiteIsBlocked', () {
-    // given
-    final world = WorldMock.make(rocks: [RockEntityMock.intact])..earn(FundsMock.quarryPrice);
-
-    // when
-    final rejection = world.placementRejection(Blueprints.quarry, const PositionEntity(x: 300, y: 150));
-    final besideTheRock = world.placementRejection(Blueprints.quarry, const PositionEntity(x: 300, y: 200));
-
-    // then
-    expect(rejection, ConstructionRejection.blocked);
-    expect(besideTheRock, isNull);
-  });
-
-  test('testWhenTheQuarryIsFarAndOverATreeThenTheRuleIsReportedBeforeTheSite', () {
-    // given
-    final world = WorldMock.make(trees: [TreeEntityMock.atSite], rocks: [RockEntityMock.intact]);
-
-    // when
-    final rejection = world.placementRejection(Blueprints.quarry, const PositionEntity(x: 420, y: 400));
-
-    // then
-    expect(rejection, ConstructionRejection.needsNearbyRock);
   });
 }

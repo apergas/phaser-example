@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:farming/layers/domain/entities/building/placement_rule_entity.dart';
 
 import '../../../../mocks/domain/entities/stock/stock_entity_mock.dart';
 import '../../../../mocks/domain/entities/building/blueprint_entity_mock.dart';
@@ -27,21 +26,20 @@ void main() {
       BlueprintEntityMock.make(hitsToBuild: 4),
       BlueprintEntityMock.make(footprintRadius: 20),
       BlueprintEntityMock.make(isBuildable: false),
-      BlueprintEntityMock.make(placementRule: const NearRockPlacementRuleEntity(range: 120)),
     ];
 
     // then
     expect(others.where((other) => other == blueprint), isEmpty);
   });
 
-  test('testWhenCreatedWithoutExtrasThenItIsBuildableAnywhereAndAcceptsNothing', () {
+  test('testWhenCreatedWithoutExtrasThenItIsBuildable', () {
     // given
     const blueprint = BlueprintEntityMock.mock;
 
     // when
-    final extras = (blueprint.isBuildable, blueprint.placementRule);
+    final isBuildable = blueprint.isBuildable;
 
     // then
-    expect(extras, (true, const AnywherePlacementRuleEntity()));
+    expect(isBuildable, isTrue);
   });
 }

@@ -50,4 +50,53 @@ abstract final class QuestItemDataMock {
   static List<QuestItemData> get withBothLines => [done, current, pending, buildForgeCurrent];
 
   static List<QuestItemData> get all => [done, current, pending];
+
+  static QuestItemData pendingOf(QuestId id, {QuestLine line = QuestLine.village, String progressText = ''}) =>
+      QuestItemData(
+        line: line,
+        title: Internationalize.forestQuestTitle(id: id),
+        progressText: progressText,
+        status: QuestItemStatus.pending,
+      );
+
+  static QuestItemData currentOf(QuestId id, {QuestLine line = QuestLine.village, String progressText = ''}) =>
+      QuestItemData(
+        line: line,
+        title: Internationalize.forestQuestTitle(id: id),
+        progressText: progressText,
+        status: QuestItemStatus.current,
+      );
+
+  static QuestItemData folded(int count, {QuestLine line = QuestLine.village}) => QuestItemData(
+    line: line,
+    title: Internationalize.forestQuestsDone(count: count),
+    progressText: '',
+    status: QuestItemStatus.folded,
+  );
+
+  static List<QuestItemData> get atTheStart => [
+    gatherWoodCurrent,
+    pendingOf(QuestId.buildHouse),
+    pendingOf(QuestId.fellTenTrees, progressText: '0/10'),
+    buildForgeCurrent,
+    pendingOf(QuestId.winFirstFight, line: QuestLine.hero),
+    pendingOf(QuestId.buyFirstWeapon, line: QuestLine.hero),
+  ];
+
+  static List<QuestItemData> get afterTheFirstTwoVillageQuests => [
+    folded(2),
+    currentOf(QuestId.fellTenTrees, progressText: '0/10'),
+    pendingOf(QuestId.fellAnOak),
+    pendingOf(QuestId.gatherFortyWood, progressText: '15/40'),
+    buildForgeCurrent,
+    pendingOf(QuestId.winFirstFight, line: QuestLine.hero),
+    pendingOf(QuestId.buyFirstWeapon, line: QuestLine.hero),
+  ];
+
+  static List<QuestItemData> get withTheVillageDone => [
+    folded(11),
+    buildForgeCurrent,
+    pendingOf(QuestId.winFirstFight, line: QuestLine.hero),
+    pendingOf(QuestId.buyFirstWeapon, line: QuestLine.hero),
+  ];
 }

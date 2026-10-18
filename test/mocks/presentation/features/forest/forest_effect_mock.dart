@@ -11,7 +11,11 @@ abstract final class ForestEffectMock {
 
   static const ItemPickedUpEffect axePickedUp = ItemPickedUpEffect(itemId: 'axe-1');
 
+  static const ItemPickedUpEffect pickaxePickedUp = ItemPickedUpEffect(itemId: 'pickaxe');
+
   static const BuildingCompletedEffect buildingCompleted = BuildingCompletedEffect(buildingId: 'building-1');
+
+  static const BuildingCompletedEffect secondHouseCompleted = BuildingCompletedEffect(buildingId: 'building-4');
 
   static const GearPurchasedEffect shortSwordPurchased = GearPurchasedEffect(gear: GearId.shortSword);
 

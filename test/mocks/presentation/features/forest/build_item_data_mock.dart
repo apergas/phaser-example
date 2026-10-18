@@ -3,6 +3,8 @@ import 'package:farming/core/config/constants/enum/blueprint_id.dart';
 import 'package:farming/core/config/constants/enum/resource.dart';
 import 'package:farming/layers/presentation/features/forest/models/build_item_data.dart';
 
+import '../../../domain/entities/game/build_option_entity_mock.dart';
+
 abstract final class BuildItemDataMock {
   static BuildItemData get affordable => BuildItemData(
     blueprint: BlueprintId.house,
@@ -53,4 +55,20 @@ abstract final class BuildItemDataMock {
     ),
     isEnabled: false,
   );
+
+  static List<BuildItemData> everyBuildableWithStock({int wood = 0}) => [
+    for (final option in BuildOptionEntityMock.everyBuildableWithStock(wood: wood))
+      BuildItemData(
+        blueprint: option.blueprint,
+        name: Internationalize.forestBlueprint(id: option.blueprint),
+        costText: _amounts(option.cost),
+        missingText: option.missing.isEmpty ? null : Internationalize.forestMissing(amounts: _amounts(option.missing)),
+        isEnabled: option.missing.isEmpty,
+      ),
+  ];
+
+  static String _amounts(Map<Resource, int> amounts) => [
+    for (final resource in Resource.values)
+      if (amounts[resource] case final amount?) Internationalize.forestAmount(resource: resource, amount: amount),
+  ].join(', ');
 }
